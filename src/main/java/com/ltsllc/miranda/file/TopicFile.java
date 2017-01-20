@@ -8,8 +8,8 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/5/2017.
  */
-public class TopicFile  extends MirandaFile<Topic> {
+public class TopicFile  extends SingleFile<Topic> {
     public TopicFile (BlockingQueue<Message> queue, String s) {
-        super(queue, s);
+        super(s, queue);
     }
 }

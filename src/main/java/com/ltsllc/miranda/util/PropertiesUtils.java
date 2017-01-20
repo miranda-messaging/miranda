@@ -1,5 +1,7 @@
 package com.ltsllc.miranda.util;
 
+import org.apache.log4j.Logger;
+
 import java.util.Properties;
 
 /**
@@ -8,6 +10,8 @@ import java.util.Properties;
  * Created by Clark on 12/30/2016.
  */
 public class PropertiesUtils {
+    private static Logger logger = Logger.getLogger(PropertiesUtils.class);
+
     /**
      * Add the properties of p2 to p1.
      *
@@ -45,5 +49,18 @@ public class PropertiesUtils {
         }
 
         return p;
+    }
+
+    public static Integer parseIntOrDie(String name, String s) {
+        Integer value = null;
+
+        try {
+            value = Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            logger.fatal ("error parsing " + name + " (" + s + ")",e);
+            System.exit(1);
+        }
+
+        return value;
     }
 }

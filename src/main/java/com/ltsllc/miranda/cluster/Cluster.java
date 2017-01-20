@@ -18,11 +18,25 @@ import com.ltsllc.miranda.node.Node;
  * Created by Clark on 12/31/2016.
  */
 public class Cluster extends Consumer{
+    private static Cluster ourInstance;
+
+    public static synchronized void initializeClass (String filename) {
+        if (null == ourInstance) {
+            ourInstance = new Cluster(filename);
+        }
+    }
+
+    public static Cluster getInstance() {
+        return ourInstance;
+    }
+
     public Cluster (String filename) {
         super("Cluster");
         setCurrentState(new Ready(this));
         setFilename(filename);
     }
+
+
 
     private Node[] nodes;
     private String filename;
@@ -59,5 +73,9 @@ public class Cluster extends Consumer{
         for (Node n : nodes) {
             send(n.getQueue(), new ConnectMessage());
         }
+    }
+
+    public void newMessages (Message[] a) {
+
     }
 }

@@ -1,12 +1,10 @@
 package com.ltsllc.miranda.main;
 
-import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ConnectMessage;
-import com.ltsllc.miranda.file.SubscriptionsFile;
-import com.ltsllc.miranda.file.TopicFile;
-import com.ltsllc.miranda.file.UsersFile;
+import com.ltsllc.miranda.file.*;
+import com.ltsllc.miranda.messagesFile.SystemMessages;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
@@ -23,8 +21,8 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.ltsllc.miranda.MirandaProperties.DEFAULT_PROPERTIES;
-import static com.ltsllc.miranda.MirandaProperties.PROPERTY_CLUSTER_FILE;
+import static com.ltsllc.miranda.file.MirandaProperties.DEFAULT_PROPERTIES;
+import static com.ltsllc.miranda.file.MirandaProperties.PROPERTY_CLUSTER_FILE;
 
 /**
  * A class that encapsulates the knowledge of how to start up the system.
@@ -194,20 +192,23 @@ public class Startup extends State {
         n.start();
     }
 
-    private void loadFiles(BlockingQueue<Message> queue) {
+    private void loadFiles(BlockingQueue<Message> writerQueue) {
         Properties p = System.getProperties();
 
         String filename = p.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
-        UsersFile users = new UsersFile(queue, filename);
+        UsersFile users = new UsersFile(writerQueue, filename);
 
         filename = p.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
-        TopicFile topics = new TopicFile(queue, filename);
+        TopicFile topics = new TopicFile(writerQueue, filename);
 
         filename = p.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
-        SubscriptionsFile subscriptions = new SubscriptionsFile(queue, filename);
+        SubscriptionsFile subscriptions = new SubscriptionsFile(writerQueue, filename);
 
         String directoryName = p.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
+        SystemMessages.initialize(directoryName, writerQueue);
+
         directoryName = p.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
+        Deliveries.initialize(directoryName);
     }
 
 

@@ -8,8 +8,8 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/5/2017.
  */
-public class SubscriptionsFile extends MirandaFile<Subscription> {
+public class SubscriptionsFile extends SingleFile<Subscription> {
     public SubscriptionsFile (BlockingQueue<Message> queue, String filename) {
-        super(queue, filename);
+        super(filename, queue);
     }
 }
