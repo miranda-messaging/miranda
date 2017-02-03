@@ -1,11 +1,13 @@
 package com.ltsllc.miranda.network;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
@@ -15,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +27,18 @@ import java.util.List;
  */
 public class Utils {
     private static Logger logger = Logger.getLogger(Utils.class);
+
+    public static Bootstrap createClientBootstrap (ChannelHandler channelHandler) {
+        Bootstrap bootstrap = new Bootstrap();
+
+        EventLoopGroup group = new NioEventLoopGroup();
+        bootstrap.group(group);
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.handler(channelHandler);
+
+        return bootstrap;
+    }
+
 
 
     public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString, String alias) {
@@ -92,7 +108,98 @@ public class Utils {
 
 
 
-    public static SslContext createServerSslContext(String filename, String passwordString, String alias) {
+    public static SslContext createServerSslContext(String keyFilename, String keyPassword, String keyAlias,
+                                                    String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
+        SslContext sslContext = null;
+
+        try {
+            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword, trustStoreAlias);
+            PrivateKey privateKey = getPrivateKey (keyFilename, keyPassword, keyAlias);
+
+            X509Certificate certificate = getCertificate (trustStoreFilename, trustStorePassword, trustStoreAlias);
+
+            sslContext = SslContextBuilder
+                    .forServer(privateKey, certificate)
+                    .ciphers(getDefaultCiphers())
+                    .trustManager(trustManagerFactory)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return sslContext;
+    }
+
+
+    public static SslContext createClientContext (String trustStore, String trustStorePassword, String trustStoreAlias) {
+        SslContext sslContext = null;
+
+        TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStore, trustStorePassword, trustStoreAlias);
+
+        try {
+            sslContext = SslContextBuilder
+                    .forClient()
+                    .trustManager(trustManagerFactory)
+                    .build();
+        } catch (Exception e) {
+            logger.fatal("Exception trying to create client context", e);
+            System.exit(1);
+        }
+
+
+        return sslContext;
+    }
+
+
+    public static KeyStore getKeyStore (String filename, String password, String alias) {
+        KeyStore keyStore = null;
+        FileInputStream fileInputStream = null;
+
+        try {
+            keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            fileInputStream = new FileInputStream(filename);
+            keyStore.load(fileInputStream, password.toCharArray());
+        } catch (Exception e) {
+            logger.fatal ("Exception trying to get key store", e);
+            System.exit(1);
+        }
+
+        return keyStore;
+    }
+
+
+    public static PrivateKey getPrivateKey (String filename, String password, String alias) {
+        KeyStore keyStore = getKeyStore(filename, password);
+        PrivateKey privateKey = null;
+
+        try {
+            privateKey = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+        } catch (Exception e) {
+            logger.fatal ("Exception trying to get private key", e);
+            System.exit(1);
+        }
+
+        return privateKey;
+    }
+
+
+    public static X509Certificate getCertificate (String filename, String password, String alias)
+    {
+        X509Certificate certificate = null;
+        KeyStore keyStore = getKeyStore(filename, password);
+
+        try {
+            certificate = (X509Certificate) keyStore.getCertificate(alias);
+        } catch (Exception e) {
+            logger.fatal ("Exception trying to get certificate", e);
+            System.exit(1);
+        }
+
+        return certificate;
+    }
+
+    public static SslContext createClientSslContext(String filename, String passwordString, String alias) {
         SslContext sslContext = null;
 
         try {
@@ -110,7 +217,6 @@ public class Utils {
 
         return sslContext;
     }
-
 
     public static void close(FileInputStream fileInputStream) {
         if (null != fileInputStream) {

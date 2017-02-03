@@ -111,11 +111,15 @@ public class NetworkListener {
 
 
     public void listen() {
+        String keyStoreFilename = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE);
+        String keyStorePassword = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_PASSWORD);
+        String keyStoreAlias = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_ALIAS);
+
         String certificateFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
         String certificatePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
         String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
 
-        SslContext sslContext = Utils.createServerSslContext(certificateFilename, certificatePassword, certificateAlias);
+        SslContext sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, certificateFilename, certificatePassword, certificateAlias);
         LocalInitializer localInitializer = new LocalInitializer(sslContext);
 
         ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localInitializer);

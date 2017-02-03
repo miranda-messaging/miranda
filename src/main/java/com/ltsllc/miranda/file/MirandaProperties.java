@@ -4,6 +4,7 @@ import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,7 +37,11 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_SERVER_KEYSTORE = "com.ltsllc.miranda.ServerKeystore";
     public static final String PROPERTY_SERVER_KEYSTORE_PASSWORD = "com.ltsllc.miranda.ServerKeystorePassword";
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
-    public static final String PROPERTY_CERTIFICATE_ALIAS = "com.ltsllc.mranda.CertificateAlias";
+    public static final String PROPERTY_CERTIFICATE_ALIAS = "com.ltsllc.miranda.CertificateAlias";
+    public static final String PROPERTY_KEY_STORE = "com.ltsllc.miranda.KeyStore";
+    public static final String PROPERTY_KEY_STORE_PASSWORD = "com.ltsllc.miranda.KeyStorePassword";
+    public static final String PROPERTY_KEY_STORE_ALIAS = "com.ltsllc.miranda.KeyStoreAlias";
+
 
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
@@ -54,6 +59,9 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_SERVER_KEYSTORE = "data/serverkeystore";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "ca";
+    public static final String DEFAULT_KEY_STORE = "data/serverkeystore";
+    public static final String DEFAULT_KEY_STORE_ALIAS = "server";
+
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},
@@ -70,7 +78,9 @@ public class MirandaProperties extends Properties {
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
             {PROPERTY_SERVER_KEYSTORE, DEFAULT_SERVER_KEYSTORE},
             {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES},
-            {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS}
+            {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
+            {PROPERTY_KEY_STORE, DEFAULT_KEY_STORE},
+            {PROPERTY_KEY_STORE_ALIAS, DEFAULT_KEY_STORE_ALIAS}
     };
 
     private static MirandaProperties ourInstance;

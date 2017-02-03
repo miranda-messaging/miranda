@@ -227,26 +227,26 @@ public class Network extends Consumer {
         return trustManagerFactory;
     }
 
-    private Bootstrap createClientBootstrap () {
-        Bootstrap bootstrap = new Bootstrap();
-
-        EventLoopGroup group = new NioEventLoopGroup();
-        bootstrap.group(group);
-        bootstrap.channel(NioSocketChannel.class);
-        LocalClientHandler localClientHandler = new LocalClientHandler();
-        bootstrap.handler(localClientHandler);
-
-        return bootstrap;
-    }
-
     public void connectTo (BlockingQueue<Message> notify, String host, int port) {
         try {
             logger.info("Connecting to " + host + ":" +port);
-            Bootstrap bootstrap = createClientBootstrap();
+
+            String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
+            String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
+
+            String clientKeyStore = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE);
+            String clientPassword = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_PASSWORD);
+            String clientAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
+
+
+            SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
+            LocalClientInializer localClientInializer = new LocalClientInializer(sslContext);
+
+            Bootstrap bootstrap = Utils.createClientBootstrap(localClientInializer);
             LocalClientHandler localClientHandler = new LocalClientHandler();
             bootstrap.handler(localClientHandler);
             ChannelFuture channelFuture = bootstrap.connect(host, port);
-            SslContext sslContext = createClientContext();
 
             LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(notify, sslContext);
             channelFuture.addListener(localChannelFutureListener);
