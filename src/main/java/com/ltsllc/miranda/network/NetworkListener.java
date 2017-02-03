@@ -182,6 +182,7 @@ public class NetworkListener {
 
     public void listen() {
         ServerBootstrap serverBootstrap = createServerBootstrap();
+        logger.info ("listening at " + port);
         ChannelFuture channelFuture = serverBootstrap.bind(port);
         channelFuture.addListener(new LocalChannelListener());
     }
