@@ -7,17 +7,29 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Message {
     public enum Subjects {
+        Ballot,
+        Connect,
+        Connected,
+        ConnectionError,
+        ConnectTo,
+        Join,
+        JoinSuccess,
+        Listen,
         NewUser,
         NewTopic,
+        NetworkMessage,
         NewSubscription,
         NewMessage,
         NewDelivery,
+        NodesLoaded,
         Election,
-        Ballot,
         Results,
-        Connect,
-        Connected,
+        Schedule,
+        Starting,
+        Timeout,
         Write,
+        WriteSucceeded,
+        WriteFailed,
         Error
     }
     private Subjects mySubject;
@@ -32,8 +44,9 @@ public class Message {
         return mySubject;
     }
 
-    public Message (Subjects subject) {
+    public Message (Subjects subject, BlockingQueue<Message> sender) {
         mySubject = subject;
+        this.sender = sender;
     }
 
     public void respond (Message m) throws InterruptedException {

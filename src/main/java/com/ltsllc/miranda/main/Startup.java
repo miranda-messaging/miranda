@@ -6,6 +6,7 @@ import com.ltsllc.miranda.cluster.ConnectMessage;
 import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.node.ConnectingState;
 import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.writer.Writer;
@@ -21,8 +22,7 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.ltsllc.miranda.file.MirandaProperties.DEFAULT_PROPERTIES;
-import static com.ltsllc.miranda.file.MirandaProperties.PROPERTY_CLUSTER_FILE;
+import static com.ltsllc.miranda.file.MirandaProperties.*;
 
 /**
  * A class that encapsulates the knowledge of how to start up the system.
@@ -39,20 +39,54 @@ import static com.ltsllc.miranda.file.MirandaProperties.PROPERTY_CLUSTER_FILE;
  * Created by Clark on 12/30/2016.
  */
 public class Startup extends State {
+    private enum LogLevel {
+        NORMAL,
+        DEBUG,
+        WARN,
+        ERROR,
+        INFO
+    }
+
     public static final String DEBUG_FLAG = "-debug";
+
     public static final String LOG4J_FILE = "log4j.xml";
 
-    private static Logger logger = Logger.getLogger(Startup.class);
+    private static Logger logger;
 
-    private String[] arguments;
+    private String[] arguments = {};
     private BlockingQueue<Message> clusterQueue;
+    private BlockingQueue<Message> writerQueue;
     private int index;
+    private LogLevel logLevel = LogLevel.NORMAL;
+    private String propertiesFilename = DEFAULT_PROPERTIES_FILENAME;
+    private boolean debugMode = false;
 
-    public int getIndex () {
+    public boolean debugMode () {
+        return getDebugMode();
+    }
+
+    public boolean getDebugMode () {
+        return  debugMode;
+    }
+
+    public void setDebugMode (boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    public String getPropertiesFilename() {
+        return propertiesFilename;
+    }
+
+    public void setPropertiesFilename(String propertiesFilename) {
+        this.propertiesFilename = propertiesFilename;
+    }
+
+
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex (int i) {
+    public void setIndex(int i) {
         index = i;
     }
 
@@ -60,16 +94,24 @@ public class Startup extends State {
         return clusterQueue;
     }
 
-    public void setClusterQueue (BlockingQueue<Message> queue) {
+    public void setClusterQueue(BlockingQueue<Message> queue) {
         clusterQueue = queue;
     }
 
-    public Startup (Consumer container) {
+    public LogLevel getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(LogLevel logLevel) {
+        this.logLevel = logLevel;
+    }
+
+    public Startup(Consumer container) {
         super(container);
     }
 
-    public Startup(BlockingQueue<Message> queue, String[] argv) {
-        super(queue);
+    public Startup(String[] argv) {
+        super(null);
         arguments = argv;
     }
 
@@ -77,30 +119,81 @@ public class Startup extends State {
         return arguments;
     }
 
-    public void setArguments (String[] argv) {
+    public void setArguments(String[] argv) {
         arguments = argv;
     }
 
-    public State start() {
-        processArguments();
-        loadProperties();
-        startSubsystems();
-        send(getClusterQueue(), new ConnectMessage());
-        return new Ready(getQueue());
+    public BlockingQueue<Message> getWriterQueue() {
+        return writerQueue;
     }
 
-    public void processArguments ()
-    {
-        DOMConfigurator.configure("log4j.xml");
+    public void setWriterQueue (BlockingQueue<Message> writerQueue) {
+        this.writerQueue = writerQueue;
+    }
 
-        if (null != getArguments()) {
-            for (String s : getArguments()) {
-                if (s.equals(DEBUG_FLAG)) {
-                    logger.setLevel(Level.DEBUG);
-                }
+    public State start() {
+        parseCommandLine();
+        startLogger();
+        loadProperties();
+        startSubsystems();
+        loadFiles();
+        setRootUser();
+        return new Ready();
+    }
 
+    private void setRootUser() {
+        User root = new User("root", "System admin");
+
+        if (debugMode())
+        {
+            root = new User("root", "System admin");
+        }
+
+        UsersFile.getInstance().add(root, false);
+    }
+
+    private void startLogger() {
+        Properties p = System.getProperties();
+        String filename = p.getProperty(PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE);
+        DOMConfigurator.configure(filename);
+
+        logger = Logger.getLogger(Startup.class);
+
+        switch (getLogLevel()) {
+            case DEBUG:
+                logger.setLevel(Level.DEBUG);
+                break;
+
+            case ERROR:
+                logger.setLevel(Level.ERROR);
+                break;
+
+            case INFO:
+                logger.setLevel(Level.INFO);
+                break;
+
+            case NORMAL:
+                logger.setLevel(Level.ERROR);
+                break;
+
+            case WARN:
+                logger.setLevel(Level.WARN);
+                break;
+        }
+
+    }
+
+    public void parseCommandLine() {
+        for (String s : getArguments()) {
+            if (s.equals(DEBUG_FLAG)) {
+                setLogLevel(LogLevel.DEBUG);
+                setDebugMode(true);
                 setIndex(getIndex() + 1);
             }
+        }
+
+        if (getIndex() < getArguments().length) {
+            setPropertiesFilename(getArguments()[getIndex()]);
         }
     }
 
@@ -112,102 +205,73 @@ public class Startup extends State {
      * otherwise it will use {@link MirandaProperties#PROPERTY_SYSTEM_PROPERTIES if that is defined.
      * If neither is defined then it
      * will look for {@link MirandaProperties#DEFAULT_PROPERTIES_FILENAME} in the current directory.
-     *
+     * <p>
      * <p>
      * The method always "augments" the system properties with the {@link #DEFAULT_PROPERTIES}
      * if it finds a proerties file it will augment the result with that
      * file.
      */
-    private void loadProperties () {
-        Properties systemProperties = System.getProperties();
-        String filename = MirandaProperties.DEFAULT_PROPERTIES_FILENAME;
-
-        if (getArguments().length > 0) {
-            filename = getArguments()[0];
-        } else if (systemProperties.getProperty(MirandaProperties.PROPERTY_SYSTEM_PROPERTIES) != null) {
-            filename = systemProperties.getProperty(MirandaProperties.PROPERTY_SYSTEM_PROPERTIES);
-        }
-
-        Properties defaults = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
-        PropertiesUtils.augment(systemProperties, defaults);
-
-        logger.info("Propertie file = " + filename);
-
-        File systemPropertiesFile = new File(filename);
-        if (systemPropertiesFile.exists()) {
-            FileReader fin = null;
-            try {
-                fin = new FileReader(filename);
-
-                Properties p = new Properties();
-                p.load(fin);
-                PropertiesUtils.augment(systemProperties, p);
-
-            } catch (IOException e) {
-                System.err.println("error reading properties file " + filename);
-                System.err.println(e);
-                System.exit(1);
-            } finally {
-                IOUtils.closeNoExceptions(fin);
-            }
-        }
-
-        logProperties(systemProperties);
+    private void loadProperties() {
+        MirandaProperties.initialize(getPropertiesFilename());
     }
 
-    private void logProperties (Properties p)
-    {
-        Object[] names = p.stringPropertyNames().toArray();
-        Arrays.sort(names);
-
-        for (Object o : names) {
-            String name = (String) o;
-            String value = p.getProperty(name);
-            logger.info(name + " = " + value);
-        }
-    }
 
 
     /**
      * Start the Miranda subsystems.
-     *
-     * <P>
-     *     This method starts the {@link Writer}, the {@link Cluster} and the
-     *     {@link Network} object.  The Cluster may start additional subsystems
-     *     for the Nodes in the Cluster.
+     * <p>
+     * <p>
+     * This method starts the {@link Writer}, the {@link Cluster} and the
+     * {@link Network} object.  The Cluster may start additional subsystems
+     * for the Nodes in the Cluster.
      * </P>
      */
     private void startSubsystems() {
+        StartState.initialize();
+
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+
+        setWriterQueue(queue);
+
         Writer w = new Writer(queue);
         w.start();
 
-        queue = new LinkedBlockingQueue<Message>();
-        Cluster c = new Cluster(System.getProperty(PROPERTY_CLUSTER_FILE));
-        c.start (queue);
-        setClusterQueue(queue);
+        BlockingQueue<Message> networkQueue = new LinkedBlockingQueue<Message>();
+        Network network = new Network(networkQueue);
+        network.start();
 
         queue = new LinkedBlockingQueue<Message>();
-        Network n = new Network(queue);
-        n.start();
+        String filename = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+
+        Cluster.initializeClass(filename, getWriterQueue(), networkQueue);
+        Cluster.getInstance().start();
+
+        try {
+            ConnectMessage m = new ConnectMessage(null);
+            Cluster.getInstance().getQueue().put(m);
+        } catch (InterruptedException e) {
+            logger.fatal ("Interrupted while trying to connect the cluster", e);
+            System.exit(1);
+        }
+
     }
 
-    private void loadFiles(BlockingQueue<Message> writerQueue) {
-        Properties p = System.getProperties();
+    private void loadFiles() {
+        PropertiesUtils.log(System.getProperties());
 
-        String filename = p.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
-        UsersFile users = new UsersFile(writerQueue, filename);
+        String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
+        UsersFile.initialize(filename, getWriterQueue());
 
-        filename = p.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
-        TopicFile topics = new TopicFile(writerQueue, filename);
+        filename = System.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
+        TopicFile topics = new TopicFile(getWriterQueue(), filename);
 
-        filename = p.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
+        filename = System.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
         SubscriptionsFile subscriptions = new SubscriptionsFile(writerQueue, filename);
 
-        String directoryName = p.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
-        SystemMessages.initialize(directoryName, writerQueue);
+        String directoryName = System.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
+        SystemMessages.initialize(directoryName, getWriterQueue());
 
-        directoryName = p.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
+        directoryName = System.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
         Deliveries.initialize(directoryName);
     }
 

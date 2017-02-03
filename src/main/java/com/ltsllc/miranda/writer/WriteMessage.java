@@ -1,6 +1,8 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.writer;
 
 import com.ltsllc.miranda.Message;
+
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/5/2017.
@@ -26,8 +28,8 @@ public class WriteMessage extends Message {
         buffer = b;
     }
 
-    public WriteMessage (String filename, byte[] buffer) {
-        super(Subjects.Write);
+    public WriteMessage (String filename, byte[] buffer, BlockingQueue<Message> sender) {
+        super(Subjects.Write, sender);
         setBuffer(buffer);
         setFilename(filename);
     }

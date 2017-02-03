@@ -2,8 +2,10 @@ package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.file.FileWatcher;
 import com.ltsllc.miranda.main.Startup;
+import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
 
+import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -16,9 +18,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Miranda extends Consumer {
     private static Logger logger = Logger.getLogger(Miranda.class);
-
     private static Miranda ourInstance;
     private static FileWatcher ourFileWatcher;
+    public static MirandaTimer timer;
 
 
     private Miranda() {
@@ -43,8 +45,12 @@ public class Miranda extends Consumer {
 
     public static void initialize ()
     {
+        StartState.initialize();
+
         ourInstance = new Miranda();
         ourFileWatcher = new FileWatcher();
+        timer = new MirandaTimer();
+        timer.start();
     }
 
 

@@ -51,13 +51,19 @@ public class Consumer extends Subsystem {
         State stop = StopState.getInstance();
 
         try {
-            logger.info (getName() + " starting");
+            logger.info (this + " starting");
             while (nextState != stop) {
+                State currentState = getCurrentState();
                 setCurrentState(nextState);
+                if (currentState != nextState) {
+                    setCurrentState(nextState.start());
+                }
+
                 Message m = getQueue().take();
+                logger.info (this + " received " + m);
                 nextState = processMessage(m);
             }
-            logger.info ("Terminating");
+            logger.info (this + " terminating");
         } catch (InterruptedException e) {
             logger.warn("InterruptedException while trying to get next message" + e);
         }
@@ -73,8 +79,17 @@ public class Consumer extends Subsystem {
      */
     public State processMessage (Message m)
     {
-        return getCurrentState();
+        return getCurrentState().processMessage(m);
     }
 
 
+    public void send (Message m, BlockingQueue<Message> queue)
+    {
+        logger.info("Sending " + m);
+        try {
+            queue.put(m);
+        } catch (InterruptedException e) {
+            logger.info("Exception trying to send message", e);
+        }
+    }
 }

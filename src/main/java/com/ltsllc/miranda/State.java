@@ -12,52 +12,15 @@ import java.util.concurrent.BlockingQueue;
 public abstract class State {
     private static Logger logger = Logger.getLogger(State.class);
 
-    private BlockingQueue<Message> myQueue;
+
     private Consumer container;
 
-    public State(BlockingQueue<Message> queue) {
-        myQueue = queue;
-    }
-
-    public BlockingQueue<Message> getQueue() {
-        return myQueue;
+    public Consumer getContainer() {
+        return container;
     }
 
     public State (Consumer container) {
         this.container = container;
-    }
-
-    /**
-     * Process messages.
-     *
-     * This method processes the message in the queue returned by {@link #getQueue()}, waiting if the queue is empty.
-     * The method processes messages until the next state, as returned by {@link #processMessage(Message)} is not
-     * this.
-     *
-     * @return The next state.
-     * @throws InterruptedException If the thread is interrupted while waiting for a message.
-     */
-    public State process () throws InterruptedException {
-        logger.info("Starting");
-
-        State nextState = this;
-        while (nextState == this) {
-            Message m = getQueue().take();
-            nextState = processMessage(m);
-        }
-
-        return nextState;
-    }
-
-    /**
-     * Process the next message and return the next state.
-     *
-     * The default implementation is to ignore the message and return this;
-     *
-     * @return The next state.  Default behavior is to return this.
-     */
-    public State processMessage (Message m) {
-        return this;
     }
 
     public State start ()
@@ -68,9 +31,24 @@ public abstract class State {
 
     public void send (BlockingQueue<Message> queue, Message m) {
         try {
+            logger.info ("sending " + m);
             queue.put(m);
         } catch (InterruptedException e) {
             logger.warn ("Interrupted while sending message", e);
         }
+    }
+
+    /**
+     * Process the next message and return the next state.
+     *
+     * The default implementation logs a warning and returns this.
+     *
+     * @return The next state.  Default behavior is to return this.
+     */
+    public State processMessage (Message m)
+    {
+        logger.warn(this + " does not understand " + m);
+
+        return this;
     }
 }
