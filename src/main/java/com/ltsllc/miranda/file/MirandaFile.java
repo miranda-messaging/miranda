@@ -1,23 +1,21 @@
 package com.ltsllc.miranda.file;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Miranda;
-import com.ltsllc.miranda.util.IOUtils;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
-import java.io.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/5/2017.
  */
 abstract public class MirandaFile {
+    abstract public void load ();
     abstract public byte[] getBytes();
+
     private Logger logger = Logger.getLogger(MirandaFile.class);
 
     private String filename;
@@ -27,22 +25,12 @@ abstract public class MirandaFile {
         return writerQueue;
     }
 
-    public void setWriterQueue (BlockingQueue<Message> queue) {
-        writerQueue = queue;
-    }
-
-
-
     public MirandaFile (String filename, BlockingQueue<Message> queue)
     {
         this.filename = filename;
         this.writerQueue = queue;
     }
 
-
-    public void fileChanged (String s) {
-        load();
-    }
 
     public MirandaFile (String filename) {
         this.filename = filename;
@@ -52,10 +40,13 @@ abstract public class MirandaFile {
         return filename;
     }
 
+    public void fileChanged (String s) {
+        load();
+    }
 
     public void write (String filename, byte[] array)
     {
-        Message m = new WriteMessage(filename, array);
+        Message m = new WriteMessage(filename, array, null);
         try {
             getWriterQueue().put(m);
         } catch (InterruptedException e) {
@@ -65,7 +56,9 @@ abstract public class MirandaFile {
     }
 
 
-    abstract public void load ();
+    public void fileChanged () {
+        logger.info(getFilename() + " changed");
+    }
 
     public void write () {
         write(getFilename(), getBytes());
@@ -73,7 +66,7 @@ abstract public class MirandaFile {
 
     public void watch () {
         try {
-            Method method = this.getClass().getMethod("fileChanged", Void.TYPE);
+            Method method = this.getClass().getMethod("fileChanged");
             Miranda.getFileWatcher().watchForChanges(getFilename(), this, method);
         } catch (NoSuchMethodException e) {
             logger.fatal("Exception trying to register file watcher", e);

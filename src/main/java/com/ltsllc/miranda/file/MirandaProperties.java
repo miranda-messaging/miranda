@@ -1,18 +1,24 @@
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.Map;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
-import java.util.concurrent.BlockingQueue;
+import java.util.Set;
 
 /**
- * Created by Clark on 1/5/2017.
+ * Created by Clark on 1/21/2017.
  */
-public class MirandaProperties extends SingleFile {
+public class MirandaProperties extends Properties {
+    private static Logger logger = Logger.getLogger(MirandaProperties.class);
+
+    public static final String PACKAGE_NAME = "com.ltsllc.miranda";
+
     public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
     public static final String PROPERTY_CLUSTER_FILE = "com.ltsllc.miranda.ClusterFile";
     public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
@@ -24,6 +30,12 @@ public class MirandaProperties extends SingleFile {
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
     public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
+    public static final String PROPERTY_NUMBER_OF_LISTENERS = "com.ltsllc.miranda.NumberOfListeners";
+    public static final String PROPERTY_TRUST_STORE = "com.ltsllc.miranda.Truststore";
+    public static final String PROPERTY_TRUST_STORE_PASSWORD = "com.ltsllc.miranda.TruststorePassword";
+    public static final String PROPERTY_SERVER_KEYSTORE = "com.ltsllc.miranda.ServerKeystore";
+    public static final String PROPERTY_SERVER_KEYSTORE_PASSWORD = "com.ltsllc.miranda.ServerKeystorePassword";
+    public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
 
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
@@ -36,6 +48,10 @@ public class MirandaProperties extends SingleFile {
     public static final String DEFAULT_MESSAGES_DIRECTORY = "data/messages";
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
+    public static final String DEFAULT_NUMBER_OF_LISTENERS = "10";
+    public static final String DEFAULT_TRUST_STORE = "data/truststore";
+    public static final String DEFAULT_SERVER_KEYSTORE = "data/serverkeystore";
+    public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},
@@ -47,96 +63,85 @@ public class MirandaProperties extends SingleFile {
             {PROPERTY_MESSAGES_DIRECTORY, DEFAULT_MESSAGES_DIRECTORY},
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
-            {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE}
+            {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE},
+            {PROPERTY_NUMBER_OF_LISTENERS, DEFAULT_NUMBER_OF_LISTENERS},
+            {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
+            {PROPERTY_SERVER_KEYSTORE, DEFAULT_SERVER_KEYSTORE},
+            {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES}
     };
 
-
-    private static Logger logger = Logger.getLogger(MirandaProperties.class);
     private static MirandaProperties ourInstance;
 
-    private Map<String, Object> values;
+    private String filename;
 
-    private MirandaProperties (String filename, BlockingQueue<Message> writerQueue)
-    {
-        super(filename, writerQueue);
-
-    }
-
-    public void load ()
-    {
-        Properties p = System.getProperties();
-        Properties defaults = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
-
-        PropertiesUtils.augment(p, defaults);
-
-        File file = new File(getFilename());
-
-        if (file.exists())
-        {
-            Properties temp = new Properties();
-            PropertiesUtils.augment(p, temp);
-        }
-    }
-
-    public static synchronized void initialize (String filename, BlockingQueue<Message> writerQueue) {
+    public static synchronized void initialize (String filename) {
         if (null == ourInstance) {
-            ourInstance = new MirandaProperties(filename, writerQueue);
-            ourInstance.load();
-            ourInstance.parse();
-            ourInstance.watch();
+            Properties defaults = PropertiesUtils.buildFrom(MirandaProperties.DEFAULT_PROPERTIES);
+            Properties properties = new Properties();
+            try {
+                Properties p = PropertiesUtils.load(filename);
+                properties = PropertiesUtils.augment(defaults, p);
+            } catch (IOException e) {
+                logger.fatal ("Exception trying to load properties from " + filename, e);
+            }
+
+            properties = PropertiesUtils.augment(properties, System.getProperties());
+
+            ourInstance = new MirandaProperties(properties);
+            ourInstance.updateSystemProperties();
         }
     }
 
-    public static MirandaProperties getInstane()
-    {
+    public static MirandaProperties getInstance() {
         return ourInstance;
     }
 
-    public void parse () {
-        Properties p = System.getProperties();
-        parseInt(PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE, p);
+    private MirandaProperties () {
+        super();
     }
 
 
-
-    public void parseInt (String name, String defaultValue, Properties properties) {
-        String s = properties.getProperty(name);
-        Integer value = null;
-
-        if (null == s) {
-            logger.info ("no value for " + name + ", using default value " + defaultValue);
-            s = defaultValue;
-        }
-
-        try {
-            value = Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            logger.warn ("Exception parsing " + s + ", using default value (" + defaultValue +")", e);
-            value = PropertiesUtils.parseIntOrDie(name, defaultValue);
-        }
-
-        logger.info (name + " = " + value);
-    }
-
-
-    private int getInt (String name)
-    {
-        Object o = values.get (name);
-        if (null == o)
+    private MirandaProperties (Properties p) {
+        Set<String> names = p.stringPropertyNames();
+        for (String name : names)
         {
-            Exception e = new Exception();
-            logger.fatal (name + " is null", e);
-            System.exit(1);
+            String value = p.getProperty(name);
+            setProperty(name, value);
         }
+    }
 
-        Integer i = (Integer) o;
-        return i.intValue();
+    public String getFilename() {
+        return filename;
+    }
+
+    public void updateSystemProperties()
+    {
+        PropertiesUtils.setIfNull(System.getProperties(), this);
     }
 
 
-    public int getMessageFileSize ()
-    {
-        return getInt(PROPERTY_MESSAGE_FILE_SIZE);
+    private void load (String filename) {
+        System.out.println("Properties file = " + filename);
+
+        File file = new File(filename);
+        if (file.exists()) {
+            FileReader fin = null;
+            try {
+                fin = new FileReader(file);
+
+                Properties p = new Properties();
+                p.load(fin);
+
+                PropertiesUtils.augment(this, p);
+
+            } catch (IOException e) {
+                System.err.println("error reading properties file " + getFilename());
+                System.err.println(e);
+                System.exit(1);
+            } finally {
+                IOUtils.closeNoExceptions(fin);
+            }
+        }
     }
 
 

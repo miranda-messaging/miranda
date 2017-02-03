@@ -1,25 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8b2f8cfc-fe6d-45bd-b9c8-e09b9baef0ad" name="Default" comment="initial commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/Deliveries.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeWatcher.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileWatcher.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MultipleFiles.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/SystemMessages.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/MirandaProperties.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" />
+    <list default="true" id="8b2f8cfc-fe6d-45bd-b9c8-e09b9baef0ad" name="Default" comment="SSL cluster connect">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/users.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data2/cluster.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/SslClient.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/SslServer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Utils.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/NodeChannel.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StartState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ClusterFile.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodeChannelInitializer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodeHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodesLoaded.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectFutureListener.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectToMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Connected.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/InboundNodeHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ListenMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener_backup.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network_backup.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NodeHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ReadyState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/SslClient.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Temp.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Utils.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectingState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/EchoHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinSuccess.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinSuccessMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoiningState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NetworkMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeElement.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeStarting.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ReadyState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/RetryingState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ServerConnectedState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/StartingState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/WireMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/timer/MirandaTimer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/timer/ScheduleMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/timer/TimeoutMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/ReadyState.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteFailedMessage.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteSucceededMessage.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Electing.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Ready.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Ready.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ReadyState.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeWatcher.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeListener.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/WriteMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteMessage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/miranda.properties" afterPath="$PROJECT_DIR$/miranda.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Miranda.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Miranda.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/User.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/User.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectMessage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectedMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectedMessage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Ready.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Ready.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedMessage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/IOUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/IOUtils.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Writer.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Writer.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -30,31 +91,37 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/miranda$Miranda2.coverage" NAME="Miranda2 Coverage Results" MODIFIED="1485100592844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/miranda$Miranda.coverage" NAME="Miranda Coverage Results" MODIFIED="1485873329841" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.ltsllc.miranda.messagesFile.*</FILTER>
+    </SUITE>
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Startup.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java">
+      <file leaf-file-name="Network.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="207" column="60" lean-forward="false" selection-start-line="207" selection-start-column="60" selection-end-line="207" selection-end-column="60" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="-161">
+              <caret line="225" column="5" lean-forward="true" selection-start-line="225" selection-start-column="5" selection-end-line="225" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SystemMessages.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/SystemMessages.java">
+      <file leaf-file-name="NetworkListener.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="42" lean-forward="false" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="49" />
+            <state relative-caret-position="31">
+              <caret line="138" column="90" lean-forward="false" selection-start-line="138" selection-start-column="90" selection-end-line="138" selection-end-column="90" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#3877#3878#0" expanded="true" />
+                <element signature="e#3904#3905#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -63,95 +130,41 @@
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="21" lean-forward="true" selection-start-line="17" selection-start-column="7" selection-end-line="22" selection-end-column="21" />
+            <state relative-caret-position="272">
+              <caret line="16" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MultipleFiles.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MultipleFiles.java">
+      <file leaf-file-name="cluster.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data2/cluster.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="27" lean-forward="false" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+            <state relative-caret-position="51">
+              <caret line="3" column="30" lean-forward="false" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#838#839#0" expanded="true" />
-                <element signature="e#872#873#0" expanded="true" />
+                <marker date="1486088600528" expanded="true" signature="0:102" ph="[...]" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TopicFile.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java">
+      <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+            <state relative-caret-position="170">
+              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SubscriptionsFile.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java">
+      <file leaf-file-name="ConnectingState.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectingState.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="12" column="29" lean-forward="false" selection-start-line="12" selection-start-column="29" selection-end-line="12" selection-end-column="29" />
+            <state relative-caret-position="286">
+              <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UsersFile.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SingleFile.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="91" column="31" lean-forward="false" selection-start-line="91" selection-start-column="31" selection-end-line="91" selection-end-column="31" />
-              <folding>
-                <element signature="e#754#755#0" expanded="true" />
-                <element signature="e#798#799#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FileWatcher.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileWatcher.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MirandaFile.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-324">
-              <caret line="38" column="33" lean-forward="false" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
-              <folding>
-                <element signature="e#1044#1045#0" expanded="true" />
-                <element signature="e#1066#1067#0" expanded="true" />
-                <element signature="e#1110#1111#0" expanded="true" />
-                <element signature="e#1150#1151#0" expanded="true" />
-                <element signature="e#1185#1186#0" expanded="true" />
-                <element signature="e#1216#1217#0" expanded="true" />
-                <element signature="e#1616#1617#0" expanded="true" />
-                <element signature="e#1664#1665#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -167,9 +180,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>abstract</find>
-      <find>consumer</find>
-      <find>StopState</find>
+      <find>ignor</find>
+      <find>SslContextBuilder</find>
+      <find>sslserver</find>
+      <find>SslContext</find>
+      <find>networklistener</find>
+      <find>SocketChannel</find>
+      <find>serverBoot</find>
+      <find>createClientContext</find>
+      <find>LocalHandler</find>
+      <find>handler</find>
+      <find>server</find>
+      <find>serverboo</find>
+      <find>sslcontext</find>
+      <find>bootstrap</find>
+      <find>connectto</find>
+      <find>getTrustMangerFactory</find>
+      <find>conect</find>
+      <find>trust</find>
+      <find>network</find>
+      <find>blocking</find>
+      <find>listen</find>
+      <find>createServerBootstrap</find>
+      <find>LocalServerInitializer</find>
+      <find>createS</find>
+      <find>channelin</find>
+      <find>doit</find>
+      <find>SSlContext</find>
+      <find>createTrustManagerFactory</find>
+      <find>ciphers</find>
+      <find>sslcon</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -183,57 +223,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/util/Proerties.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/util/Properties.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/util/IOUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/util/PropertiesUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/State.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/Message.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/main/Electing.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/main/Ready.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/main/Startup.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/mirada/Subsystem.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectMessage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedMessage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectedMessage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Producer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/log4j.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Ready.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Writer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Ready.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java" />
-        <option value="$PROJECT_DIR$/miranda.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Properties.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/test/Startup.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java" />
-        <option value="$PROJECT_DIR$/log4j.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/Deliveries.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/IOUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/MirandaProperties.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/WriteMessage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/FileWatcher.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Miranda.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeWatcher.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SystemMessages.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/SystemMessages.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MultipleFiles.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileWatcher.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Ready.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ReadyState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ListenMessage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectToMessage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeStarting.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StartState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Ready.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Electing.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/ReadyState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/StartingState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/RetryingState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoiningState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/InboundNode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/InboundNodeHandler.java" />
+        <option value="$PROJECT_DIR$/miranda.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ServerConnectedState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectingState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SslTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Utls.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinMessage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/WireMessage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinSuccess.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectFutureListener.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java" />
+        <option value="$PROJECT_DIR$/miranda2.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener_backup.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NodeHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Utils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SslClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network_backup.java" />
+        <option value="$PROJECT_DIR$/src/main/java/SslServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ReadyState.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Temp.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/SslClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Utils.java" />
+        <option value="$PROJECT_DIR$/data2/cluster.json" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener.java" />
       </list>
     </option>
   </component>
@@ -245,10 +285,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="260" />
-    <option name="y" value="20" />
-    <option name="width" value="1400" />
-    <option name="height" value="1000" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -268,7 +308,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -334,6 +373,28 @@
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="miranda" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
@@ -365,28 +426,80 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="writer" />
+              <option name="myItemId" value="node" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="network" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="miranda" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data2" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.externalResources" />
+    <property name="SearchEverywhereHistoryKey" value="net&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/network/NetworkListener.java&#10;sslclient&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/SslClient.java&#10;sslser&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/SslServer.java&#10;ssl&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/SslServer.java&#10;sslcl&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/SslClient.java&#10;joining&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/node/JoiningState.java&#10;cluster&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/cluster/Cluster.java&#10;Net&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/network/Network.java&#10;createClient&#9;PSI&#9;JAVA://com.ltsllc.miranda.network.Network#createClientContext&#10;no&#9;PSI&#9;JAVA://com.ltsllc.miranda.cluster.NodeChannelInitializer&#10;Conn&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/node/ConnectingState.java&#10;Ne&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/network/NetworkListener.java&#10;Consu&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/Consumer.java&#10;Startup&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/main/Startup.java&#10;startup&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/main/Startup.java&#10;networklis&#9;PSI&#9;JAVA://com.ltsllc.miranda.network.NetworkListener&#10;setChildHandler&#9;PSI&#9;JAVA://com.ltsllc.miranda.network.NetworkListener#setChildHandler&#10;clu&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/cluster/Cluster.java&#10;mir&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/timer/MirandaTimer.java&#10;netw&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/network/Network.java&#10;mi&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/timer/MirandaTimer.java&#10;Mir&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/Miranda.java&#10;connectmess&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/cluster/ConnectMessage.java&#10;subject&#9;PSI&#9;JAVA://com.ltsllc.miranda.Message.Subjects&#10;miranda&#9;PSI&#9;JAVA://com.ltsllc.miranda.Miranda&#10;mira&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/miranda.properties&#10;start&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/main/Startup.java&#10;st&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/main/Startup.java&#10;node&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/node/Node.java&#10;c&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/cluster/ConnectTo.java&#10;St&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/main/Startup.java&#10;newp&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/file/NewProperties.java&#10;Write&#9;PSI&#9;JAVA://com.ltsllc.miranda.file.WriteMessage&#10;mirandapro&#9;FILE&#9;file://C:/Users/Clark/IdeaProjects/miranda/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ssltest" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.ltsllc.miranda.file" />
       <recent name="com.ltsllc.miranda" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Clark\IdeaProjects\miranda\data2" />
+      <recent name="C:\Users\Clark\IdeaProjects\miranda" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Clark\IdeaProjects\miranda" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Miranda">
+  <component name="RunManager" selected="Application.Miranda2">
     <configuration default="false" name="Miranda" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -396,7 +509,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="com.ltsllc.miranda.Miranda" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="-debug" />
+      <option name="PROGRAM_PARAMETERS" value="-debug miranda.properties  " />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -611,8 +724,56 @@
       <listeners />
       <method />
     </configuration>
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="Application.Miranda" />
+    <configuration default="false" name="miranda test, client" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="SslClient" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="miranda" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="miranda test, server" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="SslServer" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="miranda" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Miranda2" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="com.ltsllc.miranda.Miranda" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="-debug miranda2.properties  " />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="miranda" />
+      <envs />
+      <method />
+    </configuration>
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="Application.miranda test, client" />
+      <item index="1" class="java.lang.String" itemvalue="Application.miranda test, server" />
+      <item index="2" class="java.lang.String" itemvalue="Application.Miranda2" />
+      <item index="3" class="java.lang.String" itemvalue="Application.Miranda" />
     </list>
     <recent_temporary>
       <list size="1">
@@ -622,6 +783,9 @@
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -638,41 +802,51 @@
       <option name="project" value="LOCAL" />
       <updated>1483819905741</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="A very basic system.">
+      <created>1484872518352</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1484872518352</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="260" y="20" width="1400" height="1000" extended-state="0" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32921347" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875264" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46617335" sideWeight="0.56614584" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875264" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32921347" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17708333" sideWeight="0.5" order="6" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46617335" sideWeight="0.43385416" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.49550563" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="combo" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980973" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="10" side_tool="false" content_ui="combo" />
+      <window_info id="Dynamic Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32921347" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916668" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875264" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -680,11 +854,63 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
+    <MESSAGE value="A very basic system." />
+    <MESSAGE value="SSL cluster connect" />
+    <option name="LAST_COMMIT_MESSAGE" value="SSL cluster connect" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="23" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java</url>
+          <line>92</line>
+          <properties />
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeStarting.java</url>
+          <line>23</line>
+          <properties />
+          <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/EchoHandler.java</url>
+          <line>15</line>
+          <properties />
+          <option name="timeStamp" value="217" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteMessage.java</url>
+          <line>31</line>
+          <properties />
+          <option name="timeStamp" value="244" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/InboundNodeHandler.java</url>
+          <line>53</line>
+          <properties />
+          <option name="timeStamp" value="321" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeHandler.java</url>
+          <line>29</line>
+          <properties />
+          <option name="timeStamp" value="390" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java</url>
+          <line>46</line>
+          <properties />
+          <option name="timeStamp" value="437" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java</url>
+          <line>59</line>
+          <properties />
+          <option name="timeStamp" value="438" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="445" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -693,424 +919,428 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectedMessage.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Electing.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/ReadyState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="0" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+        <state relative-caret-position="620">
+          <caret line="59" column="88" lean-forward="false" selection-start-line="59" selection-start-column="88" selection-end-line="59" selection-end-column="88" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Electing.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/RetryingState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="3" lean-forward="true" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
+        <state relative-caret-position="238">
+          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Producer.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/InboundNodeHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="73" column="15" lean-forward="false" selection-start-line="73" selection-start-column="15" selection-end-line="73" selection-end-column="15" />
+        <state relative-caret-position="688">
+          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="36" column="109" lean-forward="false" selection-start-line="36" selection-start-column="87" selection-end-line="36" selection-end-column="109" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_91/src.zip!/java/lang/Thread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="744" column="0" lean-forward="false" selection-start-line="744" selection-start-column="0" selection-end-line="744" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Ready.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="34" lean-forward="false" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Writer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="38" lean-forward="false" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Ready.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
-          <caret line="10" column="25" lean-forward="false" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="53" column="37" lean-forward="false" selection-start-line="53" selection-start-column="37" selection-end-line="53" selection-end-column="37" />
+          <caret line="10" column="5" lean-forward="true" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
           <folding>
-            <element signature="e#409#410#0" expanded="false" />
-            <element signature="e#441#442#0" expanded="false" />
-            <element signature="e#482#483#0" expanded="false" />
-            <element signature="e#509#510#0" expanded="false" />
-            <element signature="e#1821#1822#0" expanded="false" />
-            <element signature="e#1861#1862#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="22" lean-forward="false" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
-          <folding>
-            <element signature="e#465#466#0" expanded="false" />
-            <element signature="e#516#517#0" expanded="false" />
-            <element signature="e#554#555#0" expanded="false" />
-            <element signature="e#603#604#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
-          <caret line="59" column="26" lean-forward="false" selection-start-line="59" selection-start-column="26" selection-end-line="59" selection-end-column="26" />
-          <folding>
-            <element signature="imports" expanded="false" />
+            <element signature="e#192#193#0" expanded="false" />
+            <element signature="e#219#220#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="40" column="29" lean-forward="false" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
-          <folding>
-            <element signature="e#445#446#0" expanded="false" />
-            <element signature="e#476#477#0" expanded="false" />
-            <element signature="e#524#525#0" expanded="false" />
-            <element signature="e#554#555#0" expanded="false" />
-            <element signature="e#595#596#0" expanded="false" />
-            <element signature="e#637#638#0" expanded="false" />
-            <element signature="e#1632#1633#0" expanded="false" />
-            <element signature="e#1659#1660#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="153">
+          <caret line="11" column="22" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/miranda.properties">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ServerConnectedState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="255">
+          <caret line="15" column="42" lean-forward="false" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/User.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/handler/ssl/SslContext.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+        <state relative-caret-position="131">
+          <caret line="346" column="57" lean-forward="false" selection-start-line="346" selection-start-column="47" selection-end-line="346" selection-end-column="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subscription.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/bootstrap/ServerBootstrap.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="25" lean-forward="false" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
+        <state relative-caret-position="159">
+          <caret line="108" column="0" lean-forward="false" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Topic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Delivery.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="21" lean-forward="false" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Consumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="21" lean-forward="false" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Delivery.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="21" lean-forward="false" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Stste.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Topic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Subsystem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Subscription.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="25" lean-forward="false" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/StopState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/State.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="18" lean-forward="false" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Miranda.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="20" lean-forward="false" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/test/Message.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="20" lean-forward="false" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/test/Startup.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/buffer/ByteBufAllocator.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <caret line="11" column="28" lean-forward="false" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodeChannelInitializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+        <state relative-caret-position="136">
+          <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/log4j.xml">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/buffer/UnpooledByteBufAllocator.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="42" lean-forward="false" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="42" />
-          <folding />
+        <state relative-caret-position="18">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/Deliveries.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_91/jre/lib/rt.jar!/sun/nio/ch/IOUtil.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding>
-            <element signature="e#366#367#0" expanded="false" />
-            <element signature="e#400#401#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="159">
+          <caret line="240" column="0" lean-forward="false" selection-start-line="240" selection-start-column="0" selection-end-line="240" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/IOUtils.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/channel/DefaultChannelPromise.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="47" column="40" lean-forward="false" selection-start-line="47" selection-start-column="40" selection-end-line="47" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="802">
-          <caret line="63" column="20" lean-forward="false" selection-start-line="63" selection-start-column="20" selection-end-line="63" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/WriteMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
+        <state relative-caret-position="391">
           <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/channel/AbstractChannel.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1445">
-          <caret line="95" column="46" lean-forward="false" selection-start-line="95" selection-start-column="46" selection-end-line="95" selection-end-column="46" />
-          <folding />
+        <state relative-caret-position="159">
+          <caret line="143" column="0" lean-forward="false" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Miranda.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/channel/socket/nio/NioSocketChannel.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+        <state relative-caret-position="159">
+          <caret line="100" column="0" lean-forward="false" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/StartingState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeWatcher.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/WireMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="15" column="19" lean-forward="false" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
+          <folding>
+            <element signature="e#404#405#0" expanded="false" />
+            <element signature="e#434#435#0" expanded="false" />
+            <element signature="e#483#484#0" expanded="false" />
+            <element signature="e#521#522#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinSuccess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="40" lean-forward="true" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/miranda.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="46" lean-forward="false" selection-start-line="1" selection-start-column="46" selection-end-line="1" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/miranda2.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="51" lean-forward="false" selection-start-line="1" selection-start-column="51" selection-end-line="1" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/handler/ssl/SslHandler.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="6" column="46" lean-forward="false" selection-start-line="6" selection-start-column="46" selection-end-line="6" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="14" lean-forward="false" selection-start-line="19" selection-start-column="14" selection-end-line="19" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="12" column="37" lean-forward="false" selection-start-line="12" selection-start-column="37" selection-end-line="12" selection-end-column="37" />
-          <folding />
+          <caret line="60" column="13" lean-forward="false" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="751">
-          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+        <state relative-caret-position="365">
+          <caret line="271" column="30" lean-forward="false" selection-start-line="271" selection-start-column="24" selection-end-line="271" selection-end-column="30" />
           <folding>
-            <element signature="e#860#861#0" expanded="true" />
-            <element signature="e#894#895#0" expanded="true" />
-            <element signature="e#1205#1206#0" expanded="true" />
-            <element signature="e#1233#1234#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <marker date="1485894623592" expanded="false" signature="1876:1891" ph=" { " />
+            <marker date="1485894623592" expanded="false" signature="1906:1916" ph=" }" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/util/concurrent/GenericFutureListener.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="21" lean-forward="true" selection-start-line="17" selection-start-column="7" selection-end-line="22" selection-end-column="21" />
+        <state relative-caret-position="102">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/channel/ChannelFutureListener.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="10" column="68" lean-forward="false" selection-start-line="10" selection-start-column="47" selection-end-line="10" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener_backup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="191" column="22" lean-forward="false" selection-start-line="191" selection-start-column="16" selection-end-line="191" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/channel/ChannelInitializer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding>
+            <element signature="e#302#303#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectFutureListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="40" column="23" lean-forward="false" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NodeHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoiningState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="31">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="25" column="20" lean-forward="false" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="91" column="31" lean-forward="false" selection-start-line="91" selection-start-column="31" selection-end-line="91" selection-end-column="31" />
-          <folding>
-            <element signature="e#754#755#0" expanded="true" />
-            <element signature="e#798#799#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-324">
-          <caret line="38" column="33" lean-forward="false" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
-          <folding>
-            <element signature="e#1044#1045#0" expanded="true" />
-            <element signature="e#1066#1067#0" expanded="true" />
-            <element signature="e#1110#1111#0" expanded="true" />
-            <element signature="e#1150#1151#0" expanded="true" />
-            <element signature="e#1185#1186#0" expanded="true" />
-            <element signature="e#1216#1217#0" expanded="true" />
-            <element signature="e#1616#1617#0" expanded="true" />
-            <element signature="e#1664#1665#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="119">
+          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="207" column="60" lean-forward="false" selection-start-line="207" selection-start-column="60" selection-end-line="207" selection-end-column="60" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="193">
+          <caret line="239" column="37" lean-forward="false" selection-start-line="239" selection-start-column="30" selection-end-line="239" selection-end-column="37" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/SystemMessages.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.6.Final/netty-all-4.1.6.Final.jar!/io/netty/channel/ChannelInboundHandlerAdapter.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="42" lean-forward="false" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="442">
+          <caret line="31" column="36" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MultipleFiles.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/SslServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" column="27" lean-forward="false" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#838#839#0" expanded="true" />
-            <element signature="e#872#873#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+        <state relative-caret-position="212">
+          <caret line="64" column="52" lean-forward="true" selection-start-line="64" selection-start-column="52" selection-end-line="64" selection-end-column="52" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network_backup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="12" column="29" lean-forward="false" selection-start-line="12" selection-start-column="29" selection-end-line="12" selection-end-column="29" />
+        <state relative-caret-position="184">
+          <caret line="123" column="56" lean-forward="false" selection-start-line="123" selection-start-column="49" selection-end-line="123" selection-end-column="56" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1363#1364#0" expanded="false" />
+            <element signature="e#1402#1403#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ReadyState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Temp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="19" lean-forward="false" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/SslClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="107" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/SslClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="94" column="61" lean-forward="false" selection-start-line="94" selection-start-column="45" selection-end-line="94" selection-end-column="61" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1223#1224#0" expanded="false" />
+            <element signature="e#1275#1276#0" expanded="false" />
+            <element signature="e#2291#2292#0" expanded="false" />
+            <element signature="e#2343#2344#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="55">
+          <caret line="21" column="35" lean-forward="true" selection-start-line="21" selection-start-column="35" selection-end-line="21" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+        <state relative-caret-position="272">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileWatcher.java">
+    <entry file="file://$PROJECT_DIR$/data2/cluster.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        <state relative-caret-position="51">
+          <caret line="3" column="30" lean-forward="false" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
+          <folding>
+            <marker date="1486088600528" expanded="true" signature="0:102" ph="[...]" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-161">
+          <caret line="225" column="5" lean-forward="true" selection-start-line="225" selection-start-column="5" selection-end-line="225" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="31">
+          <caret line="138" column="90" lean-forward="false" selection-start-line="138" selection-start-column="90" selection-end-line="138" selection-end-column="90" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3877#3878#0" expanded="true" />
+            <element signature="e#3904#3905#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectingState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
           <folding />
         </state>
       </provider>

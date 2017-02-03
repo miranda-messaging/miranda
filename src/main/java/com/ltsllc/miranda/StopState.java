@@ -21,7 +21,7 @@ public class StopState extends State {
 
     public StopState()
     {
-        super((BlockingQueue<Message>)null);
+        super(null);
     }
 
     public State processMessage () {

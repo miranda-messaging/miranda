@@ -1,9 +1,6 @@
 package com.ltsllc.miranda.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * A collection of utity methods pertaining to I/O
@@ -27,6 +24,20 @@ public class IOUtils {
             //
         }
     }
+
+    public static void closeNoExceptions (OutputStream outputStream) {
+        if (outputStream != null)
+        {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                //
+                // ignore exceptions
+                //
+            }
+        }
+    }
+
 
     /**
      * Close a {@link Reader} --- ignoring any exceptions.
@@ -56,4 +67,5 @@ public class IOUtils {
             }
         }
     }
+
 }

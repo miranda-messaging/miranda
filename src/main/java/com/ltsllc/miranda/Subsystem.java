@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A Miranda subsystem.
@@ -62,6 +63,7 @@ public abstract class Subsystem implements Runnable {
 
     public Subsystem (String name) {
         this.name = name;
+        this.queue = new LinkedBlockingQueue<Message>();
     }
 
     /**
@@ -76,23 +78,6 @@ public abstract class Subsystem implements Runnable {
         thread.start();
     }
 
-    /**
-     * Send a message, ignoring InterruptedExceptions.
-     *
-     * <P>
-     *     The method prints out the InteruptedException to the log, if
-     *     one occurs.
-     * </P>
-     *
-     * @param queue The queue to send to.
-     * @param m The message to send.
-     */
-    public void send (BlockingQueue<Message> queue, Message m) {
-        try {
-            queue.put(m);
-        } catch (InterruptedException e) {
-            logger.error("Interrupted while trying to send message", e);
-        }
 
-    }
+
 }

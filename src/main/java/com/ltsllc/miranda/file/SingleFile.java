@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Miranda;
+import com.ltsllc.miranda.User;
 import com.ltsllc.miranda.util.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -15,13 +16,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/10/2017.
  */
-public class SingleFile<E> extends MirandaFile {
-    private Logger logger = Logger.getLogger(SingleFile.class);
+abstract public class SingleFile<E> extends MirandaFile {
+    private static Logger logger = Logger.getLogger(SingleFile.class);
 
     public SingleFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
@@ -36,61 +39,66 @@ public class SingleFile<E> extends MirandaFile {
         return ourGson;
     }
 
-    private E[] data;
+    protected List<E> data;
 
-    public E[] getData () {
+    public List<E> getData () {
         return data;
     }
 
-    public void setData (E[] data) {
-        this.data = data;
+    public void setData (List<E> list) {
+        this.data = list;
     }
 
 
-    private boolean execptionOnLoadIsFatal;
+    private boolean execptionOnLoadIsFatal = false;
 
 
     public boolean exceptionOnLoadIsFatal() {
         return execptionOnLoadIsFatal;
     }
 
+    public static <T> List<T> mapFromJsonArray(String respInArray, Type listType) {
+        List<T> ret = new Gson().fromJson(respInArray, listType);
+        return ret;
+    }
 
     public void load ()
     {
+        logger.info("loading " + getFilename());
         File f = new File(getFilename());
-        if (!f.exists())
+        if (!f.exists()) {
             setData(null);
+        } else {
 
-        Gson gson = new Gson();
-        FileReader fr = null;
-        E[]data = null;
 
-        try {
-            fr = new FileReader(f);
-            Type listType = new TypeToken<ArrayList<E>>(){}.getType();
-            data = gson.fromJson(fr, listType);
-        } catch (IOException e) {
-            if (exceptionOnLoadIsFatal()) {
-                logger.fatal("Exception when trying to load " + getFilename(), e);
-                System.exit(1);
-            } else {
-                logger.error("Exception when trying to load " + getFilename(), e);
+
+
+            Gson gson = new Gson();
+            FileReader fr = null;
+            List<E> temp = null;
+
+
+
+            try {
+                fr = new FileReader(getFilename());
+                Type t = new TypeToken<ArrayList<E>>(){}.getType();
+                temp = gson.fromJson(fr, t);
+            } catch (FileNotFoundException e) {
+                logger.info(getFilename() + " not found");
+            } finally {
+                IOUtils.closeNoExceptions(fr);
             }
-        } finally {
-            IOUtils.closeNoExceptions(fr);
+
+
+            setData(temp);
         }
-
-        setData(data);
     }
-
-
 
 
     public byte[] getBytes () {
-        Type listType = new TypeToken<ArrayList<E>>(){}.getType();
         String json = getGson().toJson(getData());
         return json.getBytes();
-
     }
+
 
 }

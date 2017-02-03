@@ -9,8 +9,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 12/30/2016.
  */
 public class Ready extends State {
-    public Ready (BlockingQueue<Message> queue) {
-        super(queue);
+    public Ready () {
+        super(null);
     }
 
 
@@ -29,10 +29,6 @@ public class Ready extends State {
 
             case NewSubscription:
                 processSubscription(m);
-                break;
-
-            case Election:
-                nextState = processElection(m);
                 break;
 
             case Ballot:
@@ -56,8 +52,4 @@ public class Ready extends State {
     {}
 
 
-    public State processElection (Message m)
-    {
-        return new Electing(getQueue());
-    }
 }
