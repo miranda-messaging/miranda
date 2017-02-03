@@ -110,6 +110,8 @@ public class Network extends Consumer {
                     SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
 
                     channelFuture.channel().pipeline().addLast(sslHandler);
+                    NodeHandler nodeHandler = new NodeHandler(notify);
+
                     ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null);
                     notify.put(connectedMessage);
                 } else {

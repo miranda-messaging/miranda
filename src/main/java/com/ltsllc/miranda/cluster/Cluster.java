@@ -199,7 +199,7 @@ public class Cluster extends Consumer {
             String keyStoreFilename = System.getProperty(MirandaProperties.PROPERTY_SERVER_KEYSTORE);
             String passwordString = System.getProperty(MirandaProperties.PROPERTY_SERVER_KEYSTORE_PASSWORD);
 
-            KeyStore ks = KeyStore.getInstance("JKS");
+            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
             FileInputStream fin = new FileInputStream(keyStoreFilename);
             ks.load(fin, passwordString.toCharArray());
 

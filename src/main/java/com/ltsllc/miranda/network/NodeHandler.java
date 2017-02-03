@@ -33,6 +33,11 @@ public class NodeHandler extends ChannelInboundHandlerAdapter {
         this.node = node.getQueue();
     }
 
+    public NodeHandler(BlockingQueue<Message> notify)
+    {
+        node = notify;
+    }
+
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = (ByteBuf) msg;
         byte[] buffer = new byte[byteBuf.readableBytes()];
