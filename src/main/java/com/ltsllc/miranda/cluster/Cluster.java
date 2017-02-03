@@ -6,7 +6,6 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.InboundNodeHandler;
 import com.ltsllc.miranda.network.NetworkListener;
-import com.ltsllc.miranda.network.NetworkListener_backup;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.ServerConnectedState;
@@ -188,13 +187,8 @@ public class Cluster extends Consumer {
 
 
     public void run() {
-        super.run();
-
-        String value = System.getProperty(MirandaProperties.DEFAULT_CLUSTER_PORT);
-        int port = Integer.parseInt(value);
-        NetworkListener_backup networkListener = new NetworkListener_backup(port);
-        networkListener.setChildHandler(new ClusterIntializer());
-        networkListener.start();
+        NetworkListener networkListener = new NetworkListener(6789);
+        networkListener.listen();
     }
 
 

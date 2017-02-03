@@ -21,6 +21,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.InetSocketAddress;
 import java.security.*;
 import java.security.cert.*;
 import java.util.Arrays;
@@ -46,6 +47,8 @@ public class NetworkListener {
 
 
     private static class LocalInitializer extends ChannelInitializer<SocketChannel> {
+        private static Logger logger = Logger.getLogger(LocalInitializer.class);
+
         private SslContext sslContext;
 
         public LocalInitializer (SslContext sslContext) {
@@ -53,6 +56,9 @@ public class NetworkListener {
         }
 
         public void initChannel (SocketChannel socketChannel) {
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) socketChannel.remoteAddress();
+            logger.info("Got connection from " + inetSocketAddress);
+
             SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
             socketChannel.pipeline().addLast(sslHandler);
             socketChannel.pipeline().addLast(new LocalHandler());
