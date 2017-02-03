@@ -1,86 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8b2f8cfc-fe6d-45bd-b9c8-e09b9baef0ad" name="Default" comment="SSL cluster connect">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/users.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data2/cluster.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/SslClient.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/SslServer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Utils.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/NodeChannel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StartState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ClusterFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodeChannelInitializer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodeHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/NodesLoaded.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectFutureListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ConnectToMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Connected.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/InboundNodeHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ListenMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NetworkListener_backup.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network_backup.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/NodeHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/ReadyState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/SslClient.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Temp.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Utils.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectingState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/EchoHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinSuccess.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoinSuccessMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/JoiningState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NetworkMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeElement.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeHandler.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeStarting.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/NodeState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ReadyState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/RetryingState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ServerConnectedState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/StartingState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/WireMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/timer/MirandaTimer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/timer/ScheduleMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/timer/TimeoutMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/ReadyState.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteFailedMessage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteSucceededMessage.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Electing.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Ready.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Ready.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ReadyState.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeWatcher.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/FileChangeListener.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/WriteMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/WriteMessage.java" />
+    <list default="true" id="8b2f8cfc-fe6d-45bd-b9c8-e09b9baef0ad" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/miranda.properties" afterPath="$PROJECT_DIR$/miranda.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Consumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Message.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Miranda.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Miranda.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/State.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/StopState.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/Subsystem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/User.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/Cluster.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectedMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/cluster/ConnectedMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/MirandaProperties.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SingleFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/SubscriptionsFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/TopicFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/file/UsersFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Ready.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Ready.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/main/Startup.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/messagesFile/MessagesFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/network/Network.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedMessage.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/ConnectedMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/node/Node.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/IOUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/IOUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/util/PropertiesUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Writer.java" afterPath="$PROJECT_DIR$/src/main/java/com/ltsllc/miranda/writer/Writer.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -809,7 +731,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484872518352</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Other changes.">
+      <created>1486123957057</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1486123957057</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -856,7 +785,8 @@
     <MESSAGE value="initial commit" />
     <MESSAGE value="A very basic system." />
     <MESSAGE value="SSL cluster connect" />
-    <option name="LAST_COMMIT_MESSAGE" value="SSL cluster connect" />
+    <MESSAGE value="Other changes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Other changes." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -978,6 +908,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="42" lean-forward="false" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#284#285#0" expanded="false" />
+            <element signature="e#316#317#0" expanded="false" />
+            <element signature="e#363#364#0" expanded="false" />
+            <element signature="e#412#413#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1081,6 +1018,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="40" lean-forward="true" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
+          <folding>
+            <element signature="e#148#149#0" expanded="false" />
+            <element signature="e#195#196#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1172,6 +1113,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="235">
           <caret line="40" column="23" lean-forward="false" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1179,6 +1121,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1256,6 +1199,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="19" lean-forward="false" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+          <folding />
         </state>
       </provider>
     </entry>
