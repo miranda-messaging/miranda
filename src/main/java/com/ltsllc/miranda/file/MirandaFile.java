@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.file;
 
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteMessage;
@@ -12,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/5/2017.
  */
-abstract public class MirandaFile {
+abstract public class MirandaFile extends Consumer{
     abstract public void load ();
     abstract public byte[] getBytes();
 
@@ -21,18 +22,22 @@ abstract public class MirandaFile {
     private String filename;
     private BlockingQueue<Message> writerQueue;
 
+
     public BlockingQueue<Message> getWriterQueue() {
         return writerQueue;
     }
 
     public MirandaFile (String filename, BlockingQueue<Message> queue)
     {
+        super("flie");
+
         this.filename = filename;
         this.writerQueue = queue;
     }
 
 
     public MirandaFile (String filename) {
+        super("file");
         this.filename = filename;
     }
 

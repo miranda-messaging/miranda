@@ -3,6 +3,7 @@ package com.ltsllc.miranda.cluster;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -23,14 +24,17 @@ import java.util.concurrent.BlockingQueue;
 public class ClusterFile extends SingleFile<NodeElement> {
     private Logger logger = Logger.getLogger(ClusterFile.class);
 
-    public ClusterFile (String filename, BlockingQueue<Message> writerQueue) {
-        super(filename, writerQueue);
+
+    public ClusterFile (String filename, BlockingQueue<Message> writer) {
+        super(filename, writer);
+
+        ReadyState readyState = new ReadyState(this);
+        setCurrentState(readyState);
     }
 
     public Type getBasicType () {
         return new TypeToken<ArrayList<Node>> (){}.getType();
     }
-
 
     public void load ()
     {
@@ -41,11 +45,11 @@ public class ClusterFile extends SingleFile<NodeElement> {
         } else {
             Gson gson = new Gson();
             FileReader fr = null;
-            List<NodeElement> temp = new ArrayList<NodeElement>();
+            List<NodeElement> temp = null;
             try {
                 fr = new FileReader(getFilename());
-                Type listType = new TypeToken<List<NodeElement>>() {}.getType();
-                temp = gson.fromJson(fr, listType);
+                Type t = new TypeToken<ArrayList<NodeElement>>(){}.getType();
+                temp = gson.fromJson(fr, t);
             } catch (FileNotFoundException e) {
                 logger.info(getFilename() + " not found");
             } finally {
@@ -54,10 +58,38 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
 
             setData(temp);
+        }
+    }
 
-            Cluster.nodesLoaded(temp);
+
+    public State processMessage (Message message) {
+        State nextState = getCurrentState();
+
+        switch (message.getSubject()) {
+            case Load: {
+                LoadMessage loadMessage = (LoadMessage) message;
+                nextState = processLoadMessage(loadMessage);
+                break;
+            }
+
+            default:
+                nextState = super.processMessage(message);
+                break;
         }
 
+        return nextState;
+    }
+
+
+    public State processLoadMessage (LoadMessage loadMessage) {
+        State nextState = getCurrentState();
+
+        load();
+
+        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getData(), getQueue());
+        send(nodesLoadedMessage, Cluster.getInstance().getQueue());
+
+        return nextState;
     }
 
 

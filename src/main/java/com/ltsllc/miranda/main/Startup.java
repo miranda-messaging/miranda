@@ -2,6 +2,7 @@ package com.ltsllc.miranda.main;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.ConnectMessage;
 import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
@@ -246,6 +247,7 @@ public class Startup extends State {
         Cluster.initializeClass(filename, getWriterQueue(), networkQueue);
         Cluster.getInstance().start();
 
+
         try {
             ConnectMessage m = new ConnectMessage(null);
             Cluster.getInstance().getQueue().put(m);
@@ -258,6 +260,8 @@ public class Startup extends State {
 
     private void loadFiles() {
         PropertiesUtils.log(System.getProperties());
+
+        Cluster.load();
 
         String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
         UsersFile.initialize(filename, getWriterQueue());

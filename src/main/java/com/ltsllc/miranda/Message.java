@@ -15,6 +15,7 @@ public class Message {
         Join,
         JoinSuccess,
         Listen,
+        Load,
         NewUser,
         NewTopic,
         NetworkMessage,

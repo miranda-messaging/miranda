@@ -11,10 +11,10 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/20/2017.
  */
-public class NodesLoaded extends Message {
+public class NodesLoadedMessage extends Message {
     private List<NodeElement> nodes;
 
-    public NodesLoaded (List<NodeElement> nodes, BlockingQueue<Message> sender) {
+    public NodesLoadedMessage(List<NodeElement> nodes, BlockingQueue<Message> sender) {
         super(Subjects.NodesLoaded, sender);
         this.nodes = nodes;
 

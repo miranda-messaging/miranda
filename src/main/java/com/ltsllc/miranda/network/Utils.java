@@ -140,6 +140,7 @@ public class Utils {
         try {
             sslContext = SslContextBuilder
                     .forClient()
+                    .ciphers(getDefaultCiphers())
                     .trustManager(trustManagerFactory)
                     .build();
         } catch (Exception e) {

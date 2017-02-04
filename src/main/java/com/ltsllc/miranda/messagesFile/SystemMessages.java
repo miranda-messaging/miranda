@@ -19,11 +19,6 @@ import java.util.concurrent.BlockingQueue;
 public class SystemMessages extends MultipleFiles {
     private static SystemMessages ourInstance;
 
-    private List<Message> messages;
-
-
-
-
     private SystemMessages (String directory, BlockingQueue<Message> writerQueue)
     {
         super(directory, writerQueue);
@@ -38,33 +33,6 @@ public class SystemMessages extends MultipleFiles {
 
     public static synchronized SystemMessages getInstance () {
         return ourInstance;
-    }
-
-
-    public synchronized void addAll (Message[] a, boolean notify) {
-        for (Message m : a)
-            messages.add(m);
-
-        if (notify)
-            Cluster.getInstance().newMessages(a);
-        /*
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter out = new OutputStreamWriter(baos);
-        Gson gson = new Gson();
-        gson.toJson(messages, out);
-        IOUtils.closeNoExceptions(out);
-        byte[] array = baos.toByteArray();
-        write(getDirectoryName(), array);
-
-        if (messages.size() > MirandaProperties.getMessageFileSize())
-        {
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Gson gson = new Gson();
-            gson.toJson(a,baos);
-        }
-        */
-
     }
 
     public void load ()

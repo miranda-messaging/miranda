@@ -83,28 +83,6 @@ public class NetworkListener {
         this.port = port;
     }
 
-    /*
-    private ServerBootstrap createServerBootstrap () {
-        ServerBootstrap serverBootstrap = null;
-
-            EventLoopGroup bossGroup = new NioEventLoopGroup();
-            EventLoopGroup workerGroup = new NioEventLoopGroup();
-            serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(bossGroup, workerGroup);
-            serverBootstrap.option(ChannelOption.SO_BACKLOG, 128);
-            serverBootstrap.channel(NioServerSocketChannel.class);
-
-            SslContext sslContext = createServerContext();
-            LocalInitializer localInitializer = new LocalInitializer(sslContext);
-            serverBootstrap.childHandler(localInitializer);
-
-        return serverBootstrap;
-    }
-    */
-
-
-
-
     public int getPort() {
         return port;
     }

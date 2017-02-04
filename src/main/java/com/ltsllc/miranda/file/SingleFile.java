@@ -69,16 +69,9 @@ abstract public class SingleFile<E> extends MirandaFile {
         if (!f.exists()) {
             setData(null);
         } else {
-
-
-
-
             Gson gson = new Gson();
             FileReader fr = null;
             List<E> temp = null;
-
-
-
             try {
                 fr = new FileReader(getFilename());
                 Type t = new TypeToken<ArrayList<E>>(){}.getType();
@@ -99,6 +92,5 @@ abstract public class SingleFile<E> extends MirandaFile {
         String json = getGson().toJson(getData());
         return json.getBytes();
     }
-
 
 }

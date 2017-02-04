@@ -4,17 +4,14 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
-import com.ltsllc.miranda.network.InboundNodeHandler;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.node.ServerConnectedState;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
@@ -42,51 +39,21 @@ import java.util.concurrent.BlockingQueue;
 public class Cluster extends Consumer {
     private Logger logger = Logger.getLogger(Cluster.class);
 
-/*
-    public static class NodeChannelInitializer extends ChannelInitializer<SocketChannel> {
-        private SslContext sslContext;
-        private Cluster cluster;
-
-        public NodeChannelInitializer (Cluster cluster, SslContext sslContext) {
-            this.cluster = cluster;
-            this.sslContext = sslContext;
-        }
-
-        public Cluster getCluster() {
-            return cluster;
-        }
-
-        public void initChannel (SocketChannel sc) {
-            SslHandler sslHandler = sslContext.newHandler(sc.alloc());
-            SSLEngine sslEngine = sslContext.newEngine(sc.alloc());
-            sc.pipeline().addLast(sslHandler);
-
-            Node n = new Node(sc.remoteAddress());
-            n.setCurrentState(new ServerConnectedState(n));
-            n.start();
-
-            InboundNodeHandler inboundNodeHandler = new InboundNodeHandler(getCluster().getNetwork(), n.getQueue());
-            sc.pipeline().addLast(inboundNodeHandler);
-        }
-    }
-    */
 
     public static void nodesLoaded(List<NodeElement> data) {
         getInstance().instanceNodesLoaded(data);
     }
 
     private void instanceNodesLoaded(List<NodeElement> data) {
-        Message m = new NodesLoaded(data, getQueue());
+        Message m = new NodesLoadedMessage(data, getQueue());
         send(m, getQueue());
     }
 
-    private class ClusterIntializer extends ChannelInitializer<SocketChannel> {
-        public void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new NodeHandler());
-        }
-    }
-
     private static Cluster ourInstance;
+
+    private String filename;
+
+
 
 
     public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
@@ -101,54 +68,85 @@ public class Cluster extends Consumer {
 
     private Cluster(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         super("Cluster");
+
+        ReadyState readyState = new ReadyState(this);
+        setCurrentState(readyState);
+
+        this.writer = writerQueue;
         this.network = network;
         setCurrentState(new ReadyState(this));
-        ClusterFile file = new ClusterFile(filename, writerQueue);
-        setClusterFile(file);
+        this.filename = filename;
     }
 
 
     private List<Node> nodes = new ArrayList<Node>();
-    private ClusterFile clusterFile;
+    private BlockingQueue<Message> clusterFile;
     private BlockingQueue<Message> network;
+    private BlockingQueue<Message> writer;
+
+
     private NetworkListener networkListener;
 
-    public ClusterFile getClusterFile() {
+    public BlockingQueue<Message> getClusterFile() {
         return clusterFile;
-    }
-
-    public void setClusterFile(ClusterFile clusterFile) {
-        this.clusterFile = clusterFile;
     }
 
     public List<Node> getNodes() {
         return nodes;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
     public BlockingQueue<Message> getNetwork() {
         return network;
     }
 
+    public BlockingQueue<Message> getWriter() {
+        return writer;
+    }
+
     public State processMessage(Message m) {
+        State nextState = getCurrentState();
+
         switch (m.getSubject()) {
+            case Load: {
+                LoadMessage loadMessage = (LoadMessage) m;
+                nextState = processLoad(loadMessage);
+                break;
+            }
+
             case Connect: {
                 processConnect();
                 break;
             }
 
             case NodesLoaded: {
-                NodesLoaded nodesLoaded = (NodesLoaded) m;
-                List<NodeElement> l = nodesLoaded.getNodes();
-                processNodesLoaded (l);
+                NodesLoadedMessage nodesLoaded = (NodesLoadedMessage) m;
+                nextState = processNodesLoaded(nodesLoaded);
                 break;
             }
         }
 
-        return getCurrentState();
+        return nextState;
     }
 
-    private void processNodesLoaded(List<NodeElement> l) {
-        for (NodeElement element : l) {
+
+    private State processLoad (LoadMessage loadMessage) {
+        State nextState = getCurrentState();
+
+        send(loadMessage, getClusterFile());
+
+        return nextState;
+    }
+
+
+    private State processNodesLoaded(NodesLoadedMessage nodesLoadedMessage)
+    {
+        State nextState = getCurrentState();
+
+        for (NodeElement element : nodesLoadedMessage.getNodes()) {
             if (!containsNode(element)) {
                 Node n = new Node(element, getNetwork());
                 nodes.add(n);
@@ -160,6 +158,8 @@ public class Cluster extends Consumer {
             ConnectMessage connectMessage = new ConnectMessage(getQueue());
             send (connectMessage, n.getQueue());
         }
+
+        return nextState;
     }
 
     private boolean containsNode (NodeElement element) {
@@ -171,6 +171,7 @@ public class Cluster extends Consumer {
         return false;
     }
 
+
     /**
      * Tell the nodes in the cluster to connect.
      */
@@ -181,90 +182,29 @@ public class Cluster extends Consumer {
         }
     }
 
-    public void newMessages(Message[] a) {
-
-    }
-
-
     public void run() {
         NetworkListener networkListener = new NetworkListener(6789);
         networkListener.listen();
-    }
-
-
-    private X509Certificate loadCertificate() {
-        X509Certificate certificate = null;
-
-        try {
-            String keyStoreFilename = System.getProperty(MirandaProperties.PROPERTY_SERVER_KEYSTORE);
-            String passwordString = System.getProperty(MirandaProperties.PROPERTY_SERVER_KEYSTORE_PASSWORD);
-
-            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            FileInputStream fin = new FileInputStream(keyStoreFilename);
-            ks.load(fin, passwordString.toCharArray());
-
-            certificate = (X509Certificate) ks.getCertificate("ca");
-        } catch (Exception e) {
-            logger.fatal ("exception during test", e);
-            System.exit(1);
-        }
-
-        return certificate;
-    }
-
-
-    public SslContext createChildContext () {
-        SslContext sslContext = null;
-
-        try {
-            PrivateKey privateKey = loadKey();
-            X509Certificate certificate = loadCertificate();
-
-            String[] cipherSuites = SSLContext.getDefault().getSocketFactory().getSupportedCipherSuites();
-            List<String> ciphers = Arrays.asList(cipherSuites);
-
-            sslContext = SslContextBuilder
-                    .forClient()
-                    .ciphers(ciphers)
-                    .build();
-
-        } catch (Exception e) {
-            logger.fatal("Exception trying to setup SSL", e);
-            System.exit(1);
-        }
-
-        return sslContext;
-    }
-
-    private PrivateKey loadKey () {
-        PrivateKey privateKey = null;
-
-        try {
-            String keyStoreFilename = System.getProperty(MirandaProperties.PROPERTY_SERVER_KEYSTORE);
-            String passwordString = System.getProperty(MirandaProperties.PROPERTY_SERVER_KEYSTORE_PASSWORD);
-
-            KeyStore ks = KeyStore.getInstance("JKS");
-            FileInputStream fin = new FileInputStream(keyStoreFilename);
-            ks.load(fin, passwordString.toCharArray());
-
-            Key k = ks.getKey("server", passwordString.toCharArray());
-            privateKey = (PrivateKey) k;
-        } catch (Exception e) {
-            logger.fatal ("Exception trying to load SSL", e);
-            System.exit(1);
-        }
-
-        return privateKey;
+        super.run();
     }
 
 
     public void start () {
-        getClusterFile().load();
+        ClusterFile clusterFile = new ClusterFile(getFilename(), getWriter());
+        this.clusterFile = clusterFile.getQueue();
+
         super.start();
+
+        clusterFile.start();
+        this.clusterFile = clusterFile.getQueue();
         int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         networkListener = new NetworkListener(port);
         networkListener.listen();
     }
 
 
+    public static void load () {
+        LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), getInstance().getFilename());
+        getInstance().send(loadMessage, getInstance().getClusterFile());
+    }
 }
