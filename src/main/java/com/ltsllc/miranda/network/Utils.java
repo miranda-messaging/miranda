@@ -132,27 +132,6 @@ public class Utils {
     }
 
 
-    public static SslContext createClientContext (String trustStore, String trustStorePassword, String trustStoreAlias) {
-        SslContext sslContext = null;
-
-        TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStore, trustStorePassword, trustStoreAlias);
-
-        try {
-            sslContext = SslContextBuilder
-                    .forClient()
-                    .ciphers(getDefaultCiphers())
-                    .trustManager(trustManagerFactory)
-                    .build();
-        } catch (Exception e) {
-            logger.fatal("Exception trying to create client context", e);
-            System.exit(1);
-        }
-
-
-        return sslContext;
-    }
-
-
     public static KeyStore getKeyStore (String filename, String password, String alias) {
         KeyStore keyStore = null;
         FileInputStream fileInputStream = null;

@@ -1,6 +1,10 @@
 package com.ltsllc.miranda.network;
 
+import com.google.gson.Gson;
+import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.node.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -22,6 +26,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 
 /**
@@ -29,7 +34,14 @@ import java.util.List;
  */
 public class NetworkListener {
     private static class LocalHandler extends ChannelInboundHandlerAdapter {
-        private Logger logger = Logger.getLogger(LocalHandler.class);
+        private static Logger logger = Logger.getLogger(LocalHandler.class);
+        private static Gson ourGson = new Gson();
+
+        private BlockingQueue<Message> node;
+
+        public LocalHandler (BlockingQueue<Message> node) {
+            this.node = node;
+        }
 
         public void channelRead (ChannelHandlerContext channelHandlerContext, Object message) {
             ByteBuf byteBuf = (ByteBuf) message;
@@ -37,7 +49,10 @@ public class NetworkListener {
             byteBuf.getBytes(0, buffer);
             String s = new String(buffer);
             logger.info ("Got " + s);
-            channelHandlerContext.writeAndFlush(byteBuf);
+
+            WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
+            NetworkMessage networkMessage = new NetworkMessage(node, wireMessage);
+            Consumer.send(networkMessage, node);
         }
     }
 
@@ -56,21 +71,29 @@ public class NetworkListener {
             logger.info("Got connection from " + inetSocketAddress);
 
             SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
-            socketChannel.pipeline().addLast(sslHandler);
-            socketChannel.pipeline().addLast(new LocalHandler());
+            // socketChannel.pipeline().addLast(sslHandler);
+
+            Node node = new Node(inetSocketAddress);
+            LocalHandler localHandler = new LocalHandler(node.getQueue());
+            socketChannel.pipeline().addLast(localHandler);
         }
     }
 
     private static class LocalChannelListener implements ChannelFutureListener {
         public void operationComplete (ChannelFuture channelFuture) {
-            if (channelFuture.isSuccess())
+            if (!channelFuture.isSuccess())
             {
-                System.out.println ("Got connection");
+
             }
-            else
-            {
-                System.out.println ("Connect faild");
+            else {
+                InetSocketAddress inetSocketAddress = (InetSocketAddress) channelFuture.channel().remoteAddress();
+
+                Node node = new Node(inetSocketAddress);
+
+                LocalHandler localHandler = new LocalHandler(node.getQueue());
+                channelFuture.channel().pipeline().addLast(localHandler);
             }
+
         }
 
     }
@@ -104,6 +127,7 @@ public class NetworkListener {
 
         logger.info ("listening at " + port);
         ChannelFuture channelFuture = serverBootstrap.bind(port);
-        channelFuture.addListener(new LocalChannelListener());
+        LocalChannelListener localChannelListener = new LocalChannelListener();
+        channelFuture.addListener(localChannelListener);
     }
 }

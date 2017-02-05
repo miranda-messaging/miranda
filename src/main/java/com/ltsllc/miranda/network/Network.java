@@ -86,7 +86,7 @@ public class Network extends Consumer {
 
         public void initChannel(SocketChannel sc) {
             SslHandler sslHandler = sslContext.newHandler(sc.alloc());
-            sc.pipeline().addLast(sslHandler);
+            // sc.pipeline().addLast(sslHandler);
 
             LocalClientHandler localClientHandler = new LocalClientHandler();
             sc.pipeline().addLast(localClientHandler);
@@ -110,7 +110,6 @@ public class Network extends Consumer {
                     SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
 
                     channelFuture.channel().pipeline().addLast(sslHandler);
-                    NodeHandler nodeHandler = new NodeHandler(notify);
 
                     ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null);
                     notify.put(connectedMessage);
@@ -234,11 +233,6 @@ public class Network extends Consumer {
             String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
             String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
             String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
-
-            String clientKeyStore = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE);
-            String clientPassword = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_PASSWORD);
-            String clientAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
-
 
             SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
             LocalClientInializer localClientInializer = new LocalClientInializer(sslContext);

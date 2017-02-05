@@ -83,7 +83,7 @@ public class Consumer extends Subsystem {
     }
 
 
-    public void send (Message m, BlockingQueue<Message> queue)
+    public static void send (Message m, BlockingQueue<Message> queue)
     {
         logger.info("Sending " + m);
         try {

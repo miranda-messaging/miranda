@@ -98,4 +98,9 @@ public class Node extends Consumer
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+    @Override
+    public State processMessage(Message m) {
+        return super.processMessage(m);
+    }
 }
