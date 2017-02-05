@@ -11,8 +11,8 @@ public class ConnectToMessage extends Message {
     private String host;
     private int port;
 
-    public ConnectToMessage(String host, int port, BlockingQueue<Message> sender) {
-        super(Subjects.ConnectTo, sender);
+    public ConnectToMessage(String host, int port, BlockingQueue<Message> sender, Object senderObject) {
+        super(Subjects.ConnectTo, sender, senderObject);
         this.host = host;
         this.port = port;
     }

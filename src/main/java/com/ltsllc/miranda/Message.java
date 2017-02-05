@@ -36,6 +36,7 @@ public class Message {
     private Subjects mySubject;
 
     private BlockingQueue<Message> sender;
+    private Object senderObject;
 
     public BlockingQueue<Message> getSender () {
         return sender;
@@ -45,9 +46,10 @@ public class Message {
         return mySubject;
     }
 
-    public Message (Subjects subject, BlockingQueue<Message> sender) {
+    public Message (Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
         mySubject = subject;
         this.sender = sender;
+        this.senderObject = senderObject;
     }
 
     public void respond (Message m) throws InterruptedException {

@@ -10,8 +10,8 @@ import java.util.concurrent.BlockingQueue;
 public class ScheduleMessage extends Message {
     private long delay;
 
-    public ScheduleMessage(BlockingQueue<Message> sender, long delay) {
-        super(Subjects.Schedule, sender);
+    public ScheduleMessage(BlockingQueue<Message> sender, long delay, Object senderObject) {
+        super(Subjects.Schedule, sender, senderObject);
         this.delay = delay;
     }
 

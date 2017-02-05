@@ -27,7 +27,7 @@ public class MirandaTimer extends Consumer {
 
         public void run () {
             try {
-                TimeoutMessage m = new TimeoutMessage(timer);
+                TimeoutMessage m = new TimeoutMessage(timer, this);
                 queue.put(m);
             } catch (InterruptedException e) {
                 logger.error ("Interrupted while sending message", e);

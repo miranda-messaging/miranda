@@ -86,7 +86,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
         load();
 
-        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getData(), getQueue());
+        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getData(), getQueue(), this);
         send(nodesLoadedMessage, Cluster.getInstance().getQueue());
 
         return nextState;

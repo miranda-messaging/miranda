@@ -38,7 +38,7 @@ public class StartingState extends NodeState {
 
     private State processConnectMessage(ConnectMessage connectMessage) {
         State nextState = new ConnectingState(getNode());
-        ConnectToMessage connectTo = new ConnectToMessage(getNode().getDns(), getNode().getPort(), nextState.getContainer().getQueue());
+        ConnectToMessage connectTo = new ConnectToMessage(getNode().getDns(), getNode().getPort(), nextState.getContainer().getQueue(), this);
         send(getNode().getNetwork(), connectTo);
         return nextState;
     }

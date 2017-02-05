@@ -111,10 +111,10 @@ public class Network extends Consumer {
 
                     channelFuture.channel().pipeline().addLast(sslHandler);
 
-                    ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null);
+                    ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null, null);
                     notify.put(connectedMessage);
                 } else {
-                    ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, channelFuture.cause());
+                    ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, channelFuture.cause(), null);
                     notify.put(connectFailedMessage);
                 }
             } catch (Exception e) {

@@ -8,8 +8,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/2/2017.
  */
 public class ConnectedMessage extends Message {
-    public ConnectedMessage (BlockingQueue<Message> sender)
+    public ConnectedMessage (BlockingQueue<Message> sender, Object senderObject)
     {
-        super(Subjects.Connected, sender);
+        super(Subjects.Connected, sender, senderObject);
     }
 }

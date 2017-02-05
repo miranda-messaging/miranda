@@ -14,8 +14,8 @@ public class WriteSucceededMessage extends Message {
         return filename;
     }
 
-    public WriteSucceededMessage (BlockingQueue<Message> sender, String filename) {
-        super(Subjects.WriteSucceeded, sender);
+    public WriteSucceededMessage (BlockingQueue<Message> sender, String filename, Object senderObject) {
+        super(Subjects.WriteSucceeded, sender, senderObject);
         this.filename = filename;
     }
 }

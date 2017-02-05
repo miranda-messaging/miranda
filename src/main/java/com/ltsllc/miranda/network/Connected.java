@@ -16,8 +16,8 @@ public class Connected extends Message {
         return channel;
     }
 
-    public Connected (Channel channel, BlockingQueue<Message> sender) {
-        super(Message.Subjects.Connected, sender);
+    public Connected (Channel channel, BlockingQueue<Message> sender, Object senderObject) {
+        super(Message.Subjects.Connected, sender, senderObject);
         this.channel = channel;
     }
 }

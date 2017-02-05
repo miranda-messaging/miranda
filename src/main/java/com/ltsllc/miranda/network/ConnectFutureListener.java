@@ -40,7 +40,7 @@ public class ConnectFutureListener implements FutureListener<Void> {
             channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
             NodeHandler nodeHandler = new NodeHandler(node);
             channel.pipeline().addLast(nodeHandler);
-            ConnectedMessage connectedMessage = new ConnectedMessage(channel, sender);
+            ConnectedMessage connectedMessage = new ConnectedMessage(channel, sender, null);
             sender.put(connectedMessage);
         } catch (InterruptedException e) {
             logger.fatal("Interrupted while sending message", e);
@@ -50,7 +50,7 @@ public class ConnectFutureListener implements FutureListener<Void> {
 
     private void connectFailed(Future<Void> future) {
         try {
-            ConnectFailedMessage m = new ConnectFailedMessage(null, future.cause());
+            ConnectFailedMessage m = new ConnectFailedMessage(null, future.cause(), null);
             sender.put(m);
         } catch (InterruptedException e) {
             logger.fatal ("Interrupted while trying to send message", e);

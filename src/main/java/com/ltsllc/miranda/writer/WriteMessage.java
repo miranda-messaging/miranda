@@ -28,8 +28,8 @@ public class WriteMessage extends Message {
         buffer = b;
     }
 
-    public WriteMessage (String filename, byte[] buffer, BlockingQueue<Message> sender) {
-        super(Subjects.Write, sender);
+    public WriteMessage (String filename, byte[] buffer, BlockingQueue<Message> sender, Object senderObject) {
+        super(Subjects.Write, sender, senderObject);
         setBuffer(buffer);
         setFilename(filename);
     }

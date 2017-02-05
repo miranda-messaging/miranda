@@ -51,7 +51,7 @@ abstract public class MirandaFile extends Consumer{
 
     public void write (String filename, byte[] array)
     {
-        Message m = new WriteMessage(filename, array, null);
+        Message m = new WriteMessage(filename, array, null, null);
         try {
             getWriterQueue().put(m);
         } catch (InterruptedException e) {

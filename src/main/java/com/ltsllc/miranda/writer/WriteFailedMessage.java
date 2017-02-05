@@ -19,8 +19,8 @@ public class WriteFailedMessage extends Message {
         return cause;
     }
 
-    public WriteFailedMessage (BlockingQueue<Message> sender, String filename, Throwable cause) {
-        super(Subjects.WriteFailed, sender);
+    public WriteFailedMessage (BlockingQueue<Message> sender, String filename, Throwable cause, Object senderObject) {
+        super(Subjects.WriteFailed, sender, senderObject);
 
         this.filename = filename;
         this.cause = cause;

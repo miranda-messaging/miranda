@@ -11,7 +11,7 @@ public class NetworkMessage extends Message {
     private WireMessage wireMessage;
 
     public NetworkMessage (BlockingQueue<Message> queue, WireMessage wireMessage) {
-        super(Subjects.NetworkMessage, queue);
+        super(Subjects.NetworkMessage, queue, null);
         this.wireMessage = wireMessage;
     }
 }

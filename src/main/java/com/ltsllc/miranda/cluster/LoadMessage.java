@@ -10,8 +10,8 @@ import java.util.concurrent.BlockingQueue;
 public class LoadMessage extends Message {
     private String filename;
 
-    public LoadMessage (BlockingQueue<Message> queue, String filename) {
-        super(Subjects.Load, queue);
+    public LoadMessage (BlockingQueue<Message> queue, String filename, Object senderObject) {
+        super(Subjects.Load, queue, senderObject);
         this.filename = filename;
     }
 

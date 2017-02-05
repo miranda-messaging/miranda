@@ -10,8 +10,8 @@ import java.util.concurrent.BlockingQueue;
 public class ConnectFailedMessage extends Message {
     private Throwable cause;
 
-    public ConnectFailedMessage(BlockingQueue<Message> sender, Throwable cause) {
-        super(Subjects.ConnectionError, sender);
+    public ConnectFailedMessage(BlockingQueue<Message> sender, Throwable cause, Object senderObject) {
+        super(Subjects.ConnectionError, sender, senderObject);
         this.cause = cause;
     }
 

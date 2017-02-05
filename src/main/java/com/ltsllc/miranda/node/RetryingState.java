@@ -40,7 +40,7 @@ public class RetryingState extends State {
     private State prcessTimeoutMessage (TimeoutMessage timeoutMessage) {
         logger.info ("Retrying " + getNode().getDns() + ":" + getNode().getPort());
 
-        ConnectToMessage connectToMessage = new ConnectToMessage(getNode().getDns(), getNode().getPort(), getNode().getQueue());
+        ConnectToMessage connectToMessage = new ConnectToMessage(getNode().getDns(), getNode().getPort(), getNode().getQueue(), this);
         send (getNode().getNetwork(), connectToMessage);
         return new ConnectingState(getNode());
     }

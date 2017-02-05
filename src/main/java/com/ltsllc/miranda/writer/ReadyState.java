@@ -54,10 +54,10 @@ public class ReadyState extends State {
         try {
             fos = new FileOutputStream(writeMessage.getFilename());
             fos.write(buffer);
-            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getNetwork(), filename);
+            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getNetwork(), filename, this);
             send(writeMessage.getSender(), writeSucceededMessage);
         } catch (IOException e) {
-            WriteFailedMessage writeFailedMessage = new WriteFailedMessage (getNetwork(), filename, e);
+            WriteFailedMessage writeFailedMessage = new WriteFailedMessage (getNetwork(), filename, e, this);
             send (writeMessage.getSender(), writeFailedMessage);
         } finally {
             IOUtils.closeNoExceptions(fos);

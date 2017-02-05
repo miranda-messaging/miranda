@@ -45,7 +45,7 @@ public class Cluster extends Consumer {
     }
 
     private void instanceNodesLoaded(List<NodeElement> data) {
-        Message m = new NodesLoadedMessage(data, getQueue());
+        Message m = new NodesLoadedMessage(data, getQueue(), this);
         send(m, getQueue());
     }
 
@@ -155,7 +155,7 @@ public class Cluster extends Consumer {
         }
 
         for (Node n : getNodes()) {
-            ConnectMessage connectMessage = new ConnectMessage(getQueue());
+            ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
             send (connectMessage, n.getQueue());
         }
 
@@ -177,7 +177,7 @@ public class Cluster extends Consumer {
      */
     private void processConnect() {
         for (Node n : nodes) {
-            ConnectMessage connectMessage = new ConnectMessage(getQueue());
+            ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
             send(connectMessage, n.getQueue());
         }
     }
@@ -204,7 +204,7 @@ public class Cluster extends Consumer {
 
 
     public static void load () {
-        LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), getInstance().getFilename());
+        LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), getInstance().getFilename(), null);
         getInstance().send(loadMessage, getInstance().getClusterFile());
     }
 }
