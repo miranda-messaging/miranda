@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
@@ -60,7 +61,7 @@ public class NetworkListener {
             InetSocketAddress inetSocketAddress = (InetSocketAddress) socketChannel.remoteAddress();
             logger.info("Got connection from " + inetSocketAddress);
 
-            // SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
+            SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
             // socketChannel.pipeline().addLast(sslHandler);
 
             Node node = new Node(inetSocketAddress, socketChannel);

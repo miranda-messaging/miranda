@@ -41,6 +41,7 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_KEY_STORE = "com.ltsllc.miranda.KeyStore";
     public static final String PROPERTY_KEY_STORE_PASSWORD = "com.ltsllc.miranda.KeyStorePassword";
     public static final String PROPERTY_KEY_STORE_ALIAS = "com.ltsllc.miranda.KeyStoreAlias";
+    public static final String PROPERTY_TRUST_STORE_ALIAS = "com.ltsllc.miranda.TrustStoreAlias";
 
 
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
@@ -61,6 +62,7 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_CERTIFICATE_ALIAS = "ca";
     public static final String DEFAULT_KEY_STORE = "data/serverkeystore";
     public static final String DEFAULT_KEY_STORE_ALIAS = "server";
+    public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
 
 
     public static String[][] DEFAULT_PROPERTIES = {
@@ -80,7 +82,8 @@ public class MirandaProperties extends Properties {
             {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES},
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
             {PROPERTY_KEY_STORE, DEFAULT_KEY_STORE},
-            {PROPERTY_KEY_STORE_ALIAS, DEFAULT_KEY_STORE_ALIAS}
+            {PROPERTY_KEY_STORE_ALIAS, DEFAULT_KEY_STORE_ALIAS},
+            {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS}
     };
 
     private static MirandaProperties ourInstance;
