@@ -47,7 +47,7 @@ public abstract class State {
      */
     public State processMessage (Message m)
     {
-        logger.warn(this + " does not understand " + m);
+        logger.error(this + " does not understand " + m);
 
         return this;
     }

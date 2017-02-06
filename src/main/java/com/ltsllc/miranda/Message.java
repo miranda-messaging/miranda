@@ -22,6 +22,7 @@ public class Message {
         NewSubscription,
         NewMessage,
         NewDelivery,
+        NodeAdded,
         NodesLoaded,
         Election,
         Results,

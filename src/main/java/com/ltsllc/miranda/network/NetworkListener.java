@@ -3,29 +3,19 @@ package com.ltsllc.miranda.network;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.MirandaProperties;
-import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.node.NetworkMessage;
+import com.ltsllc.miranda.node.Node;
+import com.ltsllc.miranda.node.WireMessage;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
-import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
-import java.io.FileInputStream;
 import java.net.InetSocketAddress;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 
@@ -70,28 +60,45 @@ public class NetworkListener {
             InetSocketAddress inetSocketAddress = (InetSocketAddress) socketChannel.remoteAddress();
             logger.info("Got connection from " + inetSocketAddress);
 
-            SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
+            // SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
             // socketChannel.pipeline().addLast(sslHandler);
 
-            Node node = new Node(inetSocketAddress);
+            Node node = new Node(inetSocketAddress, socketChannel);
+            node.start();
+
             LocalHandler localHandler = new LocalHandler(node.getQueue());
             socketChannel.pipeline().addLast(localHandler);
+
+            NodeAddedMessage nodeAddedMessage = new NodeAddedMessage(null, node);
+            Consumer.send(nodeAddedMessage, Cluster.getInstance().getQueue());
         }
     }
 
     private static class LocalChannelListener implements ChannelFutureListener {
-        public void operationComplete (ChannelFuture channelFuture) {
-            if (!channelFuture.isSuccess())
-            {
+        private static Logger logger = Logger.getLogger(LocalChannelListener.class);
 
-            }
-            else {
+        public void operationComplete (ChannelFuture channelFuture) {
+            if (channelFuture.isSuccess())
+            {
                 InetSocketAddress inetSocketAddress = (InetSocketAddress) channelFuture.channel().remoteAddress();
 
-                Node node = new Node(inetSocketAddress);
+                //
+                // for some reason we are getting spurious connections
+                //
+                if (null == inetSocketAddress)
+                {
+                    logger.info("spurious connection");
+                    return;
+                }
+
+                Node node = new Node(inetSocketAddress, channelFuture.channel());
+                node.start();
 
                 LocalHandler localHandler = new LocalHandler(node.getQueue());
                 channelFuture.channel().pipeline().addLast(localHandler);
+
+                NodeAddedMessage nodeAddedMessage = new NodeAddedMessage(null, node);
+                Consumer.send(nodeAddedMessage, Cluster.getInstance().getQueue());
             }
 
         }

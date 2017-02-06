@@ -2,9 +2,6 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
 import org.apache.log4j.Logger;
 
 /**
@@ -23,14 +20,6 @@ public class JoiningState extends NodeState {
         super(n);
 
         this.node = n;
-    }
-
-    public State start ()
-    {
-        JoinMessage joinWireMessage = new JoinMessage(getNode().getQueue());
-        sendOnWire(joinWireMessage);
-
-        return this;
     }
 
     public State processMessage (Message m) {
@@ -53,16 +42,20 @@ public class JoiningState extends NodeState {
         return nextState;
     }
 
-    private State processNetworkMessage (NetworkMessage networkMessage) {
+
+    public State processNetworkMessage (NetworkMessage networkMessage) {
         State nextState = this;
 
-        switch (networkMessage.getSubject()) {
-            case JoinSuccess: {
-                JoinSuccessMessage joinSuccessMessage = (JoinSuccessMessage) networkMessage;
-                nextState = processJoinSuccess(joinSuccessMessage);
+        switch (networkMessage.getWireMessage().getSubject()) {
+            case JoinSuccess:{
+                logger.info ("got JoinSucess");
+                nextState = new ReadyState(getNode());
                 break;
             }
 
+            default:
+                nextState = super.processNetworkMessage(networkMessage);
+                break;
         }
 
         return nextState;
@@ -71,6 +64,8 @@ public class JoiningState extends NodeState {
 
     private State processJoinSuccess (JoinSuccessMessage joinSucessMessage) {
         State nextState = new ReadyState(getNode());
+
+
 
         return nextState;
     }

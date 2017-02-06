@@ -26,10 +26,10 @@ public class Client {
             String s = new String(buffer);
             System.out.println ("got " + s);
 
-            String message = "hi there";
-            byteBuf = Unpooled.directBuffer(256);
-            ByteBufUtil.writeUtf8(byteBuf, message);
-            ctx.writeAndFlush(byteBuf);
+            // String message = "hi there";
+            // byteBuf = Unpooled.directBuffer(256);
+            // ByteBufUtil.writeUtf8(byteBuf, message);
+            // ctx.writeAndFlush(byteBuf);
             // System.exit(0);
         }
 
@@ -54,10 +54,15 @@ public class Client {
             }
 
             SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
-            channelFuture.channel().pipeline().addLast(sslHandler);
+            // channelFuture.channel().pipeline().addLast(sslHandler);
 
             LocalChannelHandler localChannelHandler = new LocalChannelHandler();
             channelFuture.channel().pipeline().addLast(localChannelHandler);
+
+            String message = "Hello world!";
+            ByteBuf byteBuf = Unpooled.directBuffer(256);
+            ByteBufUtil.writeUtf8(byteBuf, message);
+            channelFuture.channel().writeAndFlush(byteBuf);
         }
     }
 
@@ -78,17 +83,17 @@ public class Client {
         Bootstrap bootstrap = Util.createClientBootstrap(localChannelHandler);
         LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(sslContext);
 
-        String host = "192.168.1.100";
+        String host = "localhost";
         int port = 6789;
         System.out.println ("connecting to " + host + ":" + port);
-        ChannelFuture channelFuture = bootstrap.connect ("192.168.1.100", 6789);
+        ChannelFuture channelFuture = bootstrap.connect (host, port);
         channelFuture.addListener(localChannelFutureListener);
 
-        sleep(5000);
+        // sleep(5000);
 
-        ByteBuf byteBuf = Unpooled.directBuffer(256);
-        ByteBufUtil.writeUtf8(byteBuf, "whatever");
-        channelFuture.channel().writeAndFlush(byteBuf);
+        // ByteBuf byteBuf = Unpooled.directBuffer(256);
+        // ByteBufUtil.writeUtf8(byteBuf, "whatever");
+        // channelFuture.channel().writeAndFlush(byteBuf);
     }
 
     private void sleep (long period) {

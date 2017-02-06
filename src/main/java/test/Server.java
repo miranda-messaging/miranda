@@ -8,7 +8,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
 
 
 /**
@@ -36,11 +35,14 @@ public class Server {
         }
 
         protected void initChannel(NioSocketChannel serverSocketChannel) throws Exception {
-            SslHandler sslHandler = sslContext.newHandler(serverSocketChannel.alloc());
-            serverSocketChannel.pipeline().addLast(sslHandler);
+            // SslHandler sslHandler = sslContext.newHandler(serverSocketChannel.alloc());
+            // serverSocketChannel.pipeline().addLast(sslHandler);
 
-            ChannelHandler channelHandler = new LocalChannelHandler ();
-            serverSocketChannel.pipeline().addLast(channelHandler);
+            EchoHandler echoHandler = new EchoHandler();
+            serverSocketChannel.pipeline().addLast(echoHandler);
+
+            // ChannelHandler channelHandler = new LocalChannelHandler ();
+            // serverSocketChannel.pipeline().addLast(channelHandler);
         }
     }
     public static void main (String[] argv)
@@ -59,8 +61,8 @@ public class Server {
         String keyStorePassword = "whatever";
         String keyStoreAlias = "server";
 
-        SslContext sslContext = com.ltsllc.miranda.network.Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, trustStoreFilename, trustStorePassword, trustStoreAlias);
-        LocalChannelInitializer localChannelInitializer = new LocalChannelInitializer(sslContext);
+        //SslContext sslContext = com.ltsllc.miranda.network.Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, trustStoreFilename, trustStorePassword, trustStoreAlias);
+        LocalChannelInitializer localChannelInitializer = new LocalChannelInitializer(null);
         ServerBootstrap serverBootstrap = Util.createServerBootstrap(localChannelInitializer);
 
         serverBootstrap.bind(6789);

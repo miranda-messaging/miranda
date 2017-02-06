@@ -17,12 +17,12 @@ public class Node extends Consumer
         dns = element.getDns();
         ip = element.getIp();
         port = element.getPort();
-        StartingState startingState = new StartingState(this);
-        setCurrentState(startingState);
         this.network = network;
+        NodeStartState nodeStartState = new NodeStartState(this, getNetwork());
+        setCurrentState(nodeStartState);
     }
 
-    public Node (InetSocketAddress address) {
+    public Node (InetSocketAddress address, Channel channel) {
         super("node");
 
         if (null != address) {
@@ -31,7 +31,10 @@ public class Node extends Consumer
             port = address.getPort();
         }
 
-        setCurrentState(new ConnectedState(this));
+        this.channel = channel;
+
+        State connectedState = new ConnectedState(this);
+        setCurrentState(connectedState);
     }
 
     public Node() {
@@ -40,7 +43,6 @@ public class Node extends Consumer
 
 
     private static Logger logger = Logger.getLogger(Node.class);
-
 
     private String dns;
     private String ip;
@@ -54,16 +56,8 @@ public class Node extends Consumer
         return dns;
     }
 
-    public void setDns(String dns) {
-        this.dns = dns;
-    }
-
     public String getIp() {
         return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
     }
 
     public String getDescription() {
@@ -103,4 +97,5 @@ public class Node extends Consumer
     public State processMessage(Message m) {
         return super.processMessage(m);
     }
+
 }

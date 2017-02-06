@@ -28,8 +28,6 @@ import java.util.concurrent.BlockingQueue;
 public class ConnectingState extends NodeState {
     private Logger logger = Logger.getLogger(ConnectingState.class);
 
-    private Node node;
-
     public ConnectingState (Node node) {
         super(node);
     }
@@ -63,12 +61,12 @@ public class ConnectingState extends NodeState {
 
 
     private State processConnectedMessage (ConnectedMessage connectedMessage) {
-        logger.info("got connection");
+        logger.info("got connection to " + connectedMessage.getChannel().remoteAddress());
 
         getNode().setChannel(connectedMessage.getChannel());
         ByteBufAllocator byteBufAllocator = connectedMessage.getChannel().alloc();
 
-        connectedMessage.getChannel().pipeline().addLast(createSslEngine(byteBufAllocator));
+        //connectedMessage.getChannel().pipeline().addLast(createSslEngine(byteBufAllocator));
 
         NodeHandler nodeHandler = new NodeHandler (getNode());
         connectedMessage.getChannel().pipeline().addLast(nodeHandler);
@@ -80,59 +78,7 @@ public class ConnectingState extends NodeState {
     }
 
 
-    private SslHandler createSslEngine (ByteBufAllocator byteBufAllocator) {
-        String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-        String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
 
-
-        SslContext sslContext = null;
-
-        try {
-            KeyStore keyStore = getKeyStore(trustStoreFilename, trustStorePassword);
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-
-            SSLContext defaultContext = SSLContext.getDefault();
-            SSLSocketFactory sslSocketFactory = defaultContext.getSocketFactory();
-            String[] cipherSuites = sslSocketFactory.getDefaultCipherSuites();
-            List<String> ciphers = Arrays.asList(cipherSuites);
-
-            sslContext = SslContextBuilder
-                    .forClient()
-                    .ciphers(ciphers)
-                    .trustManager(trustManagerFactory)
-                    .build();
-        } catch (Exception e) {
-            logger.fatal ("Exception while trying to create SSL context", e);
-            System.exit(1);
-        }
-
-        return sslContext.newHandler(byteBufAllocator);
-    }
-
-
-    private KeyStore getKeyStore (String filename, String passwordString) {
-        FileInputStream fis = null;
-        KeyStore keyStore = null;
-
-        try {
-            keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-
-            char[] password = null;
-            if (null != passwordString)
-                password = passwordString.toCharArray();
-
-            fis = new FileInputStream(filename);
-            keyStore.load(fis, password);
-        }  catch (Exception e) {
-            logger.fatal ("Exception trying to get truststore", e);
-            System.exit(1);
-        } finally {
-            IOUtils.closeNoExceptions(fis);
-        }
-
-        return keyStore;
-    }
 
     private State processConnectFailed (ConnectFailedMessage connectFailedMessage) {
         logger.info("Failed to get connection", connectFailedMessage.getCause());

@@ -28,10 +28,10 @@ public class Consumer extends Subsystem {
 
 
 
-    public void start (BlockingQueue<Message> queue) {
+    public State start (BlockingQueue<Message> queue) {
         setQueue(queue);
         register(getName(), getQueue());
-        start();
+        return start();
     }
 
 

@@ -5,6 +5,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.util.PropertiesUtils;
@@ -122,6 +123,12 @@ public class Cluster extends Consumer {
                 break;
             }
 
+            case NodeAdded: {
+                NodeAddedMessage nodeAddedMessage = (NodeAddedMessage) m;
+                nextState = processNodeAdded(nodeAddedMessage);
+                break;
+            }
+
             case NodesLoaded: {
                 NodesLoadedMessage nodesLoaded = (NodesLoadedMessage) m;
                 nextState = processNodesLoaded(nodesLoaded);
@@ -182,29 +189,33 @@ public class Cluster extends Consumer {
         }
     }
 
-    public void run() {
-        NetworkListener networkListener = new NetworkListener(6789);
-        networkListener.listen();
-        super.run();
-    }
 
-
-    public void start () {
+    public State start () {
         ClusterFile clusterFile = new ClusterFile(getFilename(), getWriter());
         this.clusterFile = clusterFile.getQueue();
 
-        super.start();
+        State state = super.start();
+        setCurrentState(state);
 
         clusterFile.start();
         this.clusterFile = clusterFile.getQueue();
         int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         networkListener = new NetworkListener(port);
         networkListener.listen();
+
+        return new ReadyState(this);
     }
 
 
     public static void load () {
         LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), getInstance().getFilename(), null);
         getInstance().send(loadMessage, getInstance().getClusterFile());
+    }
+
+
+    private State processNodeAdded(NodeAddedMessage nodeAddedMessage)
+    {
+        getNodes().add(nodeAddedMessage.getNode());
+        return getCurrentState();
     }
 }

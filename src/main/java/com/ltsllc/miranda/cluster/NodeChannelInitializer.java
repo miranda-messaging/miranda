@@ -20,7 +20,7 @@ public class NodeChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     public void initChannel (SocketChannel sc) {
         sc.pipeline().addLast(sslContext.newHandler(sc.alloc()));
-        Node n = new Node(sc.remoteAddress());
+        Node n = new Node(sc.remoteAddress(), sc);
         n.start();
     }
 }

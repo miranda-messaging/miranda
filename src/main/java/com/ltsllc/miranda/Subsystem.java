@@ -73,9 +73,10 @@ public abstract class Subsystem implements Runnable {
      *     This version of the method starts a new thread.
      * </P>
      */
-    public void start() {
+    public State start() {
         thread = new Thread(this, getName());
         thread.start();
+        return StartState.getInstance();
     }
 
 

@@ -1,10 +1,10 @@
 package com.ltsllc.miranda.network;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.MirandaProperties;
-import com.ltsllc.miranda.node.ConnectFailedMessage;
-import com.ltsllc.miranda.node.ConnectedMessage;
+import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.util.IOUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
@@ -24,6 +24,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
+import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -34,7 +35,10 @@ public class Network extends Consumer {
     private Logger logger = Logger.getLogger(Network.class);
 
     private static class LocalServerHandler extends ChannelInboundHandlerAdapter {
+        private static Gson ourGson = new Gson();
+
         private BlockingQueue<Message> notify;
+
 
         public LocalServerHandler (BlockingQueue<Message> notify) {
             this.notify = notify;
@@ -45,6 +49,10 @@ public class Network extends Consumer {
             byte[] buffer = new byte[byteBuf.readableBytes()];
             String s = new String(buffer);
             System.out.println("got " + s);
+
+            WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
+            NetworkMessage networkMessage = new NetworkMessage(null, wireMessage);
+            Consumer.send(networkMessage, notify);
         }
     }
 
@@ -57,23 +65,36 @@ public class Network extends Consumer {
         }
 
         public void initChannel(SocketChannel sc) {
-            SSLEngine sslEngine = sslContext.createSSLEngine();
-            SslHandler sslHandler = new SslHandler(sslEngine);
+            //SSLEngine sslEngine = sslContext.createSSLEngine();
+            //SslHandler sslHandler = new SslHandler(sslEngine);
+            //sc.pipeline().addLast(sslHandler);
 
-            sc.pipeline().addLast(sslHandler);
             LocalServerHandler localServerHandler = new LocalServerHandler(null);
             sc.pipeline().addLast(localServerHandler);
         }
     }
 
     private static class LocalClientHandler extends ChannelInboundHandlerAdapter {
+        private static Logger logger = Logger.getLogger(LocalClientHandler.class);
+        private static Gson ourGson = new Gson();
+
+        private BlockingQueue<Message> notify;
+
+        public LocalClientHandler (BlockingQueue<Message> notify) {
+            this.notify = notify;
+        }
+
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             ByteBuf byteBuf = (ByteBuf) msg;
             byte[] buffer = new byte[byteBuf.readableBytes()];
             byteBuf.getBytes(0, buffer);
             String s = new String(buffer);
-            System.out.println("got " + s);
+            logger.info ("got " + s);
+
+            WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
+            NetworkMessage networkMessage = new NetworkMessage(null, wireMessage);
+            Consumer.send(networkMessage, notify);
         }
     }
 
@@ -85,10 +106,13 @@ public class Network extends Consumer {
         }
 
         public void initChannel(SocketChannel sc) {
-            SslHandler sslHandler = sslContext.newHandler(sc.alloc());
+            // SslHandler sslHandler = sslContext.newHandler(sc.alloc());
             // sc.pipeline().addLast(sslHandler);
 
-            LocalClientHandler localClientHandler = new LocalClientHandler();
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) sc.remoteAddress();
+            Node node = new Node(inetSocketAddress, sc);
+
+            LocalClientHandler localClientHandler = new LocalClientHandler(node.getQueue());
             sc.pipeline().addLast(localClientHandler);
         }
 
@@ -107,15 +131,14 @@ public class Network extends Consumer {
         public void operationComplete (ChannelFuture channelFuture) {
             try {
                 if (channelFuture.isSuccess()) {
-                    SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
-
-                    channelFuture.channel().pipeline().addLast(sslHandler);
+                    // SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
+                    // channelFuture.channel().pipeline().addLast(sslHandler);
 
                     ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null, null);
-                    notify.put(connectedMessage);
+                    Consumer.send(connectedMessage, notify);
                 } else {
                     ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, channelFuture.cause(), null);
-                    notify.put(connectFailedMessage);
+                    Consumer.send(connectFailedMessage, notify);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -238,7 +261,7 @@ public class Network extends Consumer {
             LocalClientInializer localClientInializer = new LocalClientInializer(sslContext);
 
             Bootstrap bootstrap = Utils.createClientBootstrap(localClientInializer);
-            LocalClientHandler localClientHandler = new LocalClientHandler();
+            LocalClientHandler localClientHandler = new LocalClientHandler(notify);
             bootstrap.handler(localClientHandler);
             ChannelFuture channelFuture = bootstrap.connect(host, port);
 

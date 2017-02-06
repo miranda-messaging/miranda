@@ -36,7 +36,7 @@ public class ConnectFutureListener implements FutureListener<Void> {
     private void gotConnection(Channel channel) {
         logger.info("got connection to " + channel.remoteAddress().toString());
         try {
-            Node node = new Node((InetSocketAddress) channel.remoteAddress());
+            Node node = new Node((InetSocketAddress) channel.remoteAddress(), channel);
             channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
             NodeHandler nodeHandler = new NodeHandler(node);
             channel.pipeline().addLast(nodeHandler);

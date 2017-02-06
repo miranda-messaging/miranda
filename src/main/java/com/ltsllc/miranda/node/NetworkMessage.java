@@ -10,6 +10,10 @@ import java.util.concurrent.BlockingQueue;
 public class NetworkMessage extends Message {
     private WireMessage wireMessage;
 
+    public WireMessage getWireMessage() {
+        return wireMessage;
+    }
+
     public NetworkMessage (BlockingQueue<Message> queue, WireMessage wireMessage) {
         super(Subjects.NetworkMessage, queue, null);
         this.wireMessage = wireMessage;
