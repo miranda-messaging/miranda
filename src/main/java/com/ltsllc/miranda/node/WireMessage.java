@@ -18,7 +18,7 @@ public class WireMessage {
 
     private WireSubjects subject;
 
-    public WireSubjects getSubject() {
+    public WireSubjects getWireSubject() {
         return subject;
     }
 

@@ -34,8 +34,17 @@ public class ConnectedState extends NodeState {
     public State processNetworkMessage (NetworkMessage networkMessage) {
         State nextState = this;
 
-        JoinSuccessWireMessage joinSuccessWireMessage = new JoinSuccessWireMessage();
-        sendOnWire (joinSuccessWireMessage);
+        switch (networkMessage.getWireMessage().getWireSubject()) {
+            case Join: {
+                JoinSuccessWireMessage joinSuccessWireMessage = new JoinSuccessWireMessage();
+                sendOnWire (joinSuccessWireMessage);
+                break;
+            }
+
+            default:
+                nextState = super.processNetworkMessage(networkMessage);
+                break;
+        }
 
         return nextState;
     }

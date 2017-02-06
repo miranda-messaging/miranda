@@ -47,21 +47,12 @@ public class Network extends Consumer {
     }
 
     private static class LocalServerInitializer extends ChannelInitializer<SocketChannel> {
-
-        private SslContext sslContext;
-
-        public LocalServerInitializer(SslContext sslContext) {
-            this.sslContext = sslContext;
-        }
-
         public void initChannel(SocketChannel sc) {
-            SslHandler sslHandler = sslContext.newHandler(sc.alloc());
-            // sc.pipeline().addLast(sslHandler);
-
             LocalServerHandler localServerHandler = new LocalServerHandler(null);
             sc.pipeline().addLast(localServerHandler);
         }
     }
+
 
     private static class LocalClientHandler extends ChannelInboundHandlerAdapter {
         private static Logger logger = Logger.getLogger(LocalClientHandler.class);
@@ -88,16 +79,7 @@ public class Network extends Consumer {
     }
 
     private static class LocalClientInializer extends ChannelInitializer<SocketChannel> {
-        private SslContext sslContext;
-
-        public LocalClientInializer (SslContext sslContext) {
-            this.sslContext = sslContext;
-        }
-
         public void initChannel(SocketChannel sc) {
-            SslHandler sslHandler = sslContext.newHandler(sc.alloc());
-            // sc.pipeline().addLast(sslHandler);
-
             InetSocketAddress inetSocketAddress = (InetSocketAddress) sc.remoteAddress();
             Node node = new Node(inetSocketAddress, sc);
             node.start();
@@ -166,8 +148,7 @@ public class Network extends Consumer {
             String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_PASSWORD);
             String trustStoreAlias = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
 
-            SslContext sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, trustStoreFilename, trustStorePassword, trustStoreAlias);
-            LocalServerInitializer localServerInitializer = new LocalServerInitializer(sslContext);
+            LocalServerInitializer localServerInitializer = new LocalServerInitializer();
             serverBootstrap.childHandler(localServerInitializer);
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,14 +171,14 @@ public class Network extends Consumer {
             String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
             String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
 
-            SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
-            LocalClientInializer localClientInializer = new LocalClientInializer(sslContext);
+            LocalClientInializer localClientInializer = new LocalClientInializer();
 
             Bootstrap bootstrap = Utils.createClientBootstrap(localClientInializer);
             LocalClientHandler localClientHandler = new LocalClientHandler(notify);
             bootstrap.handler(localClientHandler);
             ChannelFuture channelFuture = bootstrap.connect(host, port);
 
+            SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
             LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(notify, sslContext);
             channelFuture.addListener(localChannelFutureListener);
         } catch (Exception e) {
