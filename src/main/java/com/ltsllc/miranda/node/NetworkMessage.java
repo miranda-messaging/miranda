@@ -14,8 +14,13 @@ public class NetworkMessage extends Message {
         return wireMessage;
     }
 
-    public NetworkMessage (BlockingQueue<Message> queue, WireMessage wireMessage) {
-        super(Subjects.NetworkMessage, queue, null);
+    public NetworkMessage (BlockingQueue<Message> senderQueue, Object sender, WireMessage wireMessage) {
+        super(Subjects.NetworkMessage, senderQueue, sender);
         this.wireMessage = wireMessage;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.node;
 
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 
@@ -11,7 +12,12 @@ public class ConnectedState extends NodeState {
         super(node);
     }
 
-    @Override
+    /**
+     * Process a message from the network.
+     *
+     * @param message
+     * @return
+     */
     public State processMessage(Message message) {
         State nextState = this;
 
@@ -36,8 +42,9 @@ public class ConnectedState extends NodeState {
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
             case Join: {
+                JoinWireMessage joinWireMessage = (JoinWireMessage) networkMessage.getWireMessage();
                 JoinSuccessWireMessage joinSuccessWireMessage = new JoinSuccessWireMessage();
-                sendOnWire (joinSuccessWireMessage);
+                getNode().sendOnWire(joinSuccessWireMessage);
                 break;
             }
 

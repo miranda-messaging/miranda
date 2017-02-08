@@ -12,15 +12,9 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/3/2017.
  */
-public class ReadyState extends State {
-    public ReadyState(Consumer container) {
+public class WriterReadyState extends State {
+    public WriterReadyState(Consumer container) {
         super(container);
-    }
-
-    private BlockingQueue<Message> network;
-
-    public BlockingQueue<Message> getNetwork() {
-        return network;
     }
 
     public State processMessage (Message m)
@@ -54,10 +48,10 @@ public class ReadyState extends State {
         try {
             fos = new FileOutputStream(writeMessage.getFilename());
             fos.write(buffer);
-            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getNetwork(), filename, this);
+            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(writeMessage.getSender(), filename, this);
             send(writeMessage.getSender(), writeSucceededMessage);
         } catch (IOException e) {
-            WriteFailedMessage writeFailedMessage = new WriteFailedMessage (getNetwork(), filename, e, this);
+            WriteFailedMessage writeFailedMessage = new WriteFailedMessage (writeMessage.getSender(), filename, e, this);
             send (writeMessage.getSender(), writeFailedMessage);
         } finally {
             IOUtils.closeNoExceptions(fos);

@@ -13,17 +13,25 @@ public class WireMessage {
 
     public enum WireSubjects {
         Join,
-        JoinSuccess
+        JoinSuccess,
+        GetVersions,
+        Versions
     }
 
     private WireSubjects subject;
+    private String className;
 
     public WireSubjects getWireSubject() {
         return subject;
     }
 
+    public String getClassName() {
+        return className;
+    }
+
     public WireMessage (WireSubjects subject) {
         this.subject = subject;
+        this.className = getClass().getCanonicalName();
     }
 
     public String getJson () {

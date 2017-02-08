@@ -7,6 +7,7 @@ import com.ltsllc.miranda.file.SingleFile;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -20,6 +21,14 @@ public class MessagesFile extends SingleFile<Message> {
     public Type getBasicType ()
     {
         return new TypeToken<ArrayList<User>>() {}.getType();
+    }
+
+    public List buildEmptyList() {
+        return new ArrayList<Message>();
+    }
+
+    public Type listType () {
+        return new TypeToken<ArrayList<Message>>(){}.getType();
     }
 
 }

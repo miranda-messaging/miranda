@@ -2,9 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.network.Connected;
-
-import java.util.concurrent.BlockingQueue;
+import com.ltsllc.miranda.network.ConnectedMessage;
 
 /**
  * Created by Clark on 1/22/2017.
@@ -20,8 +18,8 @@ public class NodeStarting extends NodeState {
         switch (m.getSubject()) {
             case Connected:
             {
-                Connected connected = (Connected) m;
-                processConnected(connected);
+                ConnectedMessage connectedMessage = (ConnectedMessage) m;
+                processConnectedMessage(connectedMessage);
                 break;
             }
             
@@ -34,14 +32,15 @@ public class NodeStarting extends NodeState {
         return nextState;
     }
 
-    private State processConnected (Connected connected)
+    private State processConnectedMessage (ConnectedMessage connectedMessage)
     {
-        getNode().setChannel(connected.getChannel());
+        getNode().setChannel(connectedMessage.getChannel());
 
-        String stringMessage = "hello";
-        byte[] message = stringMessage.getBytes();
-        getNode().getChannel().writeAndFlush(message);
+        GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
+        sendOnWire(getVersionsWireMessage);
 
-        return this;
+        SyncingState syncingState = new SyncingState(getNode());
+
+        return syncingState;
     }
 }

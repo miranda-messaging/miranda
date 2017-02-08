@@ -12,6 +12,8 @@ public class Message {
         Connected,
         ConnectionError,
         ConnectTo,
+        ConnectionClosed,
+        GetVersion,
         Join,
         JoinSuccess,
         Listen,
@@ -20,8 +22,9 @@ public class Message {
         NewTopic,
         NetworkMessage,
         NewSubscription,
-        NewMessage,
         NewDelivery,
+        NewMessage,
+        NewNode,
         NodeAdded,
         NodesLoaded,
         Election,
@@ -29,28 +32,37 @@ public class Message {
         Schedule,
         Starting,
         Timeout,
+        Version,
         Write,
         WriteSucceeded,
         WriteFailed,
         Error
     }
-    private Subjects mySubject;
+    private Subjects subject;
 
     private BlockingQueue<Message> sender;
     private Object senderObject;
+    private Exception where;
 
     public BlockingQueue<Message> getSender () {
         return sender;
     }
 
     public Subjects getSubject() {
-        return mySubject;
+        return subject;
     }
 
+    public Exception getWhere() {
+        return where;
+    }
+
+
     public Message (Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
-        mySubject = subject;
+        this.subject = subject;
         this.sender = sender;
         this.senderObject = senderObject;
+
+        this.where = new Exception();
     }
 
     public void respond (Message m) throws InterruptedException {

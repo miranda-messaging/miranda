@@ -41,8 +41,13 @@ public class Network extends Consumer {
             System.out.println("got " + s);
 
             WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
-            NetworkMessage networkMessage = new NetworkMessage(null, wireMessage);
-            Consumer.send(networkMessage, notify);
+            String className = wireMessage.getClassName();
+            Class clazz = getClass().forName(className);
+
+            wireMessage = (WireMessage) ourGson.fromJson(s, clazz);
+
+            NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
+            Consumer.staticSend(networkMessage, notify);
         }
     }
 
@@ -72,9 +77,13 @@ public class Network extends Consumer {
             String s = new String(buffer);
             logger.info ("got " + s);
 
-            WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
-            NetworkMessage networkMessage = new NetworkMessage(null, wireMessage);
-            Consumer.send(networkMessage, notify);
+            JsonParser jsonParser = new JsonParser(s);
+
+            for (WireMessage wireMessage : jsonParser.getMessages()) {
+                NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
+                Consumer.staticSend(networkMessage, notify);
+            }
+
         }
     }
 
@@ -107,10 +116,10 @@ public class Network extends Consumer {
                     // channelFuture.channel().pipeline().addLast(sslHandler);
 
                     ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null, null);
-                    Consumer.send(connectedMessage, notify);
+                    Consumer.staticSend(connectedMessage, notify);
                 } else {
                     ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, channelFuture.cause(), null);
-                    Consumer.send(connectFailedMessage, notify);
+                    Consumer.staticSend(connectFailedMessage, notify);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -123,7 +132,7 @@ public class Network extends Consumer {
         super("Network");
 
         setQueue(queue);
-        setCurrentState(new ReadyState((this)));
+        setCurrentState(new NetworkReadyState((this)));
     }
 
 

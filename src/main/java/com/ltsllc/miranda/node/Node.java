@@ -1,6 +1,10 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.ConnectMessage;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import org.apache.log4j.Logger;
 
@@ -33,8 +37,22 @@ public class Node extends Consumer
 
         this.channel = channel;
 
-        State connectedState = new ConnectedState(this);
-        setCurrentState(connectedState);
+        State newNodeState = new NewNodeState(this);
+        setCurrentState(newNodeState);
+    }
+
+
+    /**
+     * When a node is added as a result of getting a new connection.
+     *
+     * @param channel
+     */
+    public Node (Channel channel)
+    {
+        super("node");
+
+        this.channel =  channel;
+        setCurrentState(new NewNodeState(this));
     }
 
     public Node() {
@@ -56,8 +74,16 @@ public class Node extends Consumer
         return dns;
     }
 
+    public void setDns (String dns) {
+        this.dns = dns;
+    }
+
     public String getIp() {
         return ip;
+    }
+
+    public void setIp (String ip) {
+        this.ip = ip;
     }
 
     public String getDescription() {
@@ -93,9 +119,23 @@ public class Node extends Consumer
         this.channel = channel;
     }
 
-    @Override
-    public State processMessage(Message m) {
-        return super.processMessage(m);
+    public boolean equalsElement (NodeElement nodeElement) {
+        if (null == getDns())
+            return false;
+
+        return getDns().equals(nodeElement.getDns()) && getIp().equals(nodeElement.getIp()) && getPort() == nodeElement.getPort();
     }
 
+    public void connect (BlockingQueue<Message> senderQueue, Object sender) {
+        ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender);
+        send (connectMessage, getQueue());
+    }
+
+    public void sendOnWire(WireMessage wireMessage) {
+        String json = wireMessage.getJson();
+        byte[] buffer = json.getBytes();
+        ByteBuf byteBuf = Unpooled.directBuffer(buffer.length);
+        ByteBufUtil.writeUtf8(byteBuf, json);
+        getChannel().writeAndFlush(byteBuf);
+    }
 }

@@ -1,20 +1,18 @@
 package com.ltsllc.miranda;
 
-import java.util.concurrent.BlockingQueue;
-
 /**
  * Created by Clark on 1/21/2017.
  */
 public class StartState extends State {
-    private static StartState ourInstane;
+    private static StartState ourInstance;
 
     public static StartState getInstance () {
-        return ourInstane;
+        return ourInstance;
     }
 
     public static synchronized void initialize () {
-        if (null == ourInstane) {
-            ourInstane = new StartState();
+        if (null == ourInstance) {
+            ourInstance = new StartState();
         }
     }
 

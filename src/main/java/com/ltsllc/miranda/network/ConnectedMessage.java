@@ -9,14 +9,14 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/21/2017.
  */
-public class Connected extends Message {
+public class ConnectedMessage extends Message {
     private Channel channel;
 
     public Channel getChannel() {
         return channel;
     }
 
-    public Connected (Channel channel, BlockingQueue<Message> sender, Object senderObject) {
+    public ConnectedMessage(Channel channel, BlockingQueue<Message> sender, Object senderObject) {
         super(Message.Subjects.Connected, sender, senderObject);
         this.channel = channel;
     }

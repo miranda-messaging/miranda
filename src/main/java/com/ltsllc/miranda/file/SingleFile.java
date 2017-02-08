@@ -1,20 +1,17 @@
 package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Miranda;
-import com.ltsllc.miranda.User;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.util.IOUtils;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.file.*;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +21,18 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/10/2017.
  */
 abstract public class SingleFile<E> extends MirandaFile {
+    abstract public List buildEmptyList();
+    abstract public Type listType();
+
     private static Logger logger = Logger.getLogger(SingleFile.class);
+
+    private Version version;
 
     public SingleFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
     }
 
-    private Gson ourGson;
+    private Gson ourGson = buildGson();
 
     public Gson getGson() {
         if (null == ourGson)
@@ -39,7 +41,7 @@ abstract public class SingleFile<E> extends MirandaFile {
         return ourGson;
     }
 
-    protected List<E> data;
+    protected List<E> data = buildEmptyList();
 
     public List<E> getData () {
         return data;
@@ -57,6 +59,14 @@ abstract public class SingleFile<E> extends MirandaFile {
         return execptionOnLoadIsFatal;
     }
 
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
     public static <T> List<T> mapFromJsonArray(String respInArray, Type listType) {
         List<T> ret = new Gson().fromJson(respInArray, listType);
         return ret;
@@ -67,23 +77,26 @@ abstract public class SingleFile<E> extends MirandaFile {
         logger.info("loading " + getFilename());
         File f = new File(getFilename());
         if (!f.exists()) {
-            setData(null);
+            List list = buildEmptyList();
+            setData(list);
         } else {
             Gson gson = new Gson();
             FileReader fr = null;
             List<E> temp = null;
             try {
                 fr = new FileReader(getFilename());
-                Type t = new TypeToken<ArrayList<E>>(){}.getType();
-                temp = gson.fromJson(fr, t);
+                temp = ourGson.fromJson(fr, listType());
             } catch (FileNotFoundException e) {
                 logger.info(getFilename() + " not found");
             } finally {
                 IOUtils.closeNoExceptions(fr);
             }
 
-
             setData(temp);
+
+            String sha1 = calculateSha1();
+            Version version = new Version(sha1, f.lastModified());
+            setVersion(version);
         }
     }
 
@@ -93,4 +106,39 @@ abstract public class SingleFile<E> extends MirandaFile {
         return json.getBytes();
     }
 
+
+    private static Gson buildGson () {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        return gsonBuilder.setPrettyPrinting().create();
+    }
+
+
+    private static final int BUFFER_SIZE = 8192;
+
+    public String calculateSha1() {
+        FileInputStream fileInputStream = null;
+        byte[] digest = null;
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA");
+            fileInputStream = new FileInputStream(getFilename());
+            byte[] buffer = new byte[BUFFER_SIZE];
+
+            int bytesRead;
+
+            do {
+                bytesRead = fileInputStream.read(buffer);
+                messageDigest.update(buffer, 0, bytesRead);
+            } while (bytesRead >= BUFFER_SIZE);
+
+            digest = messageDigest.digest();
+        } catch (Exception e) {
+            logger.fatal("Exception while trying to calculate sha1", e);
+            System.exit(1);
+        }finally {
+            Utils.closeIgnoreExceptions(fileInputStream);
+        }
+
+        return Utils.bytesToString(digest);
+    }
 }

@@ -7,6 +7,7 @@ import com.ltsllc.miranda.User;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -21,5 +22,14 @@ public class TopicFile  extends SingleFile<Topic> {
     {
         return new TypeToken<ArrayList<User>>() {}.getType();
     }
+
+    public List buildEmptyList () {
+        return new ArrayList<Topic> ();
+    }
+
+    public Type listType () {
+        return new TypeToken<ArrayList<Topic>>(){}.getType();
+    }
+
 
 }

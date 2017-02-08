@@ -260,8 +260,9 @@ public class Startup extends State {
 
     private void loadFiles() {
         PropertiesUtils.log(System.getProperties());
+        String clusterFile = System.getenv(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.load();
+        Cluster.load(clusterFile);
 
         String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
         UsersFile.initialize(filename, getWriterQueue());

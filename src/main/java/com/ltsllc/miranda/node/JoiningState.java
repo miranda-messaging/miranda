@@ -49,7 +49,7 @@ public class JoiningState extends NodeState {
         switch (networkMessage.getWireMessage().getWireSubject()) {
             case JoinSuccess:{
                 logger.info ("got JoinSucess");
-                nextState = new ReadyState(getNode());
+                nextState = new SyncingState(getNode());
                 break;
             }
 
@@ -63,7 +63,7 @@ public class JoiningState extends NodeState {
 
 
     private State processJoinSuccess (JoinSuccessMessage joinSucessMessage) {
-        State nextState = new ReadyState(getNode());
+        State nextState = new NodeReadyState(getNode());
 
 
 

@@ -4,17 +4,15 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import org.apache.log4j.Logger;
 
-import java.util.concurrent.BlockingQueue;
-
 /**
  * Created by Clark on 1/29/2017.
  */
-public class ReadyState extends State {
-    private static Logger logger = Logger.getLogger (ReadyState.class);
+public class NetworkReadyState extends State {
+    private static Logger logger = Logger.getLogger (NetworkReadyState.class);
 
     private Network network;
 
-    public ReadyState (Network network) {
+    public NetworkReadyState(Network network) {
         super(null);
         this.network = network;
     }

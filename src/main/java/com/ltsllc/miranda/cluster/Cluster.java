@@ -9,20 +9,9 @@ import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.util.PropertiesUtils;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
 
-import javax.net.ssl.*;
-import java.io.FileInputStream;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -41,19 +30,7 @@ public class Cluster extends Consumer {
     private Logger logger = Logger.getLogger(Cluster.class);
 
 
-    public static void nodesLoaded(List<NodeElement> data) {
-        getInstance().instanceNodesLoaded(data);
-    }
-
-    private void instanceNodesLoaded(List<NodeElement> data) {
-        Message m = new NodesLoadedMessage(data, getQueue(), this);
-        send(m, getQueue());
-    }
-
     private static Cluster ourInstance;
-
-    private String filename;
-
 
 
 
@@ -70,34 +47,29 @@ public class Cluster extends Consumer {
     private Cluster(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         super("Cluster");
 
-        ReadyState readyState = new ReadyState(this);
+        ClusterReadyState readyState = new ClusterReadyState(this);
         setCurrentState(readyState);
 
         this.writer = writerQueue;
         this.network = network;
-        setCurrentState(new ReadyState(this));
-        this.filename = filename;
+        this.clusterFile = new ClusterFile(filename, this.writer);
     }
 
 
     private List<Node> nodes = new ArrayList<Node>();
-    private BlockingQueue<Message> clusterFile;
     private BlockingQueue<Message> network;
     private BlockingQueue<Message> writer;
+    private ClusterFile clusterFile;
 
 
     private NetworkListener networkListener;
 
-    public BlockingQueue<Message> getClusterFile() {
+    public ClusterFile getClusterFile() {
         return clusterFile;
     }
 
     public List<Node> getNodes() {
         return nodes;
-    }
-
-    public String getFilename() {
-        return filename;
     }
 
     public BlockingQueue<Message> getNetwork() {
@@ -107,7 +79,7 @@ public class Cluster extends Consumer {
     public BlockingQueue<Message> getWriter() {
         return writer;
     }
-
+/*
     public State processMessage(Message m) {
         State nextState = getCurrentState();
 
@@ -139,83 +111,65 @@ public class Cluster extends Consumer {
         return nextState;
     }
 
+*/
 
-    private State processLoad (LoadMessage loadMessage) {
-        State nextState = getCurrentState();
 
-        send(loadMessage, getClusterFile());
 
-        return nextState;
+    public State start () {
+        super.start();
+
+        State state = new ClusterReadyState(this);
+        setCurrentState(state);
+
+        clusterFile.start();
+        int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        networkListener = new NetworkListener(port);
+        networkListener.listen();
+
+        return new ClusterReadyState(this);
     }
 
 
-    private State processNodesLoaded(NodesLoadedMessage nodesLoadedMessage)
-    {
-        State nextState = getCurrentState();
-
-        for (NodeElement element : nodesLoadedMessage.getNodes()) {
-            if (!containsNode(element)) {
-                Node n = new Node(element, getNetwork());
-                nodes.add(n);
-                n.start();
-            }
-        }
-
-        for (Node n : getNodes()) {
-            ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
-            send (connectMessage, n.getQueue());
-        }
-
-        return nextState;
+    public static void load (String filename) {
+        LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), filename, null);
+        getInstance().send(loadMessage, getInstance().getClusterFile().getQueue());
     }
 
-    private boolean containsNode (NodeElement element) {
-        for (Node n : nodes) {
-            if (element.getIp().equals(n.getIp()) && element.getPort() == n.getPort())
+    public void addNode (NodeElement nodeElement) {
+        if (!contains(nodeElement)) {
+            Node node = new Node(nodeElement, getNetwork());
+            node.start();
+            node.connect(this.getQueue(), this);
+        }
+    }
+
+    private boolean contains (NodeElement nodeElement) {
+        for (Node node : nodes) {
+            if (node.equalsElement(nodeElement))
                 return true;
         }
 
         return false;
     }
 
+    public void addNewNode (Node node) {
+        nodes.add(node);
 
-    /**
-     * Tell the nodes in the cluster to connect.
-     */
-    private void processConnect() {
-        for (Node n : nodes) {
-            ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
-            send(connectMessage, n.getQueue());
+        NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node.getDns(), node.getIp(), node.getPort(), node.getDescription());
+        send(newNodeMessage, getClusterFile().getQueue());
+    }
+
+
+    public void connect () {
+        ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
+        for (Node node : nodes) {
+            send(connectMessage, node.getQueue());
         }
     }
 
 
-    public State start () {
-        ClusterFile clusterFile = new ClusterFile(getFilename(), getWriter());
-        this.clusterFile = clusterFile.getQueue();
-
-        State state = super.start();
-        setCurrentState(state);
-
-        clusterFile.start();
-        this.clusterFile = clusterFile.getQueue();
-        int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-        networkListener = new NetworkListener(port);
-        networkListener.listen();
-
-        return new ReadyState(this);
-    }
-
-
-    public static void load () {
-        LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), getInstance().getFilename(), null);
-        getInstance().send(loadMessage, getInstance().getClusterFile());
-    }
-
-
-    private State processNodeAdded(NodeAddedMessage nodeAddedMessage)
-    {
-        getNodes().add(nodeAddedMessage.getNode());
-        return getCurrentState();
+    public static void nodeAdded (BlockingQueue<Message> senderQueue, Object sender, String dns, String ip, int port, String desciption) {
+        NewNodeMessage newNodeMessage = new NewNodeMessage(senderQueue, sender, dns, ip, port, desciption);
+        staticSend(newNodeMessage, getInstance().getQueue());
     }
 }

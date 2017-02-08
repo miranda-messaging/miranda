@@ -3,6 +3,7 @@ package com.ltsllc.miranda.file;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.User;
+import com.ltsllc.miranda.node.NodeElement;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -50,5 +51,13 @@ public class UsersFile extends SingleFile<User> {
         return new TypeToken<ArrayList<User>>() {}.getType();
     }
 
+
+    public List buildEmptyList () {
+        return new ArrayList<User>();
+    }
+
+    public Type listType () {
+        return new TypeToken<ArrayList<User>>(){}.getType();
+    }
 
 }

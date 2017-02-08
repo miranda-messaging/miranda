@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.SingleFile;
-import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.util.IOUtils;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -22,26 +23,35 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/20/2017.
  */
 public class ClusterFile extends SingleFile<NodeElement> {
-    private Logger logger = Logger.getLogger(ClusterFile.class);
+    private static Logger logger = Logger.getLogger(ClusterFile.class);
 
+    private Version version;
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
 
     public ClusterFile (String filename, BlockingQueue<Message> writer) {
         super(filename, writer);
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this, this);
+        setCurrentState(clusterFileReadyState);
+    }
 
-        ReadyState readyState = new ReadyState(this);
-        setCurrentState(readyState);
+    public Version getVersion() {
+        return version;
     }
 
     public Type getBasicType () {
         return new TypeToken<ArrayList<Node>> (){}.getType();
     }
 
+/*
     public void load ()
     {
         logger.info("loading " + getFilename());
         File f = new File(getFilename());
         if (!f.exists()) {
-            setData(null);
+            setData(new ArrayList<NodeElement>());
         } else {
             Gson gson = new Gson();
             FileReader fr = null;
@@ -56,11 +66,13 @@ public class ClusterFile extends SingleFile<NodeElement> {
                 IOUtils.closeNoExceptions(fr);
             }
 
-
             setData(temp);
+
+            Version version = new Version(this);
+            this.version = version;
         }
     }
-
+*/
 
     public State processMessage (Message message) {
         State nextState = getCurrentState();
@@ -94,5 +106,58 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
 
 
+    public void addNode(Node node) {
+        if (!containsNode(node)) {
+            NodeElement nodeElement = new NodeElement(node);
+            getData().add(nodeElement);
+            byte[] buffer = getBytes();
+            WriteMessage writeMessage = new WriteMessage(getFilename(), buffer, getQueue(), this);
+            send(writeMessage, getWriterQueue());
+        }
+    }
 
+
+    public void addNode (NodeElement nodeElement) {
+        if (!containsElement(nodeElement)) {
+            getData().add(nodeElement);
+            byte[] buffer = getBytes();
+            WriteMessage writeMessage = new WriteMessage(getFilename(), buffer, getQueue(), this);
+            send(writeMessage, getWriterQueue());
+        }
+    }
+
+
+    private boolean containsNode(Node node) {
+        for (NodeElement nodeElement : getData()) {
+            if (nodeElement.getDns().equals(node.getDns()) && nodeElement.getIp().equals(node.getIp()) && nodeElement.getPort() == node.getPort())
+                return true;
+        }
+        return false;
+    }
+
+
+    private boolean containsElement (NodeElement nodeElement) {
+        if (null == getData())
+        {
+            logger.error("null data");
+            setData(new ArrayList<NodeElement>());
+        }
+
+        for (NodeElement element : getData()) {
+            if (element.equals(nodeElement))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    public List buildEmptyList () {
+        return new ArrayList<NodeElement>();
+    }
+
+
+    public Type listType () {
+        return new TypeToken<ArrayList<NodeElement>>(){}.getType();
+    }
 }

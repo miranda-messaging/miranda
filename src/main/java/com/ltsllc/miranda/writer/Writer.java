@@ -12,6 +12,7 @@ public class Writer extends Consumer {
     public Writer (BlockingQueue<Message> queue) {
         super("Writer");
         setQueue(queue);
-        setCurrentState(new ReadyState(this));
+        // setCurrentState(new WriterReadyState(this));
+        setCurrentState(new IgnoreWritesState(this));
     }
 }

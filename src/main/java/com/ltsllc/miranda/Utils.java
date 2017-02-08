@@ -16,7 +16,10 @@ import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -120,5 +123,54 @@ public class Utils {
     }
 
 
+    private static final int BUFFER_SIZE = 8192;
 
+    public static byte[] calculateSha1 (FileInputStream fileInputStream) {
+        MessageDigest messageDigest = null;
+
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+
+            byte buffer[] = new byte[BUFFER_SIZE];
+            int bytesRead;
+
+            do {
+                bytesRead = fileInputStream.read(buffer);
+                messageDigest.update(buffer);
+            } while (BUFFER_SIZE == bytesRead);
+
+        } catch (Exception e) {
+            logger.fatal ("Exception trying to calculate sha1", e);
+            System.exit(1);
+        }
+
+        return messageDigest.digest();
+    }
+
+
+    private static char[] DIGITS = "0123456789ABCDEF".toCharArray();
+
+    public static String byteToHexString(byte b) {
+        StringBuffer sb = new StringBuffer();
+
+        int value = b & 0xf0;
+        value = value >> 4;
+        sb.append(DIGITS[value]);
+
+        value = b & 0xf;
+        sb.append(DIGITS[value]);
+
+        return sb.toString();
+    }
+
+
+    public static String bytesToString (byte[] bytes) {
+        StringWriter stringWriter = new StringWriter();
+
+        for (byte b : bytes) {
+            stringWriter.append(byteToHexString(b));
+        }
+
+        return stringWriter.toString();
+    }
 }

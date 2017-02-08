@@ -15,6 +15,10 @@ public class ConnectToMessage extends Message {
         super(Subjects.ConnectTo, sender, senderObject);
         this.host = host;
         this.port = port;
+
+        if (null == host) {
+            throw new IllegalStateException();
+        }
     }
 
     public String getHost() {

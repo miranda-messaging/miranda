@@ -29,7 +29,7 @@ public class NodeState extends State {
     }
 
     public void sendOnWire (WireMessage wireMessage) {
-        String s = wireMessage.getJson();
+        String s = wireMessage.getJson() + '\n';
         logger.info("Sending " + s);
         ByteBuf byteBuf = Unpooled.directBuffer(1 + s.length());
         ByteBufUtil.writeUtf8(byteBuf, s);
@@ -43,8 +43,7 @@ public class NodeState extends State {
 
 
     public State processNetworkMessage (NetworkMessage networkMessage) {
-        logger.error (this + " does not understand " + networkMessage);
-
+        logger.error (this + " does not understand " + networkMessage.getWireMessage().getWireSubject());
         return this;
     }
 }

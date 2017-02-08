@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Miranda;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.network.ConnectedMessage;
 import com.ltsllc.miranda.timer.ScheduleMessage;
 import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
@@ -64,15 +65,9 @@ public class ConnectingState extends NodeState {
         logger.info("got connection to " + connectedMessage.getChannel().remoteAddress());
 
         getNode().setChannel(connectedMessage.getChannel());
-        ByteBufAllocator byteBufAllocator = connectedMessage.getChannel().alloc();
 
-        //connectedMessage.getChannel().pipeline().addLast(createSslEngine(byteBufAllocator));
-
-        NodeHandler nodeHandler = new NodeHandler (getNode());
-        connectedMessage.getChannel().pipeline().addLast(nodeHandler);
-
-        JoinMessage joinMessage = new JoinMessage(getNode().getQueue());
-        sendOnWire(joinMessage);
+        JoinWireMessage joinWireMessage = new JoinWireMessage(getNode());
+        sendOnWire(joinWireMessage);
 
         return new JoiningState(getNode());
     }

@@ -25,9 +25,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class NetworkListener {
     private static class LocalHandler extends ChannelInboundHandlerAdapter {
-        private static Logger logger = Logger.getLogger(LocalHandler.class);
-        private static Gson ourGson = new Gson();
-
+        private Logger logger = Logger.getLogger(LocalHandler.class);
         private BlockingQueue<Message> node;
 
         public LocalHandler (BlockingQueue<Message> node) {
@@ -39,11 +37,22 @@ public class NetworkListener {
             byte[] buffer = new byte[byteBuf.readableBytes()];
             byteBuf.getBytes(0, buffer);
             String s = new String(buffer);
-            logger.info ("Got " + s);
+            logger.info("Got " + s);
 
-            WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
-            NetworkMessage networkMessage = new NetworkMessage(node, wireMessage);
-            Consumer.send(networkMessage, node);
+            JsonParser jsonParser = new JsonParser(s);
+
+            for (WireMessage wireMessage : jsonParser.getMessages()) {
+                NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
+                Consumer.staticSend(networkMessage, node);
+            }
+        }
+
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            ctx.close();
+
+            ConnectionClosedMessage connectionClosedMessage = new ConnectionClosedMessage(null, this);
+            Consumer.staticSend(connectionClosedMessage, node);
         }
     }
 
@@ -70,9 +79,7 @@ public class NetworkListener {
             LocalHandler localHandler = new LocalHandler(node.getQueue());
             socketChannel.pipeline().addLast(localHandler);
 
-            NodeAddedMessage nodeAddedMessage = new NodeAddedMessage(null, node);
-            Consumer.send(nodeAddedMessage, Cluster.getInstance().getQueue());
-        }
+       }
     }
 
     private static class LocalChannelListener implements ChannelFutureListener {
@@ -83,23 +90,14 @@ public class NetworkListener {
             {
                 InetSocketAddress inetSocketAddress = (InetSocketAddress) channelFuture.channel().remoteAddress();
 
-                //
-                // for some reason we are getting spurious connections
-                //
-                if (null == inetSocketAddress)
-                {
-                    logger.info("spurious connection");
-                    return;
-                }
-
-                Node node = new Node(inetSocketAddress, channelFuture.channel());
+                Node node = new Node(channelFuture.channel());
                 node.start();
 
                 LocalHandler localHandler = new LocalHandler(node.getQueue());
                 channelFuture.channel().pipeline().addLast(localHandler);
 
                 NodeAddedMessage nodeAddedMessage = new NodeAddedMessage(null, node);
-                Consumer.send(nodeAddedMessage, Cluster.getInstance().getQueue());
+                Consumer.staticSend(nodeAddedMessage, Cluster.getInstance().getQueue());
             }
 
         }

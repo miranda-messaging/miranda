@@ -60,7 +60,7 @@ public class Consumer extends Subsystem {
                 }
 
                 Message m = getQueue().take();
-                logger.info (this + " received " + m);
+                logger.info (this + " in state " + getCurrentState() + " received " + m);
                 nextState = processMessage(m);
             }
             logger.info (this + " terminating");
@@ -83,7 +83,18 @@ public class Consumer extends Subsystem {
     }
 
 
-    public static void send (Message m, BlockingQueue<Message> queue)
+    public void send (Message m, BlockingQueue<Message> queue)
+    {
+        logger.info(this + " in state " + getCurrentState() + " is sending " + m);
+        try {
+            queue.put(m);
+        } catch (InterruptedException e) {
+            logger.info("Exception trying to send message", e);
+        }
+    }
+
+
+    public static void staticSend (Message m, BlockingQueue<Message> queue)
     {
         logger.info("Sending " + m);
         try {
@@ -92,4 +103,5 @@ public class Consumer extends Subsystem {
             logger.info("Exception trying to send message", e);
         }
     }
+
 }
