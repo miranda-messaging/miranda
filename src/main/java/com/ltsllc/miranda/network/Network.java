@@ -135,43 +135,6 @@ public class Network extends Consumer {
         setCurrentState(new NetworkReadyState((this)));
     }
 
-
-    private ServerBootstrap createServerBootstrap (BlockingQueue<Message> notify) {
-        ServerBootstrap serverBootstrap = null;
-
-        try {
-            SSLContext serverContext = SSLContext.getInstance("TLS");
-            serverContext.init(Utils.createKeyManagers(), Utils.getTrustManagers(), new SecureRandom());
-            EventLoopGroup bossGroup = new NioEventLoopGroup();
-            EventLoopGroup workerGroup = new NioEventLoopGroup();
-            serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(bossGroup, workerGroup);
-            serverBootstrap.option(ChannelOption.SO_BACKLOG, 128);
-            serverBootstrap.channel(NioServerSocketChannel.class);
-
-            String keyStoreFilename = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE);
-            String keyStorePassword = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_PASSWORD);
-            String keyStoreAlias = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_ALIAS);
-
-            String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE_PASSWORD);
-            String trustStoreAlias = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
-
-            LocalServerInitializer localServerInitializer = new LocalServerInitializer();
-            serverBootstrap.childHandler(localServerInitializer);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        return serverBootstrap;
-    }
-
-    public void listen (int port) {
-        ServerBootstrap serverBootstrap = createServerBootstrap(null);
-        serverBootstrap.bind(port);
-    }
-
     public void connectTo (BlockingQueue<Message> notify, String host, int port) {
         try {
             logger.info("Connecting to " + host + ":" +port);
@@ -179,6 +142,7 @@ public class Network extends Consumer {
             String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
             String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
             String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
+            SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
 
             LocalClientInializer localClientInializer = new LocalClientInializer();
 
@@ -187,7 +151,6 @@ public class Network extends Consumer {
             bootstrap.handler(localClientHandler);
             ChannelFuture channelFuture = bootstrap.connect(host, port);
 
-            SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
             LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(notify, sslContext);
             channelFuture.addListener(localChannelFutureListener);
         } catch (Exception e) {

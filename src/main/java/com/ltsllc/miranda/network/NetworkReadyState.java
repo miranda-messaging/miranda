@@ -32,11 +32,6 @@ public class NetworkReadyState extends State {
                 nextState = processConnectToMessage(connectToMessage);
                 break;
             }
-            case Listen: {
-                ListenMessage listenMessage = (ListenMessage) m;
-                nextState = processListenMessage(listenMessage);
-                break;
-            }
 
             default: {
                 nextState = super.processMessage(m);
@@ -48,12 +43,13 @@ public class NetworkReadyState extends State {
     }
 
 
-
+/*
     private State processListenMessage (ListenMessage listenMessage) {
         getNetwork().listen(listenMessage.getPort());
 
         return this;
     }
+    */
 
 
     private State processConnectToMessage (ConnectToMessage connectToMessage) {
