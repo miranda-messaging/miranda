@@ -9,18 +9,19 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.NewNodeMessage;
 
+import java.util.Stack;
+
 /**
  * When a node is added via a connect it enters this state, waiting for a join message.
  */
 public class NewNodeState extends NodeState {
+    private Stack<Message> stack = new Stack<Message>();
+
     public NewNodeState (Node node) {
         super(node);
     }
 
 
-
-
-    @Override
     public State processNetworkMessage(NetworkMessage networkMessage) {
         State nextState = this;
 
@@ -52,6 +53,12 @@ public class NewNodeState extends NodeState {
                 break;
             }
 
+            case GetClusterFile: {
+                GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) message;
+                nextState = processGetClusterFileMessage(getClusterFileMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -61,15 +68,22 @@ public class NewNodeState extends NodeState {
     }
 
 
-    private State processJoinWireMessage (JoinWireMessage joinWireMessage) {
+    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
         State nextState = this;
 
+        stack.push(getClusterFileMessage);
+
+        return nextState;
+    }
+
+    private State processJoinWireMessage (JoinWireMessage joinWireMessage) {
         getNode().setDns(joinWireMessage.getDns());
         getNode().setIp(joinWireMessage.getIp());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());
 
-        Cluster.nodeAdded(getNode().getQueue(), this, joinWireMessage.getDns(), joinWireMessage.getIp(), joinWireMessage.getPort(), joinWireMessage.getDescription());
+        NodeUpdatedMessage nodeUpdatedMessage = new NodeUpdatedMessage(getNode().getQueue(), this, getNode());
+        send(Cluster.getInstance().getQueue(), nodeUpdatedMessage);
 
         JoinSuccessWireMessage joinSuccessWireMessage = new JoinSuccessWireMessage();
         sendOnWire(joinSuccessWireMessage);

@@ -2,6 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.cluster.Cluster;
 import org.apache.log4j.Logger;
 
@@ -54,6 +55,17 @@ public class SyncingState extends NodeState {
                 break;
             }
 
+            case ConnectionClosed: {
+                nextState = StopState.getInstance();
+                break;
+            }
+
+            case GetVersion: {
+                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
+                nextState = processGetVersionMessage(getVersionMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -76,6 +88,12 @@ public class SyncingState extends NodeState {
             case GetVersions: {
                 GetVersionsWireMessage getVersionWireMessage = (GetVersionsWireMessage) networkMessage.getWireMessage();
                 nextState = processGetVersionWireMessage(getVersionWireMessage);
+                break;
+            }
+
+            case Join: {
+                JoinWireMessage joinWireMessage = (JoinWireMessage) networkMessage.getWireMessage();
+                nextState = processJoinWireMessage(joinWireMessage);
                 break;
             }
 
@@ -111,6 +129,28 @@ public class SyncingState extends NodeState {
             VersionsWireMessage versionsWireMessage = new VersionsWireMessage(getVersions());
             sendOnWire(versionsWireMessage);
         }
+
+        return this;
+    }
+
+
+    private State processJoinWireMessage (JoinWireMessage joinWireMessage) {
+        getNode().setDns(joinWireMessage.getDns());
+        getNode().setIp(joinWireMessage.getIp());
+        getNode().setPort(joinWireMessage.getPort());
+        getNode().setDescription(joinWireMessage.getDescription());
+
+        NodeUpdatedMessage nodeUpdatedMessage = new NodeUpdatedMessage(getNode().getQueue(), this, getNode());
+        send(Cluster.getInstance().getQueue(), nodeUpdatedMessage);
+
+        NodeReadyState nodeReadyState = new NodeReadyState(getNode());
+        return nodeReadyState;
+    }
+
+
+    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+        GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
+        getNode().sendOnWire(getVersionsWireMessage);
 
         return this;
     }

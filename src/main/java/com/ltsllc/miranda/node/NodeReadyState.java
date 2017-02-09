@@ -1,10 +1,10 @@
 package com.ltsllc.miranda.node;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.cluster.ClusterFileMessage;
+import com.ltsllc.miranda.cluster.VersionsMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +37,23 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+            case Versions: {
+                VersionsWireMessage versionsWireMessage = (VersionsWireMessage) networkMessage.getWireMessage();
+                nextState = processVersionsWireMessage(versionsWireMessage);
+                break;
+            }
+
+
+            case ClusterFile: {
+                ClusterFileWireMessage clusterFileWireMessage = (ClusterFileWireMessage) networkMessage.getWireMessage();
+                nextState = processClusterFileWireMessage (clusterFileWireMessage);
+                break;
+            }
+
+            default: {
+                nextState = super.processNetworkMessage(networkMessage);
+                break;
+            }
         }
 
         return nextState;
@@ -57,6 +74,17 @@ public class NodeReadyState extends NodeState {
             case Version: {
                 VersionMessage versionMessage = (VersionMessage) message;
                 nextState = processVersionMessage (versionMessage);
+                break;
+            }
+
+            case ConnectionClosed: {
+                nextState = StopState.getInstance();
+                break;
+            }
+
+            case GetClusterFile: {
+                GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) message;
+                nextState = processGetClusterFileMessage(getClusterFileMessage);
                 break;
             }
 
@@ -100,11 +128,27 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    public State processVersionsWireMessage (WireMessage wireMessage) {
+    public State processVersionsWireMessage (VersionsWireMessage versionsWireMessage) {
+        VersionsMessage versionsMessage = new VersionsMessage(getNode().getQueue(), this, versionsWireMessage.getVersions());
 
-        GetVersionMessage getVersionMessage = new GetVersionMessage(getNode().getQueue(), this);
+        Consumer.staticSend (versionsMessage, Cluster.getInstance().getQueue());
 
-        Consumer.staticSend (getVersionMessage, Cluster.getInstance().getQueue());
+        return this;
+    }
+
+    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
+        State nextState = this;
+
+        GetClusterFileWireMessage getClusterFileWireMessage = new GetClusterFileWireMessage();
+        sendOnWire(getClusterFileWireMessage);
+
+        return nextState;
+    }
+
+
+    private State processClusterFileWireMessage (ClusterFileWireMessage clusterFileWireMessage) {
+        ClusterFileMessage clusterFileMessage = new ClusterFileMessage(getNode().getQueue(), this, clusterFileWireMessage.getContentAsBytes(), clusterFileWireMessage.getVersion());
+        send (Cluster.getInstance().getQueue(), clusterFileMessage);
 
         return this;
     }

@@ -12,6 +12,8 @@ public class WireMessage {
     private static Gson ourGson = new Gson();
 
     public enum WireSubjects {
+        ClusterFile,
+        GetClusterFile,
         Join,
         JoinSuccess,
         GetVersions,

@@ -156,8 +156,30 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return new ArrayList<NodeElement>();
     }
 
-
     public Type listType () {
         return new TypeToken<ArrayList<NodeElement>>(){}.getType();
+    }
+
+    public void nodesLoaded (List<NodeElement> nodes) {
+        for (NodeElement element : nodes) {
+            if (!containsElement(element)) {
+                Node node = new Node(element);
+                node.start();
+                node.connect();
+
+                NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node);
+                send(newNodeMessage, Cluster.getInstance().getQueue());
+            }
+        }
+    }
+
+
+    public boolean contains (NodeElement nodeElement) {
+        for (NodeElement element : getData()) {
+            if (element.equals(nodeElement))
+                return true;
+        }
+
+        return false;
     }
 }

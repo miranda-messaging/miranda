@@ -60,10 +60,12 @@ public class NetworkListener {
     private static class LocalInitializer extends ChannelInitializer<SocketChannel> {
         private static Logger logger = Logger.getLogger(LocalInitializer.class);
 
+        private BlockingQueue<Message> cluster;
         private SslContext sslContext;
 
-        public LocalInitializer (SslContext sslContext) {
+        public LocalInitializer (SslContext sslContext, BlockingQueue<Message> cluster) {
             this.sslContext = sslContext;
+            this.cluster = cluster;
         }
 
         public void initChannel (SocketChannel socketChannel) {
@@ -76,10 +78,19 @@ public class NetworkListener {
             Node node = new Node(inetSocketAddress, socketChannel);
             node.start();
 
+            NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
+            Consumer.staticSend(newConnectionMessage, cluster);
+
             LocalHandler localHandler = new LocalHandler(node.getQueue());
             socketChannel.pipeline().addLast(localHandler);
-
        }
+
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            logger.error("Exception caught, closing channel", cause);
+            ctx.close();
+        }
     }
 
     private static class LocalChannelListener implements ChannelFutureListener {
@@ -90,14 +101,22 @@ public class NetworkListener {
             {
                 InetSocketAddress inetSocketAddress = (InetSocketAddress) channelFuture.channel().remoteAddress();
 
+                //
+                // for some reason, we occasionally get empty connections
+                //
+                if (null == inetSocketAddress) {
+                    logger.error("spurious connection");
+                    return;
+                }
+
                 Node node = new Node(channelFuture.channel());
                 node.start();
 
                 LocalHandler localHandler = new LocalHandler(node.getQueue());
                 channelFuture.channel().pipeline().addLast(localHandler);
 
-                NodeAddedMessage nodeAddedMessage = new NodeAddedMessage(null, node);
-                Consumer.staticSend(nodeAddedMessage, Cluster.getInstance().getQueue());
+                NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
+                Consumer.staticSend(newConnectionMessage, Cluster.getInstance().getQueue());
             }
 
         }
@@ -107,15 +126,20 @@ public class NetworkListener {
     private Logger logger = Logger.getLogger(NetworkListener.class);
 
     private int port;
+    private BlockingQueue<Message> cluster;
 
-    public NetworkListener (int port) {
+    public NetworkListener (int port, BlockingQueue<Message> cluster) {
         this.port = port;
+        this.cluster = cluster;
     }
 
     public int getPort() {
         return port;
     }
 
+    public BlockingQueue<Message> getCluster() {
+        return cluster;
+    }
 
     public void listen() {
         String keyStoreFilename = System.getProperty(MirandaProperties.PROPERTY_KEY_STORE);
@@ -127,7 +151,7 @@ public class NetworkListener {
         String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
 
         SslContext sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, certificateFilename, certificatePassword, certificateAlias);
-        LocalInitializer localInitializer = new LocalInitializer(sslContext);
+        LocalInitializer localInitializer = new LocalInitializer(sslContext, getCluster());
 
         ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localInitializer);
 

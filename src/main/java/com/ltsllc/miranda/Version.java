@@ -61,8 +61,12 @@ public class Version  {
         return sha1;
     }
 
-    public boolean differ (Version other) {
-        return !sha1.equals(other.getSha1());
+    public boolean equals (Version other) {
+
+        if ((other.sha1 == null && sha1 != null) || (null != other.getSha1() && null == sha1))
+            return false;
+
+        return sha1.equals(other.getSha1());
     }
 
     public boolean isMoreRecent (Version other) {

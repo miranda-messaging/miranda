@@ -13,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/5/2017.
  */
-abstract public class MirandaFile extends Consumer{
+abstract public class MirandaFile extends Consumer {
     abstract public void load ();
     abstract public byte[] getBytes();
 
@@ -29,7 +29,7 @@ abstract public class MirandaFile extends Consumer{
 
     public MirandaFile (String filename, BlockingQueue<Message> queue)
     {
-        super("flie");
+        super("file");
 
         this.filename = filename;
         this.writerQueue = queue;

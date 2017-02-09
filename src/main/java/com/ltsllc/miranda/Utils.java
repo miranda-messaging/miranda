@@ -13,10 +13,7 @@ import org.apache.log4j.Logger;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -172,5 +169,68 @@ public class Utils {
         }
 
         return stringWriter.toString();
+    }
+
+
+    public static byte[] hexStringToBytes (String hexString) {
+        StringReader reader = null;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        try {
+            reader = new StringReader(hexString);
+
+            char[] buffer = new char[2];
+
+            int bytesRead = reader.read(buffer);
+
+            while (-1 != bytesRead)
+            {
+                byte b = toByte(buffer);
+                byteArrayOutputStream.write(b);
+                bytesRead = reader.read(buffer);
+            }
+        } catch (IOException e) {
+            logger.fatal("Exception trying to convert string to bytes", e);
+            System.exit(1);
+        }
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
+
+    public static byte toByte (char[] buffer) {
+        int value = toNibble(buffer[0]);
+        value = value << 4;
+        int temp = 0xF & toNibble(buffer[1]);
+        value = value | temp;
+
+        return (byte) value;
+    }
+
+
+    public static int toNibble (char c) {
+        if (c >= '0' && c <= '9')
+            return (c - '0');
+        else if (c >= 'A' && c <= 'F')
+            return (c - 'A' + 10);
+        else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+
+    public static String caculateSha1 (byte[] buffer) {
+        MessageDigest messageDigest = null;
+
+        try {
+            messageDigest = MessageDigest.getInstance("SHA");
+            messageDigest.update(buffer);
+        } catch (NoSuchAlgorithmException e) {
+            logger.fatal ("Exception trying to calculate sha1", e);
+            System.exit(1);
+        }
+
+        String digest = bytesToString(messageDigest.digest());
+        return digest;
     }
 }

@@ -41,9 +41,10 @@ public class NodeState extends State {
         }
     }
 
-
     public State processNetworkMessage (NetworkMessage networkMessage) {
-        logger.error (this + " does not understand " + networkMessage.getWireMessage().getWireSubject());
+        logger.fatal (this + " does not understand network message " + networkMessage.getWireMessage().getWireSubject());
+        System.exit(1);
+
         return this;
     }
 }

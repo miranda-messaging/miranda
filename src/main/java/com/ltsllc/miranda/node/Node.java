@@ -2,6 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.ConnectMessage;
+import com.ltsllc.miranda.network.ConnectToMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -10,12 +11,17 @@ import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Clark on 12/31/2016.
  */
 public class Node extends Consumer
 {
+    public Node (NodeElement element) {
+        this(element, new LinkedBlockingQueue<Message>());
+    }
+
     public Node(NodeElement element, BlockingQueue<Message> network) {
         super("node");
         dns = element.getDns();
@@ -131,11 +137,22 @@ public class Node extends Consumer
         send (connectMessage, getQueue());
     }
 
+    public void connect () {
+        ConnectToMessage connectToMessage = new ConnectToMessage(getDns(), getPort(), getQueue(), this);
+        send (connectToMessage, getNetwork());
+    }
+
     public void sendOnWire(WireMessage wireMessage) {
         String json = wireMessage.getJson();
         byte[] buffer = json.getBytes();
         ByteBuf byteBuf = Unpooled.directBuffer(buffer.length);
         ByteBufUtil.writeUtf8(byteBuf, json);
         getChannel().writeAndFlush(byteBuf);
+    }
+
+
+    public void sync () {
+        SyncingState syncingState = new SyncingState(this);
+        setCurrentState(syncingState);
     }
 }

@@ -4,10 +4,8 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.NodeAddedMessage;
-import com.ltsllc.miranda.node.GetVersionMessage;
-import com.ltsllc.miranda.node.NameVersion;
-import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.node.VersionMessage;
+import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.writer.WriteMessage;
 
 /**
  * Created by Clark on 2/6/2017.
@@ -35,12 +33,6 @@ public class ClusterFileReadyState extends State {
                 break;
             }
 
-            case NodeAdded: {
-                NodeAddedMessage nodeAddedMessage = (NodeAddedMessage) message;
-                nextState = processNodeAddedMessage(nodeAddedMessage);
-                break;
-            }
-
             case NewNode: {
                 NewNodeMessage newNodeMessage = (NewNodeMessage) message;
                 nextState = processNewNodeMessag(newNodeMessage);
@@ -51,8 +43,22 @@ public class ClusterFileReadyState extends State {
                 break;
             }
 
-            case Version: {
+            case NodeUpdated: {
+                NodeUpdatedMessage nodeUpdatedMessage = (NodeUpdatedMessage) message;
+                nextState = processNodeUpdated(nodeUpdatedMessage);
+                break;
+            }
 
+            case GetClusterFile: {
+                GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) message;
+                nextState = processGetClusterFileMessage(getClusterFileMessage);
+                break;
+            }
+
+            case NewClusterFile: {
+                NewClusterFileMessage newClusterFileMessage = (NewClusterFileMessage) message;
+                nextState = processNewClusterFileMessage (newClusterFileMessage);
+                break;
             }
 
             default: {
@@ -81,13 +87,54 @@ public class ClusterFileReadyState extends State {
 
 
     private State processNewNodeMessag (NewNodeMessage newNodeMessage) {
-        NewNodeMessage newNodeMessage2 = new NewNodeMessage(getClusterFile().getQueue(), this, newNodeMessage);
-
         NodeElement nodeElement = new NodeElement(newNodeMessage.getDns(), newNodeMessage.getIp(), newNodeMessage.getPort());
 
         getClusterFile().addNode(nodeElement);
 
         ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getContainer(), getClusterFile());
         return clusterFileReadyState;
+    }
+
+
+    private State processNodeUpdated (NodeUpdatedMessage nodeUpdatedMessage) {
+        byte[] buffer = getClusterFile().getBytes();
+        WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), buffer, getClusterFile().getQueue(), this);
+        send(getClusterFile().getWriterQueue(), writeMessage);
+
+        return this;
+    }
+
+
+    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
+        byte[] buffer = getClusterFile().getBytes();
+        ClusterFileMessage clusterFileMessage = new ClusterFileMessage (getClusterFile().getQueue(), this, buffer, getClusterFile().getVersion());
+        send(getClusterFileMessage.getSender(), clusterFileMessage);
+
+        return this;
+    }
+
+    /**
+     * This is called when there is a new version of the cluster file.  We
+     * need to determine the node that we are connected to and connect to
+     * the new nodes.
+     *
+     * @param newClusterFileMessage
+     * @return
+     */
+    private State processNewClusterFileMessage (NewClusterFileMessage newClusterFileMessage) {
+        for (NodeElement element : getClusterFile().getData()) {
+            if (!getClusterFile().contains(element)) {
+                Node node = new Node(element);
+                node.start();
+
+                NewNodeMessage newNodeMessage = new NewNodeMessage(getClusterFile().getQueue(), this, node);
+                send(Cluster.getInstance().getQueue(), newNodeMessage);
+            }
+        }
+
+        getClusterFile().setData(newClusterFileMessage.getFile());
+        getClusterFile().setVersion(newClusterFileMessage.getVersion());
+
+        return this;
     }
 }

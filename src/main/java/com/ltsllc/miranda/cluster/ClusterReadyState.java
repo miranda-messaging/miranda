@@ -3,11 +3,9 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.network.NodeAddedMessage;
-import com.ltsllc.miranda.node.GetVersionMessage;
-import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.node.VersionMessage;
+import com.ltsllc.miranda.node.*;
 
 /**
  * Created by Clark on 1/3/2017.
@@ -23,6 +21,8 @@ public class ClusterReadyState extends State {
         super(cluster);
 
         this.cluster = cluster;
+
+        assert(null != this.cluster);
     }
 
     public Cluster getCluster() {
@@ -44,12 +44,6 @@ public class ClusterReadyState extends State {
                 break;
             }
 
-            case NodeAdded: {
-                NodeAddedMessage nodeAddedMessage = (NodeAddedMessage) m;
-                getCluster().addNewNode(nodeAddedMessage.getNode());
-                break;
-            }
-
             case NodesLoaded: {
                 NodesLoadedMessage nodesLoaded = (NodesLoadedMessage) m;
                 nextState = processNodesLoaded(nodesLoaded);
@@ -59,6 +53,18 @@ public class ClusterReadyState extends State {
             case GetVersion: {
                 GetVersionMessage getVersionMessage = (GetVersionMessage) m;
                 nextState = processGetVersionMessage(getVersionMessage);
+                break;
+            }
+
+            case NewConnection: {
+                NewConnectionMessage newConnectionMessage = (NewConnectionMessage) m;
+                nextState = processNewConnectionMessage(newConnectionMessage);
+                break;
+            }
+
+            case NewNode: {
+                NewNodeMessage newNodeMessage = (NewNodeMessage) m;
+                nextState = processNewNodeMessage (newNodeMessage);
                 break;
             }
 
@@ -108,5 +114,22 @@ public class ClusterReadyState extends State {
     }
 
 
+    /**
+     * This is called when we get a new connection "out of the blue."
+     *
+     * There is nothing to do except wait for a join message.
+     *
+     * @param newConnectionMessage
+     * @return
+     */
+    private State processNewConnectionMessage (NewConnectionMessage newConnectionMessage) {
+        newConnectionMessage.getNode().sync();
+        return new ClusterSyncingState(getContainer(), getCluster(), newConnectionMessage.getNode());
+    }
 
+    private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
+        getCluster().getNodes().add(newNodeMessage.getNode());
+
+        return this;
+    }
 }

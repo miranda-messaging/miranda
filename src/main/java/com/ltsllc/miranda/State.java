@@ -48,6 +48,6 @@ public abstract class State {
     {
         logger.error(this + " does not understand " + m);
 
-        return this;
+        throw new IllegalStateException();
     }
 }

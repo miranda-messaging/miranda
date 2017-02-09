@@ -27,6 +27,7 @@ public class StartingState extends NodeState {
                 break;
             }
 
+
             default: {
                 nextState = super.processMessage(m);
                 break;

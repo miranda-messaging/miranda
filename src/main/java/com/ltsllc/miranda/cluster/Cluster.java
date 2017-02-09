@@ -29,10 +29,7 @@ import java.util.concurrent.BlockingQueue;
 public class Cluster extends Consumer {
     private Logger logger = Logger.getLogger(Cluster.class);
 
-
     private static Cluster ourInstance;
-
-
 
     public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         if (null == ourInstance) {
@@ -53,6 +50,10 @@ public class Cluster extends Consumer {
         this.writer = writerQueue;
         this.network = network;
         this.clusterFile = new ClusterFile(filename, this.writer);
+
+        assert (null != this.writer);
+        assert (null != this.network);
+        assert (null != this.clusterFile);
     }
 
 
@@ -123,7 +124,7 @@ public class Cluster extends Consumer {
 
         clusterFile.start();
         int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-        networkListener = new NetworkListener(port);
+        networkListener = new NetworkListener(port, getQueue());
         networkListener.listen();
 
         return new ClusterReadyState(this);
@@ -152,12 +153,14 @@ public class Cluster extends Consumer {
         return false;
     }
 
+    /*
     public void addNewNode (Node node) {
         nodes.add(node);
 
         NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node.getDns(), node.getIp(), node.getPort(), node.getDescription());
         send(newNodeMessage, getClusterFile().getQueue());
     }
+    */
 
 
     public void connect () {
@@ -165,11 +168,5 @@ public class Cluster extends Consumer {
         for (Node node : nodes) {
             send(connectMessage, node.getQueue());
         }
-    }
-
-
-    public static void nodeAdded (BlockingQueue<Message> senderQueue, Object sender, String dns, String ip, int port, String desciption) {
-        NewNodeMessage newNodeMessage = new NewNodeMessage(senderQueue, sender, dns, ip, port, desciption);
-        staticSend(newNodeMessage, getInstance().getQueue());
     }
 }
