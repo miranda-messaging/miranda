@@ -31,6 +31,10 @@ public class Version  {
         this.lastChange = lastChange;
     }
 
+    public Version (String sha1) {
+        this.sha1 = sha1;
+    }
+
     /**
      * When we are getting the version of an existing file.
      * @param singleFile

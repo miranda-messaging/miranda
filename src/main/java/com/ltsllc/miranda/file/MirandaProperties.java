@@ -18,7 +18,7 @@ import java.util.Set;
 public class MirandaProperties extends Properties {
     private static Logger logger = Logger.getLogger(MirandaProperties.class);
 
-    public static final String PACKAGE_NAME = "com.ltsllc.miranda";
+    public static final String PACKAGE_NAME = "com.ltsllc.miranda.";
 
     public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
     public static final String PROPERTY_CLUSTER_FILE = "com.ltsllc.miranda.ClusterFile";
@@ -42,6 +42,13 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_KEY_STORE_PASSWORD = "com.ltsllc.miranda.KeyStorePassword";
     public static final String PROPERTY_KEY_STORE_ALIAS = "com.ltsllc.miranda.KeyStoreAlias";
     public static final String PROPERTY_TRUST_STORE_ALIAS = "com.ltsllc.miranda.TrustStoreAlias";
+    public static final String PROPERTY_MY_DNS = PACKAGE_NAME + "my.Dns";
+    public static final String PROPERTY_MY_IP = PACKAGE_NAME + "my.Ip";
+    public static final String PROPERTY_MY_PORT = PACKAGE_NAME + "my.Port";
+    public static final String PROPERTY_MY_DESCIPTION = PACKAGE_NAME + "my.Description";
+    public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
+    public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
+
 
 
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
@@ -63,6 +70,8 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_KEY_STORE = "data/serverkeystore";
     public static final String DEFAULT_KEY_STORE_ALIAS = "server";
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
+    public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
+    public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // one week
 
 
     public static String[][] DEFAULT_PROPERTIES = {
@@ -83,7 +92,9 @@ public class MirandaProperties extends Properties {
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
             {PROPERTY_KEY_STORE, DEFAULT_KEY_STORE},
             {PROPERTY_KEY_STORE_ALIAS, DEFAULT_KEY_STORE_ALIAS},
-            {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS}
+            {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
+            {PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD},
+            {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT}
     };
 
     private static MirandaProperties ourInstance;
@@ -161,4 +172,24 @@ public class MirandaProperties extends Properties {
     }
 
 
+    public int getIntegerProperty (String name) {
+        String temp = getProperty(name);
+
+        if (null == temp)
+            return 0;
+        else {
+            return Integer.parseInt(temp);
+        }
+
+    }
+
+
+    public long getLongProperty (String name) {
+        String value = getProperty(name);
+
+        if (null == value)
+            return 0;
+        else
+            return Long.parseLong(value);
+    }
 }

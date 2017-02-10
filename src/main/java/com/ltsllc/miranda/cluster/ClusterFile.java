@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.*;
@@ -181,5 +182,37 @@ public class ClusterFile extends SingleFile<NodeElement> {
         }
 
         return false;
+    }
+
+
+    public void merge (List<NodeElement> list) {
+        boolean changed = false;
+
+        for (NodeElement element : list) {
+            if (!containsElement(element)) {
+                getData().add(element);
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            String sha1 = Utils.caculateSha1(getBytes());
+            Version version = new Version(sha1);
+            setVersion(version);
+            ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getQueue(), this, getData(), version);
+            send(clusterFileChangedMessage, Cluster.getInstance().getQueue());
+
+            WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
+            send(writeMessage, getWriterQueue());
+        }
+    }
+
+
+    public void updateNode (NodeElement nodeElement) {
+        for (NodeElement element : getData()) {
+            if (element.equals(nodeElement)) {
+                element.setLastConnected(nodeElement.getLastConnected());
+            }
+        }
     }
 }

@@ -9,6 +9,9 @@ public class Message {
     public enum Subjects {
         Ballot,
         ClusterFile,
+        ClusterFileChanged,
+        ClusterHealthCheck,
+        ClusterHealthCheckUpdate,
         Connect,
         Connected,
         ConnectionError,
@@ -16,6 +19,8 @@ public class Message {
         ConnectionClosed,
         GetClusterFile,
         GetVersion,
+        HealthCheck,
+        HealthCheckUpdate,
         Join,
         JoinSuccess,
         Listen,
@@ -57,6 +62,8 @@ public class Message {
     public Subjects getSubject() {
         return subject;
     }
+
+    public Object getSenderObject() { return senderObject; }
 
     public Exception getWhere() {
         return where;

@@ -10,6 +10,7 @@ import io.netty.channel.Channel;
 import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -154,5 +155,18 @@ public class Node extends Consumer
     public void sync () {
         SyncingState syncingState = new SyncingState(this);
         setCurrentState(syncingState);
+    }
+
+
+    public boolean isConnected() {
+        return null != channel;
+    }
+
+
+    public NodeElement getUpdatedElement () {
+        NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+        Date date = new Date();
+        nodeElement.setLastConnected(date.getTime());
+        return nodeElement;
     }
 }

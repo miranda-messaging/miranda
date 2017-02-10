@@ -1,14 +1,18 @@
 package com.ltsllc.miranda.cluster;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.node.*;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -92,6 +96,12 @@ public class ClusterSyncingState extends State {
             case ClusterFile: {
                 ClusterFileMessage clusterFileMessage = (ClusterFileMessage) message;
                 nextState = processClusterFileMessage(clusterFileMessage);
+                break;
+            }
+
+            case ClusterFileChanged: {
+                ClusterFileChangedMessage clusterFileChangedMessage = (ClusterFileChangedMessage) message;
+                nextState = processClusterFileChangedMessage(clusterFileChangedMessage);
                 break;
             }
 
@@ -197,12 +207,34 @@ public class ClusterSyncingState extends State {
      * @return
      */
     private State processClusterFileMessage(ClusterFileMessage clusterFileMessage) {
-        ArrayList<NodeElement> arrayList = new ArrayList<NodeElement>();
+        Type type = new TypeToken<ArrayList<NodeElement>>(){}.getType();
         String json = new String(clusterFileMessage.getBuffer());
-        arrayList = ourGson.fromJson(json, arrayList.getClass());
+        List<NodeElement> arrayList = ourGson.fromJson(json, type);
         NewClusterFileMessage newClusterFileMessage = new NewClusterFileMessage(getCluster().getQueue(), this, arrayList, clusterFileMessage.getVersion());
         send(getCluster().getClusterFile().getQueue(), newClusterFileMessage);
 
         return this;
+    }
+
+
+    private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) {
+        for (NodeElement nodeElement : clusterFileChangedMessage.getFile()) {
+            if (!getCluster().contains(nodeElement) && !equalsYourself(nodeElement)) {
+                Node node = new Node(nodeElement);
+                node.start();
+                node.connect();
+                getCluster().getNodes().add(node);
+            }
+        }
+
+        ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
+        return clusterReadyState;
+    }
+
+    private boolean equalsYourself (NodeElement nodeElement) {
+        String myDns = System.getProperty(MirandaProperties.PROPERTY_MY_DNS);
+        int myPort = MirandaProperties.getInstance().getIntegerProperty(MirandaProperties.PROPERTY_MY_PORT);
+
+        return myDns.equals(nodeElement.getDns()) && myPort == nodeElement.getPort();
     }
 }

@@ -7,6 +7,9 @@ import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Clark on 1/3/2017.
  */
@@ -65,6 +68,18 @@ public class ClusterReadyState extends State {
             case NewNode: {
                 NewNodeMessage newNodeMessage = (NewNodeMessage) m;
                 nextState = processNewNodeMessage (newNodeMessage);
+                break;
+            }
+
+            case ClusterFileChanged: {
+                ClusterFileChangedMessage clusterFileChangedMessage = (ClusterFileChangedMessage) m;
+                nextState = processClusterFileChangedMessage (clusterFileChangedMessage);
+                break;
+            }
+
+            case HealthCheck: {
+                HealthCheckMessage healthCheckMessage = (HealthCheckMessage) m;
+                nextState = processHealthCheck(healthCheckMessage);
                 break;
             }
 
@@ -127,8 +142,43 @@ public class ClusterReadyState extends State {
         return new ClusterSyncingState(getContainer(), getCluster(), newConnectionMessage.getNode());
     }
 
+
     private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
         getCluster().getNodes().add(newNodeMessage.getNode());
+
+        return this;
+    }
+
+    /**
+     * This is called when the cluster file has one or more new nodes.
+     *
+     * @param clusterFileChangedMessage
+     * @return
+     */
+    private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) {
+        for (NodeElement nodeElement : clusterFileChangedMessage.getFile()) {
+            if (!getCluster().contains(nodeElement)) {
+                Node node = new Node (nodeElement);
+                node.start();
+                getCluster().getNodes().add(node);
+            }
+        }
+
+        return this;
+    }
+
+    private State processHealthCheck (HealthCheckMessage healthCheckMessage) {
+        List<NodeElement> list = new ArrayList<NodeElement>();
+
+        for (Node node : getCluster().getNodes()) {
+            if (node.isConnected()) {
+                NodeElement nodeElement = node.getUpdatedElement();
+                list.add(nodeElement);
+            }
+        }
+
+        HealthCheckUpdateMessage healthCheckUpdateMessage = new HealthCheckUpdateMessage(getCluster().getQueue(),this, list);
+        send (getCluster().getClusterFile().getQueue(), healthCheckUpdateMessage);
 
         return this;
     }

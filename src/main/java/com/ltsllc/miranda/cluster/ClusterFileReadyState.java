@@ -3,9 +3,13 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Clark on 2/6/2017.
@@ -61,6 +65,12 @@ public class ClusterFileReadyState extends State {
                 break;
             }
 
+            case HealthCheckUpdate: {
+                HealthCheckUpdateMessage healthCheckUpdateMessage = (HealthCheckUpdateMessage) message;
+                nextState = processHealthCheckUpdateMessage(healthCheckUpdateMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -87,7 +97,7 @@ public class ClusterFileReadyState extends State {
 
 
     private State processNewNodeMessag (NewNodeMessage newNodeMessage) {
-        NodeElement nodeElement = new NodeElement(newNodeMessage.getDns(), newNodeMessage.getIp(), newNodeMessage.getPort());
+        NodeElement nodeElement = new NodeElement(newNodeMessage.getDns(), newNodeMessage.getIp(), newNodeMessage.getPort(), newNodeMessage.getDescription());
 
         getClusterFile().addNode(nodeElement);
 
@@ -135,6 +145,37 @@ public class ClusterFileReadyState extends State {
         getClusterFile().setData(newClusterFileMessage.getFile());
         getClusterFile().setVersion(newClusterFileMessage.getVersion());
 
+        ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getClusterFile().getQueue(), this, newClusterFileMessage.getFile(), newClusterFileMessage.getVersion());
+        send(Cluster.getInstance().getQueue(), clusterFileChangedMessage);
+
         return this;
+    }
+
+
+    private State processHealthCheckUpdateMessage (HealthCheckUpdateMessage healthCheckUpdateMessage) {
+        long timeout = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT);
+
+        for (NodeElement nodeElement : healthCheckUpdateMessage.getUpdates()) {
+            getClusterFile().updateNode(nodeElement);
+        }
+
+        List<NodeElement> drops = new ArrayList<NodeElement>();
+        for (NodeElement nodeElement : getClusterFile().getData()) {
+            if (nodeElement.hasTimedout(timeout))
+                drops.add(nodeElement);
+        }
+
+        for (NodeElement nodeElement : drops) {
+            for (NodeElement element : getClusterFile().getData()) {
+                if (element.equals(nodeElement))
+                    getClusterFile().getData().remove(element);
+            }
+        }
+
+        WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), getClusterFile().getBytes(), getClusterFile().getQueue(), this);
+        send(getClusterFile().getWriterQueue(), writeMessage);
+
+        return this;
+
     }
 }

@@ -80,41 +80,6 @@ public class Cluster extends Consumer {
     public BlockingQueue<Message> getWriter() {
         return writer;
     }
-/*
-    public State processMessage(Message m) {
-        State nextState = getCurrentState();
-
-        switch (m.getSubject()) {
-            case Load: {
-                LoadMessage loadMessage = (LoadMessage) m;
-                nextState = processLoad(loadMessage);
-                break;
-            }
-
-            case Connect: {
-                processConnect();
-                break;
-            }
-
-            case NodeAdded: {
-                NodeAddedMessage nodeAddedMessage = (NodeAddedMessage) m;
-                nextState = processNodeAdded(nodeAddedMessage);
-                break;
-            }
-
-            case NodesLoaded: {
-                NodesLoadedMessage nodesLoaded = (NodesLoadedMessage) m;
-                nextState = processNodesLoaded(nodesLoaded);
-                break;
-            }
-        }
-
-        return nextState;
-    }
-
-*/
-
-
 
     public State start () {
         super.start();
@@ -144,7 +109,7 @@ public class Cluster extends Consumer {
         }
     }
 
-    private boolean contains (NodeElement nodeElement) {
+    public boolean contains (NodeElement nodeElement) {
         for (Node node : nodes) {
             if (node.equalsElement(nodeElement))
                 return true;
@@ -153,20 +118,26 @@ public class Cluster extends Consumer {
         return false;
     }
 
-    /*
-    public void addNewNode (Node node) {
-        nodes.add(node);
-
-        NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node.getDns(), node.getIp(), node.getPort(), node.getDescription());
-        send(newNodeMessage, getClusterFile().getQueue());
-    }
-    */
-
-
     public void connect () {
         ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
         for (Node node : nodes) {
             send(connectMessage, node.getQueue());
         }
     }
+
+
+    public void healthCheck () {
+        List<NodeElement> updates = new ArrayList<NodeElement>();
+
+        for (Node node : getNodes()) {
+            if (node.isConnected()) {
+                NodeElement nodeElement = node.getUpdatedElement();
+                updates.add(nodeElement);
+            }
+        }
+
+        HealthCheckUpdateMessage healthCheckMessage = new HealthCheckUpdateMessage(getQueue(), this, updates);
+        send (healthCheckMessage, getClusterFile().getQueue());
+    }
+
 }

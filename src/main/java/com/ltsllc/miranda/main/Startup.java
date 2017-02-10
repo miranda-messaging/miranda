@@ -8,6 +8,7 @@ import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.ConnectingState;
+import com.ltsllc.miranda.timer.ScheduleMessage;
 import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.writer.Writer;
@@ -139,6 +140,7 @@ public class Startup extends State {
         startSubsystems();
         loadFiles();
         setRootUser();
+        schedule();
         return new Ready();
     }
 
@@ -247,7 +249,6 @@ public class Startup extends State {
         Cluster.initializeClass(filename, getWriterQueue(), networkQueue);
         Cluster.getInstance().start();
 
-
         try {
             ConnectMessage m = new ConnectMessage(null, null);
             Cluster.getInstance().getQueue().put(m);
@@ -281,4 +282,11 @@ public class Startup extends State {
     }
 
 
+    public void schedule () {
+        long healthCheckPeriod = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
+        ScheduleMessage scheduleMessage = new ScheduleMessage(Cluster.getInstance().getQueue(), this, healthCheckPeriod);
+        Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
+
+        Cluster.getInstance().healthCheck();
+    }
 }
