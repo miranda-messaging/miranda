@@ -3,6 +3,7 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.miranda.SynchronizeMessage;
 import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
@@ -59,12 +60,6 @@ public class ClusterReadyState extends State {
                 break;
             }
 
-            case NewConnection: {
-                NewConnectionMessage newConnectionMessage = (NewConnectionMessage) m;
-                nextState = processNewConnectionMessage(newConnectionMessage);
-                break;
-            }
-
             case NewNode: {
                 NewNodeMessage newNodeMessage = (NewNodeMessage) m;
                 nextState = processNewNodeMessage (newNodeMessage);
@@ -80,6 +75,12 @@ public class ClusterReadyState extends State {
             case HealthCheck: {
                 HealthCheckMessage healthCheckMessage = (HealthCheckMessage) m;
                 nextState = processHealthCheck(healthCheckMessage);
+                break;
+            }
+
+            case Synchronize: {
+                SynchronizeMessage synchronizeMessage = (SynchronizeMessage) m;
+                nextState = processSynchronizeMessage(synchronizeMessage);
                 break;
             }
 
@@ -179,6 +180,14 @@ public class ClusterReadyState extends State {
 
         HealthCheckUpdateMessage healthCheckUpdateMessage = new HealthCheckUpdateMessage(getCluster().getQueue(),this, list);
         send (getCluster().getClusterFile().getQueue(), healthCheckUpdateMessage);
+
+        return this;
+    }
+
+
+    private State processSynchronizeMessage (SynchronizeMessage synchronizeMessage) {
+        SynchronizeMessage synchronizeMessage2 = new SynchronizeMessage(getCluster().getQueue(), this, synchronizeMessage.getNode());
+        send (getCluster().getClusterFile().getQueue(), synchronizeMessage2);
 
         return this;
     }

@@ -25,6 +25,17 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ClusterFile extends SingleFile<NodeElement> {
     private static Logger logger = Logger.getLogger(ClusterFile.class);
+    private static ClusterFile ourInstance;
+
+    public static ClusterFile getInstance () {
+        return ourInstance;
+    }
+
+    public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue) {
+        if (null == ourInstance) {
+            ourInstance = new ClusterFile(filename, writerQueue);
+        }
+    }
 
     private Version version;
 
@@ -32,7 +43,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         this.version = version;
     }
 
-    public ClusterFile (String filename, BlockingQueue<Message> writer) {
+    private ClusterFile (String filename, BlockingQueue<Message> writer) {
         super(filename, writer);
         ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this, this);
         setCurrentState(clusterFileReadyState);
@@ -41,39 +52,6 @@ public class ClusterFile extends SingleFile<NodeElement> {
     public Version getVersion() {
         return version;
     }
-
-    public Type getBasicType () {
-        return new TypeToken<ArrayList<Node>> (){}.getType();
-    }
-
-/*
-    public void load ()
-    {
-        logger.info("loading " + getFilename());
-        File f = new File(getFilename());
-        if (!f.exists()) {
-            setData(new ArrayList<NodeElement>());
-        } else {
-            Gson gson = new Gson();
-            FileReader fr = null;
-            List<NodeElement> temp = null;
-            try {
-                fr = new FileReader(getFilename());
-                Type t = new TypeToken<ArrayList<NodeElement>>(){}.getType();
-                temp = gson.fromJson(fr, t);
-            } catch (FileNotFoundException e) {
-                logger.info(getFilename() + " not found");
-            } finally {
-                IOUtils.closeNoExceptions(fr);
-            }
-
-            setData(temp);
-
-            Version version = new Version(this);
-            this.version = version;
-        }
-    }
-*/
 
     public State processMessage (Message message) {
         State nextState = getCurrentState();

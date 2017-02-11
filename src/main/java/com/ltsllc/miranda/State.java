@@ -46,8 +46,9 @@ public abstract class State {
      */
     public State processMessage (Message m)
     {
-        logger.error(this + " does not understand " + m);
+        IllegalStateException e = new IllegalStateException();
+        logger.error(this + " does not understand " + m, e);
 
-        throw new IllegalStateException();
+        return StopState.getInstance();
     }
 }

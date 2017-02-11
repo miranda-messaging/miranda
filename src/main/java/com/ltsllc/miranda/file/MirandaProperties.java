@@ -48,6 +48,7 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_MY_DESCIPTION = PACKAGE_NAME + "my.Description";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
+    public static final String PROPERTY_HTTP_PORT = PACKAGE_NAME + "HttpPort";
 
 
 
@@ -72,6 +73,7 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
     public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // one week
+    public static final String DEFAULT_HTTP_PORT = "443";
 
 
     public static String[][] DEFAULT_PROPERTIES = {
@@ -94,7 +96,8 @@ public class MirandaProperties extends Properties {
             {PROPERTY_KEY_STORE_ALIAS, DEFAULT_KEY_STORE_ALIAS},
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD},
-            {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT}
+            {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
+            {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT}
     };
 
     private static MirandaProperties ourInstance;
@@ -104,17 +107,18 @@ public class MirandaProperties extends Properties {
     public static synchronized void initialize (String filename) {
         if (null == ourInstance) {
             Properties defaults = PropertiesUtils.buildFrom(MirandaProperties.DEFAULT_PROPERTIES);
-            Properties properties = new Properties();
+            Properties sysProps = PropertiesUtils.merge(System.getProperties(), defaults);
+
+            Properties properties = null;
+
             try {
-                Properties p = PropertiesUtils.load(filename);
-                properties = PropertiesUtils.augment(defaults, p);
+                properties = PropertiesUtils.load(filename);
             } catch (IOException e) {
                 logger.fatal ("Exception trying to load properties from " + filename, e);
             }
 
-            properties = PropertiesUtils.augment(properties, System.getProperties());
-
-            ourInstance = new MirandaProperties(properties);
+            PropertiesUtils.augment(sysProps, properties);
+            ourInstance = new MirandaProperties(sysProps);
             ourInstance.updateSystemProperties();
         }
     }

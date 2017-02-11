@@ -14,7 +14,19 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/5/2017.
  */
 public class SubscriptionsFile extends SingleFile<Subscription> {
-    public SubscriptionsFile (BlockingQueue<Message> queue, String filename) {
+    private static SubscriptionsFile ourInstance;
+
+    public static SubscriptionsFile getInstance () {
+        return ourInstance;
+    }
+
+    public static synchronized void initialize (String filename, BlockingQueue<Message> writerQueue) {
+        if (null == ourInstance) {
+            ourInstance = new SubscriptionsFile(writerQueue, filename);
+        }
+    }
+
+    private SubscriptionsFile (BlockingQueue<Message> queue, String filename) {
         super(filename, queue);
     }
 

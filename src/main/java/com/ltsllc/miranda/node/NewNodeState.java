@@ -8,6 +8,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.NewNodeMessage;
+import com.ltsllc.miranda.user.GetUsersFileMessage;
 
 import java.util.Stack;
 
@@ -59,6 +60,32 @@ public class NewNodeState extends NodeState {
                 break;
             }
 
+
+            case GetUsersFile: {
+                GetUsersFileMessage getUsersFileMessage = (GetUsersFileMessage) message;
+                nextState = processGetUsersFileMessage (getUsersFileMessage);
+                break;
+            }
+
+
+            case GetTopicsFile: {
+                GetTopicsFileMessage getTopicsFileMessage = (GetTopicsFileMessage) message;
+                nextState = processGetTopicsFileMessage (getTopicsFileMessage);
+                break;
+            }
+
+            case GetSubscriptionsFile: {
+                GetSubscriptionsFileMessage getSubscriptionsFileMessage = (GetSubscriptionsFileMessage) message;
+                nextState = processGetSubscriptionsFileMessage(getSubscriptionsFileMessage);
+                break;
+            }
+
+            case GetVersion: {
+                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
+                nextState = processGetVersionMessage (getVersionMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -91,5 +118,34 @@ public class NewNodeState extends NodeState {
         SyncingState syncingState = new SyncingState(getNode());
 
         return syncingState;
+    }
+
+
+    private State processGetUsersFileMessage (GetUsersFileMessage getUsersFileMessage) {
+        GetUsersFileWireMessage getUsersFileWireMessage = new GetUsersFileWireMessage();
+        sendOnWire(getUsersFileWireMessage);
+        return this;
+    }
+
+
+    private State processGetTopicsFileMessage (GetTopicsFileMessage getTopicsFileMessage) {
+        GetTopicsFileWireMessage getTopicsFileWireMessage = new GetTopicsFileWireMessage();
+        sendOnWire(getTopicsFileWireMessage);
+        return this;
+    }
+
+
+    private State processGetSubscriptionsFileMessage (GetSubscriptionsFileMessage getSubscriptionsFileMessage) {
+        GetSubscriptionsFileWireMessage getSubscriptionsFileWireMessage = new GetSubscriptionsFileWireMessage();
+        sendOnWire(getSubscriptionsFileWireMessage);
+
+        return this;
+    }
+
+    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+        GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
+        sendOnWire(getVersionsWireMessage);
+
+        return this;
     }
 }

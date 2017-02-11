@@ -124,5 +124,13 @@ public class PropertiesUtils {
         return getIntProperty(System.getProperties(), name);
     }
 
+    public static Properties merge (Properties p1, Properties p2) {
+        for (String name : p2.stringPropertyNames())
+        {
+            if (null == p1.getProperty(name))
+                p1.setProperty(name, p2.getProperty(name));
+        }
 
+        return p1;
+    }
 }

@@ -18,6 +18,13 @@ public class Consumer extends Subsystem {
     }
 
     public void setCurrentState (State s) {
+        if (null == currentState)
+            logger.info(this + " transitioning from null to " + s);
+        else if (null == s)
+            logger.info(this + " in state " + currentState + " transitioning to null");
+        else if (currentState.getClass() != s.getClass())
+            logger.info(this + " in state " + currentState + " transitioning to " + s);
+
         currentState = s;
     }
 

@@ -2,12 +2,11 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Miranda;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.concurrent.BlockingQueue;
 
 /**

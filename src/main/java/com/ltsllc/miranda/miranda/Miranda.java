@@ -1,11 +1,13 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.miranda;
 
+import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.StartState;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.FileWatcher;
-import com.ltsllc.miranda.main.Startup;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
 
-import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 

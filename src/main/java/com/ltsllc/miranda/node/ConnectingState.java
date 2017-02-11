@@ -1,27 +1,13 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Miranda;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.ConnectedMessage;
 import com.ltsllc.miranda.timer.ScheduleMessage;
-import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.util.PropertiesUtils;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
-import java.security.KeyStore;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/21/2017.

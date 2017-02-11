@@ -33,6 +33,7 @@ public class Cluster extends Consumer {
 
     public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         if (null == ourInstance) {
+            ClusterFile.initialize(filename, writerQueue);
             ourInstance = new Cluster(filename, writerQueue, network);
         }
     }
@@ -49,7 +50,7 @@ public class Cluster extends Consumer {
 
         this.writer = writerQueue;
         this.network = network;
-        this.clusterFile = new ClusterFile(filename, this.writer);
+        this.clusterFile = ClusterFile.getInstance();
 
         assert (null != this.writer);
         assert (null != this.network);
@@ -87,7 +88,6 @@ public class Cluster extends Consumer {
         State state = new ClusterReadyState(this);
         setCurrentState(state);
 
-        clusterFile.start();
         int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         networkListener = new NetworkListener(port, getQueue());
         networkListener.listen();
@@ -96,9 +96,9 @@ public class Cluster extends Consumer {
     }
 
 
-    public static void load (String filename) {
+    public void load (String filename) {
         LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), filename, null);
-        getInstance().send(loadMessage, getInstance().getClusterFile().getQueue());
+        getInstance().send(loadMessage, getClusterFile().getQueue());
     }
 
     public void addNode (NodeElement nodeElement) {

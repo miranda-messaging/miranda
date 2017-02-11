@@ -1,8 +1,8 @@
 package com.ltsllc.miranda.network;
 
-import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.node.NetworkMessage;
@@ -12,6 +12,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
@@ -60,12 +61,10 @@ public class NetworkListener {
     private static class LocalInitializer extends ChannelInitializer<SocketChannel> {
         private static Logger logger = Logger.getLogger(LocalInitializer.class);
 
-        private BlockingQueue<Message> cluster;
         private SslContext sslContext;
 
-        public LocalInitializer (SslContext sslContext, BlockingQueue<Message> cluster) {
+        public LocalInitializer (SslContext sslContext) {
             this.sslContext = sslContext;
-            this.cluster = cluster;
         }
 
         public void initChannel (SocketChannel socketChannel) {
@@ -79,7 +78,7 @@ public class NetworkListener {
             node.start();
 
             NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
-            Consumer.staticSend(newConnectionMessage, cluster);
+            Consumer.staticSend(newConnectionMessage, Miranda.getInstance().getQueue());
 
             LocalHandler localHandler = new LocalHandler(node.getQueue());
             socketChannel.pipeline().addLast(localHandler);
@@ -101,6 +100,12 @@ public class NetworkListener {
             {
                 InetSocketAddress inetSocketAddress = (InetSocketAddress) channelFuture.channel().remoteAddress();
 
+                // if (channelFuture.channel() instanceof NioServerSocketChannel) {
+                    // logger.warn("Spurious connection");
+                    // return;
+                // }
+
+
                 //
                 // for some reason, we occasionally get empty connections
                 //
@@ -116,7 +121,7 @@ public class NetworkListener {
                 channelFuture.channel().pipeline().addLast(localHandler);
 
                 NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
-                Consumer.staticSend(newConnectionMessage, Cluster.getInstance().getQueue());
+                Consumer.staticSend(newConnectionMessage, Miranda.getInstance().getQueue());
             }
 
         }
@@ -151,12 +156,20 @@ public class NetworkListener {
         String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
 
         SslContext sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, certificateFilename, certificatePassword, certificateAlias);
-        LocalInitializer localInitializer = new LocalInitializer(sslContext, getCluster());
+        LocalInitializer localInitializer = new LocalInitializer(sslContext);
 
         ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localInitializer);
 
         logger.info ("listening at " + port);
-        ChannelFuture channelFuture = serverBootstrap.bind(port);
+        serverBootstrap.bind(port);
+        ChannelFuture channelFuture = null;
+
+        try {
+            channelFuture = serverBootstrap.bind(port).sync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         LocalChannelListener localChannelListener = new LocalChannelListener();
         channelFuture.addListener(localChannelListener);
     }

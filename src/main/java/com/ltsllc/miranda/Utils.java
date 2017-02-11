@@ -233,4 +233,49 @@ public class Utils {
         String digest = bytesToString(messageDigest.digest());
         return digest;
     }
+
+
+    public static SslContext createServerContext (String serverFilename, String serverPassword, String serverAlias,
+                                                  String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
+        SslContext sslContext = null;
+
+        try {
+            PrivateKey privateKey = loadKey(serverFilename, serverPassword, serverAlias);
+            X509Certificate certificate = loadCertificate(serverFilename, serverPassword, trustStoreAlias);
+            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword);
+
+            sslContext = SslContextBuilder
+                    .forServer(privateKey, certificate)
+                    .trustManager(trustManagerFactory)
+                    .build();
+        } catch (Exception e) {
+            logger.fatal ("Exception while trying to create SslContext", e);
+            System.exit(1);
+        }
+
+        return sslContext;
+    }
+
+
+    public static TrustManagerFactory createTrustManagerFactory (String filename, String passwordString) {
+        FileInputStream fileInputStream = null;
+        TrustManagerFactory trustManagerFactory = null;
+
+        try {
+            fileInputStream = new FileInputStream(filename);
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(fileInputStream, passwordString.toCharArray());
+
+            trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        } finally {
+            closeIgnoreExceptions(fileInputStream);
+        }
+
+        return trustManagerFactory;
+
+    }
 }

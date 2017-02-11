@@ -14,6 +14,9 @@ public class WireMessage {
     public enum WireSubjects {
         ClusterFile,
         GetClusterFile,
+        GetSubscriptionsFile,
+        GetTopicsFile,
+        GetUsersFile,
         Join,
         JoinSuccess,
         GetVersions,
