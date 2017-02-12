@@ -27,7 +27,7 @@ public class Client {
             byte[] buffer = new byte[byteBuf.readableBytes()];
             byteBuf.getBytes(0, buffer);
             String s = new String(buffer);
-            System.out.println ("got " + s);
+            logger.info ("got " + s);
 
             // String message = "hi there";
             // byteBuf = Unpooled.directBuffer(256);
@@ -38,7 +38,7 @@ public class Client {
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            System.out.println ("conection closed, exiting.");
+            logger.info ("channelInactive, exiting");
             ctx.close();
             System.exit(0);
         }
@@ -106,7 +106,7 @@ public class Client {
 
         String host = "localhost";
         int port = 6789;
-        System.out.println ("connecting to " + host + ":" + port);
+        logger.info ("connecting to " + host + ":" + port);
         ChannelFuture channelFuture = bootstrap.connect (host, port);
         channelFuture.addListener(localChannelFutureListener);
 
