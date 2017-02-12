@@ -87,8 +87,14 @@ public class Network extends Consumer {
         }
     }
 
-    private static class LocalClientInializer extends ChannelInitializer<SocketChannel> {
+    private static class LocalClientInitializer extends ChannelInitializer<SocketChannel> {
+        private SslContext sslContext;
+
         public void initChannel(SocketChannel sc) {
+            SslHandler sslHandler = sslContext.newHandler(sc.alloc());
+
+            // sc.pipeline().addLast(sslHandler);
+
             InetSocketAddress inetSocketAddress = (InetSocketAddress) sc.remoteAddress();
             Node node = new Node(inetSocketAddress, sc);
             node.start();
@@ -144,9 +150,9 @@ public class Network extends Consumer {
             String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
             SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
 
-            LocalClientInializer localClientInializer = new LocalClientInializer();
+            LocalClientInitializer localClientInitializer = new LocalClientInitializer();
 
-            Bootstrap bootstrap = Utils.createClientBootstrap(localClientInializer);
+            Bootstrap bootstrap = Utils.createClientBootstrap(localClientInitializer);
             LocalClientHandler localClientHandler = new LocalClientHandler(notify);
             bootstrap.handler(localClientHandler);
             ChannelFuture channelFuture = bootstrap.connect(host, port);

@@ -60,7 +60,8 @@ public class ConnectingState extends NodeState {
 
 
     private State processConnectFailed (ConnectFailedMessage connectFailedMessage) {
-        logger.info("Failed to get connection", connectFailedMessage.getCause());
+        String message = "Failed to get connection to " + getNode().getDns() + ":" + getNode().getPort();
+        logger.info(message, connectFailedMessage.getCause());
 
         MirandaProperties p = MirandaProperties.getInstance();
         int delayBetweenRetries = PropertiesUtils.getIntProperty(System.getProperties(), MirandaProperties.PROPERTY_DELAY_BETWEEN_RETRIES);

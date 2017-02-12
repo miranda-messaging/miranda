@@ -40,8 +40,8 @@ public class Node extends Consumer
 
         this.channel = channel;
 
-        State newNodeState = new NewNodeState(this);
-        setCurrentState(newNodeState);
+        State connectedState = new ConnectedState(this);
+        setCurrentState(connectedState);
     }
 
 

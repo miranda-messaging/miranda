@@ -143,9 +143,7 @@ public class NewNodeState extends NodeState {
         JoinSuccessWireMessage joinSuccessWireMessage = new JoinSuccessWireMessage();
         sendOnWire(joinSuccessWireMessage);
 
-        SyncingState syncingState = new SyncingState(getNode());
-
-        return syncingState;
+        return this;
     }
 
 
