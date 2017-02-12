@@ -11,11 +11,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * Created by Clark on 2/4/2017.
  */
 public class Client {
+    private static Logger logger = Logger.getLogger(Client.class);
 
     public static class LocalChannelHandler extends ChannelInboundHandlerAdapter {
         @Override
@@ -35,8 +38,18 @@ public class Client {
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            System.out.println ("conection closed");
+            System.out.println ("conection closed, exiting.");
             ctx.close();
+            System.exit(0);
+        }
+
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            logger.fatal ("Caught exception, exiting", cause);
+
+            ctx.close();
+            System.exit(1);
         }
     }
 
@@ -54,7 +67,7 @@ public class Client {
             }
 
             SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
-            // channelFuture.channel().pipeline().addLast(sslHandler);
+            channelFuture.channel().pipeline().addLast(sslHandler);
 
             LocalChannelHandler localChannelHandler = new LocalChannelHandler();
             channelFuture.channel().pipeline().addLast(localChannelHandler);
@@ -62,6 +75,9 @@ public class Client {
             String message = "Hello world!";
             ByteBuf byteBuf = Unpooled.directBuffer(256);
             ByteBufUtil.writeUtf8(byteBuf, message);
+
+            logger.info ("Sending " + message);
+
             channelFuture.channel().writeAndFlush(byteBuf);
         }
     }
@@ -73,9 +89,14 @@ public class Client {
 
 
     public void go () {
-        String trustStoreFilename = "c:\\users\\clark\\ideaprojects\\miranda\\data\\truststore";
+        String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\data\\";
+
+        String log4jConfigurationFile = dir + "log4j.xml";
+        String trustStoreFilename = dir + "truststore";
         String trustStorePassword = "whatever";
         String trustStoreAlias = "ca";
+
+        DOMConfigurator.configure(log4jConfigurationFile);
 
         LocalChannelHandler localChannelHandler = new LocalChannelHandler();
 
