@@ -18,11 +18,16 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 2/8/2017.
  */
+
+/**
+ * The cluster is getting a remote version of the cluster file which it will
+ * mrege with its local version.
+ */
 public class ClusterSyncingState extends State {
     private static Logger logger = Logger.getLogger(ClusterSyncingState.class);
     private static Gson ourGson = new Gson();
 
-    private Node node;
+    // private Node node;
     private Cluster cluster;
     private BlockingQueue<Message> versionNotifier;
 
@@ -39,17 +44,19 @@ public class ClusterSyncingState extends State {
         this.versionNotifier = versionNotifier;
     }
 
+    /*
     public Node getNode() {
         return node;
     }
+    */
 
-    public ClusterSyncingState(Consumer consumer, Cluster cluster, Node node) {
+    public ClusterSyncingState(Consumer consumer, Cluster cluster) {
         super(consumer);
         this.cluster = cluster;
-        this.node = node;
+        // this.node = node;
 
         assert (null != this.cluster);
-        assert (null != this.node);
+        // assert (null != this.node);
     }
 
     @Override
@@ -57,11 +64,14 @@ public class ClusterSyncingState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
+
+            /*
             case NewConnection: {
                 NewConnectionMessage newConnectionMessage = (NewConnectionMessage) message;
                 nextState = processNewConnectionMessage(newConnectionMessage);
                 break;
             }
+
 
             case NodeUpdated: {
                 NodeUpdatedMessage nodeUpdatedMessage = (NodeUpdatedMessage) message;
@@ -69,29 +79,28 @@ public class ClusterSyncingState extends State {
                 break;
             }
 
+
             case GetVersion: {
                 GetVersionMessage getVersionMessage = (GetVersionMessage) message;
                 nextState = processGetVersionMessage(getVersionMessage);
                 break;
             }
+*/
 
-            case Version: {
-                VersionMessage versionMessage = (VersionMessage) message;
-                nextState = processVersionMessage(versionMessage);
-                break;
-            }
 
             case NodesLoaded: {
                 NodesLoadedMessage nodesLoadedMessage = (NodesLoadedMessage) message;
                 nextState = processNodesLoadedMessage(nodesLoadedMessage);
                 break;
             }
-
+/*
             case Versions: {
                 VersionsMessage versionsMessage = (VersionsMessage) message;
                 nextState = processVersionsMessage(versionsMessage);
                 break;
             }
+
+            */
 
             case ClusterFile: {
                 ClusterFileMessage clusterFileMessage = (ClusterFileMessage) message;
@@ -105,6 +114,7 @@ public class ClusterSyncingState extends State {
                 break;
             }
 
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -113,21 +123,7 @@ public class ClusterSyncingState extends State {
         return nextState;
     }
 
-    @Override
-    public State start() {
-        GetVersionMessage getVersionMessage = new GetVersionMessage(getCluster().getQueue(), this);
-        send(getNode().getQueue(), getVersionMessage);
-
-        return this;
-    }
-
-    private State processVersionMessage(VersionMessage versionMessage) {
-        VersionMessage versionMessage2 = new VersionMessage(getCluster().getQueue(), getCluster(), versionMessage.getNameVersion());
-        send(node.getQueue(), versionMessage2);
-
-        return this;
-    }
-
+/*
     private State processGetVersionMessage(GetVersionMessage getVersionMessage) {
         State nextState = this;
 
@@ -148,22 +144,18 @@ public class ClusterSyncingState extends State {
     }
 
 
+
     private State processNewConnectionMessage(NewConnectionMessage newConnectionMessage) {
         GetVersionMessage getVersionMessage = new GetVersionMessage(getCluster().getQueue(), this);
         send(newConnectionMessage.getNode().getQueue(), getVersionMessage);
 
-        return new ClusterSyncingState(getCluster(), getCluster(), newConnectionMessage.getNode());
+        return new ClusterSyncingState(getCluster(), getCluster());
     }
 
 
-    /**
-     * This is called when the cluster receives a version of the cluster file
-     * that it requested from a newly connected node.  It needs to determine if
-     * the remote file is more recent than the file it has.
-     *
-     * @param versionsMessage
-     * @return
-     */
+
+
+
     private State processVersionsMessage(VersionsMessage versionsMessage) {
         for (NameVersion nameVersion : versionsMessage.getVersions()) {
             if (!nameVersion.getName().equals("cluster"))
@@ -190,6 +182,7 @@ public class ClusterSyncingState extends State {
 
         return this;
     }
+    */
 
     private State processNodesLoadedMessage(NodesLoadedMessage nodesLoadedMessage) {
         State nextState = this;
@@ -220,7 +213,7 @@ public class ClusterSyncingState extends State {
     private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) {
         for (NodeElement nodeElement : clusterFileChangedMessage.getFile()) {
             if (!getCluster().contains(nodeElement) && !equalsYourself(nodeElement)) {
-                Node node = new Node(nodeElement);
+                Node node = new Node(nodeElement, getCluster().getNetwork());
                 node.start();
                 node.connect();
                 getCluster().getNodes().add(node);
@@ -237,4 +230,5 @@ public class ClusterSyncingState extends State {
 
         return myDns.equals(nodeElement.getDns()) && myPort == nodeElement.getPort();
     }
+
 }

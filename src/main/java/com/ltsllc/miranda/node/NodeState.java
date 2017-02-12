@@ -43,6 +43,7 @@ public class NodeState extends State {
 
     public State processNetworkMessage (NetworkMessage networkMessage) {
         logger.fatal (this + " does not understand network message " + networkMessage.getWireMessage().getWireSubject());
+        logger.fatal ("message created at", networkMessage.getWhere());
         System.exit(1);
 
         return this;

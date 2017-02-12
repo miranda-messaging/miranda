@@ -34,6 +34,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
     public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue) {
         if (null == ourInstance) {
             ourInstance = new ClusterFile(filename, writerQueue);
+            ourInstance.load();
+            ourInstance.start();
         }
     }
 
@@ -45,7 +47,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
     private ClusterFile (String filename, BlockingQueue<Message> writer) {
         super(filename, writer);
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this, this);
+
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
         setCurrentState(clusterFileReadyState);
     }
 
@@ -142,7 +145,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     public void nodesLoaded (List<NodeElement> nodes) {
         for (NodeElement element : nodes) {
             if (!containsElement(element)) {
-                Node node = new Node(element);
+                Node node = new Node(element, Cluster.getInstance().getNetwork());
                 node.start();
                 node.connect();
 

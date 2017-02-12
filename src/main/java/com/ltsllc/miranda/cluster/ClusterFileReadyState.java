@@ -1,24 +1,29 @@
 package com.ltsllc.miranda.cluster;
 
+import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Clark on 2/6/2017.
  */
-public class ClusterFileReadyState extends State {
+public class ClusterFileReadyState extends SingleFileReadyState {
     private ClusterFile clusterFile;
 
-    public ClusterFileReadyState(Consumer consumer, ClusterFile clusterFile) {
-        super(consumer);
+    public ClusterFileReadyState(ClusterFile clusterFile) {
+        super(clusterFile);
         this.clusterFile = clusterFile;
     }
 
@@ -81,15 +86,6 @@ public class ClusterFileReadyState extends State {
     }
 
 
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        NameVersion nameVersion = new NameVersion("cluster", getClusterFile().getVersion());
-        VersionMessage versionMessage = new VersionMessage(getClusterFile().getQueue(), this, nameVersion);
-        send(getVersionMessage.getSender(), versionMessage);
-
-        return new ClusterFileGettingVersionState(getContainer(), getVersionMessage.getSender());
-    }
-
-
     private State processNodeAddedMessage (NodeAddedMessage nodeAddedMessage) {
         getClusterFile().addNode(nodeAddedMessage.getNode());
         return this;
@@ -101,7 +97,7 @@ public class ClusterFileReadyState extends State {
 
         getClusterFile().addNode(nodeElement);
 
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getContainer(), getClusterFile());
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getClusterFile());
         return clusterFileReadyState;
     }
 
@@ -134,7 +130,7 @@ public class ClusterFileReadyState extends State {
     private State processNewClusterFileMessage (NewClusterFileMessage newClusterFileMessage) {
         for (NodeElement element : getClusterFile().getData()) {
             if (!getClusterFile().contains(element)) {
-                Node node = new Node(element);
+                Node node = new Node(element, Cluster.getInstance().getNetwork());
                 node.start();
 
                 NewNodeMessage newNodeMessage = new NewNodeMessage(getClusterFile().getQueue(), this, node);
@@ -165,17 +161,87 @@ public class ClusterFileReadyState extends State {
                 drops.add(nodeElement);
         }
 
-        for (NodeElement nodeElement : drops) {
-            for (NodeElement element : getClusterFile().getData()) {
-                if (element.equals(nodeElement))
-                    getClusterFile().getData().remove(element);
-            }
-        }
+        getClusterFile().getData().removeAll(drops);
 
         WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), getClusterFile().getBytes(), getClusterFile().getQueue(), this);
         send(getClusterFile().getWriterQueue(), writeMessage);
 
-        return this;
 
+        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getClusterFile().getData(), getClusterFile().getQueue(),this);
+        send(Cluster.getInstance().getQueue(), nodesLoadedMessage);
+
+        return this;
+    }
+
+    /**
+     * Send the version of the cluster file to the sender.
+     *
+     * @param getVersionMessage
+     * @return
+     */
+    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+        NameVersion nameVersion = new NameVersion("cluster", getClusterFile().getVersion());
+        VersionMessage versionMessage = new VersionMessage(getClusterFile().getQueue(), this, nameVersion);
+        send(getVersionMessage.getRequester(), versionMessage);
+
+        return this;
+    }
+
+
+    @Override
+    public Type getListType() {
+        return new TypeToken<List<NodeElement>>(){}.getType();
+    }
+
+
+    @Override
+    public State getSyncingState() {
+        ClusterFileSyncingState clusterFileSyncingState = new ClusterFileSyncingState(getClusterFile());
+        return clusterFileSyncingState;
+    }
+
+
+
+    public void write () {
+        WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), getClusterFile().getBytes(), getClusterFile().getQueue(), this);
+        send (getClusterFile().getWriterQueue(), writeMessage);
+    }
+
+
+    @Override
+    public boolean contains(Object o) {
+        NodeElement nodeElement = (NodeElement) o;
+
+        for (NodeElement element : getClusterFile().getData()) {
+            if (element.equals(nodeElement))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    @Override
+    public Version getVersion() {
+        return getClusterFile().getVersion();
+    }
+
+
+    @Override
+    public void add(Object o) {
+        NodeElement nodeElement = (NodeElement) o;
+        getClusterFile().getData().add(nodeElement);
+    }
+
+
+    @Override
+    public SingleFile getFile() {
+        return getClusterFile();
+    }
+
+
+    @Override
+    public String getName() {
+        return "clusters";
     }
 }

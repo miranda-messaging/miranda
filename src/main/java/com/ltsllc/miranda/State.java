@@ -49,6 +49,8 @@ public abstract class State {
         IllegalStateException e = new IllegalStateException();
         logger.error(this + " does not understand " + m, e);
 
+        logger.error ("message created at", m.getWhere());
+
         return StopState.getInstance();
     }
 }

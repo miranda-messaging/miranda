@@ -14,13 +14,16 @@ public class WireMessage {
     public enum WireSubjects {
         ClusterFile,
         GetClusterFile,
+        GetFile,
+        GetFileResponse,
         GetSubscriptionsFile,
         GetTopicsFile,
         GetUsersFile,
+        GetVersions,
         Join,
         JoinSuccess,
-        GetVersions,
-        Versions
+        Versions,
+        Version
     }
 
     private WireSubjects subject;

@@ -34,7 +34,7 @@ public class Cluster extends Consumer {
     public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         if (null == ourInstance) {
             ClusterFile.initialize(filename, writerQueue);
-            ourInstance = new Cluster(filename, writerQueue, network);
+            ourInstance = new Cluster(network);
         }
     }
 
@@ -42,17 +42,15 @@ public class Cluster extends Consumer {
         return ourInstance;
     }
 
-    private Cluster(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
+    private Cluster(BlockingQueue<Message> network) {
         super("Cluster");
+        this.clusterFile = ClusterFile.getInstance();
 
         ClusterReadyState readyState = new ClusterReadyState(this);
         setCurrentState(readyState);
 
-        this.writer = writerQueue;
         this.network = network;
-        this.clusterFile = ClusterFile.getInstance();
 
-        assert (null != this.writer);
         assert (null != this.network);
         assert (null != this.clusterFile);
     }
@@ -60,10 +58,7 @@ public class Cluster extends Consumer {
 
     private List<Node> nodes = new ArrayList<Node>();
     private BlockingQueue<Message> network;
-    private BlockingQueue<Message> writer;
     private ClusterFile clusterFile;
-
-
     private NetworkListener networkListener;
 
     public ClusterFile getClusterFile() {
@@ -78,10 +73,9 @@ public class Cluster extends Consumer {
         return network;
     }
 
-    public BlockingQueue<Message> getWriter() {
-        return writer;
+    public NetworkListener getNetworkListener() {
+        return networkListener;
     }
-
     public State start () {
         super.start();
 
@@ -92,7 +86,7 @@ public class Cluster extends Consumer {
         networkListener = new NetworkListener(port, getQueue());
         networkListener.listen();
 
-        return new ClusterReadyState(this);
+        return getCurrentState();
     }
 
 
@@ -119,9 +113,11 @@ public class Cluster extends Consumer {
     }
 
     public void connect () {
-        ConnectMessage connectMessage = new ConnectMessage(getQueue(), this);
-        for (Node node : nodes) {
-            send(connectMessage, node.getQueue());
+        for (NodeElement nodeElement : getClusterFile().getData()) {
+            Node node = new Node(nodeElement, getNetwork());
+            node.start();
+            getNodes().add(node);
+            node.connect();
         }
     }
 

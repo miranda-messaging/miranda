@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFileMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import javax.naming.NameAlreadyBoundException;
@@ -101,12 +102,6 @@ public class JoiningState extends NodeState {
                 break;
             }
 
-            case GetClusterFile: {
-                GetClusterFileWireMessage getClusterFileWireMessage = (GetClusterFileWireMessage) networkMessage.getWireMessage();
-                nextState = processGetClusterFileWireMessag(getClusterFileWireMessage);
-                break;
-            }
-
             default:
                 logger.fatal(this + " does not understand network message " + networkMessage.getWireMessage().getWireSubject());
                 System.exit(1);
@@ -122,8 +117,8 @@ public class JoiningState extends NodeState {
 
 
     private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
-        GetClusterFileWireMessage getClusterFileWireMessage = new GetClusterFileWireMessage();
-        sendOnWire(getClusterFileWireMessage);
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage("cluster");
+        sendOnWire(getFileWireMessage);
 
         return this;
     }
@@ -138,11 +133,12 @@ public class JoiningState extends NodeState {
 
 
     private State processGetVersionsWireMessage (GetVersionsWireMessage getVersionsWireMessage) {
-        GetVersionMessage getVersionMessage = new GetVersionMessage(getNode().getQueue(), this);
-        send (Cluster.getInstance().getQueue(), getVersionMessage);
+        GetVersionMessage getVersionMessage = new GetVersionMessage(getNode().getQueue(), this, getNode().getQueue());
+        send (Miranda.getInstance().getQueue(), getVersionMessage);
 
         return this;
     }
+
 
     private State processVersionMessage (VersionMessage versionMessage) {
         List<NameVersion> versions = new ArrayList<NameVersion>();
@@ -151,14 +147,6 @@ public class JoiningState extends NodeState {
 
         VersionsWireMessage versionsWireMessage = new VersionsWireMessage(versions);
         sendOnWire(versionsWireMessage);
-
-        return this;
-    }
-
-
-    private State processGetClusterFileWireMessag (GetClusterFileWireMessage getClusterFileWireMessage) {
-        GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(getNode().getQueue(), this);
-        send(Cluster.getInstance().getQueue(), getClusterFileMessage);
 
         return this;
     }

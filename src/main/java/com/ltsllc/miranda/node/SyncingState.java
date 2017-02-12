@@ -85,11 +85,6 @@ public class SyncingState extends NodeState {
                 break;
             }
 
-            case GetVersions: {
-                GetVersionsWireMessage getVersionWireMessage = (GetVersionsWireMessage) networkMessage.getWireMessage();
-                nextState = processGetVersionWireMessage(getVersionWireMessage);
-                break;
-            }
 
             case Join: {
                 JoinWireMessage joinWireMessage = (JoinWireMessage) networkMessage.getWireMessage();
@@ -106,16 +101,16 @@ public class SyncingState extends NodeState {
         return nextState;
     }
 
-
+/*
     private State processGetVersionWireMessage (GetVersionsWireMessage getVersionsWireMessage) {
         State nextState = this;
 
-        GetVersionMessage getVersionMessage = new GetVersionMessage(getNode().getQueue(), this);
+        GetVersionMessage getVersionMessage = new GetVersionMessage(getNode().getQueue(), this, );
         send(Cluster.getInstance().getQueue(), getVersionMessage);
 
         return nextState;
     }
-
+*/
 
     private State processVersionsMessage (VersionsWireMessage versionsWireMessage) {
         return new NodeReadyState(getNode());

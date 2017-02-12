@@ -52,10 +52,6 @@ public class GettingVersionState extends State {
 
 
     private State processVersionMessage (VersionMessage versionMessage) {
-        VersionMessage versionMessage2 = new VersionMessage(getClusterFile().getQueue(), getClusterFile(), versionMessage.getNameVersion());
-        send(getNotify(), versionMessage2);
-
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getClusterFile(), getClusterFile());
-        return clusterFileReadyState;
+        return this;
     }
 }

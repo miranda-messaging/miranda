@@ -15,6 +15,8 @@ public class VersionMessage extends Message {
         return nameVersion;
     }
 
+
+
     public VersionMessage (BlockingQueue<Message> senderQueue, Object sender, NameVersion nameVersion) {
         super(Subjects.Version, senderQueue, sender);
 

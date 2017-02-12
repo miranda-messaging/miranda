@@ -165,7 +165,8 @@ public class NetworkListener {
         ChannelFuture channelFuture = null;
 
         try {
-            channelFuture = serverBootstrap.bind(port).sync();
+            // channelFuture = serverBootstrap.bind(port).sync();
+            channelFuture = serverBootstrap.bind(port);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -23,11 +23,15 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
     public static synchronized void initialize (String filename, BlockingQueue<Message> writerQueue) {
         if (null == ourInstance) {
             ourInstance = new SubscriptionsFile(writerQueue, filename);
+            ourInstance.start();
         }
     }
 
     private SubscriptionsFile (BlockingQueue<Message> queue, String filename) {
         super(filename, queue);
+
+        SubscriptionsFileReadyState subscriptionsFileReadyState = new SubscriptionsFileReadyState(this);
+        setCurrentState(subscriptionsFileReadyState);
     }
 
     public Type getBasicType () {

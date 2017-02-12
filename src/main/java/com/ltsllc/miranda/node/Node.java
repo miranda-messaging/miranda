@@ -19,10 +19,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Node extends Consumer
 {
-    public Node (NodeElement element) {
-        this(element, new LinkedBlockingQueue<Message>());
-    }
-
     public Node(NodeElement element, BlockingQueue<Message> network) {
         super("node");
         dns = element.getDns();
@@ -134,7 +130,7 @@ public class Node extends Consumer
     }
 
     public void connect (BlockingQueue<Message> senderQueue, Object sender) {
-        ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender);
+        ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender, getDns(), getPort());
         send (connectMessage, getQueue());
     }
 

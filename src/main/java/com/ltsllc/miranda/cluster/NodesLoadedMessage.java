@@ -17,7 +17,6 @@ public class NodesLoadedMessage extends Message {
     public NodesLoadedMessage(List<NodeElement> nodes, BlockingQueue<Message> sender, Object senderObject) {
         super(Subjects.NodesLoaded, sender, senderObject);
         this.nodes = nodes;
-
     }
 
     public List<NodeElement> getNodes() {

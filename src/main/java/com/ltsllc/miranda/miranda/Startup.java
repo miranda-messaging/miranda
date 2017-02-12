@@ -259,14 +259,7 @@ public class Startup extends State {
 
         Cluster.initializeClass(filename, getWriterQueue(), networkQueue);
         Cluster.getInstance().start();
-
-        try {
-            ConnectMessage m = new ConnectMessage(null, null);
-            Cluster.getInstance().getQueue().put(m);
-        } catch (InterruptedException e) {
-            logger.fatal ("Interrupted while trying to connect the cluster", e);
-            System.exit(1);
-        }
+        Cluster.getInstance().connect();
 
         HttpServer httpServer = new HttpServer();
         httpServer.startup();

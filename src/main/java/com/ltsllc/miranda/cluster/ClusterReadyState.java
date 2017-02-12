@@ -1,13 +1,13 @@
 package com.ltsllc.miranda.cluster;
 
-import com.ltsllc.miranda.Consumer;
+import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.SynchronizeMessage;
-import com.ltsllc.miranda.network.NewConnectionMessage;
-import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +84,7 @@ public class ClusterReadyState extends State {
                 break;
             }
 
+
             default:
                 nextState = super.processMessage(m);
                 break;
@@ -93,13 +94,6 @@ public class ClusterReadyState extends State {
     }
 
 
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        GetVersionMessage getVersionMessage2 = new GetVersionMessage(getCluster().getQueue(), this);
-        send (getCluster().getClusterFile().getQueue(), getVersionMessage2);
-
-        GettingVersionState gettingVersionState = new GettingVersionState(getContainer(), getCluster().getClusterFile(), getVersionMessage.getSender());
-        return gettingVersionState;
-    }
 
 
     private State processLoad (LoadMessage loadMessage) {
@@ -116,7 +110,12 @@ public class ClusterReadyState extends State {
         State nextState = this;
 
         for (NodeElement element : nodesLoadedMessage.getNodes()) {
-            getCluster().addNode(element);
+            if (!contains(element)) {
+                Node node = new Node(element, getCluster().getNetwork());
+                node.start();
+                node.connect();
+                getCluster().getNodes().add(node);
+            }
         }
 
         return nextState;
@@ -127,20 +126,6 @@ public class ClusterReadyState extends State {
      */
     private void processConnect() {
         getCluster().connect();
-    }
-
-
-    /**
-     * This is called when we get a new connection "out of the blue."
-     *
-     * There is nothing to do except wait for a join message.
-     *
-     * @param newConnectionMessage
-     * @return
-     */
-    private State processNewConnectionMessage (NewConnectionMessage newConnectionMessage) {
-        newConnectionMessage.getNode().sync();
-        return new ClusterSyncingState(getContainer(), getCluster(), newConnectionMessage.getNode());
     }
 
 
@@ -159,7 +144,7 @@ public class ClusterReadyState extends State {
     private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) {
         for (NodeElement nodeElement : clusterFileChangedMessage.getFile()) {
             if (!getCluster().contains(nodeElement)) {
-                Node node = new Node (nodeElement);
+                Node node = new Node (nodeElement, getCluster().getNetwork());
                 node.start();
                 getCluster().getNodes().add(node);
             }
@@ -188,6 +173,38 @@ public class ClusterReadyState extends State {
     private State processSynchronizeMessage (SynchronizeMessage synchronizeMessage) {
         SynchronizeMessage synchronizeMessage2 = new SynchronizeMessage(getCluster().getQueue(), this, synchronizeMessage.getNode());
         send (getCluster().getClusterFile().getQueue(), synchronizeMessage2);
+
+        return this;
+    }
+
+    private boolean contains (NodeElement nodeElement) {
+        for (Node node : getCluster().getNodes()) {
+            if (node.equals(nodeElement))
+                return true;
+        }
+
+        return false;
+    }
+
+    private State processRemoteVersion (RemoteVersionMessage remoteVersion) {
+        if (
+                null == getCluster().getClusterFile().getVersion()
+                || !getCluster().getClusterFile().getVersion().equals(remoteVersion.getVersion())
+                )
+        {
+            GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(getCluster().getQueue(), this);
+            send(remoteVersion.getNode(), getClusterFileMessage);
+        }
+
+        ClusterSyncingState clusterSyncingState = new ClusterSyncingState(getCluster(), null);
+        return clusterSyncingState;
+    }
+
+
+    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+        NameVersion nameVersion = new NameVersion("cluster", getCluster().getClusterFile().getVersion());
+        VersionMessage versionMessage = new VersionMessage(getCluster().getQueue(), this, nameVersion);
+        send(getVersionMessage.getSender(), versionMessage);
 
         return this;
     }

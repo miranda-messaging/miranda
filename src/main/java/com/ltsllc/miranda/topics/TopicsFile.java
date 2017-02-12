@@ -24,11 +24,14 @@ public class TopicsFile extends SingleFile<Topic> {
     public static synchronized void initialize (String filename, BlockingQueue<Message> writerQueue) {
         if (null == ourInstance) {
             ourInstance = new TopicsFile(filename, writerQueue);
+            ourInstance.start();
         }
     }
 
     private TopicsFile(String filename,BlockingQueue<Message> queue) {
         super(filename, queue);
+        TopicsFileReadyState topicsFileReadyState = new TopicsFileReadyState(this);
+        setCurrentState(topicsFileReadyState);
     }
 
     public Type getBasicType ()
