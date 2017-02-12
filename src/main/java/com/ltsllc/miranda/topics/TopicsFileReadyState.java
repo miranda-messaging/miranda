@@ -5,6 +5,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Topic;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.node.GetFileMessage;
@@ -12,14 +13,19 @@ import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.VersionMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Clark on 2/11/2017.
  */
 public class TopicsFileReadyState extends SingleFileReadyState {
+    private static Logger logger = Logger.getLogger(TopicsFileReadyState.class);
+
     private TopicsFile topicsFile;
 
 
@@ -112,5 +118,16 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     @Override
     public Version getVersion() {
         return getTopicsFile().getVersion();
+    }
+
+    @Override
+    public List<Perishable> getPerishables() {
+        return new ArrayList<Perishable>(getTopicsFile().getData());
+    }
+
+
+    @Override
+    public void notifyContainer(Set<Perishable> expired) {
+        logger.warn("Ignoring notifyContainer");
     }
 }

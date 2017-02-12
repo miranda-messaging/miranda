@@ -27,7 +27,7 @@ public class ScheduleMessage extends Message {
         this.message = new TimeoutMessage (getSender(), getSenderObject());
     }
 
-    public ScheduleMessage (BlockingQueue<Message> senderQueue, Object sender, ScheduleType scheduleType, Message message) {
+    public ScheduleMessage (BlockingQueue<Message> senderQueue, Object sender, ScheduleType scheduleType, long delay, Message message) {
         super(Subjects.Schedule, senderQueue, sender);
 
         this.type = scheduleType;

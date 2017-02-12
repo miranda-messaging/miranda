@@ -126,6 +126,25 @@ public class Startup extends State {
         arguments = argv;
     }
 
+    @Override
+    public State processMessage(Message message) {
+        State nextState = this;
+
+        switch (message.getSubject())  {
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage (garbageCollectionMessage);
+                break;
+            }
+
+            default:
+                nextState = super.processMessage(message);
+                break;
+        }
+
+        return nextState;
+    }
+
     public String[] getArguments() {
         return arguments;
     }
@@ -295,10 +314,30 @@ public class Startup extends State {
 
 
     public void schedule () {
-        long healthCheckPeriod = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
+        MirandaProperties properties = MirandaProperties.getInstance();
+
+        long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
         ScheduleMessage scheduleMessage = new ScheduleMessage(Cluster.getInstance().getQueue(), this, healthCheckPeriod);
         Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
 
-        Cluster.getInstance().healthCheck();
+        long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD);
+
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
+                Miranda.timer);
+        scheduleMessage = new ScheduleMessage(Miranda.getInstance().getQueue(), this,
+                ScheduleMessage.ScheduleType.Periodic, garbageCollectionPeriod, garbageCollectionMessage);
+        Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
+
+        Miranda.performGarbageCollection();
+    }
+
+
+    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        send(ClusterFile.getInstance().getQueue(), garbageCollectionMessage);
+        send(UsersFile.getInstance().getQueue(), garbageCollectionMessage);
+        send(TopicsFile.getInstance().getQueue(), garbageCollectionMessage);
+        send(SubscriptionsFile.getInstance().getQueue(), garbageCollectionMessage);
+
+        return this;
     }
 }

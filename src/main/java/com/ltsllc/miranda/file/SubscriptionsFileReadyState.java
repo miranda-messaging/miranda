@@ -5,14 +5,19 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.RemoteVersionMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Clark on 2/11/2017.
  */
 public class SubscriptionsFileReadyState extends SingleFileReadyState {
+    private static Logger logger = Logger.getLogger(SubscriptionsFileReadyState.class);
+
     private SubscriptionsFile subscriptionsFile;
 
     public SubscriptionsFileReadyState (SubscriptionsFile subscriptionsFile) {
@@ -118,5 +123,17 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     @Override
     public String getName() {
         return "subscriptions";
+    }
+
+
+    @Override
+    public List<Perishable> getPerishables() {
+        return new ArrayList<Perishable>(getSubscriptionsFile().getData());
+    }
+
+
+    @Override
+    public void notifyContainer(Set<Perishable> expired) {
+        logger.warn("Ignoring notifyContainer");
     }
 }

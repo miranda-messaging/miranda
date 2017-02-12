@@ -165,4 +165,9 @@ public class Node extends Consumer
         nodeElement.setLastConnected(date.getTime());
         return nodeElement;
     }
+
+
+    public void disconnect () {
+        getChannel().close();
+    }
 }

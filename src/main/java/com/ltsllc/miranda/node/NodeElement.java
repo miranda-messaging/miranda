@@ -1,16 +1,22 @@
 package com.ltsllc.miranda.node;
 
+import com.google.gson.Gson;
+import com.ltsllc.miranda.file.Perishable;
+
 import java.util.Date;
 
 /**
  * Created by Clark on 1/21/2017.
  */
-public class NodeElement {
+public class NodeElement implements Perishable {
+    private static Gson ourGson = new Gson();
+
     private String dns;
     private String ip;
     private int port;
     private String description;
     private long lastConnected;
+    private long expires;
 
     public long getLastConnected() {
         return lastConnected;
@@ -62,5 +68,18 @@ public class NodeElement {
         long now = date.getTime();
         long timeSinceLastConnect = now - getLastConnected();
         return timeSinceLastConnect > timeout;
+    }
+
+    public boolean expired (long time) {
+        return 0 == expires || time > expires;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(ourGson.toJson(this));
+
+        return stringBuffer.toString();
     }
 }

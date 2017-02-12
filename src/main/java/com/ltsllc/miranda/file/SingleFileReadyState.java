@@ -3,11 +3,14 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.RemoteVersionMessage;
+import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.GetFileMessage;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -22,6 +25,8 @@ abstract public class SingleFileReadyState extends State {
     abstract public SingleFile getFile();
     abstract public void add(Object o);
     abstract public String getName();
+    abstract public List<Perishable> getPerishables();
+    abstract public void notifyContainer (Set<Perishable> expired);
 
 
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
@@ -51,6 +56,12 @@ abstract public class SingleFileReadyState extends State {
             case GetFile: {
                 GetFileMessage getFileMessage = (GetFileMessage) message;
                 nextState = processGetFileMessage(getFileMessage);
+                break;
+            }
+
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
                 break;
             }
 
@@ -105,6 +116,30 @@ abstract public class SingleFileReadyState extends State {
         }
 
         send (getFileMessage.getSender(), getFileResponseMessage);
+
+        return this;
+    }
+
+
+    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        boolean changed = false;
+
+        Set<Perishable> expired = new HashSet<Perishable>();
+        long now = System.currentTimeMillis();
+
+        for (Perishable perishable : getPerishables()) {
+            if (perishable.expired(now)) {
+                expired.add(perishable);
+                changed = true;
+            }
+        }
+
+        logger.info ("Expiring " + expired);
+
+        getPerishables().removeAll(expired);
+
+        if (changed)
+            notifyContainer (expired);
 
         return this;
     }

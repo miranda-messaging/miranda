@@ -64,6 +64,12 @@ public class ReadyState extends State {
                 break;
             }
 
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -113,6 +119,16 @@ public class ReadyState extends State {
 
     private State processVersionMessage (VersionMessage versionMessage) {
         logger.error("processVersionMessage called");
+        return this;
+    }
+
+
+    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        send(ClusterFile.getInstance().getQueue(), garbageCollectionMessage);
+        send(UsersFile.getInstance().getQueue(), garbageCollectionMessage);
+        send(TopicsFile.getInstance().getQueue(), garbageCollectionMessage);
+        send(SubscriptionsFile.getInstance().getQueue(), garbageCollectionMessage);
+
         return this;
     }
 }

@@ -6,6 +6,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.network.NodeAddedMessage;
@@ -15,6 +16,7 @@ import com.ltsllc.miranda.writer.WriteMessage;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Clark on 2/6/2017.
@@ -243,5 +245,18 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     @Override
     public String getName() {
         return "clusters";
+    }
+
+
+    @Override
+    public List<Perishable> getPerishables() {
+        return new ArrayList<Perishable>(getClusterFile().getData());
+    }
+
+
+    @Override
+    public void notifyContainer(Set<Perishable> expired) {
+        ExpiredMessage expiredMessage = new ExpiredMessage (getClusterFile().getQueue(), this, expired);
+        send(Cluster.getInstance().getQueue(), expiredMessage);
     }
 }

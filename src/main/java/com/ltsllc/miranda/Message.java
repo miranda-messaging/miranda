@@ -1,11 +1,13 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.file.Perishable;
+
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 12/30/2016.
  */
-public class Message {
+public class Message implements Perishable {
     public enum Subjects {
         Ballot,
         ClusterFile,
@@ -19,6 +21,8 @@ public class Message {
         ConnectionClosed,
         DoneSynchronizing,
         Election,
+        Expired,
+        GarbageCollection,
         GetFile,
         GetSubscriptionsFile,
         GetClusterFile,
@@ -89,5 +93,9 @@ public class Message {
 
     public void respond (Message m) throws InterruptedException {
         getSender().put(m);
+    }
+
+    public boolean expired(long time) {
+        return false;
     }
 }

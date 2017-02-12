@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.StartState;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.file.FileWatcher;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
@@ -67,5 +68,12 @@ public class Miranda extends Consumer {
 
     public static FileWatcher getWatchService() {
         return ourFileWatcher;
+    }
+
+    public static void performGarbageCollection() {
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
+                Miranda.getInstance());
+
+        Miranda.getInstance().getCurrentState().processMessage(garbageCollectionMessage);
     }
 }

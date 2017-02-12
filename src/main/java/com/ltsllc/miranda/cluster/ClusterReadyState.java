@@ -3,6 +3,7 @@ package com.ltsllc.miranda.cluster;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.SynchronizeMessage;
 import com.ltsllc.miranda.node.*;
@@ -81,6 +82,12 @@ public class ClusterReadyState extends State {
             case Synchronize: {
                 SynchronizeMessage synchronizeMessage = (SynchronizeMessage) m;
                 nextState = processSynchronizeMessage(synchronizeMessage);
+                break;
+            }
+
+            case Expired: {
+                ExpiredMessage expiredMessage = (ExpiredMessage) m;
+                nextState = processExpiredMessage(expiredMessage);
                 break;
             }
 
@@ -205,6 +212,26 @@ public class ClusterReadyState extends State {
         NameVersion nameVersion = new NameVersion("cluster", getCluster().getClusterFile().getVersion());
         VersionMessage versionMessage = new VersionMessage(getCluster().getQueue(), this, nameVersion);
         send(getVersionMessage.getSender(), versionMessage);
+
+        return this;
+    }
+
+
+    private State processExpiredMessage (ExpiredMessage expiredMessage) {
+        List<Node> expiredNodes = new ArrayList<Node>();
+
+        for (Node node : getCluster().getNodes()) {
+            for (Perishable perishable : expiredMessage.getExpired()) {
+                if (node.equals(perishable))
+                    expiredNodes.add(node);
+            }
+        }
+
+        for (Node node : expiredNodes) {
+            node.disconnect();
+        }
+
+        getCluster().getNodes().removeAll(expiredNodes);
 
         return this;
     }

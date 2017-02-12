@@ -3,6 +3,7 @@ package com.ltsllc.miranda.user;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.file.GetFileResponseMessage;
+import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -12,15 +13,20 @@ import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.VersionMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/10/2017.
  */
 public class UsersFileReadyState extends SingleFileReadyState {
+    private static Logger logger = Logger.getLogger(UsersFileReadyState.class);
+
     private UsersFile usersFile;
 
     public UsersFileReadyState (Consumer consumer, UsersFile usersFile) {
@@ -157,4 +163,17 @@ public class UsersFileReadyState extends SingleFileReadyState {
     public String getName() {
         return "users";
     }
+
+
+    @Override
+    public List<Perishable> getPerishables() {
+        return new ArrayList<Perishable>(getUsersFile().getData());
+    }
+
+
+    @Override
+    public void notifyContainer(Set<Perishable> expired) {
+        logger.warn("Ignoring notifyContainer");
+    }
+
 }

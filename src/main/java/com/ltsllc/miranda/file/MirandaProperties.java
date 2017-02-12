@@ -49,6 +49,8 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
     public static final String PROPERTY_HTTP_PORT = PACKAGE_NAME + "HttpPort";
+    public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
+    public static final String PROPERTY_NODE_EXPIRATION_TIME = PACKAGE_NAME + "NodeExpirationTime";
 
 
 
@@ -72,8 +74,10 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_KEY_STORE_ALIAS = "server";
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
-    public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // one week
+    public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // once week
     public static final String DEFAULT_HTTP_PORT = "443";
+    public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
+    public static final String DEFAULT_NODE_EXPIRATION_TIME = "8640000"; // a week
 
 
     public static String[][] DEFAULT_PROPERTIES = {
@@ -97,7 +101,9 @@ public class MirandaProperties extends Properties {
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD},
             {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
-            {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT}
+            {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},
+            {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
+            {PROPERTY_NODE_EXPIRATION_TIME, DEFAULT_NODE_EXPIRATION_TIME}
     };
 
     private static MirandaProperties ourInstance;

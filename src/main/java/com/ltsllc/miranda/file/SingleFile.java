@@ -20,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/10/2017.
  */
-abstract public class SingleFile<E> extends MirandaFile {
+abstract public class SingleFile<E extends Perishable> extends MirandaFile {
     abstract public List buildEmptyList();
     abstract public Type listType();
 
