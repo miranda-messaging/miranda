@@ -113,27 +113,15 @@ public class Cluster extends Consumer {
     }
 
     public void connect () {
+        long now = System.currentTimeMillis();
+
         for (NodeElement nodeElement : getClusterFile().getData()) {
-            Node node = new Node(nodeElement, getNetwork());
-            node.start();
-            getNodes().add(node);
-            node.connect();
-        }
-    }
-
-
-    public void healthCheck () {
-        List<NodeElement> updates = new ArrayList<NodeElement>();
-
-        for (Node node : getNodes()) {
-            if (node.isConnected()) {
-                NodeElement nodeElement = node.getUpdatedElement();
-                updates.add(nodeElement);
+            if (!nodeElement.expired(now)) {
+                Node node = new Node(nodeElement, getNetwork());
+                node.start();
+                getNodes().add(node);
+                node.connect();
             }
         }
-
-        HealthCheckUpdateMessage healthCheckMessage = new HealthCheckUpdateMessage(getQueue(), this, updates);
-        send (healthCheckMessage, getClusterFile().getQueue());
     }
-
 }

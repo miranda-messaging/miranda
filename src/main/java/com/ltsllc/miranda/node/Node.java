@@ -137,6 +137,9 @@ public class Node extends Consumer
     public void connect () {
         ConnectToMessage connectToMessage = new ConnectToMessage(getDns(), getPort(), getQueue(), this);
         send (connectToMessage, getNetwork());
+
+        ConnectingState connectingState = new ConnectingState(this);
+        setCurrentState(connectingState);
     }
 
     public void sendOnWire(WireMessage wireMessage) {
