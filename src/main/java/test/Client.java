@@ -5,10 +5,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
@@ -84,11 +81,15 @@ public class Client {
 
     public static void main(String[] argv) {
         Client client = new Client();
-        client.go();
+        try {
+            client.go();
+        } catch (Exception e) {
+            logger.fatal("Exception", e);
+        }
     }
 
 
-    public void go () {
+    public void go () throws Exception {
         String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\data\\";
 
         String log4jConfigurationFile = dir + "log4j.xml";
@@ -102,19 +103,22 @@ public class Client {
 
         SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, trustStoreAlias);
         Bootstrap bootstrap = Util.createClientBootstrap(localChannelHandler);
-        LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(sslContext);
+        // LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(sslContext);
 
         String host = "localhost";
         int port = 6789;
         logger.info ("connecting to " + host + ":" + port);
-        ChannelFuture channelFuture = bootstrap.connect (host, port);
-        channelFuture.addListener(localChannelFutureListener);
+        Channel channel = bootstrap.connect (host, port).channel();
+
+        SslHandler sslHandler = sslContext.newHandler(channel.alloc());
+        channel.pipeline().addLast(sslHandler);
 
         // sleep(5000);
 
-        // ByteBuf byteBuf = Unpooled.directBuffer(256);
-        // ByteBufUtil.writeUtf8(byteBuf, "whatever");
-        // channelFuture.channel().writeAndFlush(byteBuf);
+        String message = "Hello world!";
+        ByteBuf byteBuf = Unpooled.directBuffer(256);
+        ByteBufUtil.writeUtf8(byteBuf, message);
+        channel.writeAndFlush(byteBuf).sync();
     }
 
     private void sleep (long period) {
