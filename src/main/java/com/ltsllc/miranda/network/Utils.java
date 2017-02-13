@@ -41,7 +41,7 @@ public class Utils {
 
 
 
-    public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString, String alias) {
+    public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString) {
         FileInputStream fileInputStream = null;
         TrustManagerFactory trustManagerFactory = null;
 
@@ -113,14 +113,13 @@ public class Utils {
         SslContext sslContext = null;
 
         try {
-            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword, trustStoreAlias);
+            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword);
             PrivateKey privateKey = getPrivateKey (keyFilename, keyPassword, keyAlias);
-
             X509Certificate certificate = getCertificate (trustStoreFilename, trustStorePassword, trustStoreAlias);
 
             sslContext = SslContextBuilder
                     .forServer(privateKey, certificate)
-                    .ciphers(getDefaultCiphers())
+                    //.ciphers(getDefaultCiphers())
                     .trustManager(trustManagerFactory)
                     .build();
         } catch (Exception e) {
@@ -183,11 +182,11 @@ public class Utils {
         SslContext sslContext = null;
 
         try {
-            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, passwordString, alias);
+            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, passwordString);
 
             sslContext = SslContextBuilder
                     .forClient()
-                    .ciphers(getDefaultCiphers())
+                    //.ciphers(getDefaultCiphers())
                     .trustManager(trustManagerFactory)
                     .build();
         } catch (Exception e) {

@@ -70,9 +70,11 @@ public class Server {
 
     public void go () {
         String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\data\\";
+
         String trustStoreFilename = dir + "truststore";
         String trustStorePassword = "whatever";
         String trustStoreAlias = "ca";
+
         String log4jConfigurationFile = dir + "log4j.xml";
 
         DOMConfigurator.configure(log4jConfigurationFile);

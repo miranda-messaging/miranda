@@ -6,6 +6,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
@@ -18,6 +20,12 @@ public class Client {
     private static Logger logger = Logger.getLogger(Client.class);
 
     public static class LocalChannelHandler extends ChannelInboundHandlerAdapter {
+        private SslContext sslContext;
+
+        public LocalChannelHandler (SslContext sslContext) {
+            this.sslContext = sslContext;
+        }
+
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             ByteBuf byteBuf = (ByteBuf) msg;
@@ -66,8 +74,8 @@ public class Client {
             SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
             channelFuture.channel().pipeline().addLast(sslHandler);
 
-            LocalChannelHandler localChannelHandler = new LocalChannelHandler();
-            channelFuture.channel().pipeline().addLast(localChannelHandler);
+            // LocalChannelHandler localChannelHandler = new LocalChannelHandler();
+            // channelFuture.channel().pipeline().addLast(localChannelHandler);
 
             String message = "Hello world!";
             ByteBuf byteBuf = Unpooled.directBuffer(256);
@@ -78,6 +86,20 @@ public class Client {
             channelFuture.channel().writeAndFlush(byteBuf);
         }
     }
+
+    public static class LocalChannelIniatizer extends ChannelInitializer<SocketChannel> {
+        private SslContext sslContext;
+
+        public LocalChannelIniatizer (SslContext sslContext) {
+            this.sslContext = sslContext;
+        }
+
+        public void initChannel (SocketChannel socketChannel) throws Exception{
+            SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
+            socketChannel.pipeline().addLast(sslHandler);
+        }
+    }
+
 
     public static void main(String[] argv) {
         Client client = new Client();
@@ -99,19 +121,17 @@ public class Client {
 
         DOMConfigurator.configure(log4jConfigurationFile);
 
-        LocalChannelHandler localChannelHandler = new LocalChannelHandler();
-
         SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, trustStoreAlias);
-        Bootstrap bootstrap = Util.createClientBootstrap(localChannelHandler);
-        // LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(sslContext);
+        LocalChannelIniatizer localChannelIniatizer = new LocalChannelIniatizer(sslContext);
+        Bootstrap bootstrap = Util.createClientBootstrap(localChannelIniatizer);
 
         String host = "localhost";
         int port = 6789;
         logger.info ("connecting to " + host + ":" + port);
-        Channel channel = bootstrap.connect (host, port).channel();
+        Channel channel = bootstrap.connect(host, port).sync().channel();
 
-        SslHandler sslHandler = sslContext.newHandler(channel.alloc());
-        channel.pipeline().addLast(sslHandler);
+        // SslHandler sslHandler = sslContext.newHandler(channel.alloc());
+        // channel.pipeline().addLast(sslHandler);
 
         // sleep(5000);
 
