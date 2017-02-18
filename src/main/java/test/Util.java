@@ -9,14 +9,21 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.apache.log4j.Logger;
 
+import sun.security.pkcs10.PKCS10;
+import sun.security.tools.keytool.CertAndKeyGen;
+import sun.security.x509.X500Name;
+
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.PrivateKey;
+import java.io.OutputStream;
+import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 /**
@@ -25,8 +32,7 @@ import java.security.cert.X509Certificate;
 public class Util {
     private static Logger logger = Logger.getLogger(Util.class);
 
-
-    public static ServerBootstrap createServerBootstrap (ChannelHandler channelHandler) {
+    public static ServerBootstrap createServerBootstrap(ChannelHandler channelHandler) {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -39,7 +45,7 @@ public class Util {
     }
 
 
-    public static Bootstrap createClientBootstrap (ChannelHandler channelHandler) {
+    public static Bootstrap createClientBootstrap(ChannelHandler channelHandler) {
         Bootstrap bootstrap = new Bootstrap();
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
@@ -51,48 +57,115 @@ public class Util {
     }
 
 
-
-    public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString) {
+    public static TrustManagerFactory loadTrustStore (KeyStore keyStore) {
         FileInputStream fileInputStream = null;
         TrustManagerFactory trustManagerFactory = null;
 
         try {
-            fileInputStream = new FileInputStream(filename);
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(fileInputStream, passwordString.toCharArray());
-
             trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
-        } finally {
-            closeIgnoreExceptions(fileInputStream);
         }
 
         return trustManagerFactory;
     }
 
 
-    public static void closeIgnoreExceptions (InputStream inputStream) {
+    public static void closeIgnoreExceptions(InputStream inputStream) {
         if (null != inputStream) {
             try {
                 inputStream.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
     }
 
 
-    public static SslContext createClientSslContext(String filename, String passwordString, String alias) {
+    public static void closeIgnoreExceptions (OutputStream outputStream) {
+        if (null != outputStream) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+
+
+    public static SslContext createClientSslContext(X509Certificate certificate) {
         SslContext sslContext = null;
 
         try {
-            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, passwordString);
+            sslContext = SslContextBuilder
+                    .forClient()
+                    .trustManager(certificate)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return sslContext;
+    }
+
+    public static SslContext createClientSslContext(TrustManagerFactory trustManagerFactory) {
+        SslContext sslContext = null;
+
+        try {
+            sslContext = SslContextBuilder
+                    .forClient()
+                    .trustManager(trustManagerFactory)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return sslContext;
+    }
+
+
+    public static TrustManagerFactory createTrustManagerFactory (KeyStore keyStore) {
+        TrustManagerFactory trustManagerFactory = null;
+
+        try {
+            trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return trustManagerFactory;
+    }
+
+    public static SslContext createClientSslContext(KeyStore keyStore) {
+        SslContext sslContext = null;
+
+        try {
+            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(keyStore);
 
             sslContext = SslContextBuilder
                     .forClient()
-                    //.ciphers(getDefaultCiphers())
                     .trustManager(trustManagerFactory)
+                    .build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return sslContext;
+    }
+
+
+    public static SslContext createSimpleClientContext() {
+        SslContext sslContext = null;
+
+        try {
+            sslContext = SslContextBuilder
+                    .forClient()
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,14 +181,12 @@ public class Util {
         SslContext sslContext = null;
 
         try {
-            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword);
-            PrivateKey privateKey = getPrivateKey (keyFilename, keyPassword, keyAlias);
-            X509Certificate certificate = getCertificate (trustStoreFilename, trustStorePassword, trustStoreAlias);
+            PrivateKey privateKey = getPrivateKey(keyFilename, keyPassword, keyAlias);
+            X509Certificate certificate = getCertificate(trustStoreFilename, trustStorePassword, trustStoreAlias);
 
             sslContext = SslContextBuilder
                     .forServer(privateKey, certificate)
-                    //.ciphers(getDefaultCiphers())
-                    .trustManager(trustManagerFactory)
+                    .trustManager(certificate)
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,14 +197,14 @@ public class Util {
     }
 
 
-    public static PrivateKey getPrivateKey (String filename, String password, String alias) {
+    public static PrivateKey getPrivateKey(String filename, String password, String alias) {
         KeyStore keyStore = getKeyStore(filename, password);
         PrivateKey privateKey = null;
 
         try {
             privateKey = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
         } catch (Exception e) {
-            logger.fatal ("Exception trying to get private key", e);
+            logger.fatal("Exception trying to get private key", e);
             System.exit(1);
         }
 
@@ -164,18 +235,37 @@ public class Util {
     }
 
 
-    public static X509Certificate getCertificate (String filename, String password, String alias)
-    {
+    public static X509Certificate getCertificate(String filename, String password, String alias) {
         X509Certificate certificate = null;
         KeyStore keyStore = getKeyStore(filename, password);
 
         try {
             certificate = (X509Certificate) keyStore.getCertificate(alias);
         } catch (Exception e) {
-            logger.fatal ("Exception trying to get certificate", e);
+            logger.fatal("Exception trying to get certificate", e);
             System.exit(1);
         }
 
         return certificate;
+    }
+
+
+    public static KeyStore getKeyStore(String filename) {
+        KeyStore keyStore = null;
+        FileInputStream fileInputStream = null;
+
+        try {
+            keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+
+            fileInputStream = new FileInputStream(filename);
+
+            keyStore.load(fileInputStream, "".toCharArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        } finally {
+            closeIgnoreExceptions(fileInputStream);
+        }
+        return keyStore;
     }
 }

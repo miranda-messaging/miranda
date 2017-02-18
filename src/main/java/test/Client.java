@@ -8,10 +8,17 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+
+import javax.net.ssl.*;
+import java.net.Socket;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 /**
  * Created by Clark on 2/4/2017.
@@ -71,6 +78,8 @@ public class Client {
                 System.exit(1);
             }
 
+            channelFuture.channel().pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+
             SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
             channelFuture.channel().pipeline().addLast(sslHandler);
 
@@ -101,6 +110,8 @@ public class Client {
     }
 
 
+
+
     public static void main(String[] argv) {
         Client client = new Client();
         try {
@@ -115,13 +126,23 @@ public class Client {
         String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\data\\";
 
         String log4jConfigurationFile = dir + "log4j.xml";
+
+        DOMConfigurator.configure(log4jConfigurationFile);
+
         String trustStoreFilename = dir + "truststore";
         String trustStorePassword = "whatever";
         String trustStoreAlias = "ca";
 
-        DOMConfigurator.configure(log4jConfigurationFile);
+        String alternateTruststore = dir + "ca-certificate.pem.txt";
 
-        SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, trustStoreAlias);
+        String serverCertificateFilename = dir + "certificate-keystore";
+        String serverCertificatePassword = "whatever";
+        String serverCertificateAlias = "ca";
+
+        X509Certificate certificate = Util.getCertificate(trustStoreFilename, trustStorePassword, trustStoreAlias);
+
+        SslContext sslContext = Util.createClientSslContext(certificate);
+
         LocalChannelIniatizer localChannelIniatizer = new LocalChannelIniatizer(sslContext);
         Bootstrap bootstrap = Util.createClientBootstrap(localChannelIniatizer);
 
@@ -129,11 +150,6 @@ public class Client {
         int port = 6789;
         logger.info ("connecting to " + host + ":" + port);
         Channel channel = bootstrap.connect(host, port).sync().channel();
-
-        // SslHandler sslHandler = sslContext.newHandler(channel.alloc());
-        // channel.pipeline().addLast(sslHandler);
-
-        // sleep(5000);
 
         String message = "Hello world!";
         ByteBuf byteBuf = Unpooled.directBuffer(256);

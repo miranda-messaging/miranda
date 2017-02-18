@@ -12,6 +12,8 @@ import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import java.security.cert.X509Certificate;
+
 
 /**
  * Created by Clark on 2/4/2017.
@@ -48,7 +50,7 @@ public class Server {
             EchoHandler echoHandler = new EchoHandler();
             serverSocketChannel.pipeline().addLast(echoHandler);
 
-            // ChannelHandler channelHandler = new LocalChannelHandler ();
+            ChannelHandler channelHandler = new LocalChannelHandler ();
             // serverSocketChannel.pipeline().addLast(channelHandler);
         }
 
@@ -56,7 +58,6 @@ public class Server {
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             logger.fatal("Caught exception, exiting", cause);
             ctx.close();
-
             System.exit(1);
         }
     }
@@ -79,13 +80,16 @@ public class Server {
 
         DOMConfigurator.configure(log4jConfigurationFile);
 
-        String keyStoreFilename = dir + "serverkeystore";
+        String keyStoreFilename = dir + "server-keystore";
         String keyStorePassword = "whatever";
         String keyStoreAlias = "server";
 
+        // String alternateKeyFilename = dir + "server-keystore";
+
         int port = 6789;
 
-        SslContext sslContext = com.ltsllc.miranda.network.Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, trustStoreFilename, trustStorePassword, trustStoreAlias);
+        SslContext sslContext = Util.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, trustStoreFilename, trustStorePassword, trustStoreAlias);
+        // SslContext sslContext = Util.createServerSslContext(trustStoreFilename, trustStorePassword, trustStoreAlias, trustStoreFilename, trustStorePassword, trustStoreAlias);
         LocalChannelInitializer localChannelInitializer = new LocalChannelInitializer(sslContext);
         ServerBootstrap serverBootstrap = Util.createServerBootstrap(localChannelInitializer);
 

@@ -10,6 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
@@ -187,8 +188,10 @@ public class Utils {
             sslContext = SslContextBuilder
                     .forClient()
                     //.ciphers(getDefaultCiphers())
+                    //.trustManager(InsecureTrustManagerFactory.INSTANCE)
                     .trustManager(trustManagerFactory)
                     .build();
+
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

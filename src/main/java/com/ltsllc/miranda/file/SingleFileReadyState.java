@@ -134,7 +134,7 @@ abstract public class SingleFileReadyState extends State {
             }
         }
 
-        logger.info ("Expiring " + expired);
+        logger.info (getFile().getFilename() + " expiring " + expired);
 
         getPerishables().removeAll(expired);
 
