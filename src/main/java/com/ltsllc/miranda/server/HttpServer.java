@@ -79,7 +79,7 @@ public class HttpServer {
     }
 
 
-    public void rgisterPost(String path, PostHandler handler) {
+    public void registerPost(String path, PostHandler handler) {
         postMap.put(path, handler);
     }
 
