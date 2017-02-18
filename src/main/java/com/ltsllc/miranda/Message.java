@@ -33,6 +33,7 @@ public class Message implements Perishable {
         GetVersion,
         HealthCheck,
         HealthCheckUpdate,
+        HttpPost,
         Join,
         JoinSuccess,
         Listen,

@@ -35,7 +35,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
             lastHttpContent.content().getBytes(0, buffer);
             byteArrayOutputStream.write(buffer);
             String s = new String(byteArrayOutputStream.toByteArray());
-            server.processPost(lastRequest.uri(), lastRequest, s);
+            server.processPost(lastRequest.uri(), lastRequest, s, ctx);
         }
         else if (msg instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) msg;

@@ -4,11 +4,14 @@ package com.ltsllc.miranda.server;
  * Created by Clark on 2/10/2017.
  */
 
+import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.user.HttpActionHandler;
 import com.ltsllc.miranda.user.PostHandler;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.*;
@@ -20,11 +23,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * The HTTP server for the system.
  */
-public class HttpServer {
+public class HttpServer extends Consumer {
     private class LocalChannelInitializer extends ChannelInitializer<SocketChannel> {
         private SslContext sslContext;
         private HttpServer server;
@@ -48,7 +52,14 @@ public class HttpServer {
 
     private Logger logger = Logger.getLogger(HttpServer.class);
 
-    private Map<String, PostHandler> postMap = new HashMap<String, PostHandler>();
+    private Map<String, BlockingQueue<Message>> postMap = new HashMap<String, BlockingQueue<Message>>();
+    private int port;
+
+    public HttpServer (int port) {
+        super("httpServer");
+
+        this.port = port;
+    }
 
     public void startup() {
 
@@ -66,7 +77,7 @@ public class HttpServer {
         LocalChannelInitializer localChannelInitializer = new LocalChannelInitializer(sslContext, this);
         ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localChannelInitializer);
 
-        serverBootstrap.bind(properties.getIntegerProperty(MirandaProperties.PROPERTY_HTTP_PORT));
+        serverBootstrap.bind(port);
     }
 
 
@@ -74,25 +85,21 @@ public class HttpServer {
         logger.info("GET " + url);
     }
 
-    public void registerPostHandler(String path, PostHandler handler) {
-        postMap.put(path, handler);
+    public void registerPostHandler(String path, BlockingQueue<Message> handlerQueue) {
+        postMap.put(path, handlerQueue);
     }
 
 
-    public void registerPost(String path, PostHandler handler) {
-        postMap.put(path, handler);
-    }
+    public void processPost(String path, HttpRequest request, String content, ChannelHandlerContext ctx) {
+        BlockingQueue<Message> handlerQueue = postMap.get(path);
 
-    public HttpResponse processPost(String path, HttpRequest request, String content) {
-        PostHandler handler = postMap.get(path);
-        HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-
-        if (null != handler) {
-            response = handler.handlePost(request, content);
+        if (null != handlerQueue)
+        {
+            HttpPostMessage postMessage = new HttpPostMessage(getQueue(), this, request, content, ctx);
+            send(postMessage, handlerQueue);
         }
-
-        return response;
     }
+
 
     public void processPut(String url, HttpRequest request) {
     }

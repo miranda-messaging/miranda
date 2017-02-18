@@ -7,8 +7,14 @@ import com.ltsllc.miranda.file.Perishable;
  */
 public class Topic implements Perishable {
     private long expiration;
+    private String name;
 
     public Topic() {
+    }
+
+    public Topic (String name) {
+        this.name = name;
+        this.expiration = Long.MAX_VALUE;
     }
 
     public long getExpiration() {

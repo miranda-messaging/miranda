@@ -20,6 +20,8 @@ public class MirandaProperties extends Properties {
 
     public static final String PACKAGE_NAME = "com.ltsllc.miranda.";
 
+    public static final String HTTP_PACKAGE_NAME = PACKAGE_NAME + "http.";
+
     public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
     public static final String PROPERTY_CLUSTER_FILE = "com.ltsllc.miranda.ClusterFile";
     public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
@@ -52,6 +54,8 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
     public static final String PROPERTY_NODE_EXPIRATION_TIME = PACKAGE_NAME + "NodeExpirationTime";
 
+    public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
+
 
 
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
@@ -79,6 +83,8 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
     public static final String DEFAULT_NODE_EXPIRATION_TIME = "8640000"; // a week
 
+    public static final String DEFAULT_PORT = "443";
+
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},
@@ -103,7 +109,9 @@ public class MirandaProperties extends Properties {
             {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
             {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
-            {PROPERTY_NODE_EXPIRATION_TIME, DEFAULT_NODE_EXPIRATION_TIME}
+            {PROPERTY_NODE_EXPIRATION_TIME, DEFAULT_NODE_EXPIRATION_TIME},
+
+            {PROPERTY_PORT, DEFAULT_PORT}
     };
 
     private static MirandaProperties ourInstance;

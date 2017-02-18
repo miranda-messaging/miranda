@@ -9,6 +9,7 @@ import com.ltsllc.miranda.main.Ready;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.server.HttpServer;
+import com.ltsllc.miranda.server.NewTopicHandler;
 import com.ltsllc.miranda.timer.ScheduleMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.NewUserHandler;
@@ -169,7 +170,7 @@ public class Startup extends State {
         loadFiles();
         setRootUser();
         schedule();
-        registerPaths();
+        startHttpServices();
         return new ReadyState(Miranda.getInstance());
     }
 
@@ -260,6 +261,9 @@ public class Startup extends State {
      * </P>
      */
     private void startSubsystems() {
+        MirandaProperties properties = MirandaProperties.getInstance();
+        Miranda miranda = Miranda.getInstance();
+
         StartState.initialize();
 
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
@@ -280,15 +284,24 @@ public class Startup extends State {
         Cluster.getInstance().start();
         Cluster.getInstance().connect();
 
-        HttpServer httpServer = new HttpServer();
+        int port = properties.getIntegerProperty(MirandaProperties.PROPERTY_PORT);
+        HttpServer httpServer = new HttpServer(port);
         httpServer.startup();
         setHttpServer(httpServer);
+        miranda.setHttpServer(httpServer);
     }
 
 
-    private void registerPaths() {
+    private void startHttpServices() {
+        HttpServer httpServer = Miranda.getInstance().getHttpServer();
+
         NewUserHandler newUserHandler = new NewUserHandler(UsersFile.getInstance());
-        getHttpServer().registerPostHandler("/users", newUserHandler);
+        newUserHandler.start();
+        getHttpServer().registerPostHandler("/users", newUserHandler.getQueue());
+
+        NewTopicHandler newTopicHandler = new NewTopicHandler(TopicsFile.getInstance());
+        newTopicHandler.start();
+        httpServer.registerPostHandler("/topics", newTopicHandler.getQueue());
     }
 
     private void loadFiles() {

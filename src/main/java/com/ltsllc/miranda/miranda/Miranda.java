@@ -6,7 +6,10 @@ import com.ltsllc.miranda.StartState;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.file.FileWatcher;
+import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
+import com.ltsllc.miranda.user.PostHandler;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
@@ -24,6 +27,8 @@ public class Miranda extends Consumer {
     private static Miranda ourInstance;
     private static FileWatcher ourFileWatcher;
     public static MirandaTimer timer;
+
+    private HttpServer httpServer;
 
 
     private Miranda() {
@@ -56,6 +61,13 @@ public class Miranda extends Consumer {
         timer.start();
     }
 
+    public HttpServer getHttpServer() {
+        return httpServer;
+    }
+
+    public void setHttpServer(HttpServer httpServer) {
+        this.httpServer = httpServer;
+    }
 
     public static FileWatcher getFileWatcher() {
         return ourFileWatcher;
@@ -75,5 +87,11 @@ public class Miranda extends Consumer {
                 Miranda.getInstance());
 
         Miranda.getInstance().getCurrentState().processMessage(garbageCollectionMessage);
+    }
+
+    public static void registerPostHandler(String path, BlockingQueue<Message> handlerQueue) {
+        Miranda miranda = Miranda.getInstance();
+        HttpServer httpServer = miranda.getHttpServer();
+        httpServer.registerPostHandler(path, handlerQueue);
     }
 }

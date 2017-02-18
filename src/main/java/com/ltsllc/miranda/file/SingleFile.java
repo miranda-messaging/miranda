@@ -2,19 +2,20 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.util.IOUtils;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
-import java.io.*;
-import java.lang.reflect.Method;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.nio.file.*;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -140,5 +141,30 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
         }
 
         return Utils.bytesToString(digest);
+    }
+
+    public boolean contains (E e) {
+        for (E contained : getData()) {
+            if (contained.equals(e))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    public void add (E e)
+    {
+        add(e, true);
+    }
+
+
+    public void add(E e, boolean write) {
+        getData().add(e);
+
+        if (write) {
+            WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
+            send(writeMessage, getWriterQueue());
+        }
     }
 }
