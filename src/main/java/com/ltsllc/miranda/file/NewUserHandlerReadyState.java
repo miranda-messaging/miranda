@@ -1,6 +1,8 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.User;
 import com.ltsllc.miranda.server.NewObjectHandlerReadyState;
 import com.ltsllc.miranda.user.NewUserHandler;
@@ -19,5 +21,9 @@ public class NewUserHandlerReadyState extends NewObjectHandlerReadyState<UsersFi
 
     public NewUserHandlerReadyState (Consumer consumer, UsersFile usersFile, NewUserHandler newUserHandler) {
         super(consumer, usersFile, newUserHandler);
+    }
+
+    public State processMessage (Message message) {
+        return super.processMessage(message);
     }
 }

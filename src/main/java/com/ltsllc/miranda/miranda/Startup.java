@@ -20,6 +20,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -162,6 +163,7 @@ public class Startup extends State {
         this.writerQueue = writerQueue;
     }
 
+
     public State start() {
         parseCommandLine();
         startLogger();
@@ -171,6 +173,7 @@ public class Startup extends State {
         setRootUser();
         schedule();
         startHttpServices();
+        Miranda.performGarbageCollection();
         return new ReadyState(Miranda.getInstance());
     }
 
@@ -309,24 +312,40 @@ public class Startup extends State {
     }
 
     private void loadFiles() {
-        String clusterFile = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+        try {
+            String clusterFile = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        ClusterFile.initialize(clusterFile, getWriterQueue());
+            ClusterFile.initialize(clusterFile, getWriterQueue());
 
-        String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
-        UsersFile.initialize(filename, getWriterQueue());
+            String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
+            UsersFile.initialize(filename, getWriterQueue());
 
-        filename = System.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
-        TopicsFile.initialize(filename, getWriterQueue());
+            filename = System.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
+            TopicsFile.initialize(filename, getWriterQueue());
 
-        filename = System.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
-        SubscriptionsFile.initialize(filename, getWriterQueue());
+            filename = System.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
+            SubscriptionsFile.initialize(filename, getWriterQueue());
 
-        String directoryName = System.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
-        SystemMessages.initialize(directoryName, getWriterQueue());
+            String directoryName = System.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
+            File f = new File(directoryName);
+            directoryName = f.getCanonicalPath();
+            SystemMessages messages = new SystemMessages(directoryName, getWriterQueue());
+            messages.start();
+            messages.load();
+            Miranda miranda = Miranda.getInstance();
+            miranda.setSystemMessages(messages);
 
-        directoryName = System.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
-        Deliveries.initialize(directoryName);
+            directoryName = System.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
+            f = new File(directoryName);
+            directoryName = f.getCanonicalPath();
+            SystemDeliveriesFile deliveriesFile = new SystemDeliveriesFile(directoryName, getWriterQueue());
+            deliveriesFile.start();
+            deliveriesFile.load();
+            miranda.setDeliveriesFile(deliveriesFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
 
@@ -354,6 +373,10 @@ public class Startup extends State {
         send(UsersFile.getInstance().getQueue(), garbageCollectionMessage);
         send(TopicsFile.getInstance().getQueue(), garbageCollectionMessage);
         send(SubscriptionsFile.getInstance().getQueue(), garbageCollectionMessage);
+
+        Miranda miranda = Miranda.getInstance();
+        send(miranda.getSystemMessages().getQueue(), garbageCollectionMessage);
+        send(miranda.getDeliveriesFile().getQueue(), garbageCollectionMessage);
 
         return this;
     }

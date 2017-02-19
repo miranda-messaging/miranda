@@ -9,6 +9,7 @@ import com.ltsllc.miranda.cluster.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.VersionsMessage;
 import com.ltsllc.miranda.file.GetFileResponseMessage;
 import com.ltsllc.miranda.file.SubscriptionsFile;
+import com.ltsllc.miranda.file.SystemDeliveriesFile;
 import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;
@@ -61,12 +62,6 @@ public class ReadyState extends State {
             case Version: {
                 VersionMessage versionMessage = (VersionMessage) message;
                 nextState = processVersionMessage (versionMessage);
-                break;
-            }
-
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
                 break;
             }
 
@@ -123,12 +118,4 @@ public class ReadyState extends State {
     }
 
 
-    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        send(ClusterFile.getInstance().getQueue(), garbageCollectionMessage);
-        send(UsersFile.getInstance().getQueue(), garbageCollectionMessage);
-        send(TopicsFile.getInstance().getQueue(), garbageCollectionMessage);
-        send(SubscriptionsFile.getInstance().getQueue(), garbageCollectionMessage);
-
-        return this;
-    }
 }

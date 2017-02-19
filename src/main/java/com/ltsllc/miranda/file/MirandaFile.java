@@ -7,6 +7,8 @@ import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -16,14 +18,19 @@ abstract public class MirandaFile extends Consumer {
     abstract public void load ();
     abstract public byte[] getBytes();
 
+
     private Logger logger = Logger.getLogger(MirandaFile.class);
 
     private String filename;
     private BlockingQueue<Message> writerQueue;
-
+    private List<Perishable> elements = new ArrayList<Perishable>();
 
     public BlockingQueue<Message> getWriterQueue() {
         return writerQueue;
+    }
+
+    public List<Perishable> getElements() {
+        return elements;
     }
 
     public MirandaFile (String filename, BlockingQueue<Message> queue)

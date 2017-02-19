@@ -7,6 +7,8 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.file.FileWatcher;
 import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.file.SystemDeliveriesFile;
+import com.ltsllc.miranda.messagesFile.SystemMessages;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.user.PostHandler;
@@ -29,6 +31,8 @@ public class Miranda extends Consumer {
     public static MirandaTimer timer;
 
     private HttpServer httpServer;
+    private SystemMessages systemMessages;
+    private SystemDeliveriesFile deliveriesFile;
 
 
     private Miranda() {
@@ -49,6 +53,22 @@ public class Miranda extends Consumer {
         initialize();
         getInstance().setArguments(argv);
         getInstance().start();
+    }
+
+    public SystemMessages getSystemMessages() {
+        return systemMessages;
+    }
+
+    public SystemDeliveriesFile getDeliveriesFile() {
+        return deliveriesFile;
+    }
+
+    public void setDeliveriesFile(SystemDeliveriesFile deliveriesFile) {
+        this.deliveriesFile = deliveriesFile;
+    }
+
+    public void setSystemMessages(SystemMessages systemMessages) {
+        this.systemMessages = systemMessages;
     }
 
     public static void initialize ()

@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
 
@@ -16,6 +17,8 @@ import java.lang.reflect.Type;
  * Created by Clark on 2/18/2017.
  */
 abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends Perishable, W extends NewObjectPostHandler> extends State {
+    private static Logger logger = Logger.getLogger(NewObjectHandlerReadyState.class);
+
     abstract public Type getBasicType();
 
     private W handler;
@@ -33,6 +36,10 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends
     }
 
     public State processHttpPostMessage (HttpPostMessage httpPostMessage) {
+        if (httpPostMessage.getChannelHandlerContext().isRemoved()) {
+            logger.info("ChannelHandlerContext.isRemoved is returning true");
+        }
+
         State nextState = this;
 
         Type basicType = getBasicType();
@@ -42,7 +49,7 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends
         if (!getFile().contains(e)) {
             getFile().add(e);
         } else {
-            response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_MODIFIED);
+            response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONFLICT);
         }
 
         httpPostMessage.getChannelHandlerContext().writeAndFlush(response);
