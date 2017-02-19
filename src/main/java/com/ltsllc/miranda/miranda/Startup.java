@@ -3,13 +3,14 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.cluster.ConnectMessage;
+import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.file.*;
-import com.ltsllc.miranda.main.Ready;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.server.NewTopicHandler;
+import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.ScheduleMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.NewUserHandler;
@@ -332,6 +333,7 @@ public class Startup extends State {
             SystemMessages messages = new SystemMessages(directoryName, getWriterQueue());
             messages.start();
             messages.load();
+            messages.updateVersion();
             Miranda miranda = Miranda.getInstance();
             miranda.setSystemMessages(messages);
 
@@ -341,6 +343,7 @@ public class Startup extends State {
             SystemDeliveriesFile deliveriesFile = new SystemDeliveriesFile(directoryName, getWriterQueue());
             deliveriesFile.start();
             deliveriesFile.load();
+            deliveriesFile.updateVersion();
             miranda.setDeliveriesFile(deliveriesFile);
         } catch (Exception e) {
             e.printStackTrace();

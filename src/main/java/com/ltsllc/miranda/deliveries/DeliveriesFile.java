@@ -1,8 +1,9 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Delivery;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.SingleFile;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

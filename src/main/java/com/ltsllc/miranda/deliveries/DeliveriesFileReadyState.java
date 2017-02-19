@@ -1,4 +1,6 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.deliveries;
+
+import com.ltsllc.miranda.file.FileReadyState;
 
 /**
  * Created by Clark on 2/19/2017.

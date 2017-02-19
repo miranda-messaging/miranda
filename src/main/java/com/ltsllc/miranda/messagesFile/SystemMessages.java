@@ -1,15 +1,8 @@
 package com.ltsllc.miranda.messagesFile;
 
-import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.*;
-import com.ltsllc.miranda.util.IOUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.OutputStreamWriter;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**

@@ -1,6 +1,5 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.subsciptions;
 
-import com.ltsllc.miranda.Subscription;
 import com.ltsllc.miranda.server.NewObjectHandlerReadyState;
 import com.ltsllc.miranda.server.NewObjectPostHandler;
 

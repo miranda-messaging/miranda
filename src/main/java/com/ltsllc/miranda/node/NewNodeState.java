@@ -9,7 +9,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.file.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
-import com.ltsllc.miranda.file.SubscriptionsFile;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.ConnectToMessage;
 import com.ltsllc.miranda.topics.TopicsFile;

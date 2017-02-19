@@ -1,8 +1,10 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Subscription;
 import com.ltsllc.miranda.server.NewObjectHandlerReadyState;
+import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 
 import java.lang.reflect.Type;
 

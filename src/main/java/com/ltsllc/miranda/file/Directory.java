@@ -4,6 +4,7 @@ package com.ltsllc.miranda.file;
  * Created by Clark on 2/19/2017.
  */
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 
@@ -22,7 +23,6 @@ abstract public class Directory extends MirandaFile {
 
     private BlockingQueue<Message> writerQueue;
     private List<MirandaFile> files = new ArrayList<MirandaFile>();
-    private Version version;
 
 
     public Directory (String filename, BlockingQueue<Message> writerQueue) {
@@ -80,10 +80,16 @@ abstract public class Directory extends MirandaFile {
     }
 
     public void updateVersion () {
+        Gson gson = new Gson();
+
         StringWriter stringWriter = new StringWriter();
 
         for (MirandaFile file : getFiles()) {
-
+            String json = gson.toJson(file.getVersion());
+            stringWriter.write(json);
         }
+
+        Version version = new Version(stringWriter.toString());
+        setVersion(version);
     }
 }

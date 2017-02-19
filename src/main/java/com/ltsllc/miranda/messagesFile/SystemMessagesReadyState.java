@@ -1,5 +1,6 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.messagesFile;
 
+import com.ltsllc.miranda.file.DirectoryReadyState;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
 
 /**

@@ -2,14 +2,11 @@ package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.VersionsMessage;
-import com.ltsllc.miranda.file.GetFileResponseMessage;
-import com.ltsllc.miranda.file.SubscriptionsFile;
-import com.ltsllc.miranda.file.SystemDeliveriesFile;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;

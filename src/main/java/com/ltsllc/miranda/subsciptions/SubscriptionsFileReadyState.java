@@ -1,8 +1,11 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.subsciptions;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.cluster.RemoteVersionMessage;
+import com.ltsllc.miranda.file.GetFileResponseMessage;
+import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;

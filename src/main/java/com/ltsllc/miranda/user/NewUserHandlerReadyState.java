@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
