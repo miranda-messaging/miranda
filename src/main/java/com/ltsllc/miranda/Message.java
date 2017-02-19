@@ -1,5 +1,6 @@
 package com.ltsllc.miranda;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.file.Perishable;
 
 import java.util.concurrent.BlockingQueue;
@@ -8,6 +9,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 12/30/2016.
  */
 public class Message implements Perishable {
+    private Gson ourGson = new Gson();
+
     public enum Subjects {
         Ballot,
         ClusterFile,
@@ -98,5 +101,10 @@ public class Message implements Perishable {
 
     public boolean expired(long time) {
         return false;
+    }
+
+
+    public String toJson() {
+        return ourGson.toJson(this);
     }
 }

@@ -4,11 +4,14 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import org.apache.log4j.Logger;
 
 /**
  * Created by Clark on 2/19/2017.
  */
 public class DirectoryReadyState extends State {
+    private static Logger logger = Logger.getLogger(FileReadyState.class);
+
     private Directory directory;
 
     public DirectoryReadyState(Consumer consumer) {
@@ -39,6 +42,8 @@ public class DirectoryReadyState extends State {
 
 
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        logger.info ("Garbage collecting " + getDirectory().getFilename());
+
         for (MirandaFile file : getDirectory().getFiles()) {
             GarbageCollectionMessage message = new GarbageCollectionMessage(getDirectory().getQueue(), this);
             send(file.getQueue(), message);

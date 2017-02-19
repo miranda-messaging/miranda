@@ -177,7 +177,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         }
 
         if (changed) {
-            String sha1 = Utils.caculateSha1(getBytes());
+            String sha1 = Utils.calculateSha1(getBytes());
             Version version = new Version(sha1);
             setVersion(version);
             ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getQueue(), this, getData(), version);

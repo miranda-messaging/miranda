@@ -82,4 +82,9 @@ public class NodeElement implements Perishable {
 
         return stringBuffer.toString();
     }
+
+
+    public String toJson() {
+        return ourGson.toJson(this);
+    }
 }

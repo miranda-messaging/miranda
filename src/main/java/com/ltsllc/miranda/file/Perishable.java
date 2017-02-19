@@ -5,4 +5,5 @@ package com.ltsllc.miranda.file;
  */
 public interface Perishable {
     public boolean expired(long time);
+    public String toJson();
 }

@@ -3,6 +3,7 @@ package com.ltsllc.miranda.file;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
  * Created by Clark on 2/19/2017.
  */
 public class FileReadyState extends State {
+    private static Logger logger = Logger.getLogger(FileReadyState.class);
+
     private MirandaFile file;
 
 

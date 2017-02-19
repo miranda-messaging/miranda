@@ -2,10 +2,12 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ abstract public class MirandaFile extends Consumer {
     private String filename;
     private BlockingQueue<Message> writerQueue;
     private List<Perishable> elements = new ArrayList<Perishable>();
+    private Version version;
 
     public BlockingQueue<Message> getWriterQueue() {
         return writerQueue;
@@ -31,6 +34,14 @@ abstract public class MirandaFile extends Consumer {
 
     public List<Perishable> getElements() {
         return elements;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion (Version version) {
+        this.version = version;
     }
 
     public MirandaFile (String filename, BlockingQueue<Message> queue)
@@ -83,5 +94,16 @@ abstract public class MirandaFile extends Consumer {
             logger.fatal("Exception trying to register file watcher", e);
             System.exit(1);
         }
+    }
+
+    public void updateVersion () {
+        StringWriter stringWriter = new StringWriter();
+
+        for (Perishable perishable : getElements()) {
+            stringWriter.write(perishable.toJson());
+        }
+
+        Version version = new Version(stringWriter.toString());
+        setVersion(version);
     }
 }

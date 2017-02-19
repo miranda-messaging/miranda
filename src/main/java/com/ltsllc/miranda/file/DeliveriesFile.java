@@ -16,6 +16,8 @@ public class DeliveriesFile extends SingleFile<Delivery> {
 
     public DeliveriesFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
+
+        setCurrentState(new DeliveriesFileReadyState(this));
     }
 
     public Type listType() {

@@ -3,10 +3,7 @@ package com.ltsllc.miranda.messagesFile;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.file.Directory;
-import com.ltsllc.miranda.file.MirandaFile;
-import com.ltsllc.miranda.file.MirandaProperties;
-import com.ltsllc.miranda.file.MultipleFiles;
+import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.util.IOUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +19,9 @@ public class SystemMessages extends Directory {
     public SystemMessages (String directory, BlockingQueue<Message> writerQueue)
     {
         super(directory, writerQueue);
+
+        SystemMessagesReadyState readyState = new SystemMessagesReadyState(this);
+        setCurrentState(readyState);
     }
 
     @Override

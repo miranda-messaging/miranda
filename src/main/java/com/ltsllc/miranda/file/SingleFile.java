@@ -9,10 +9,7 @@ import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.util.List;
@@ -76,6 +73,8 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
     public void load ()
     {
         logger.info("loading " + getFilename());
+
+
         File f = new File(getFilename());
         if (!f.exists()) {
             List list = buildEmptyList();
@@ -95,8 +94,8 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
 
             setData(temp);
 
-            String sha1 = calculateSha1();
-            Version version = new Version(sha1, f.lastModified());
+            String json = ourGson.toJson(temp);
+            Version version = new Version(json);
             setVersion(version);
         }
     }

@@ -5,8 +5,10 @@ package com.ltsllc.miranda.file;
  */
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Version;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -20,6 +22,7 @@ abstract public class Directory extends MirandaFile {
 
     private BlockingQueue<Message> writerQueue;
     private List<MirandaFile> files = new ArrayList<MirandaFile>();
+    private Version version;
 
 
     public Directory (String filename, BlockingQueue<Message> writerQueue) {
@@ -74,5 +77,13 @@ abstract public class Directory extends MirandaFile {
     @Override
     public byte[] getBytes() {
         return new byte[0];
+    }
+
+    public void updateVersion () {
+        StringWriter stringWriter = new StringWriter();
+
+        for (MirandaFile file : getFiles()) {
+
+        }
     }
 }

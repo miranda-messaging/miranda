@@ -219,7 +219,7 @@ public class Utils {
     }
 
 
-    public static String caculateSha1 (byte[] buffer) {
+    public static String calculateSha1 (byte[] buffer) {
         MessageDigest messageDigest = null;
 
         try {
@@ -232,6 +232,12 @@ public class Utils {
 
         String digest = bytesToString(messageDigest.digest());
         return digest;
+    }
+
+
+    public static String calculateSha1 (String s) {
+        byte[] buffer = s.getBytes();
+        return calculateSha1(buffer);
     }
 
 
