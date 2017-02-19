@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Topic;
 import com.ltsllc.miranda.topics.TopicsFile;
 
@@ -18,5 +17,4 @@ public class NewTopicHandlerReadyState extends NewObjectHandlerReadyState<Topics
     public NewTopicHandlerReadyState (Consumer consumer, TopicsFile file, NewTopicHandler handler) {
         super(consumer, file, handler);
     }
-
 }

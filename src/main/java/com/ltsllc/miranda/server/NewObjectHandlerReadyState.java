@@ -16,7 +16,7 @@ import java.lang.reflect.Type;
  * Created by Clark on 2/18/2017.
  */
 abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends Perishable, W extends NewObjectPostHandler> extends State {
-    abstract Type getBasicType();
+    abstract public Type getBasicType();
 
     private W handler;
     private T file;

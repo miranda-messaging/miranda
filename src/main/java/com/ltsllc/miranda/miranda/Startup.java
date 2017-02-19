@@ -302,6 +302,10 @@ public class Startup extends State {
         NewTopicHandler newTopicHandler = new NewTopicHandler(TopicsFile.getInstance());
         newTopicHandler.start();
         httpServer.registerPostHandler("/topics", newTopicHandler.getQueue());
+
+        NewSubscriptionHandler newSubscriptionHandler = new NewSubscriptionHandler(SubscriptionsFile.getInstance());
+        newSubscriptionHandler.start();
+        httpServer.registerPostHandler("/subsciptions", newSubscriptionHandler.getQueue());
     }
 
     private void loadFiles() {
