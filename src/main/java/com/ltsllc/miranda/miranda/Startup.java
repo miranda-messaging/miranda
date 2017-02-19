@@ -305,7 +305,7 @@ public class Startup extends State {
 
         NewSubscriptionHandler newSubscriptionHandler = new NewSubscriptionHandler(SubscriptionsFile.getInstance());
         newSubscriptionHandler.start();
-        httpServer.registerPostHandler("/subsciptions", newSubscriptionHandler.getQueue());
+        httpServer.registerPostHandler("/subscriptions", newSubscriptionHandler.getQueue());
     }
 
     private void loadFiles() {

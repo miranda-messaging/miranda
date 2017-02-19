@@ -2,22 +2,22 @@ package com.ltsllc.miranda.user;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.file.NewUserHandlerReadyState;
 import com.ltsllc.miranda.server.HttpPostHandler;
 import com.ltsllc.miranda.server.HttpPostMessage;
+import com.ltsllc.miranda.server.NewObjectHandlerReadyState;
+import com.ltsllc.miranda.server.NewObjectPostHandler;
 import io.netty.handler.codec.http.*;
 
 /**
  * Created by Clark on 2/10/2017.
  */
-public class NewUserHandler extends HttpPostHandler {
-    private UsersFile usersFile;
+public class NewUserHandler extends NewObjectPostHandler<UsersFile> {
 
     public NewUserHandler (UsersFile usersFile) {
-        this.usersFile = usersFile;
-        setCurrentState(StartState.getInstance());
-    }
+        super(usersFile);
 
-    public UsersFile getUsersFile() {
-        return usersFile;
+        NewUserHandlerReadyState readyState = new NewUserHandlerReadyState(this, usersFile, this);
+        setCurrentState(readyState);
     }
 }
