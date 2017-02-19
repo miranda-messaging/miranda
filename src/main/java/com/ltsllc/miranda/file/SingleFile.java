@@ -30,7 +30,7 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
         super(filename, writerQueue);
     }
 
-    private Gson ourGson = buildGson();
+    private static Gson ourGson = buildGson();
 
     public Gson getGson() {
         if (null == ourGson)

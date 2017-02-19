@@ -24,6 +24,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         if (null == ourInstance) {
             ourInstance = new SubscriptionsFile(writerQueue, filename);
             ourInstance.start();
+            ourInstance.load();
         }
     }
 

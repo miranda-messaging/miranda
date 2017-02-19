@@ -47,12 +47,8 @@ public class UsersFile extends SingleFile<User> {
         if (null == ourInstance) {
             ourInstance = new UsersFile(writerQueue, filename);
             ourInstance.start();
+            ourInstance.load();
         }
-    }
-
-    public Type getBasicType ()
-    {
-        return new TypeToken<ArrayList<User>>() {}.getType();
     }
 
     public List buildEmptyList () {

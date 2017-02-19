@@ -25,6 +25,7 @@ public class TopicsFile extends SingleFile<Topic> {
         if (null == ourInstance) {
             ourInstance = new TopicsFile(filename, writerQueue);
             ourInstance.start();
+            ourInstance.load();
         }
     }
 

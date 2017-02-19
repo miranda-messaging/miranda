@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.deliveries;
+package com.ltsllc.miranda.event;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
@@ -12,20 +12,16 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 2/19/2017.
  */
-public class DeliveriesFile extends SingleFile<Delivery> {
-
-    public DeliveriesFile (String filename, BlockingQueue<Message> writerQueue) {
+public class EventsFile extends SingleFile<Event> {
+    public EventsFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
-
-        setCurrentState(new DeliveriesFileReadyState(this));
     }
 
     public Type listType() {
-        return new TypeToken<List<Delivery>>() {}.getType();
+        return new TypeToken<List<Event>>(){}.getType();
     }
 
     public List buildEmptyList() {
-        return new ArrayList<Delivery>();
+        return new ArrayList<Event>();
     }
-
 }

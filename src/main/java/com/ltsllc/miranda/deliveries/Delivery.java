@@ -1,4 +1,4 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.file.Perishable;
@@ -10,6 +10,12 @@ public class Delivery implements Perishable {
     private static Gson ourGson = new Gson();
 
     private long expires;
+    private String id;
+    private String message;
+
+    public Delivery () {
+
+    }
 
     public boolean expired(long time) {
         return time > expires;

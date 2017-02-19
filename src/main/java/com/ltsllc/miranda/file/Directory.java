@@ -24,7 +24,6 @@ abstract public class Directory extends MirandaFile {
     private BlockingQueue<Message> writerQueue;
     private List<MirandaFile> files = new ArrayList<MirandaFile>();
 
-
     public Directory (String filename, BlockingQueue<Message> writerQueue) {
         super(filename);
 
@@ -73,6 +72,7 @@ abstract public class Directory extends MirandaFile {
             getFiles().add(mirandaFile);
         }
     }
+
 
     @Override
     public byte[] getBytes() {

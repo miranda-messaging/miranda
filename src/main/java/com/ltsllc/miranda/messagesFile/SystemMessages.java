@@ -1,8 +1,12 @@
 package com.ltsllc.miranda.messagesFile;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.file.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -17,6 +21,12 @@ public class SystemMessages extends Directory {
         setCurrentState(readyState);
     }
 
+    private List<Event> events = new ArrayList<Event>();
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
     @Override
     public boolean isFileOfInterest(String filename) {
         return filename.endsWith("msg");
@@ -24,6 +34,6 @@ public class SystemMessages extends Directory {
 
     @Override
     public MirandaFile createMirandaFile(String filename) {
-        return new MessagesFile(filename, getWriterQueue());
+        return new EventsFile(filename, getWriterQueue());
     }
 }
