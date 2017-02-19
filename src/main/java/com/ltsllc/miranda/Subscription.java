@@ -10,9 +10,14 @@ public class Subscription extends StatusObject implements Perishable {
     private Gson ourGson = new Gson();
 
     private long expires;
+    private String name;
 
     public Subscription () {
         super(Status.New);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public boolean expired(long time) {

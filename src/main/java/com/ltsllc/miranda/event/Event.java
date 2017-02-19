@@ -8,6 +8,10 @@ import java.util.UUID;
 /**
  * Created by Clark on 2/19/2017.
  */
+
+/**
+ * A message that was sent to a topic.
+ */
 public class Event implements Perishable {
     private Gson ourGson = new Gson();
 
@@ -49,6 +53,13 @@ public class Event implements Perishable {
         this.created = created;
     }
 
+    /**
+     * An Event never expires
+     *
+     * @param time The time to compare with
+     * @return if the {@link Perishable} has expired.  In the case of this
+     * class, always return false.
+     */
     public boolean expired (long time) {
         return false;
     }
