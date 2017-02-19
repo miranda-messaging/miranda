@@ -14,8 +14,10 @@ public class DirectoryReadyState extends State {
 
     private Directory directory;
 
-    public DirectoryReadyState(Consumer consumer) {
-        super(consumer);
+    public DirectoryReadyState(Directory directory) {
+        super(directory);
+
+        this.directory = directory;
     }
 
     public Directory getDirectory() {
