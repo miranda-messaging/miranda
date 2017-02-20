@@ -6,6 +6,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.ConnectedMessage;
 import com.ltsllc.miranda.timer.ScheduleMessage;
+import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
@@ -65,8 +66,9 @@ public class ConnectingState extends NodeState {
 
         MirandaProperties p = MirandaProperties.getInstance();
         int delayBetweenRetries = PropertiesUtils.getIntProperty(System.getProperties(), MirandaProperties.PROPERTY_DELAY_BETWEEN_RETRIES);
-        ScheduleMessage scheduleMessage = new ScheduleMessage(getNode().getQueue(), this, delayBetweenRetries);
-        send(Miranda.timer.getQueue(), scheduleMessage);
+        RetryMessage retryMessage = new RetryMessage(getNode().getQueue(), this);
+        SchedulePeriodicMessage schedulePeriodicMessage = new SchedulePeriodicMessage(getNode().getQueue(), this, retryMessage, delayBetweenRetries);
+        send(Miranda.timer.getQueue(), schedulePeriodicMessage);
 
         return new RetryingState(getNode());
     }

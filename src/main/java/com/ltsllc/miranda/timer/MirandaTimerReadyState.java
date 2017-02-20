@@ -48,9 +48,15 @@ public class MirandaTimerReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case Schedule: {
-                ScheduleMessage scheduleMessage = (ScheduleMessage) message;
-                nextState = processScheduleMessage (scheduleMessage);
+            case ScheduleOnce: {
+                ScheduleOnceMessage scheduleOnceMessage = (ScheduleOnceMessage) message;
+                nextState = processScheduleOnceMessage (scheduleOnceMessage);
+                break;
+            }
+
+            case SchedulePeriodic: {
+                SchedulePeriodicMessage schedulePeriodicMessage = (SchedulePeriodicMessage) message;
+                nextState = processSchedulePeriodicMessage(schedulePeriodicMessage);
                 break;
             }
 
@@ -63,17 +69,19 @@ public class MirandaTimerReadyState extends State {
     }
 
 
-    private State processScheduleMessage (ScheduleMessage scheduleMessage) {
+    private State processScheduleOnceMessage (ScheduleOnceMessage scheduleOnceMessage) {
         Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleMessage.getSender(), Miranda.timer.getQueue());
+        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getSender(), Miranda.timer.getQueue());
+        timer.schedule(localTimerTask, scheduleOnceMessage.getDelay());
 
-        if (scheduleMessage.getType() == ScheduleMessage.ScheduleType.Once)
-            timer.schedule(localTimerTask, scheduleMessage.getDelay());
-        else if (scheduleMessage.getType() == ScheduleMessage.ScheduleType.Periodic)
-            timer.scheduleAtFixedRate(localTimerTask, scheduleMessage.getDelay(), scheduleMessage.getDelay());
-        else {
-            logger.error ("Unknown schedule type " + scheduleMessage.getType());
-        }
+        return this;
+    }
+
+
+    private State processSchedulePeriodicMessage (SchedulePeriodicMessage schedulePeriodicMessage) {
+        Timer timer = Miranda.timer.getTimer();
+        LocalTimerTask localTimerTask = new LocalTimerTask(schedulePeriodicMessage.getSender(), Miranda.timer.getQueue());
+        timer.scheduleAtFixedRate(localTimerTask, schedulePeriodicMessage.getPeriod(), schedulePeriodicMessage.getPeriod());
 
         return this;
     }

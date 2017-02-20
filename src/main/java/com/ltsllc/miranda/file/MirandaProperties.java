@@ -33,7 +33,6 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
     public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
-    public static final String PROPERTY_NUMBER_OF_LISTENERS = "com.ltsllc.miranda.NumberOfListeners";
     public static final String PROPERTY_TRUST_STORE = "com.ltsllc.miranda.Truststore";
     public static final String PROPERTY_TRUST_STORE_PASSWORD = "com.ltsllc.miranda.TruststorePassword";
     public static final String PROPERTY_SERVER_KEYSTORE = "com.ltsllc.miranda.ServerKeystore";
@@ -69,9 +68,8 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_MESSAGES_DIRECTORY = "data/messages";
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
-    public static final String DEFAULT_NUMBER_OF_LISTENERS = "10";
-    public static final String DEFAULT_TRUST_STORE = "data/truststore";
-    public static final String DEFAULT_SERVER_KEYSTORE = "data/serverkeystore";
+    public static final String DEFAULT_TRUST_STORE = "truststore";
+    public static final String DEFAULT_SERVER_KEYSTORE = "serverkeystore";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "ca";
     public static final String DEFAULT_KEY_STORE = "data/serverkeystore";
@@ -97,7 +95,6 @@ public class MirandaProperties extends Properties {
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
             {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE},
-            {PROPERTY_NUMBER_OF_LISTENERS, DEFAULT_NUMBER_OF_LISTENERS},
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
             {PROPERTY_SERVER_KEYSTORE, DEFAULT_SERVER_KEYSTORE},
             {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES},

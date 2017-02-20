@@ -3,6 +3,7 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.cluster.HealthCheckMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.messagesFile.SystemMessages;
@@ -12,6 +13,7 @@ import com.ltsllc.miranda.server.NewTopicHandler;
 import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.ScheduleMessage;
+import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.NewUserHandler;
 import com.ltsllc.miranda.user.UsersFile;
@@ -356,15 +358,16 @@ public class Startup extends State {
         MirandaProperties properties = MirandaProperties.getInstance();
 
         long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
-        ScheduleMessage scheduleMessage = new ScheduleMessage(Cluster.getInstance().getQueue(), this, healthCheckPeriod);
+        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(Miranda.getInstance().getQueue(), this);
+        SchedulePeriodicMessage scheduleMessage = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this, healthCheckMessage, healthCheckPeriod);
         Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
 
         long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD);
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);
-        scheduleMessage = new ScheduleMessage(Miranda.getInstance().getQueue(), this,
-                ScheduleMessage.ScheduleType.Periodic, garbageCollectionPeriod, garbageCollectionMessage);
+        scheduleMessage = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this,
+                garbageCollectionMessage, garbageCollectionPeriod);
         Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
 
         Miranda.performGarbageCollection();
