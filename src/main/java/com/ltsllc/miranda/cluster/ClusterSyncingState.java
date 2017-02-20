@@ -20,14 +20,12 @@ import java.util.concurrent.BlockingQueue;
  */
 
 /**
- * The cluster is getting a remote version of the cluster file which it will
- * mrege with its local version.
+ *
  */
 public class ClusterSyncingState extends State {
     private static Logger logger = Logger.getLogger(ClusterSyncingState.class);
     private static Gson ourGson = new Gson();
 
-    // private Node node;
     private Cluster cluster;
     private BlockingQueue<Message> versionNotifier;
 
@@ -40,23 +38,9 @@ public class ClusterSyncingState extends State {
         return versionNotifier;
     }
 
-    public void setVersionNotifier(BlockingQueue<Message> versionNotifier) {
-        this.versionNotifier = versionNotifier;
-    }
-
-    /*
-    public Node getNode() {
-        return node;
-    }
-    */
-
     public ClusterSyncingState(Consumer consumer, Cluster cluster) {
         super(consumer);
         this.cluster = cluster;
-        // this.node = node;
-
-        assert (null != this.cluster);
-        // assert (null != this.node);
     }
 
     @Override
@@ -64,43 +48,11 @@ public class ClusterSyncingState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-
-            /*
-            case NewConnection: {
-                NewConnectionMessage newConnectionMessage = (NewConnectionMessage) message;
-                nextState = processNewConnectionMessage(newConnectionMessage);
-                break;
-            }
-
-
-            case NodeUpdated: {
-                NodeUpdatedMessage nodeUpdatedMessage = (NodeUpdatedMessage) message;
-                nextState = prcessNodeUpdatedMessage(nodeUpdatedMessage);
-                break;
-            }
-
-
-            case GetVersion: {
-                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
-                nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-*/
-
-
             case NodesLoaded: {
                 NodesLoadedMessage nodesLoadedMessage = (NodesLoadedMessage) message;
                 nextState = processNodesLoadedMessage(nodesLoadedMessage);
                 break;
             }
-/*
-            case Versions: {
-                VersionsMessage versionsMessage = (VersionsMessage) message;
-                nextState = processVersionsMessage(versionsMessage);
-                break;
-            }
-
-            */
 
             case ClusterFile: {
                 ClusterFileMessage clusterFileMessage = (ClusterFileMessage) message;
