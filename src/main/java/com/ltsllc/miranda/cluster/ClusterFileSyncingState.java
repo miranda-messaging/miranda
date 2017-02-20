@@ -35,13 +35,7 @@ public class ClusterFileSyncingState extends SingleFileSyncingState {
     @Override
     public boolean contains(Object o) {
         NodeElement nodeElement = (NodeElement) o;
-
-        for (NodeElement element : getClusterFile().getData()) {
-            if (element.equals(nodeElement))
-                return true;
-        }
-
-        return false;
+        return getClusterFile().contains(nodeElement);
     }
 
 

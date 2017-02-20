@@ -33,6 +33,11 @@ public class Consumer extends Subsystem {
         super(name);
     }
 
+    public Consumer (String name, BlockingQueue<Message> queue)
+    {
+        super(name, queue);
+    }
+
 
 
     public State start (BlockingQueue<Message> queue) {

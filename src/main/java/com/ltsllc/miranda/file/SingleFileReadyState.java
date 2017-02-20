@@ -2,6 +2,8 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.ExpiredMessage;
 import com.ltsllc.miranda.cluster.RemoteVersionMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.GetFileMessage;
@@ -26,7 +28,11 @@ abstract public class SingleFileReadyState extends State {
     abstract public void add(Object o);
     abstract public String getName();
     abstract public List<Perishable> getPerishables();
-    abstract public void notifyContainer (Set<Perishable> expired);
+
+    public void notifyContainer(Set<Perishable> expired) {
+        ExpiredMessage expiredMessage = new ExpiredMessage (getContainer().getQueue(), this, expired);
+        send(Cluster.getInstance().getQueue(), expiredMessage);
+    }
 
 
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);

@@ -213,13 +213,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     @Override
     public boolean contains(Object o) {
         NodeElement nodeElement = (NodeElement) o;
-
-        for (NodeElement element : getClusterFile().getData()) {
-            if (element.equals(nodeElement))
-                return true;
-        }
-
-        return false;
+        return getClusterFile().contains(nodeElement);
     }
 
 
@@ -255,8 +249,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
 
     @Override
-    public void notifyContainer(Set<Perishable> expired) {
-        ExpiredMessage expiredMessage = new ExpiredMessage (getClusterFile().getQueue(), this, expired);
-        send(Cluster.getInstance().getQueue(), expiredMessage);
+    public String toString() {
+        return "ReadyState";
     }
 }

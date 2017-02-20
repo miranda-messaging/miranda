@@ -27,29 +27,37 @@ public class ClusterFile extends SingleFile<NodeElement> {
     private static Logger logger = Logger.getLogger(ClusterFile.class);
     private static ClusterFile ourInstance;
 
+    private BlockingQueue<Message> cluster;
+    private Version version;
+
     public static ClusterFile getInstance () {
         return ourInstance;
     }
 
-    public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue) {
+    public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> cluster) {
         if (null == ourInstance) {
-            ourInstance = new ClusterFile(filename, writerQueue);
+            ourInstance = new ClusterFile(filename, writerQueue, cluster);
             ourInstance.load();
             ourInstance.start();
         }
     }
 
-    private Version version;
 
     public void setVersion(Version version) {
         this.version = version;
     }
 
-    private ClusterFile (String filename, BlockingQueue<Message> writer) {
+    public BlockingQueue<Message> getCluster() {
+        return cluster;
+    }
+
+    private ClusterFile (String filename, BlockingQueue<Message> writer, BlockingQueue<Message> cluster) {
         super(filename, writer);
 
         ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
         setCurrentState(clusterFileReadyState);
+
+        this.cluster = cluster;
     }
 
     public Version getVersion() {
@@ -81,7 +89,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         load();
 
         NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getData(), getQueue(), this);
-        send(nodesLoadedMessage, Cluster.getInstance().getQueue());
+        send(nodesLoadedMessage, getCluster());
 
         return nextState;
     }

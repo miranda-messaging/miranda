@@ -119,6 +119,16 @@ public class Utils {
         }
     }
 
+    public static void closeIgnoreExceptions (Writer writer) {
+        if (null != writer) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
 
     private static final int BUFFER_SIZE = 8192;
 

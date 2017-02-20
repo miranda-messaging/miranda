@@ -286,7 +286,7 @@ public class Startup extends State {
         queue = new LinkedBlockingQueue<Message>();
         String filename = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initializeClass(filename, getWriterQueue(), networkQueue);
+        Cluster.initializeClass(filename, getWriterQueue(), queue);
         Cluster.getInstance().start();
         Cluster.getInstance().connect();
 
@@ -318,7 +318,7 @@ public class Startup extends State {
         try {
             String clusterFile = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-            ClusterFile.initialize(clusterFile, getWriterQueue());
+            ClusterFile.initialize(clusterFile, getWriterQueue(), Cluster.getInstance().getQueue());
 
             String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
             UsersFile.initialize(filename, getWriterQueue());

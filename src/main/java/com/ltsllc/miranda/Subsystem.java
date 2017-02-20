@@ -62,10 +62,13 @@ public abstract class Subsystem implements Runnable {
 
 
     public Subsystem (String name) {
-        this.name = name;
-        this.queue = new LinkedBlockingQueue<Message>();
+        this(name, new LinkedBlockingQueue<Message>());
     }
 
+    public Subsystem (String name, BlockingQueue<Message> queue) {
+        this.name = name;
+        this.queue = queue;
+    }
     /**
      * Start the subsystem.
      *

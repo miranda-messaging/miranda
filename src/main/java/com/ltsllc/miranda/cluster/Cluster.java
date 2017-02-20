@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
@@ -33,8 +34,10 @@ public class Cluster extends Consumer {
 
     public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         if (null == ourInstance) {
-            ClusterFile.initialize(filename, writerQueue);
-            ourInstance = new Cluster(network);
+            BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
+
+            ClusterFile.initialize(filename, writerQueue, clusterQueue);
+            ourInstance = new Cluster(network, clusterQueue);
         }
     }
 
@@ -42,17 +45,18 @@ public class Cluster extends Consumer {
         return ourInstance;
     }
 
-    private Cluster(BlockingQueue<Message> network) {
-        super("Cluster");
+    public static void reset() {
+        ourInstance = null;
+    }
+
+    private Cluster(BlockingQueue<Message> network, BlockingQueue<Message> queue) {
+        super("Cluster", queue);
         this.clusterFile = ClusterFile.getInstance();
 
         ClusterReadyState readyState = new ClusterReadyState(this);
         setCurrentState(readyState);
 
         this.network = network;
-
-        assert (null != this.network);
-        assert (null != this.clusterFile);
     }
 
 
@@ -76,6 +80,7 @@ public class Cluster extends Consumer {
     public NetworkListener getNetworkListener() {
         return networkListener;
     }
+
     public State start () {
         super.start();
 
@@ -95,13 +100,6 @@ public class Cluster extends Consumer {
         getInstance().send(loadMessage, getClusterFile().getQueue());
     }
 
-    public void addNode (NodeElement nodeElement) {
-        if (!contains(nodeElement)) {
-            Node node = new Node(nodeElement, getNetwork());
-            node.start();
-            node.connect(this.getQueue(), this);
-        }
-    }
 
     public boolean contains (NodeElement nodeElement) {
         for (Node node : nodes) {
