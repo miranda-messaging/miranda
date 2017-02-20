@@ -27,15 +27,9 @@ public class ClusterSyncingState extends State {
     private static Gson ourGson = new Gson();
 
     private Cluster cluster;
-    private BlockingQueue<Message> versionNotifier;
-
 
     public Cluster getCluster() {
         return cluster;
-    }
-
-    public BlockingQueue<Message> getVersionNotifier() {
-        return versionNotifier;
     }
 
     public ClusterSyncingState(Consumer consumer, Cluster cluster) {
@@ -48,12 +42,6 @@ public class ClusterSyncingState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case NodesLoaded: {
-                NodesLoadedMessage nodesLoadedMessage = (NodesLoadedMessage) message;
-                nextState = processNodesLoadedMessage(nodesLoadedMessage);
-                break;
-            }
-
             case ClusterFile: {
                 ClusterFileMessage clusterFileMessage = (ClusterFileMessage) message;
                 nextState = processClusterFileMessage(clusterFileMessage);
@@ -75,13 +63,6 @@ public class ClusterSyncingState extends State {
         return nextState;
     }
 
-    private State processNodesLoadedMessage(NodesLoadedMessage nodesLoadedMessage) {
-        State nextState = this;
-
-        getCluster().getClusterFile().nodesLoaded(nodesLoadedMessage.getNodes());
-
-        return nextState;
-    }
 
     /**
      * Called when we have determined that a remote cluster file is more recent than our

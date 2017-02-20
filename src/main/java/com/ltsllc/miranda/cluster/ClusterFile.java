@@ -151,19 +151,6 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return new TypeToken<ArrayList<NodeElement>>(){}.getType();
     }
 
-    public void nodesLoaded (List<NodeElement> nodes) {
-        for (NodeElement element : nodes) {
-            if (!containsElement(element)) {
-                Node node = new Node(element, Cluster.getInstance().getNetwork());
-                node.start();
-                node.connect();
-
-                NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node);
-                send(newNodeMessage, Cluster.getInstance().getQueue());
-            }
-        }
-    }
-
 
     public boolean contains (NodeElement nodeElement) {
         for (NodeElement element : getData()) {
@@ -204,5 +191,21 @@ public class ClusterFile extends SingleFile<NodeElement> {
                 element.setLastConnected(nodeElement.getLastConnected());
             }
         }
+    }
+
+
+    /**
+     * Return the {@link NodeElement} that {@link #equals(Object)} the value passed into us;
+     * otherwise return null.
+     *
+     * @param nodeElement
+     * @return
+     */
+    public NodeElement matchingNode (NodeElement nodeElement) {
+        for (NodeElement element : getData())
+            if (element.equals(nodeElement))
+                return element;
+
+        return null;
     }
 }

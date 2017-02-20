@@ -160,6 +160,7 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
 
     public void add(E e, boolean write) {
         getData().add(e);
+        updateVersion();
 
         if (write) {
             WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);

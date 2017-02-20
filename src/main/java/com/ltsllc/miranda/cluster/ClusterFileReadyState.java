@@ -262,6 +262,9 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         if (!contains(nodeElement)) {
             getClusterFile().add(nodeElement);
             getClusterFile().updateVersion();
+        } else {
+            NodeElement temp = getClusterFile().matchingNode(nodeElement);
+            temp.setLastConnected(System.currentTimeMillis());
         }
 
         return this;

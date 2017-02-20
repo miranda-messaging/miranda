@@ -1,10 +1,12 @@
 package com.ltsllc.miranda.cluster.test;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.writer.WriteSucceededMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +46,12 @@ public class ClusterFileReadyState extends TestCase {
         return cluster;
     }
 
+    public void reset () {
+        super.reset();
+
+        this.cluster = new LinkedBlockingQueue<Message>();
+    }
+
     @Before
     public void setup () {
         deleteFile(CLUSTER_FILENAME);
@@ -56,6 +64,7 @@ public class ClusterFileReadyState extends TestCase {
     @After
     public void cleanup () {
         deleteFile(CLUSTER_FILENAME);
+        reset();
     }
 
     @Test
@@ -73,7 +82,26 @@ public class ClusterFileReadyState extends TestCase {
     @Test
     public void testProcessMessageNewNode () {
         BlockingQueue<Message> myQueue = new LinkedBlockingQueue<Message>();
-        NodeElement nodeElement = new NodeElement("bar.com","192.168.1.2",6789, "a different test node");
+        Version oldVersion = getClusterFile().getVersion();
 
+        NodeElement nodeElement = new NodeElement("bar.com","192.168.1.2",6789, "a different test node");
+        getClusterFile().add(nodeElement);
+        Version newVersion = getClusterFile().getVersion();
+
+        assert(getClusterFile().contains(nodeElement));
+        assert(oldVersion != newVersion);
+        assert(!oldVersion.equals(newVersion));
+    }
+
+    @Test
+    public void testProcessMessageWriteSucceeded() {
+        WriteSucceededMessage message = new WriteSucceededMessage(null, getClusterFile().getFilename(), this);
+        send(message, getClusterFile().getQueue());
+
+        //
+        // this message should be ignored
+        //
+        assert(0 == getCluster().size());
+        assert(0 == getWriter().size());
     }
 }
