@@ -123,67 +123,6 @@ public class ClusterSyncingState extends State {
         return nextState;
     }
 
-/*
-    private State processGetVersionMessage(GetVersionMessage getVersionMessage) {
-        State nextState = this;
-
-        setVersionNotifier(getVersionMessage.getSender());
-
-        GetVersionMessage getVersionMessage2 = new GetVersionMessage(getCluster().getQueue(), this);
-        send(getCluster().getClusterFile().getQueue(), getVersionMessage2);
-
-        return nextState;
-    }
-
-
-    private State prcessNodeUpdatedMessage(NodeUpdatedMessage nodeUpdatedMessage) {
-        NodeUpdatedMessage nodeUpdatedMessage2 = new NodeUpdatedMessage(getCluster().getQueue(), this, getNode());
-        send(getCluster().getClusterFile().getQueue(), nodeUpdatedMessage2);
-
-        return this;
-    }
-
-
-
-    private State processNewConnectionMessage(NewConnectionMessage newConnectionMessage) {
-        GetVersionMessage getVersionMessage = new GetVersionMessage(getCluster().getQueue(), this);
-        send(newConnectionMessage.getNode().getQueue(), getVersionMessage);
-
-        return new ClusterSyncingState(getCluster(), getCluster());
-    }
-
-
-
-
-
-    private State processVersionsMessage(VersionsMessage versionsMessage) {
-        for (NameVersion nameVersion : versionsMessage.getVersions()) {
-            if (!nameVersion.getName().equals("cluster"))
-                continue;
-
-            if (null == getCluster().getClusterFile().getVersion()) {
-                GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(getCluster().getQueue(), this);
-                send(versionsMessage.getSender(), getClusterFileMessage);
-            } else if (nameVersion.getVersion().equals(getCluster().getClusterFile().getVersion())) {
-                return new ClusterReadyState(getCluster());
-            } else {
-                if (nameVersion.getVersion().isMoreRecent(getCluster().getClusterFile().getVersion())) {
-                    GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(getCluster().getQueue(), this);
-
-                    try {
-                        getNode().getQueue().put(getClusterFileMessage);
-                    } catch (InterruptedException e) {
-                        logger.fatal("Exception while trying to send message", e);
-                        System.exit(1);
-                    }
-                }
-            }
-        }
-
-        return this;
-    }
-    */
-
     private State processNodesLoadedMessage(NodesLoadedMessage nodesLoadedMessage) {
         State nextState = this;
 
