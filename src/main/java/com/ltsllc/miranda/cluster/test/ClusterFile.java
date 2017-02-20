@@ -53,6 +53,7 @@ public class ClusterFile extends TestCase{
     public void setup () {
         deleteFile(CLUSTER_FILENAME);
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
+        com.ltsllc.miranda.cluster.ClusterFile.initialize(CLUSTER_FILENAME, getWriter(), getCluster());
     }
 
     @After
@@ -62,8 +63,6 @@ public class ClusterFile extends TestCase{
 
     @Test
     public void testInitialize () {
-        com.ltsllc.miranda.cluster.ClusterFile.initialize(CLUSTER_FILENAME, getWriter(), getCluster());
-
         NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
         assert (com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement));
 
@@ -72,8 +71,6 @@ public class ClusterFile extends TestCase{
 
     @Test
     public void testLoad () {
-        com.ltsllc.miranda.cluster.ClusterFile.initialize(CLUSTER_FILENAME, getWriter(), getCluster());
-
         assert(null != com.ltsllc.miranda.cluster.ClusterFile.getInstance());
 
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS2);
@@ -89,8 +86,6 @@ public class ClusterFile extends TestCase{
 
     @Test
     public void testUpdateNode () {
-        com.ltsllc.miranda.cluster.ClusterFile.initialize(CLUSTER_FILENAME, getWriter(), getCluster());
-
         NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.2",6789, "a test node");
         long now = System.currentTimeMillis();
         nodeElement.setLastConnected(now);
@@ -102,8 +97,16 @@ public class ClusterFile extends TestCase{
                 assert(element.getLastConnected() == now);
             }
         }
+    }
 
 
+    @Test
+    public void testAdd () {
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2",6790, "a different test node");
+        com.ltsllc.miranda.cluster.ClusterFile.getInstance().add(nodeElement);
 
+        assert (com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement));
+        assert (getWriter().size() == 1);
+        assert (contains(Message.Subjects.Write, getWriter()));
     }
 }

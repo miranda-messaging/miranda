@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.node.GetVersionMessage;
+import com.ltsllc.miranda.node.NodeElement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,5 +67,13 @@ public class ClusterFileReadyState extends TestCase {
         pause(1000);
 
         assert(myQueue.size() == 1);
+        assert (contains(Message.Subjects.Version, myQueue));
+    }
+
+    @Test
+    public void testProcessMessageNewNode () {
+        BlockingQueue<Message> myQueue = new LinkedBlockingQueue<Message>();
+        NodeElement nodeElement = new NodeElement("bar.com","192.168.1.2",6789, "a different test node");
+
     }
 }

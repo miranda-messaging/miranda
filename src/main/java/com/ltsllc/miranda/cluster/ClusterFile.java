@@ -100,6 +100,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         if (!containsNode(node)) {
             NodeElement nodeElement = new NodeElement(node);
             getData().add(nodeElement);
+
             byte[] buffer = getBytes();
             WriteMessage writeMessage = new WriteMessage(getFilename(), buffer, getQueue(), this);
             send(writeMessage, getWriterQueue());

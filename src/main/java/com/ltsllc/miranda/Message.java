@@ -49,6 +49,7 @@ public class Message implements Perishable {
         NewDelivery,
         NewMessage,
         NewNode,
+        NewNodeElement,
         NewSubscription,
         NodeAdded,
         NodesLoaded,

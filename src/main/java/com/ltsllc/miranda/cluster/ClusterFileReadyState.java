@@ -46,7 +46,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
             case NewNode: {
                 NewNodeMessage newNodeMessage = (NewNodeMessage) message;
-                nextState = processNewNodeMessag(newNodeMessage);
+                nextState = processNewNodeMessage(newNodeMessage);
                 break;
             }
 
@@ -94,16 +94,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    private State processNewNodeMessag (NewNodeMessage newNodeMessage) {
-        NodeElement nodeElement = new NodeElement(newNodeMessage.getDns(), newNodeMessage.getIp(), newNodeMessage.getPort(), newNodeMessage.getDescription());
-
-        getClusterFile().addNode(nodeElement);
-
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getClusterFile());
-        return clusterFileReadyState;
-    }
-
-
     private State processNodeUpdated (NodeUpdatedMessage nodeUpdatedMessage) {
         byte[] buffer = getClusterFile().getBytes();
         WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), buffer, getClusterFile().getQueue(), this);
@@ -122,31 +112,37 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
     /**
-     * This is called when there is a new version of the cluster file.  We
-     * need to determine the node that we are connected to and connect to
-     * the new nodes.
+     * This is called when there is a new version of the cluster file.  If
+     * something changed, then we need to tell the cluster about it.
      *
      * @param newClusterFileMessage
      * @return
      */
     private State processNewClusterFileMessage (NewClusterFileMessage newClusterFileMessage) {
-        for (NodeElement element : getClusterFile().getData()) {
-            if (!getClusterFile().contains(element)) {
-                Node node = new Node(element, Cluster.getInstance().getNetwork());
-                node.start();
+        if (differ(getClusterFile().getData(), newClusterFileMessage.getFile())) {
+            getClusterFile().setData(newClusterFileMessage.getFile());
+            getClusterFile().updateVersion();
 
-                NewNodeMessage newNodeMessage = new NewNodeMessage(getClusterFile().getQueue(), this, node);
-                send(Cluster.getInstance().getQueue(), newNodeMessage);
-            }
+            NewClusterFileMessage newClusterFileMessage2 = new NewClusterFileMessage(getClusterFile().getQueue(),
+                    this, getClusterFile().getData(), getClusterFile().getVersion());
+            send(Cluster.getInstance().getQueue(), newClusterFileMessage2);
         }
 
-        getClusterFile().setData(newClusterFileMessage.getFile());
-        getClusterFile().setVersion(newClusterFileMessage.getVersion());
-
-        ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getClusterFile().getQueue(), this, newClusterFileMessage.getFile(), newClusterFileMessage.getVersion());
-        send(Cluster.getInstance().getQueue(), clusterFileChangedMessage);
-
         return this;
+    }
+
+    private boolean differ (List<NodeElement> l1, List<NodeElement> l2) {
+        if ((l1 == null && l2 != null) || (l1 != null && l2 == null))
+            return true;
+
+        if (l1.size() != l2.size())
+            return true;
+
+        for (NodeElement nodeElement : l1)
+            if (!l2.contains(nodeElement))
+                return true;
+
+        return false;
     }
 
 
@@ -251,5 +247,23 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     @Override
     public String toString() {
         return "ReadyState";
+    }
+
+    /**
+     * A node just connected to us.  Add it to the file.
+     *
+     * @param newNodeMessage
+     * @return
+     */
+    private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
+        Node node = newNodeMessage.getNode();
+        NodeElement nodeElement = new NodeElement(node.getDns(), node.getIp(), node.getPort(), node.getDescription());
+
+        if (!contains(nodeElement)) {
+            getClusterFile().add(nodeElement);
+            getClusterFile().updateVersion();
+        }
+
+        return this;
     }
 }

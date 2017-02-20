@@ -7,6 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -75,5 +77,17 @@ public class TestCase {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public boolean contains (Message.Subjects subject, BlockingQueue<Message> queue)
+    {
+        for (Message m : queue) {
+            if (subject.equals(m.getSubject())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
