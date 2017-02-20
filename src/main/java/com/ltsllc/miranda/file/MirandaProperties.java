@@ -49,7 +49,6 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_MY_DESCIPTION = PACKAGE_NAME + "my.Description";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
-    public static final String PROPERTY_HTTP_PORT = PACKAGE_NAME + "HttpPort";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
 
     public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
@@ -76,9 +75,7 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
     public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // once week
-    public static final String DEFAULT_HTTP_PORT = "443";
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
-    public static final String DEFAULT_NODE_EXPIRATION_TIME = "8640000"; // a week
 
     public static final String DEFAULT_PORT = "443";
 
@@ -103,15 +100,12 @@ public class MirandaProperties extends Properties {
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD},
             {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
-            {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
 
             {PROPERTY_PORT, DEFAULT_PORT}
     };
 
     private static MirandaProperties ourInstance;
-
-    private String filename;
 
     public static synchronized void initialize (String filename) {
         if (null == ourInstance) {
@@ -136,11 +130,6 @@ public class MirandaProperties extends Properties {
         return ourInstance;
     }
 
-    private MirandaProperties () {
-        super();
-    }
-
-
     private MirandaProperties (Properties p) {
         Set<String> names = p.stringPropertyNames();
         for (String name : names)
@@ -150,38 +139,9 @@ public class MirandaProperties extends Properties {
         }
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
     public void updateSystemProperties()
     {
         PropertiesUtils.setIfNull(System.getProperties(), this);
-    }
-
-
-    private void load (String filename) {
-        System.out.println("Properties file = " + filename);
-
-        File file = new File(filename);
-        if (file.exists()) {
-            FileReader fin = null;
-            try {
-                fin = new FileReader(file);
-
-                Properties p = new Properties();
-                p.load(fin);
-
-                PropertiesUtils.augment(this, p);
-
-            } catch (IOException e) {
-                System.err.println("error reading properties file " + getFilename());
-                System.err.println(e);
-                System.exit(1);
-            } finally {
-                IOUtils.closeNoExceptions(fin);
-            }
-        }
     }
 
 
