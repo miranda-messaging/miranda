@@ -51,7 +51,6 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
     public static final String PROPERTY_HTTP_PORT = PACKAGE_NAME + "HttpPort";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
-    public static final String PROPERTY_NODE_EXPIRATION_TIME = PACKAGE_NAME + "NodeExpirationTime";
 
     public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
 
@@ -106,7 +105,6 @@ public class MirandaProperties extends Properties {
             {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
             {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
-            {PROPERTY_NODE_EXPIRATION_TIME, DEFAULT_NODE_EXPIRATION_TIME},
 
             {PROPERTY_PORT, DEFAULT_PORT}
     };
