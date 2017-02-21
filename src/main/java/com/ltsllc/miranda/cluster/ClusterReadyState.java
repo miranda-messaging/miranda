@@ -45,7 +45,8 @@ public class ClusterReadyState extends State {
             }
 
             case Connect: {
-                processConnect();
+                ConnectMessage connectMessage = (ConnectMessage) m;
+                nextState = processConnectMessage(connectMessage);
                 break;
             }
 
@@ -58,12 +59,6 @@ public class ClusterReadyState extends State {
             case GetVersion: {
                 GetVersionMessage getVersionMessage = (GetVersionMessage) m;
                 nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-
-            case NewNode: {
-                NewNodeMessage newNodeMessage = (NewNodeMessage) m;
-                nextState = processNewNodeMessage (newNodeMessage);
                 break;
             }
 
@@ -106,7 +101,7 @@ public class ClusterReadyState extends State {
     private State processLoad (LoadMessage loadMessage) {
         State nextState = this;
 
-        send(getCluster().getClusterFile().getQueue(), loadMessage);
+        send(getCluster().getClusterFileQueue(), loadMessage);
 
         return nextState;
     }
@@ -116,6 +111,9 @@ public class ClusterReadyState extends State {
     {
         State nextState = this;
 
+        //
+        // determine if we need to connect to a new node
+        //
         for (NodeElement element : nodesLoadedMessage.getNodes()) {
             if (!contains(element)) {
                 Node node = new Node(element, getCluster().getNetwork());
@@ -131,16 +129,12 @@ public class ClusterReadyState extends State {
     /**
      * Tell the nodes in the cluster to connect.
      */
-    private void processConnect() {
+    private State processConnectMessage(ConnectMessage connectMessage) {
         getCluster().connect();
-    }
-
-
-    private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
-        getCluster().getNodes().add(newNodeMessage.getNode());
 
         return this;
     }
+
 
     /**
      * This is called when the cluster file has one or more new nodes.
@@ -153,6 +147,7 @@ public class ClusterReadyState extends State {
             if (!getCluster().contains(nodeElement)) {
                 Node node = new Node (nodeElement, getCluster().getNetwork());
                 node.start();
+                node.connect();
                 getCluster().getNodes().add(node);
             }
         }
@@ -171,7 +166,7 @@ public class ClusterReadyState extends State {
         }
 
         HealthCheckUpdateMessage healthCheckUpdateMessage = new HealthCheckUpdateMessage(getCluster().getQueue(),this, list);
-        send (getCluster().getClusterFile().getQueue(), healthCheckUpdateMessage);
+        send (getCluster().getClusterFileQueue(), healthCheckUpdateMessage);
 
         return this;
     }
@@ -179,7 +174,7 @@ public class ClusterReadyState extends State {
 
     private State processSynchronizeMessage (SynchronizeMessage synchronizeMessage) {
         SynchronizeMessage synchronizeMessage2 = new SynchronizeMessage(getCluster().getQueue(), this, synchronizeMessage.getNode());
-        send (getCluster().getClusterFile().getQueue(), synchronizeMessage2);
+        send (getCluster().getClusterFileQueue(), synchronizeMessage2);
 
         return this;
     }
@@ -193,25 +188,10 @@ public class ClusterReadyState extends State {
         return false;
     }
 
-    private State processRemoteVersion (RemoteVersionMessage remoteVersion) {
-        if (
-                null == getCluster().getClusterFile().getVersion()
-                || !getCluster().getClusterFile().getVersion().equals(remoteVersion.getVersion())
-                )
-        {
-            GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(getCluster().getQueue(), this);
-            send(remoteVersion.getNode(), getClusterFileMessage);
-        }
-
-        ClusterSyncingState clusterSyncingState = new ClusterSyncingState(getCluster(), null);
-        return clusterSyncingState;
-    }
-
 
     private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        NameVersion nameVersion = new NameVersion("cluster", getCluster().getClusterFile().getVersion());
-        VersionMessage versionMessage = new VersionMessage(getCluster().getQueue(), this, nameVersion);
-        send(getVersionMessage.getSender(), versionMessage);
+        GetVersionMessage getVersionMessage2 = new GetVersionMessage(getCluster().getQueue(), this, getVersionMessage.getRequester());
+        send(getCluster().getClusterFileQueue(), getVersionMessage2);
 
         return this;
     }

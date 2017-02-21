@@ -6,7 +6,6 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.HealthCheckUpdateMessage;
 import com.ltsllc.miranda.cluster.NewClusterFileMessage;
-import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.node.GetClusterFileMessage;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NodeElement;
@@ -67,14 +66,6 @@ public class ClusterFileReadyState extends TestCase {
 
     private static final String MIRANADA_PROPERTIES_FILENAME = "junk.properties";
 
-    public void setupMirandaProperties() {
-        //
-        // force it to use the defaults
-        //
-        deleteFile(MIRANADA_PROPERTIES_FILENAME);
-        MirandaProperties.initialize(MIRANADA_PROPERTIES_FILENAME);
-    }
-
 
     @Before
     public void setup() {
@@ -97,7 +88,7 @@ public class ClusterFileReadyState extends TestCase {
         GetVersionMessage getVersionMessage = new GetVersionMessage(null, this, myQueue);
         send(getVersionMessage, getClusterFile().getQueue());
 
-        pause(1000);
+        pause(125);
 
         assert (myQueue.size() == 1);
         assert (contains(Message.Subjects.Version, myQueue));
@@ -135,7 +126,7 @@ public class ClusterFileReadyState extends TestCase {
         WriteFailedMessage message = new WriteFailedMessage(null, getClusterFile().getFilename(), null, this);
         send(message, getClusterFile().getQueue());
 
-        pause(1000);
+        pause(125);
     }
 
 

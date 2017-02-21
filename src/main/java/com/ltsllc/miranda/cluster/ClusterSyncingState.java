@@ -72,11 +72,9 @@ public class ClusterSyncingState extends State {
      * @return
      */
     private State processClusterFileMessage(ClusterFileMessage clusterFileMessage) {
-        Type type = new TypeToken<ArrayList<NodeElement>>(){}.getType();
-        String json = new String(clusterFileMessage.getBuffer());
-        List<NodeElement> arrayList = ourGson.fromJson(json, type);
-        NewClusterFileMessage newClusterFileMessage = new NewClusterFileMessage(getCluster().getQueue(), this, arrayList, clusterFileMessage.getVersion());
-        send(getCluster().getClusterFile().getQueue(), newClusterFileMessage);
+        NewClusterFileMessage newClusterFileMessage = new NewClusterFileMessage(getCluster().getQueue(), this,
+                clusterFileMessage.getFile(), clusterFileMessage.getVersion());
+        send(getCluster().getClusterFileQueue(), newClusterFileMessage);
 
         return this;
     }

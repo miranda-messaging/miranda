@@ -129,6 +129,16 @@ public class Utils {
         }
     }
 
+    public static void closeIgnoreExceptions (OutputStream outputStream) {
+        if (null != outputStream) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
 
     private static final int BUFFER_SIZE = 8192;
 

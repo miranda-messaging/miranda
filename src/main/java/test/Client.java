@@ -135,11 +135,11 @@ public class Client {
 
         String alternateTruststore = dir + "ca-certificate.pem.txt";
 
-        String serverCertificateFilename = dir + "certificate-keystore";
+        String serverCertificateFilename = dir + "server-keystore";
         String serverCertificatePassword = "whatever";
         String serverCertificateAlias = "ca";
 
-        X509Certificate certificate = Util.getCertificate(trustStoreFilename, trustStorePassword, trustStoreAlias);
+        X509Certificate certificate = Util.getCertificate(serverCertificateFilename, trustStorePassword, trustStoreAlias);
 
         SslContext sslContext = Util.createClientSslContext(certificate);
 

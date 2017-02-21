@@ -78,7 +78,7 @@ public class ClusterFile extends TestCase{
         LoadMessage loadMessage = new LoadMessage(null, CLUSTER_FILENAME, this);
         Consumer.staticSend(loadMessage, com.ltsllc.miranda.cluster.ClusterFile.getInstance().getQueue());
 
-        pause(1000);
+        pause(125);
 
         NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
         com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement);

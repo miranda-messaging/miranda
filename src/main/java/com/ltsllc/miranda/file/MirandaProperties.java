@@ -70,7 +70,7 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_SERVER_KEYSTORE = "serverkeystore";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "ca";
-    public static final String DEFAULT_KEY_STORE = "data/serverkeystore";
+    public static final String DEFAULT_KEY_STORE = "serverkeystore";
     public static final String DEFAULT_KEY_STORE_ALIAS = "server";
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day

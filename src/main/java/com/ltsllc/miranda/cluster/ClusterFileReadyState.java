@@ -53,12 +53,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
                 break;
             }
 
-            case NewNode: {
-                NewNodeMessage newNodeMessage = (NewNodeMessage) message;
-                nextState = processNewNodeMessage(newNodeMessage);
-                break;
-            }
-
             case WriteSucceeded: {
                 break;
             }
@@ -117,8 +111,10 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
 
     private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
-        byte[] buffer = getClusterFile().getBytes();
-        ClusterFileMessage clusterFileMessage = new ClusterFileMessage (getClusterFile().getQueue(), this, buffer, getClusterFile().getVersion());
+        List<NodeElement> newList = new ArrayList<NodeElement>(getClusterFile().getData());
+
+        ClusterFileMessage clusterFileMessage = new ClusterFileMessage (getClusterFile().getQueue(), this,
+                newList, getClusterFile().getVersion());
         send(getClusterFileMessage.getSender(), clusterFileMessage);
 
         return this;
@@ -270,28 +266,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     public String toString() {
         return "ReadyState";
     }
-
-    /**
-     * A node just connected to us.  Add it to the file.
-     *
-     * @param newNodeMessage
-     * @return
-     */
-    private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
-        Node node = newNodeMessage.getNode();
-        NodeElement nodeElement = new NodeElement(node.getDns(), node.getIp(), node.getPort(), node.getDescription());
-
-        if (!contains(nodeElement)) {
-            getClusterFile().add(nodeElement);
-            getClusterFile().updateVersion();
-        } else {
-            NodeElement temp = getClusterFile().matchingNode(nodeElement);
-            temp.setLastConnected(System.currentTimeMillis());
-        }
-
-        return this;
-    }
-
 
     private State processWriteFailedMessage (WriteFailedMessage message) {
         logger.error("Failed to write cluster file: " + message.getFilename(), message.getCause());

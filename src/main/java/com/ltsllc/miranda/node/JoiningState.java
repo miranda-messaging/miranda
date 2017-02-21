@@ -152,7 +152,7 @@ public class JoiningState extends NodeState {
     }
 
     private State processClusterFileMessage (ClusterFileMessage clusterFileMessage) {
-        ClusterFileWireMessage clusterFileWireMessage = new ClusterFileWireMessage(clusterFileMessage.getBuffer(), clusterFileMessage.getVersion());
+        ClusterFileWireMessage clusterFileWireMessage = new ClusterFileWireMessage(clusterFileMessage.getFile(), clusterFileMessage.getVersion());
         sendOnWire(clusterFileWireMessage);
 
         return this;

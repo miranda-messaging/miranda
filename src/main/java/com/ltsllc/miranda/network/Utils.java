@@ -114,14 +114,12 @@ public class Utils {
         SslContext sslContext = null;
 
         try {
-            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword);
             PrivateKey privateKey = getPrivateKey (keyFilename, keyPassword, keyAlias);
             X509Certificate certificate = getCertificate (trustStoreFilename, trustStorePassword, trustStoreAlias);
 
             sslContext = SslContextBuilder
                     .forServer(privateKey, certificate)
-                    //.ciphers(getDefaultCiphers())
-                    .trustManager(trustManagerFactory)
+                    .trustManager(certificate)
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -228,7 +226,7 @@ public class Utils {
             e.printStackTrace();
             System.exit(1);
         } finally {
-            close(fis);
+            closeIgnoreExceptions(fis);
         }
 
         return keyStore;

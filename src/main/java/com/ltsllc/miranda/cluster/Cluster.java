@@ -6,6 +6,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.network.NodeAddedMessage;
+import com.ltsllc.miranda.node.GetClusterFileMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.util.PropertiesUtils;
@@ -32,12 +33,15 @@ public class Cluster extends Consumer {
 
     private static Cluster ourInstance;
 
+
     public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
         if (null == ourInstance) {
             BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
 
             ClusterFile.initialize(filename, writerQueue, clusterQueue);
+
             ourInstance = new Cluster(network, clusterQueue);
+            ourInstance.start();
         }
     }
 
@@ -45,13 +49,13 @@ public class Cluster extends Consumer {
         return ourInstance;
     }
 
-    public static void reset() {
+    public static synchronized void reset() {
         ourInstance = null;
     }
 
     private Cluster(BlockingQueue<Message> network, BlockingQueue<Message> queue) {
-        super("Cluster", queue);
-        this.clusterFile = ClusterFile.getInstance();
+        super("cluster", queue);
+        this.clusterFileQueue = ClusterFile.getInstance().getQueue();
 
         ClusterReadyState readyState = new ClusterReadyState(this);
         setCurrentState(readyState);
@@ -62,11 +66,15 @@ public class Cluster extends Consumer {
 
     private List<Node> nodes = new ArrayList<Node>();
     private BlockingQueue<Message> network;
-    private ClusterFile clusterFile;
+    private BlockingQueue<Message> clusterFileQueue;
     private NetworkListener networkListener;
 
-    public ClusterFile getClusterFile() {
-        return clusterFile;
+    public BlockingQueue<Message> getClusterFileQueue() {
+        return clusterFileQueue;
+    }
+
+    public void replaceClusterFileQueue (BlockingQueue<Message> newQueue) {
+        this.clusterFileQueue = newQueue;
     }
 
     public List<Node> getNodes() {
@@ -97,7 +105,7 @@ public class Cluster extends Consumer {
 
     public void load (String filename) {
         LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), filename, null);
-        getInstance().send(loadMessage, getClusterFile().getQueue());
+        getInstance().send(loadMessage, getClusterFileQueue());
     }
 
 
@@ -110,16 +118,20 @@ public class Cluster extends Consumer {
         return false;
     }
 
-    public void connect () {
-        long now = System.currentTimeMillis();
 
-        for (NodeElement nodeElement : getClusterFile().getData()) {
-            if (!nodeElement.expired(now)) {
-                Node node = new Node(nodeElement, getNetwork());
-                node.start();
-                getNodes().add(node);
+    public void connect () {
+        for (Node node : getNodes()) {
+            if (!node.isConnected())
                 node.connect();
-            }
         }
+    }
+
+    /**
+     * Used for debugging only.
+     *
+     * @param newNodes
+     */
+    public void replaceNodes (List<Node> newNodes) {
+        this.nodes = newNodes;
     }
 }
