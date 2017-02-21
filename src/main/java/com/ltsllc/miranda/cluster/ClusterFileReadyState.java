@@ -222,13 +222,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
-    public State getSyncingState() {
-        ClusterFileSyncingState clusterFileSyncingState = new ClusterFileSyncingState(getClusterFile());
-        return clusterFileSyncingState;
-    }
-
-
     public void write () {
         WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), getClusterFile().getBytes(), getClusterFile().getQueue(), this);
         send (getClusterFile().getWriterQueue(), writeMessage);

@@ -20,7 +20,6 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFileReadyState extends State {
     abstract public Version getVersion();
-    abstract public State getSyncingState();
     abstract public Type getListType();
     abstract public void write();
     abstract public boolean contains(Object o);
@@ -47,12 +46,6 @@ abstract public class SingleFileReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case RemoteVersion: {
-                RemoteVersionMessage remoteVersionMessage = (RemoteVersionMessage) message;
-                nextState = processRemoteVersionMessage (remoteVersionMessage);
-                break;
-            }
-
             case GetFileResponse: {
                 GetFileResponseMessage getFileResponseMessage = (GetFileResponseMessage) message;
                 nextState = processGetFileResponseMessage (getFileResponseMessage);
@@ -79,19 +72,6 @@ abstract public class SingleFileReadyState extends State {
         return nextState;
     }
 
-
-    public State processRemoteVersionMessage (RemoteVersionMessage remoteVersionMessage) {
-        if (null == remoteVersionMessage.getVersion())
-            return this;
-
-        if (null == getVersion() || !getVersion().equals(remoteVersionMessage.getVersion())) {
-            GetFileMessage getFileMessage = new GetFileMessage(getFile().getQueue(), this, getName());
-            send(remoteVersionMessage.getNode(), getFileMessage);
-            return getSyncingState();
-        }
-
-        return this;
-    }
 
     public State processGetFileResponseMessage (GetFileResponseMessage getFileResponseMessage) {
         String hexString = getFileResponseMessage.getContents();

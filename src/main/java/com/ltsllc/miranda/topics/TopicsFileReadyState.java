@@ -105,12 +105,6 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     }
 
     @Override
-    public State getSyncingState() {
-        return new TopicsFileSyncingState(getTopicsFile());
-    }
-
-
-    @Override
     public String getName() {
         return "topics";
     }
