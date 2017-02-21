@@ -22,6 +22,7 @@ public class Message implements Perishable {
         ConnectionError,
         ConnectTo,
         ConnectionClosed,
+        DropNode,
         DoneSynchronizing,
         Election,
         Expired,

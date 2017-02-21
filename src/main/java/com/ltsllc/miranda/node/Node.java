@@ -173,4 +173,15 @@ public class Node extends Consumer
     public void disconnect () {
         getChannel().close();
     }
+
+
+    public NodeElement getNodeElement() {
+        NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+
+        if (isConnected()) {
+            nodeElement.setLastConnected(System.currentTimeMillis());
+        }
+
+        return nodeElement;
+    }
 }

@@ -12,15 +12,22 @@ import java.util.concurrent.BlockingQueue;
  * Indicates that the sender has changed.
  */
 public class NodeUpdatedMessage extends Message {
-    private Node node;
+    private NodeElement oldNode;
+    private NodeElement newNode;
 
-    public Node getNode() {
-        return node;
-    }
-
-    public NodeUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+    public NodeUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, NodeElement oldNode, NodeElement newNode) {
         super(Subjects.NodeUpdated, senderQueue, sender);
 
-        this.node = node;
+        this.oldNode = oldNode;
+        this.newNode = newNode;
+    }
+
+    public NodeElement getNewNode() {
+        return newNode;
+    }
+
+    public NodeElement getOldNode() {
+
+        return oldNode;
     }
 }

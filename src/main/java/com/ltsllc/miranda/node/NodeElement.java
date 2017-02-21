@@ -16,7 +16,6 @@ public class NodeElement implements Perishable {
     private int port;
     private String description;
     private long lastConnected;
-    private long expires;
 
     public long getLastConnected() {
         return lastConnected;
@@ -67,11 +66,21 @@ public class NodeElement implements Perishable {
         Date date = new Date();
         long now = date.getTime();
         long timeSinceLastConnect = now - getLastConnected();
-        return timeSinceLastConnect > timeout;
+        return timeSinceLastConnect >= timeout;
     }
 
+    /**
+     * false.
+     *
+     * Objects of this class do not expire.  Instead, during a health check,
+     * an element may have not connected in an acceptable time frame and
+     * therefore get dropped.
+     *
+     * @param time
+     * @return
+     */
     public boolean expired (long time) {
-        return 0 == expires || time > expires;
+        return false;
     }
 
 
@@ -81,6 +90,14 @@ public class NodeElement implements Perishable {
         stringBuffer.append(ourGson.toJson(this));
 
         return stringBuffer.toString();
+    }
+
+
+    public void update (NodeElement newValue) {
+        this.dns = newValue.dns;
+        this.ip = newValue.ip;
+        this.port = newValue.port;
+        this.description = newValue.description;
     }
 
 

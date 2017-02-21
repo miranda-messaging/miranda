@@ -41,7 +41,7 @@ public class ClusterFileSyncingState extends SingleFileSyncingState {
 
     @Override
     public State getReadyState() {
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getClusterFile());
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(getClusterFile(), Cluster.getInstance().getQueue());
         return clusterFileReadyState;
     }
 

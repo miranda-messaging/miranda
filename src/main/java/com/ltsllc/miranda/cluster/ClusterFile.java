@@ -42,6 +42,9 @@ public class ClusterFile extends SingleFile<NodeElement> {
         }
     }
 
+    public static void reset () {
+        ourInstance = null;
+    }
 
     public void setVersion(Version version) {
         this.version = version;
@@ -54,10 +57,10 @@ public class ClusterFile extends SingleFile<NodeElement> {
     private ClusterFile (String filename, BlockingQueue<Message> writer, BlockingQueue<Message> cluster) {
         super(filename, writer);
 
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
-        setCurrentState(clusterFileReadyState);
-
         this.cluster = cluster;
+
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this, getCluster());
+        setCurrentState(clusterFileReadyState);
     }
 
     public Version getVersion() {
@@ -163,24 +166,23 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
 
     public void merge (List<NodeElement> list) {
-        boolean changed = false;
+        List<NodeElement> adds = new ArrayList<NodeElement>();
 
         for (NodeElement element : list) {
             if (!containsElement(element)) {
-                getData().add(element);
-                changed = true;
+                adds.add(element);
             }
         }
 
-        if (changed) {
-            String sha1 = Utils.calculateSha1(getBytes());
-            Version version = new Version(sha1);
-            setVersion(version);
-            ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getQueue(), this, getData(), version);
-            send(clusterFileChangedMessage, Cluster.getInstance().getQueue());
+        if (adds.size() > 0) {
+            getData().addAll(adds);
+            updateVersion();
 
             WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
             send(writeMessage, getWriterQueue());
+
+            ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getQueue(), this, getData(), version);
+            send(clusterFileChangedMessage, getCluster());
         }
     }
 
@@ -207,5 +209,19 @@ public class ClusterFile extends SingleFile<NodeElement> {
                 return element;
 
         return null;
+    }
+
+
+    public void updateNode (NodeElement oldValue, NodeElement newValue) {
+        if (!contains(oldValue)) {
+            logger.error ("asked to update a node that we don't contain");
+            return;
+        }
+
+        NodeElement current = matchingNode(oldValue);
+        current.update(newValue);
+
+        updateVersion();
+        write();
     }
 }

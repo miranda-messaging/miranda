@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
@@ -11,26 +10,36 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/6/2017.
  */
 public class ClusterFileReadyState extends SingleFileReadyState {
-    private ClusterFile clusterFile;
+    private static Logger logger = Logger.getLogger(ClusterFileReadyState.class);
 
-    public ClusterFileReadyState(ClusterFile clusterFile) {
+    private ClusterFile clusterFile;
+    private BlockingQueue<Message> clusterQueue;
+
+    public ClusterFileReadyState(ClusterFile clusterFile, BlockingQueue<Message> clusterQueue) {
         super(clusterFile);
         this.clusterFile = clusterFile;
+        this.clusterQueue = clusterQueue;
     }
 
     public ClusterFile getClusterFile() {
         return clusterFile;
+    }
+
+    public BlockingQueue<Message> getClusterQueue() {
+        return clusterQueue;
     }
 
     @Override
@@ -51,6 +60,12 @@ public class ClusterFileReadyState extends SingleFileReadyState {
             }
 
             case WriteSucceeded: {
+                break;
+            }
+
+            case WriteFailed: {
+                WriteFailedMessage writeFailedMessage = (WriteFailedMessage) message;
+                nextState = processWriteFailedMessage(writeFailedMessage);
                 break;
             }
 
@@ -95,9 +110,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
 
     private State processNodeUpdated (NodeUpdatedMessage nodeUpdatedMessage) {
-        byte[] buffer = getClusterFile().getBytes();
-        WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), buffer, getClusterFile().getQueue(), this);
-        send(getClusterFile().getWriterQueue(), writeMessage);
+        getClusterFile().updateNode(nodeUpdatedMessage.getOldNode(), nodeUpdatedMessage.getNewNode());
 
         return this;
     }
@@ -119,54 +132,71 @@ public class ClusterFileReadyState extends SingleFileReadyState {
      * @return
      */
     private State processNewClusterFileMessage (NewClusterFileMessage newClusterFileMessage) {
-        if (differ(getClusterFile().getData(), newClusterFileMessage.getFile())) {
-            getClusterFile().setData(newClusterFileMessage.getFile());
-            getClusterFile().updateVersion();
-
-            NewClusterFileMessage newClusterFileMessage2 = new NewClusterFileMessage(getClusterFile().getQueue(),
-                    this, getClusterFile().getData(), getClusterFile().getVersion());
-            send(Cluster.getInstance().getQueue(), newClusterFileMessage2);
+        if (!getClusterFile().getVersion().equals(newClusterFileMessage.getVersion())) {
+            getClusterFile().merge(newClusterFileMessage.getFile());
         }
 
         return this;
     }
 
-    private boolean differ (List<NodeElement> l1, List<NodeElement> l2) {
-        if ((l1 == null && l2 != null) || (l1 != null && l2 == null))
-            return true;
-
-        if (l1.size() != l2.size())
-            return true;
-
-        for (NodeElement nodeElement : l1)
-            if (!l2.contains(nodeElement))
-                return true;
-
-        return false;
-    }
-
-
+    /**
+     * This message means that we should update all the matching nodes time
+     * of last conection, and possibly drop the nodes that don't match.  A
+     * node that has not connected in an amount of time (in milliseconds)
+     * specifiede by {@link MirandaProperties#PROPERTY_CLUSTER_TIMEOUT}
+     * should be dropped.
+     *
+     * @param healthCheckUpdateMessage
+     * @return
+     */
     private State processHealthCheckUpdateMessage (HealthCheckUpdateMessage healthCheckUpdateMessage) {
-        long timeout = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT);
-
+        //
+        // update the time of last connect for nodes in the message
+        //
+        boolean nodesUpdated = false;
         for (NodeElement nodeElement : healthCheckUpdateMessage.getUpdates()) {
-            getClusterFile().updateNode(nodeElement);
+            NodeElement match = getClusterFile().matchingNode(nodeElement);
+            if (null != match) {
+                match.setLastConnected(System.currentTimeMillis());
+                nodesUpdated = true;
+            }
         }
 
+
+        //
+        // check to see if we should drop any nodes
+        //
+        long timeout = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT);
+        long now = System.currentTimeMillis();
         List<NodeElement> drops = new ArrayList<NodeElement>();
         for (NodeElement nodeElement : getClusterFile().getData()) {
-            if (nodeElement.hasTimedout(timeout))
+            long timeSinceLastConnect = now - nodeElement.getLastConnected();
+            if (timeSinceLastConnect >= timeout)
                 drops.add(nodeElement);
         }
 
-        getClusterFile().getData().removeAll(drops);
+        //
+        // drop nodes
+        //
+        if (drops.size() > 0) {
+            logger.info("dropping nodes that have timed out: " + drops);
+            getClusterFile().getData().removeAll(drops);
+            getClusterFile().updateVersion();
+            getClusterFile().write();
 
-        WriteMessage writeMessage = new WriteMessage(getClusterFile().getFilename(), getClusterFile().getBytes(), getClusterFile().getQueue(), this);
-        send(getClusterFile().getWriterQueue(), writeMessage);
+            for (NodeElement droppedNode : drops) {
+                DropNodeMessage message = new DropNodeMessage(getClusterFile().getQueue(), this, droppedNode);
+                send(getClusterQueue(), message);
+            }
+        }
 
-
-        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getClusterFile().getData(), getClusterFile().getQueue(),this);
-        send(Cluster.getInstance().getQueue(), nodesLoadedMessage);
+        //
+        // if we changed anything, update the version and write out the file
+        //
+        if (nodesUpdated || drops.size() > 0) {
+            getClusterFile().updateVersion();
+            getClusterFile().write();
+        }
 
         return this;
     }
@@ -197,7 +227,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         ClusterFileSyncingState clusterFileSyncingState = new ClusterFileSyncingState(getClusterFile());
         return clusterFileSyncingState;
     }
-
 
 
     public void write () {
@@ -266,6 +295,13 @@ public class ClusterFileReadyState extends SingleFileReadyState {
             NodeElement temp = getClusterFile().matchingNode(nodeElement);
             temp.setLastConnected(System.currentTimeMillis());
         }
+
+        return this;
+    }
+
+
+    private State processWriteFailedMessage (WriteFailedMessage message) {
+        logger.error("Failed to write cluster file: " + message.getFilename(), message.getCause());
 
         return this;
     }

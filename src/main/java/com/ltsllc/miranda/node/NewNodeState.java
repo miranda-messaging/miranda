@@ -132,12 +132,16 @@ public class NewNodeState extends NodeState {
     }
 
     private State processJoinWireMessage (JoinWireMessage joinWireMessage) {
+        NodeElement oldNode = getNode().getNodeElement();
+
         getNode().setDns(joinWireMessage.getDns());
         getNode().setIp(joinWireMessage.getIp());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());
 
-        NodeUpdatedMessage nodeUpdatedMessage = new NodeUpdatedMessage(getNode().getQueue(), this, getNode());
+        NodeElement newNode = getNode().getNodeElement();
+
+        NodeUpdatedMessage nodeUpdatedMessage = new NodeUpdatedMessage(getNode().getQueue(), this, oldNode, newNode);
         send(Cluster.getInstance().getQueue(), nodeUpdatedMessage);
 
         JoinSuccessWireMessage joinSuccessWireMessage = new JoinSuccessWireMessage();
