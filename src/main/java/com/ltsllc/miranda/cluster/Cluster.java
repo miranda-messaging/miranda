@@ -134,4 +134,16 @@ public class Cluster extends Consumer {
     public void replaceNodes (List<Node> newNodes) {
         this.nodes = newNodes;
     }
+
+    /**
+     * Return the {@link Node} that matches the {@link NodeElement}
+     */
+    public Node matchingNode (NodeElement nodeElement) {
+        for (Node node : getNodes()) {
+            if (node.matches(nodeElement))
+                return node;
+        }
+
+        return null;
+    }
 }

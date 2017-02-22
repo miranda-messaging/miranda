@@ -3,6 +3,7 @@ package com.ltsllc.miranda.node;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.file.Perishable;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Date;
  */
 public class NodeElement implements Perishable {
     private static Gson ourGson = new Gson();
+    private static SimpleDateFormat ourSimpleDateFormat = new SimpleDateFormat("yyyy.MM.dd@HH:mm:ss.SSS");
 
     private String dns;
     private String ip;
@@ -83,16 +85,6 @@ public class NodeElement implements Perishable {
         return false;
     }
 
-
-    @Override
-    public String toString() {
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(ourGson.toJson(this));
-
-        return stringBuffer.toString();
-    }
-
-
     public void update (NodeElement newValue) {
         this.dns = newValue.dns;
         this.ip = newValue.ip;
@@ -103,5 +95,26 @@ public class NodeElement implements Perishable {
 
     public String toJson() {
         return ourGson.toJson(this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("NodeElement {");
+        stringBuilder.append("dns: ");
+        stringBuilder.append(getDns());
+        stringBuilder.append(", ip: ");
+        stringBuilder.append(getIp());
+        stringBuilder.append(", port: ");
+        stringBuilder.append(getPort());
+        stringBuilder.append(", last connect: ");
+        Date date = new Date(getLastConnected());
+        stringBuilder.append(0 == getLastConnected() ? "never" : ourSimpleDateFormat.format(date));
+        stringBuilder.append(", description: ");
+        stringBuilder.append(getDescription());
+        stringBuilder.append("}");
+
+        return stringBuilder.toString();
     }
 }

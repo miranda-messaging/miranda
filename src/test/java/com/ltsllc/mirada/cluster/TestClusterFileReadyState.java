@@ -1,4 +1,4 @@
-package com.ltsllc.mirada;
+package com.ltsllc.mirada.cluster;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;

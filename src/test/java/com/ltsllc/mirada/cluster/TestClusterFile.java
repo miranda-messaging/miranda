@@ -1,4 +1,4 @@
-package com.ltsllc.mirada;
+package com.ltsllc.mirada.cluster;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
@@ -71,6 +71,14 @@ public class TestClusterFile extends TestCase {
         ClusterFile.initialize(filename, getWriter(), getCluster());
         this.clusterFile = ClusterFile.getInstance();
     }
+
+    public void reset () {
+        super.reset();
+
+        MirandaProperties.reset();
+        ClusterFile.reset();
+    }
+
 
     @Before
     public void setup() {

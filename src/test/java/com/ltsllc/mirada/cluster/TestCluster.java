@@ -1,4 +1,4 @@
-package com.ltsllc.mirada;
+package com.ltsllc.mirada.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.ClusterFile;

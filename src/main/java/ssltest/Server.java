@@ -78,7 +78,7 @@ public class Server {
 
         DOMConfigurator.configure(log4jConfigurationFile);
 
-        String keyStoreFilename = dir + "server-keystore";
+        String keyStoreFilename = dir + "serverkeystore";
         String keyStorePassword = "whatever";
         String keyStoreAlias = "server";
 

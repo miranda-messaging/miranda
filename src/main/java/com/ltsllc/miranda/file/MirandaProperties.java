@@ -139,6 +139,10 @@ public class MirandaProperties extends Properties {
         }
     }
 
+    public static synchronized void reset() {
+        ourInstance = null;
+    }
+
     public void updateSystemProperties()
     {
         PropertiesUtils.setIfNull(System.getProperties(), this);

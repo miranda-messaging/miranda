@@ -1,14 +1,11 @@
 package com.ltsllc.miranda.cluster;
 
-import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.Perishable;
-import com.ltsllc.miranda.file.SingleFileReadyState;
-import com.ltsllc.miranda.miranda.SynchronizeMessage;
 import com.ltsllc.miranda.node.*;
+import org.apache.log4j.Logger;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +17,8 @@ import java.util.List;
  * The cluster is ready to accept commands
  */
 public class ClusterReadyState extends State {
+    private static Logger logger = Logger.getLogger(ClusterReadyState.class);
+
     private Cluster cluster;
 
     public ClusterReadyState(Cluster cluster) {
@@ -74,18 +73,11 @@ public class ClusterReadyState extends State {
                 break;
             }
 
-            case Synchronize: {
-                SynchronizeMessage synchronizeMessage = (SynchronizeMessage) m;
-                nextState = processSynchronizeMessage(synchronizeMessage);
+            case DropNode: {
+                DropNodeMessage dropNodeMessage = (DropNodeMessage) m;
+                nextState = processDropNodeMessage (dropNodeMessage);
                 break;
             }
-
-            case Expired: {
-                ExpiredMessage expiredMessage = (ExpiredMessage) m;
-                nextState = processExpiredMessage(expiredMessage);
-                break;
-            }
-
 
             default:
                 nextState = super.processMessage(m);
@@ -172,13 +164,6 @@ public class ClusterReadyState extends State {
     }
 
 
-    private State processSynchronizeMessage (SynchronizeMessage synchronizeMessage) {
-        SynchronizeMessage synchronizeMessage2 = new SynchronizeMessage(getCluster().getQueue(), this, synchronizeMessage.getNode());
-        send (getCluster().getClusterFileQueue(), synchronizeMessage2);
-
-        return this;
-    }
-
     private boolean contains (NodeElement nodeElement) {
         for (Node node : getCluster().getNodes()) {
             if (node.equals(nodeElement))
@@ -196,22 +181,23 @@ public class ClusterReadyState extends State {
         return this;
     }
 
+    /**
+     * A {@link NodeElement} has "timed out" and been dropped from the cluster file.
+     *
+     * @param dropNodeMessage
+     * @return
+     */
+    private State processDropNodeMessage (DropNodeMessage dropNodeMessage) {
+        Node node = getCluster().matchingNode(dropNodeMessage.getDroppedNode());
 
-    private State processExpiredMessage (ExpiredMessage expiredMessage) {
-        List<Node> expiredNodes = new ArrayList<Node>();
-
-        for (Node node : getCluster().getNodes()) {
-            for (Perishable perishable : expiredMessage.getExpired()) {
-                if (node.equals(perishable))
-                    expiredNodes.add(node);
+        if (null != node) {
+            if (node.isConnected()) {
+                logger.warn ("Asked to drop a connected node (" + dropNodeMessage.getDroppedNode() + "), ignoring");
+            } else {
+                logger.info("Dropping node from cluster: " + dropNodeMessage.getDroppedNode());
+                getCluster().getNodes().remove(node);
             }
         }
-
-        for (Node node : expiredNodes) {
-            node.disconnect();
-        }
-
-        getCluster().getNodes().removeAll(expiredNodes);
 
         return this;
     }

@@ -128,9 +128,7 @@ public class Client {
         String trustStorePassword = "whatever";
         String trustStoreAlias = "ca";
 
-        String alternateTruststore = dir + "ca-certificate.pem.txt";
-
-        String serverCertificateFilename = dir + "server-keystore";
+        String serverCertificateFilename = dir + "serverkeystore";
         String serverCertificatePassword = "whatever";
         String serverCertificateAlias = "ca";
 

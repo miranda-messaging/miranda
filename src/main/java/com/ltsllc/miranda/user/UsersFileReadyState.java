@@ -7,7 +7,6 @@ import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.miranda.SynchronizeMessage;
 import com.ltsllc.miranda.node.GetFileMessage;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;
@@ -19,7 +18,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/10/2017.
@@ -78,14 +76,6 @@ public class UsersFileReadyState extends SingleFileReadyState {
 
     private State processNewUserMessage (NewUserMessage newUserMessage) {
         getUsersFile().addUser(newUserMessage.getUser());
-
-        return this;
-    }
-
-
-    public State processSynchronizeMessage (SynchronizeMessage synchronizeMessage) {
-        GetUsersFileMessage getUsersFileMessage = new GetUsersFileMessage(getUsersFile().getQueue(), this);
-        send(synchronizeMessage.getNode().getQueue(), getUsersFileMessage);
 
         return this;
     }

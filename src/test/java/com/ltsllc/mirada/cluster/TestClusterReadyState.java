@@ -1,4 +1,4 @@
-package com.ltsllc.mirada;
+package com.ltsllc.mirada.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
@@ -127,18 +127,10 @@ public class TestClusterReadyState extends TestCase {
         assert (contains(Message.Subjects.Version, myQueue));
     }
 
-         /*
-    messages to ssltest for
-
-            case HealthCheck: {
-            case Synchronize: {
-            case Expired: {
-     */
-
     /**
      * This message gets sent because another node in the cluster has a different
      * cluster file, and merging the remote file with our local file yielded at
-     * least one node we did not have.  This ssltest ensures that we try to connect
+     * least one node we did not have.  This test ensures that we try to connect
      * to the new node.
      */
     @Test
@@ -172,4 +164,5 @@ public class TestClusterReadyState extends TestCase {
 
         assert(contains(Message.Subjects.HealthCheckUpdate, getCluster().getClusterFileQueue()));
     }
+
 }

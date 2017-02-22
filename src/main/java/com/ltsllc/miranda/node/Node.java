@@ -184,4 +184,13 @@ public class Node extends Consumer
 
         return nodeElement;
     }
+
+
+    public boolean matches (NodeElement nodeElement) {
+        return (
+                getDns().equals(nodeElement.getDns())
+                        && getIp().equals(nodeElement.getIp())
+                        && getPort() == nodeElement.getPort()
+        );
+    }
 }
