@@ -1,20 +1,17 @@
 package com.ltsllc.miranda.cluster;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
+import com.ltsllc.miranda.cluster.messages.LoadMessage;
+import com.ltsllc.miranda.cluster.messages.NodesLoadedMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.*;
-import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;

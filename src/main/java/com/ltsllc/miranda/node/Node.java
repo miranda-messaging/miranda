@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.cluster.ConnectMessage;
+import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.ConnectToMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Clark on 12/31/2016.

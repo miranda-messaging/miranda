@@ -2,12 +2,10 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.ClusterFileMessage;
+import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
-import javax.naming.NameAlreadyBoundException;
 import java.util.ArrayList;
 import java.util.List;
 

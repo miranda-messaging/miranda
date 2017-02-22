@@ -3,8 +3,7 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.ExpiredMessage;
-import com.ltsllc.miranda.cluster.RemoteVersionMessage;
+import com.ltsllc.miranda.cluster.messages.ExpiredMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.GetFileMessage;
 import org.apache.log4j.Logger;
@@ -13,7 +12,6 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/10/2017.

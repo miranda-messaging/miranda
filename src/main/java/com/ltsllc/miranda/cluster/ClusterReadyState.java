@@ -2,7 +2,7 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.node.*;
 import org.apache.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.messages;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;

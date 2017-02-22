@@ -2,7 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.cluster.ConnectMessage;
+import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.ConnectToMessage;
 import com.ltsllc.miranda.network.ConnectedMessage;
 import org.apache.log4j.Logger;

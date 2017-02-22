@@ -3,7 +3,7 @@ package com.ltsllc.mirada.cluster;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.*;
+import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.Node;

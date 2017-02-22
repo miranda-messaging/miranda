@@ -5,9 +5,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Utils;
-import com.ltsllc.miranda.cluster.RemoteVersionMessage;
 import com.ltsllc.miranda.node.GetFileMessage;
-import com.ltsllc.miranda.node.VersionMessage;
 
 import java.lang.reflect.Type;
 import java.util.List;

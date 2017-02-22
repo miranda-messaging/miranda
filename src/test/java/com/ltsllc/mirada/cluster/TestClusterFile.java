@@ -3,7 +3,7 @@ package com.ltsllc.mirada.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.cluster.LoadMessage;
+import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.node.NodeElement;
 import org.apache.log4j.Logger;

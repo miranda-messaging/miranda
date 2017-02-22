@@ -4,7 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.cluster.VersionsMessage;
+import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;

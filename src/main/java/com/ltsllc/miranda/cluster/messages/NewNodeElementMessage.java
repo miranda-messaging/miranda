@@ -1,6 +1,7 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.messages;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.node.NodeElement;
 
 import java.util.concurrent.BlockingQueue;
