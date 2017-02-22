@@ -8,7 +8,6 @@ import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
-import com.ltsllc.miranda.network.NodeAddedMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
@@ -65,7 +64,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
             case NodeUpdated: {
                 NodeUpdatedMessage nodeUpdatedMessage = (NodeUpdatedMessage) message;
-                nextState = processNodeUpdated(nodeUpdatedMessage);
+                nextState = processNodeUpdatedMessage(nodeUpdatedMessage);
                 break;
             }
 
@@ -97,13 +96,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    private State processNodeAddedMessage (NodeAddedMessage nodeAddedMessage) {
-        getClusterFile().addNode(nodeAddedMessage.getNode());
-        return this;
-    }
-
-
-    private State processNodeUpdated (NodeUpdatedMessage nodeUpdatedMessage) {
+    private State processNodeUpdatedMessage(NodeUpdatedMessage nodeUpdatedMessage) {
         getClusterFile().updateNode(nodeUpdatedMessage.getOldNode(), nodeUpdatedMessage.getNewNode());
 
         return this;

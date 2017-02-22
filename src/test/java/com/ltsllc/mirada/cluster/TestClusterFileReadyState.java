@@ -4,12 +4,10 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.cluster.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.HealthCheckUpdateMessage;
 import com.ltsllc.miranda.cluster.NewClusterFileMessage;
-import com.ltsllc.miranda.node.GetClusterFileMessage;
-import com.ltsllc.miranda.node.GetVersionMessage;
-import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.node.NodeUpdatedMessage;
+import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteSucceededMessage;
 import org.apache.log4j.Logger;
@@ -261,5 +259,44 @@ public class TestClusterFileReadyState extends TestCase {
         //
         assert (!getClusterFile().contains(oldNode));
         assert (contains(Message.Subjects.DropNode, getCluster()));
+    }
+
+    /**
+     * This is used by the superclass, when synchronizing with a remote file.
+     * It basically just sends a write message on to the file.
+     */
+    @Test
+    public void testWrite() {
+        ClusterFileReadyState clusterFileReadyState = (ClusterFileReadyState) getClusterFile().getCurrentState();
+        clusterFileReadyState.write();
+
+        pause(125);
+
+        assert (contains(Message.Subjects.Write, getWriter()));
+    }
+
+    /**
+     * Contains is used by many other methods; just test that it is at least
+     * minimally working.
+     */
+    @Test
+    public void testContains() {
+        NodeElement present = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement absent = new NodeElement("bar.com", "192.168.1.2", 6790, "a diffenet test node");
+
+        ClusterFileReadyState clusterFileReadyState = (ClusterFileReadyState) getClusterFile().getCurrentState();
+
+        assert (clusterFileReadyState.contains(present));
+        assert (!clusterFileReadyState.contains(absent));
+    }
+
+    @Test
+    public void testGetVersion() {
+        ClusterFileReadyState clusterFileReadyState = (ClusterFileReadyState) getClusterFile().getCurrentState();
+        Version cfrsVersion = clusterFileReadyState.getVersion();
+
+        Version cfVersion = getClusterFile().getVersion();
+
+        assert (cfrsVersion.equals(cfrsVersion));
     }
 }
