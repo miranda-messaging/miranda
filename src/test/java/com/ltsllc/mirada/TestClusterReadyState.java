@@ -1,9 +1,9 @@
-package com.ltsllc.miranda.cluster.test;
+package com.ltsllc.mirada;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.Node;
@@ -11,7 +11,6 @@ import com.ltsllc.miranda.node.NodeElement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import sun.security.provider.NativePRNG;
 import test.TestCase;
 
 import java.util.ArrayList;
@@ -22,8 +21,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Clark on 2/20/2017.
  */
-public class ClusterReadyState extends TestCase {
-    private com.ltsllc.miranda.cluster.Cluster cluster;
+public class TestClusterReadyState extends TestCase {
+    private Cluster cluster;
 
     private static final String PROPERTIES_FILENAME = "junk.properties";
 
@@ -33,14 +32,14 @@ public class ClusterReadyState extends TestCase {
         setupKeyStore();
         setupTrustStore();
 
-        com.ltsllc.miranda.cluster.Cluster.reset();
+        Cluster.reset();
 
         deleteFile(PROPERTIES_FILENAME);
         MirandaProperties.initialize(PROPERTIES_FILENAME);
         MirandaProperties properties = MirandaProperties.getInstance();
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-        com.ltsllc.miranda.cluster.Cluster.initializeClass(filename, getWriter(), getNetwork());
-        this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
+        Cluster.initializeClass(filename, getWriter(), getNetwork());
+        this.cluster = Cluster.getInstance();
     }
 
     @Before
@@ -49,7 +48,7 @@ public class ClusterReadyState extends TestCase {
         reset();
     }
 
-    public com.ltsllc.miranda.cluster.Cluster getCluster() {
+    public Cluster getCluster() {
         return cluster;
     }
 
@@ -110,8 +109,8 @@ public class ClusterReadyState extends TestCase {
 
     /**
      * The requester of this message wants version information about the
-     * {@link com.ltsllc.miranda.cluster.ClusterFile}.  Ensure that we send a
-     * {@link com.ltsllc.miranda.Message.Subjects#Version} message, and that
+     * {@link TestClusterFile}.  Ensure that we send a
+     * {@link Message.Subjects#Version} message, and that
      * we send it to the right place.
      */
     @Test

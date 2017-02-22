@@ -1,10 +1,8 @@
-package com.ltsllc.miranda.cluster.test;
+package com.ltsllc.mirada;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.file.MirandaProperties;
-import com.ltsllc.miranda.node.NodeElement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +14,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Clark on 2/20/2017.
  */
-public class Cluster extends TestCase {
-    private com.ltsllc.miranda.cluster.ClusterFile clusterFile;
+public class TestCluster extends TestCase {
+    private ClusterFile clusterFile;
     private com.ltsllc.miranda.cluster.Cluster cluster;
 
-    public com.ltsllc.miranda.cluster.ClusterFile getClusterFile() {
+    public ClusterFile getClusterFile() {
         return clusterFile;
     }
 
@@ -56,7 +54,7 @@ public class Cluster extends TestCase {
 
         com.ltsllc.miranda.cluster.Cluster.initializeClass(filename, getWriter(), getNetwork());
         this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
-        this.clusterFile = com.ltsllc.miranda.cluster.ClusterFile.getInstance();
+        this.clusterFile = ClusterFile.getInstance();
     }
 
     @After
@@ -66,7 +64,7 @@ public class Cluster extends TestCase {
 
     /**
      * Ensure that {@link com.ltsllc.miranda.cluster.Cluster} created a
-     * {@link com.ltsllc.miranda.cluster.ClusterFile}.
+     * {@link ClusterFile}.
      */
     @Test
     public void testInitialize() {
@@ -75,7 +73,7 @@ public class Cluster extends TestCase {
         com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getNetwork());
         this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
 
-        com.ltsllc.miranda.cluster.ClusterFile temp = com.ltsllc.miranda.cluster.ClusterFile.getInstance();
+        ClusterFile temp = ClusterFile.getInstance();
         assert(null != temp);
         assert(getCluster().getClusterFileQueue() != null);
     }

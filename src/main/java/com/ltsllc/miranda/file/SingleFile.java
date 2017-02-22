@@ -74,7 +74,6 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
     {
         logger.info("loading " + getFilename());
 
-
         File f = new File(getFilename());
         if (!f.exists()) {
             List list = buildEmptyList();

@@ -1,9 +1,9 @@
 [
-  {
-      "dns" : "192.168.1.1",
-      "ip" : "192.168.1.1",
-      "port" : 6789,
-      "description" : "I should expire",
-      "expires" : 0
-  }
+    {
+        "dns" : "foo.com",
+        "ip" : "192.168.1.1",
+        "port" : 6789,
+        "description" : "a test node",
+        "expires" : 9223372036854775807
+    }
 ]

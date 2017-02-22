@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.cluster.test;
+package com.ltsllc.mirada;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
@@ -26,11 +26,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Clark on 2/20/2017.
  */
-public class ClusterFileReadyState extends TestCase {
-    private static Logger logger = Logger.getLogger(ClusterFileReadyState.class);
+public class TestClusterFileReadyState extends TestCase {
+    private static Logger logger = Logger.getLogger(TestClusterFileReadyState.class);
     private static Gson ourGson = new Gson();
 
-    private com.ltsllc.miranda.cluster.ClusterFile clusterFile;
+    private ClusterFile clusterFile;
     private BlockingQueue<Message> cluster;
 
     private static final String CLUSTER_FILENAME = "cluster.json";
@@ -184,7 +184,7 @@ public class ClusterFileReadyState extends TestCase {
     }
 
     /**
-     * A {@link com.ltsllc.miranda.cluster.HealthCheckUpdateMessage} signifies that
+     * A {@link HealthCheckUpdateMessage} signifies that
      * the specifed nodes are connected, and should have their times of last
      * connection updated to now.
      */

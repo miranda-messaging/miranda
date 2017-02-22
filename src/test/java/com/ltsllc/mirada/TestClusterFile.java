@@ -1,14 +1,19 @@
-package com.ltsllc.miranda.cluster.test;
+package com.ltsllc.mirada;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.LoadMessage;
+import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.node.NodeElement;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import test.TestCase;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,8 +21,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Clark on 2/20/2017.
  */
-public class ClusterFile extends TestCase{
+public class TestClusterFile extends TestCase {
     private static final String CLUSTER_FILENAME = "testClusterFile";
+
+    private static Logger logger = Logger.getLogger(TestClusterFile.class);
+
+    private ClusterFile clusterFile;
+
+    public ClusterFile getClusterFile() {
+        return clusterFile;
+    }
 
     private static final String[] CLUSTER_FILE_CONTENTS = {
             "[",
@@ -49,29 +62,40 @@ public class ClusterFile extends TestCase{
         return cluster;
     }
 
+    public void setupClusterFile() {
+        MirandaProperties properties = MirandaProperties.getInstance();
+        String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+
+        deleteFile(filename);
+
+        putFile(filename, CLUSTER_FILE_CONTENTS);
+
+        ClusterFile.initialize(filename, getWriter(), getCluster());
+        this.clusterFile = ClusterFile.getInstance();
+    }
+
     @Before
-    public void setup () {
-        deleteFile(CLUSTER_FILENAME);
-        putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        com.ltsllc.miranda.cluster.ClusterFile.initialize(CLUSTER_FILENAME, getWriter(), getCluster());
+    public void setup() {
+        reset();
+        setuplog4j();
+        setupMirandaProperties();
+        setupClusterFile();
     }
 
     @After
-    public void cleanup () {
+    public void cleanup() {
         deleteFile(CLUSTER_FILENAME);
     }
 
     @Test
-    public void testInitialize () {
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
-        assert (com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement));
-
-        assert (com.ltsllc.miranda.cluster.ClusterFile.getInstance().getCurrentState().toString().equals("ReadyState"));
+    public void testInitialize() {
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        assert (getClusterFile().contains(nodeElement));
     }
 
     @Test
-    public void testLoad () {
-        assert(null != com.ltsllc.miranda.cluster.ClusterFile.getInstance());
+    public void testLoad() {
+        assert (null != com.ltsllc.miranda.cluster.ClusterFile.getInstance());
 
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS2);
 
@@ -85,28 +109,31 @@ public class ClusterFile extends TestCase{
     }
 
     @Test
-    public void testUpdateNode () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.2",6789, "a test node");
+    public void testUpdateNode() {
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.2", 6789, "a test node");
         long now = System.currentTimeMillis();
         nodeElement.setLastConnected(now);
         com.ltsllc.miranda.cluster.ClusterFile.getInstance().updateNode(nodeElement);
         List<NodeElement> nodes = com.ltsllc.miranda.cluster.ClusterFile.getInstance().getData();
         for (NodeElement element : nodes) {
-            if (element.equals(nodeElement))
-            {
-                assert(element.getLastConnected() == now);
+            if (element.equals(nodeElement)) {
+                assert (element.getLastConnected() == now);
             }
         }
     }
 
 
     @Test
-    public void testAdd () {
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2",6790, "a different test node");
-        com.ltsllc.miranda.cluster.ClusterFile.getInstance().add(nodeElement);
+    public void testAdd() {
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
+        getClusterFile().addNode(nodeElement);
 
-        assert (com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement));
-        assert (getWriter().size() == 1);
+        pause(125);
+
+        assert (getClusterFile().contains(nodeElement));
+
+        logger.info("my writer: " + getWriter() + ", clusterFile writer: " + getClusterFile().getWriterQueue());
+
         assert (contains(Message.Subjects.Write, getWriter()));
     }
 }

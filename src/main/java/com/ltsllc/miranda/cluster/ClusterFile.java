@@ -37,8 +37,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
     public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> cluster) {
         if (null == ourInstance) {
             ourInstance = new ClusterFile(filename, writerQueue, cluster);
-            ourInstance.load();
             ourInstance.start();
+            ourInstance.load();
         }
     }
 
@@ -114,6 +114,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     public void addNode (NodeElement nodeElement) {
         if (!containsElement(nodeElement)) {
             getData().add(nodeElement);
+
             byte[] buffer = getBytes();
             WriteMessage writeMessage = new WriteMessage(getFilename(), buffer, getQueue(), this);
             send(writeMessage, getWriterQueue());
