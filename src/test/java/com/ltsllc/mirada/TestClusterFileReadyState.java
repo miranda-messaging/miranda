@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.TestCase;
+import ssltest.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class TestClusterFileReadyState extends TestCase {
             "        \"dns\" : \"foo.com\",",
             "        \"ip\" : \"192.168.1.1\",",
             "        \"port\" : 6789,",
-            "        \"description\" : \"a test node\",",
+            "        \"description\" : \"a ssltest node\",",
             "        \"expires\" : " + Long.MAX_VALUE,
             "    }",
             "]"
@@ -99,7 +99,7 @@ public class TestClusterFileReadyState extends TestCase {
         BlockingQueue<Message> myQueue = new LinkedBlockingQueue<Message>();
         Version oldVersion = getClusterFile().getVersion();
 
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6789, "a different test node");
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6789, "a different ssltest node");
         getClusterFile().add(nodeElement);
         Version newVersion = getClusterFile().getVersion();
 
@@ -132,8 +132,8 @@ public class TestClusterFileReadyState extends TestCase {
 
     @Test
     public void testProcessMessageNodeUpdated() {
-        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
-        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
+        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
+        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         NodeUpdatedMessage message = new NodeUpdatedMessage(null, this, oldNode, newNode);
         send(message, getClusterFile().getQueue());
 
@@ -164,7 +164,7 @@ public class TestClusterFileReadyState extends TestCase {
     @Test
     public void testProcessMessageNewClusterFile() {
         List<NodeElement> file = new ArrayList<NodeElement>();
-        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a diffent test node");
+        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a diffent ssltest node");
         file.add(newNode);
         String json = ourGson.toJson(file);
         Version junk = new Version(json);
@@ -177,7 +177,7 @@ public class TestClusterFileReadyState extends TestCase {
         //
         pause(250);
 
-        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
 
         assert (getClusterFile().contains(oldNode));
         assert (getClusterFile().contains(newNode));
@@ -202,7 +202,7 @@ public class TestClusterFileReadyState extends TestCase {
         //
         // update some nodes
         //
-        NodeElement node = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement node = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
         List<NodeElement> updates = new ArrayList<NodeElement>();
         updates.add(node);
         HealthCheckUpdateMessage message = new HealthCheckUpdateMessage(null, this, updates);
@@ -245,7 +245,7 @@ public class TestClusterFileReadyState extends TestCase {
             element.setLastConnected(0);
         }
 
-        NodeElement node = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement node = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
         List<NodeElement> updates = new ArrayList<NodeElement>();
         updates.add(node);
         HealthCheckUpdateMessage message = new HealthCheckUpdateMessage(null, this, updates);

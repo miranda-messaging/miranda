@@ -6,7 +6,7 @@ import com.ltsllc.miranda.file.MirandaProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.TestCase;
+import ssltest.TestCase;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,7 +34,7 @@ public class TestCluster extends TestCase {
             "        \"dns\" : \"foo.com\",",
             "        \"ip\" : \"192.168.1.1\",",
             "        \"port\" : 6789,",
-            "        \"description\" : \"a test node\",",
+            "        \"description\" : \"a ssltest node\",",
             "        \"expires\" : " + Long.MAX_VALUE,
             "    }",
             "]"
@@ -113,6 +113,6 @@ public class TestCluster extends TestCase {
     @Test
     public void testContains ()
     {
-        // TODO : test this
+        // TODO : ssltest this
     }
 }

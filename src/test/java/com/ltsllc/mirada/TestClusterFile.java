@@ -10,10 +10,8 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.TestCase;
+import ssltest.TestCase;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -38,7 +36,7 @@ public class TestClusterFile extends TestCase {
             "        \"dns\" : \"foo.com\",",
             "        \"ip\" : \"192.168.1.1\",",
             "        \"port\" : 6789,",
-            "        \"description\" : \"a test node\",",
+            "        \"description\" : \"a ssltest node\",",
             "        \"expires\" : " + Long.MAX_VALUE,
             "    }",
             "]"
@@ -50,7 +48,7 @@ public class TestClusterFile extends TestCase {
             "        \"dns\" : \"bar.com\",",
             "        \"ip\" : \"192.168.1.2\",",
             "        \"port\" : 6790,",
-            "        \"description\" : \"a different test node\",",
+            "        \"description\" : \"a different ssltest node\",",
             "        \"expires\" : " + Long.MAX_VALUE,
             "    }",
             "]"
@@ -89,7 +87,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testInitialize() {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
         assert (getClusterFile().contains(nodeElement));
     }
 
@@ -104,13 +102,13 @@ public class TestClusterFile extends TestCase {
 
         pause(125);
 
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement);
     }
 
     @Test
     public void testUpdateNode() {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.2", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.2", 6789, "a ssltest node");
         long now = System.currentTimeMillis();
         nodeElement.setLastConnected(now);
         com.ltsllc.miranda.cluster.ClusterFile.getInstance().updateNode(nodeElement);
@@ -125,7 +123,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testAdd() {
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         getClusterFile().addNode(nodeElement);
 
         pause(125);

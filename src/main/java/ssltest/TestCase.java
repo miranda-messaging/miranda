@@ -1,11 +1,10 @@
-package test;
+package ssltest;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.MirandaProperties;
-import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.*;
@@ -216,7 +215,7 @@ public class TestCase {
         return false;
     }
 
-    private static final String PROPERTIES_FILENAME = "test.properties";
+    private static final String PROPERTIES_FILENAME = "ssltest.properties";
 
     private static final String[] PROPERTIES_FILE_CONTENTS = {
             "com.ltsllc.miranda.TruststorePassword=whatever",

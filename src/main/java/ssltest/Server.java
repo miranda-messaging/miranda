@@ -1,4 +1,4 @@
-package test;
+package ssltest;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -11,8 +11,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-
-import java.security.cert.X509Certificate;
 
 
 /**

@@ -1,13 +1,11 @@
-package test;
+package ssltest;
 
-import com.ltsllc.miranda.network.Utils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
@@ -15,9 +13,6 @@ import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import javax.net.ssl.*;
-import java.net.Socket;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**

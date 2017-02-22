@@ -11,7 +11,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.TestCase;
+import ssltest.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class TestClusterReadyState extends TestCase {
     @Test
     public void testProcessMessageConnect() {
         setupTrustStore();
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
         Node node = new Node(nodeElement, getNetwork());
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(node);
@@ -90,11 +90,11 @@ public class TestClusterReadyState extends TestCase {
 
     /**
      * This gets sent when the cluster file reloads.  Make sure connects are issued
-     * for the new node(s).  In this test we add a new node.
+     * for the new node(s).  In this ssltest we add a new node.
      */
     @Test
     public void testProcessMessageNodesLoaded() {
-        NodeElement node = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
+        NodeElement node = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         List<NodeElement> nodes = new ArrayList<NodeElement>();
         nodes.add(node);
 
@@ -128,7 +128,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
          /*
-    messages to test for
+    messages to ssltest for
 
             case HealthCheck: {
             case Synchronize: {
@@ -138,12 +138,12 @@ public class TestClusterReadyState extends TestCase {
     /**
      * This message gets sent because another node in the cluster has a different
      * cluster file, and merging the remote file with our local file yielded at
-     * least one node we did not have.  This test ensures that we try to connect
+     * least one node we did not have.  This ssltest ensures that we try to connect
      * to the new node.
      */
     @Test
     public void testProcessMessageCluserFileChanged() {
-        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a different test node");
+        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         List<NodeElement> newNodes = new ArrayList<NodeElement>();
         newNodes.add(newNode);
         Version version = createVersion(newNodes);
@@ -157,7 +157,7 @@ public class TestClusterReadyState extends TestCase {
 
     /**
      * This message is sent when we should "garbage collect" our nodes.
-     * The test needs to enusure that a {@link HealthCheckUpdateMessage}
+     * The ssltest needs to enusure that a {@link HealthCheckUpdateMessage}
      * is sent to the cluster file.
      */
     @Test

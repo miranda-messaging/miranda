@@ -1,4 +1,4 @@
-package test.keytool;
+package ssltest.keytool;
 
 import javax.swing.*;
 import java.awt.*;
