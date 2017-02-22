@@ -53,4 +53,20 @@ public abstract class State {
 
         return StopState.getInstance();
     }
+
+
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (o == this)
+            return true;
+
+        if (!(o instanceof State))
+            return false;
+
+        State other = (State) o;
+
+        return getContainer().equals(other.getContainer());
+    }
 }

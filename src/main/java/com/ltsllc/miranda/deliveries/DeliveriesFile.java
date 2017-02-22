@@ -27,5 +27,4 @@ public class DeliveriesFile extends SingleFile<Delivery> {
     public List buildEmptyList() {
         return new ArrayList<Delivery>();
     }
-
 }

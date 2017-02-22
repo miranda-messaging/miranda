@@ -9,4 +9,8 @@ public class DeliveriesFileReadyState extends FileReadyState {
     public DeliveriesFileReadyState (DeliveriesFile deliveriesFile) {
         super(deliveriesFile);
     }
+
+    public boolean equals (DeliveriesFileReadyState other) {
+        return this == other || getContainer().equals(other.getContainer());
+    }
 }

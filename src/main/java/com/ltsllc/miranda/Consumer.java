@@ -116,4 +116,17 @@ public class Consumer extends Subsystem {
         }
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (null == o || !(o instanceof Consumer))
+            return false;
+
+        Consumer other = (Consumer) o;
+
+        return getCurrentState().equals(other.getCurrentState());
+    }
 }
