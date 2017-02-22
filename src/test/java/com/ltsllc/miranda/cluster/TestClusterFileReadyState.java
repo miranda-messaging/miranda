@@ -1,10 +1,8 @@
-package com.ltsllc.mirada.cluster;
+package com.ltsllc.miranda.cluster;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.cluster.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.messages.HealthCheckUpdateMessage;
 import com.ltsllc.miranda.cluster.messages.NewClusterFileMessage;
 import com.ltsllc.miranda.node.*;
