@@ -1,12 +1,11 @@
 package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.file.MirandaProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ssltest.TestCase;
+import com.ltsllc.miranda.TestCase;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.file.MirandaProperties;
 import org.junit.Before;
 import org.junit.Test;
-import ssltest.TestCase;
+import com.ltsllc.miranda.TestCase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

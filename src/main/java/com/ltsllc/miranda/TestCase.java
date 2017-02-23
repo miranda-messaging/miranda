@@ -1,4 +1,4 @@
-package ssltest;
+package com.ltsllc.miranda;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
