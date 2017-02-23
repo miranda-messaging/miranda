@@ -9,6 +9,10 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 2/19/2017.
  */
+
+/**
+ * All the deliveries that the system knows about.
+ */
 public class SystemDeliveriesFile extends Directory {
     public SystemDeliveriesFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
