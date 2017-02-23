@@ -3,6 +3,7 @@ package com.ltsllc.miranda.file;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -11,12 +12,13 @@ import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/5/2017.
  */
-abstract public class MirandaFile extends Consumer {
+abstract public class MirandaFile extends Consumer implements Comparer {
     abstract public void load ();
     abstract public byte[] getBytes();
 
@@ -105,5 +107,63 @@ abstract public class MirandaFile extends Consumer {
 
         Version version = new Version(stringWriter.toString());
         setVersion(version);
+    }
+
+
+    public boolean equals (Object o) {
+        if (this == o)
+            return true;
+
+        if (null == o || !(o instanceof MirandaFile))
+            return false;
+
+        MirandaFile other = (MirandaFile) o;
+
+
+
+        if (
+            !getFilename().equals(other.getFilename())
+            || !getWriterQueue().equals(other.getWriterQueue())
+            || !getElements().equals(other.getElements())
+            || !getVersion().equals(other.getVersion())
+        )
+        {
+            return false;
+        }
+        else {
+            return super.equals(o);
+        }
+    }
+
+
+    public boolean compare (Map<Object,Boolean> map, Object o)
+    {
+        if (map.containsKey(o))
+            return map.get(o).booleanValue();
+
+        if (o == this)
+            return true;
+
+        if (null == o || !(o instanceof MirandaFile))
+        {
+            map.put(o, Boolean.FALSE);
+            return false;
+        }
+
+        map.put (o, Boolean.TRUE);
+        MirandaFile other = (MirandaFile) o;
+
+        if (
+            !getFilename().equals(other.getFilename())
+            || !getWriterQueue().equals(other.getWriterQueue())
+            || !getElements().equals(other.getElements())
+            || !getVersion().equals(other.getVersion())
+        )
+        {
+            map.put(o, Boolean.FALSE);
+            return false;
+        }
+
+        return super.compare(map, o);
     }
 }

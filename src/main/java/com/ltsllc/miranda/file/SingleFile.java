@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -13,24 +14,25 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/10/2017.
  */
-abstract public class SingleFile<E extends Perishable> extends MirandaFile {
+abstract public class SingleFile<E extends Perishable> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
     abstract public Type listType();
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
-
-    private Version version;
 
     public SingleFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
     }
 
     private static Gson ourGson = buildGson();
+
+    private List<E> data = buildEmptyList();
 
     public Gson getGson() {
         if (null == ourGson)
@@ -39,7 +41,6 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
         return ourGson;
     }
 
-    protected List<E> data = buildEmptyList();
 
     public List<E> getData () {
         return data;
@@ -49,7 +50,6 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
         this.data = list;
     }
 
-
     private boolean execptionOnLoadIsFatal = false;
 
 
@@ -57,13 +57,6 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
         return execptionOnLoadIsFatal;
     }
 
-    public Version getVersion() {
-        return version;
-    }
-
-    public void setVersion(Version version) {
-        this.version = version;
-    }
 
     public static <T> List<T> mapFromJsonArray(String respInArray, Type listType) {
         List<T> ret = new Gson().fromJson(respInArray, listType);
@@ -165,5 +158,43 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile {
             WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
             send(writeMessage, getWriterQueue());
         }
+    }
+
+
+    public boolean equals (Object o) {
+        if (this == o)
+            return true;
+
+        if (null == o || !(o instanceof SingleFile))
+            return false;
+
+        SingleFile other = (SingleFile) o;
+        if (!getData().equals(other.getData()))
+            return false;
+        else
+            return super.equals(o);
+    }
+
+
+    public boolean compare (Map<Object,Boolean> map, Object o) {
+        if (map.containsKey(o))
+            return map.get(o).booleanValue();
+
+        if (this == o)
+            return true;
+
+        if (null == o || !(o instanceof SingleFile)) {
+            map.put(o, Boolean.FALSE);
+            return false;
+        }
+
+        SingleFile other = (SingleFile) o;
+
+        if (!getData().equals(other.getData())) {
+            map.put(o, Boolean.FALSE);
+            return false;
+        }
+
+        return super.compare(map, o);
     }
 }

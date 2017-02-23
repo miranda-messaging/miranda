@@ -1,13 +1,16 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.deliveries.Comparer;
 import org.apache.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/1/2017.
  */
-public class Consumer extends Subsystem {
+public class Consumer extends Subsystem implements Comparer {
 
     private static Logger logger = Logger.getLogger(Consumer.class);
 
@@ -125,8 +128,27 @@ public class Consumer extends Subsystem {
         if (null == o || !(o instanceof Consumer))
             return false;
 
-        Consumer other = (Consumer) o;
+        Map<Object,Boolean> map = new HashMap<Object,Boolean>();
 
-        return getCurrentState().equals(other.getCurrentState());
+        return compare(map, o);
+    }
+
+
+    public boolean compare (Map<Object, Boolean> map, Object o) {
+        if (map.containsKey(o))
+            return map.get(o).booleanValue();
+
+        map.put(o, new Boolean(true));
+
+        if (this == o)
+            return true;
+
+        if (null == o || !(o instanceof Consumer)) {
+            map.put(o, Boolean.FALSE);
+            return false;
+        }
+
+        Consumer other = (Consumer) o;
+        return getCurrentState().compare(map, other.getCurrentState());
     }
 }

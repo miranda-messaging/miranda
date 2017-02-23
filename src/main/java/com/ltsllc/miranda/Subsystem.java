@@ -1,11 +1,14 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.deliveries.Comparer;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static javax.swing.UIManager.get;
 
 /**
  * A Miranda subsystem.
@@ -24,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * </UL>
  * Created by Clark on 12/30/2016.
  */
-public abstract class Subsystem implements Runnable {
+public abstract class Subsystem implements Runnable,Comparer {
     private static Map<String, BlockingQueue<Message>> ourMap = new HashMap<String, BlockingQueue<Message>>();
 
     public static synchronized void register (String name, BlockingQueue<Message> queue)
@@ -84,4 +87,22 @@ public abstract class Subsystem implements Runnable {
 
 
 
+    public boolean equals (Object o) {
+        if (this == o)
+            return true;
+
+        if (null == o || !(o instanceof Subsystem))
+            return false;
+
+        Subsystem other = (Subsystem) o;
+
+        if (!getName().equals(other.getName()))
+            return false;
+
+
+        if (!getQueue().equals(other.getQueue()))
+            return false;
+
+        return getThread().equals(other.getThread());
+    }
 }

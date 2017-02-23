@@ -2,6 +2,7 @@ package com.ltsllc.miranda;
 
 import org.apache.log4j.Logger;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -68,5 +69,21 @@ public abstract class State {
         State other = (State) o;
 
         return getContainer().equals(other.getContainer());
+    }
+
+
+    public boolean compare (Map<Object, Boolean> map, Object o) {
+        if (map.containsKey(o)) {
+            return map.get(o).booleanValue();
+        }
+
+        if (null == o || !(o instanceof  State))
+        {
+            map.put(o, Boolean.FALSE);
+            return false;
+        }
+
+        State other = (State) o;
+        return getContainer().compare(map, other.getContainer());
     }
 }
