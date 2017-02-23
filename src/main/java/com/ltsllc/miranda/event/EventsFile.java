@@ -15,6 +15,8 @@ import java.util.concurrent.BlockingQueue;
 public class EventsFile extends SingleFile<Event> {
     public EventsFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
+
+        setCurrentState(new EventsFileReadyState(this));
     }
 
     public Type listType() {
