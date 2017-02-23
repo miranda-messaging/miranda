@@ -1,8 +1,6 @@
-package com.ltsllc.miranda.messagesFile;
+package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.file.*;
 
 import java.util.ArrayList;

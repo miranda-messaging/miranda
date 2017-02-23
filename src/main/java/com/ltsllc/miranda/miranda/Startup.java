@@ -6,7 +6,7 @@ import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.HealthCheckMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.file.*;
-import com.ltsllc.miranda.messagesFile.SystemMessages;
+import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.server.NewTopicHandler;

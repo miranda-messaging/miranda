@@ -6,7 +6,7 @@ import com.ltsllc.miranda.StartState;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.FileWatcher;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.messagesFile.SystemMessages;
+import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
