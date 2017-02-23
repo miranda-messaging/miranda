@@ -18,19 +18,19 @@ public class Delivery implements Perishable {
     private static Gson ourGson = new Gson();
 
     private String id;
-    private String message;
+    private String messageId;
     private long delivered;
     private String subscription;
 
     public Delivery (Event event, long delivered, Subscription subscription) {
-        this.message = event.getId();
+        this.messageId = event.getId();
         this.id = UUID.randomUUID().toString();
         this.delivered = delivered;
         this.subscription = subscription.getName();
     }
 
-    public String getMessage() {
-        return message;
+    public String getMessageId() {
+        return messageId;
     }
 
     public long getDelivered() {

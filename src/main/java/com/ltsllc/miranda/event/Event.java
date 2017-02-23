@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.file.Perishable;
 
 import java.util.UUID;
@@ -33,6 +34,16 @@ public class Event implements Perishable {
         this.content = content;
         this.created = System.currentTimeMillis();
 
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public Event (Methods method, byte[] buffer) {
+        this.method = method;
+
+        String hexString = Utils.bytesToString(buffer);
+        this.content = hexString;
+
+        this.created = System.currentTimeMillis();
         this.id = UUID.randomUUID().toString();
     }
 
