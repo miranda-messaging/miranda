@@ -52,7 +52,6 @@ public class Event implements Perishable {
     }
 
     public String getId() {
-
         return id;
     }
 
@@ -62,6 +61,10 @@ public class Event implements Perishable {
 
     public void setCreated(long created) {
         this.created = created;
+    }
+
+    public Methods getMethod() {
+        return method;
     }
 
     /**
