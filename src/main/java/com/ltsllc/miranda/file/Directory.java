@@ -5,6 +5,7 @@ package com.ltsllc.miranda.file;
  */
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 
@@ -28,6 +29,9 @@ abstract public class Directory extends MirandaFile {
         super(filename);
 
         this.writerQueue = writerQueue;
+
+        DirectoryReadyState readyState = new DirectoryReadyState(this);
+        setCurrentState(readyState);
     }
 
     public List<MirandaFile> getFiles() {
@@ -63,6 +67,12 @@ abstract public class Directory extends MirandaFile {
         }
     }
 
+    public List<String> traverse (String root) {
+        List<String> matches = new ArrayList<String>();
+        traverse(root, matches);
+        return matches;
+    }
+
     @Override
     public void load() {
         List<String> matches = traverse();
@@ -80,16 +90,20 @@ abstract public class Directory extends MirandaFile {
     }
 
     public void updateVersion () {
-        Gson gson = new Gson();
-
-        StringWriter stringWriter = new StringWriter();
+        List<Version> list = new ArrayList<Version>();
 
         for (MirandaFile file : getFiles()) {
-            String json = gson.toJson(file.getVersion());
-            stringWriter.write(json);
+            file.updateVersion();
+            list.add(file.getVersion());
         }
 
-        Version version = new Version(stringWriter.toString());
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        String json = gson.toJson(list);
+
+        Version version = new Version(json);
         setVersion(version);
     }
 }

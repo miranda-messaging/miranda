@@ -3,7 +3,9 @@ package com.ltsllc.miranda.event;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.util.ImprovedRandom;
 
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -14,7 +16,7 @@ import java.util.UUID;
  * A message that was sent to a topic.
  */
 public class Event implements Perishable {
-    private Gson ourGson = new Gson();
+    private static Gson ourGson = new Gson();
 
     public enum Methods {
         GET,
@@ -45,6 +47,22 @@ public class Event implements Perishable {
 
         this.created = System.currentTimeMillis();
         this.id = UUID.randomUUID().toString();
+    }
+
+    private static Methods[] methods = {Methods.POST, Methods.GET, Methods.PUT, Methods.DELETE};
+
+    public static Methods randomMethods (ImprovedRandom random) {
+        int index = random.nextIndex(methods.length);
+        return methods[index];
+    }
+
+
+    public static Event createRandom (ImprovedRandom random, int maxSizeOfContent) {
+        int sizeOfContent = random.nextIndex(maxSizeOfContent);
+        byte[] content = new byte[sizeOfContent];
+        random.nextBytes(content);
+
+        return new Event(randomMethods(random),content);
     }
 
     public String getContent() {

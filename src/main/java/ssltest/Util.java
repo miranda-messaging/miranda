@@ -11,6 +11,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -103,6 +105,7 @@ public class Util {
         return sslContext;
     }
 
+
     public static SslContext createClientSslContext(TrustManagerFactory trustManagerFactory) {
         SslContext sslContext = null;
 
@@ -114,6 +117,24 @@ public class Util {
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
+        }
+
+        return sslContext;
+    }
+
+
+    public static SslContext createClientSslContext (String filename, String password, String alias) {
+        SslContext sslContext = null;
+
+        try {
+            X509Certificate certificate = getCertificate(filename, password, alias);
+
+            sslContext = SslContextBuilder
+                    .forClient()
+                    .trustManager(certificate)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return sslContext;
@@ -180,7 +201,7 @@ public class Util {
 
             sslContext = SslContextBuilder
                     .forServer(privateKey, certificate)
-                    .trustManager(certificate)
+                    //.trustManager(certificate)
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

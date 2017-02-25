@@ -25,8 +25,17 @@ public class Version  {
 
     private String sha1;
 
+    private Version () {}
+
     public Version (String content) {
         this.sha1 = Utils.calculateSha1(content);
+    }
+
+    public static Version createWithSha1 (String sha1) {
+        Version version = new Version ();
+        version.sha1 = sha1;
+
+        return version;
     }
 
     /**

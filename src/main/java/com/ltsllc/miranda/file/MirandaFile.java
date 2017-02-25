@@ -166,4 +166,8 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
         return super.compare(map, o);
     }
+
+    public String toString () {
+        return filename;
+    }
 }

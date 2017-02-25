@@ -8,6 +8,7 @@ import com.ltsllc.miranda.file.MirandaProperties;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.*;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -70,7 +71,7 @@ public class TestCase {
 
 
 
-    public void setuplog4j () {
+    public static void setuplog4j () {
         putFile(LOG4J_CONFIG_FILENAME, LOG4J_CONFIG_FILE_CONTENTS);
         DOMConfigurator.configure(LOG4J_CONFIG_FILENAME);
     }
@@ -125,6 +126,25 @@ public class TestCase {
         } finally {
             Utils.closeIgnoreExceptions(printWriter);
         }
+    }
+
+
+    public static boolean createFile (File file, int size, Random random) {
+        byte[] buffer = new byte[size];
+        random.nextBytes(buffer);
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            Utils.closeIgnoreExceptions(fileOutputStream);
+        }
+
+        return true;
     }
 
 

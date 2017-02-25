@@ -68,7 +68,7 @@ public class Server {
 
 
     public void go () {
-        String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\data\\";
+        String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\";
 
         String trustStoreFilename = dir + "truststore";
         String trustStorePassword = "whatever";

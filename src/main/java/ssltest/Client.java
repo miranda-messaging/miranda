@@ -13,6 +13,7 @@ import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import javax.net.ssl.TrustManagerFactory;
 import java.security.cert.X509Certificate;
 
 /**
@@ -118,7 +119,7 @@ public class Client {
 
 
     public void go () throws Exception {
-        String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\data\\";
+        String dir = "C:\\Users\\Clark\\IdeaProjects\\miranda\\";
 
         String log4jConfigurationFile = dir + "log4j.xml";
 
@@ -134,7 +135,9 @@ public class Client {
 
         X509Certificate certificate = Util.getCertificate(serverCertificateFilename, trustStorePassword, trustStoreAlias);
 
-        SslContext sslContext = Util.createClientSslContext(certificate);
+
+        // SslContext sslContext = Util.createClientSslContext(certificate);
+        SslContext sslContext = Util.createClientSslContext(trustStoreFilename, trustStorePassword, trustStoreAlias);
 
         LocalChannelIniatizer localChannelIniatizer = new LocalChannelIniatizer(sslContext);
         Bootstrap bootstrap = Util.createClientBootstrap(localChannelIniatizer);
