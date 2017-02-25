@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -45,6 +46,7 @@ public class TestDirectoryReadyState extends TestCase {
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
         directory = new SystemMessages(ROOT, getWriter());
+        directory.start();
     }
 
     @After
@@ -52,10 +54,37 @@ public class TestDirectoryReadyState extends TestCase {
         deleteDirectory(ROOT);
     }
 
+
+    public boolean collectedAfter (long time, List<MirandaFile> files) {
+        for (MirandaFile file : files) {
+            if (time > file.getLastCollection())
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Garbage collection is not so much of an issue with things that subclass
+     * the {@link Directory} class.  This is because the two types of objects
+     * that live in directories, {@link com.ltsllc.miranda.event.Event} and
+     * {@link com.ltsllc.miranda.deliveries.Delivery}, don't expire or get
+     * collected.  Nevertheless, test that garbage collection gets done.
+     */
     @Test
     public void testProcessGarbageCollectionMessage () {
+        long then = System.currentTimeMillis();
+
+        setuplog4j();
+
+        getDirectory().load();
+
         GarbageCollectionMessage message = new GarbageCollectionMessage(null, this);
         send(message, getDirectory().getQueue());
+
+        pause(125);
+
+        assert (collectedAfter(then, getDirectory().getFiles()));
     }
 
     @Test

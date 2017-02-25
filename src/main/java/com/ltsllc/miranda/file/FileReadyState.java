@@ -60,6 +60,8 @@ public class FileReadyState extends State {
 
         getFile().getElements().removeAll(expired);
 
+        getFile().setLastCollection(now);
+
         return this;
     }
 }

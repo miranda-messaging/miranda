@@ -30,6 +30,16 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private List<Perishable> elements = new ArrayList<Perishable>();
     private Version version;
 
+    private long lastCollection;
+
+    public long getLastCollection() {
+        return lastCollection;
+    }
+
+    public void setLastCollection(long lastCollection) {
+        this.lastCollection = lastCollection;
+    }
+
     public BlockingQueue<Message> getWriterQueue() {
         return writerQueue;
     }
@@ -52,6 +62,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
         this.filename = filename;
         this.writerQueue = queue;
+        this.lastCollection = -1;
     }
 
 
