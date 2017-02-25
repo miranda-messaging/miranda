@@ -294,6 +294,8 @@ public class TestCase {
         deleteFile(PROPERTIES_FILENAME);
         createFile(PROPERTIES_FILENAME, PROPERTIES_FILE_CONTENTS);
         MirandaProperties.initialize(PROPERTIES_FILENAME);
+        MirandaProperties properties = MirandaProperties.getInstance();
+        properties.setProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE, "none");
     }
 
 

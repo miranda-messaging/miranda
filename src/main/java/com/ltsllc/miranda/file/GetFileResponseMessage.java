@@ -39,6 +39,10 @@ public class GetFileResponseMessage extends Message {
         return contents;
     }
 
+    public byte[] getContentAsBytes () {
+        return Utils.hexStringToBytes(contents);
+    }
+
     public String getRequester() {
         return requester;
     }
