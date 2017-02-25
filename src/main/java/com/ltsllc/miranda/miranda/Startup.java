@@ -232,6 +232,7 @@ public class Startup extends State {
 
         if (getIndex() < getArguments().length) {
             setPropertiesFilename(getArguments()[getIndex()]);
+            incrementIndex();
         }
     }
 
@@ -384,5 +385,12 @@ public class Startup extends State {
         send(miranda.getDeliveriesFile().getQueue(), garbageCollectionMessage);
 
         return this;
+    }
+
+
+    public void incrementIndex () {
+        int index = getIndex();
+        index++;
+        setIndex(index);
     }
 }

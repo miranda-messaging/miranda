@@ -90,10 +90,15 @@ public class Network extends Consumer {
     private static class LocalClientInitializer extends ChannelInitializer<SocketChannel> {
         private SslContext sslContext;
 
-        public void initChannel(SocketChannel sc) {
-            SslHandler sslHandler = sslContext.newHandler(sc.alloc());
+        public LocalClientInitializer (SslContext sslContext) {
+            this.sslContext = sslContext;
+        }
 
-            // sc.pipeline().addLast(sslHandler);
+        public void initChannel(SocketChannel sc) {
+            if (null != sslContext) {
+                SslHandler sslHandler = sslContext.newHandler(sc.alloc());
+                sc.pipeline().addLast(sslHandler);
+            }
 
             InetSocketAddress inetSocketAddress = (InetSocketAddress) sc.remoteAddress();
             Node node = new Node(inetSocketAddress, sc);
@@ -145,12 +150,21 @@ public class Network extends Consumer {
         try {
             logger.info("Connecting to " + host + ":" +port);
 
-            String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-            String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
-            SslContext sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
+            SslContext sslContext = null;
 
-            LocalClientInitializer localClientInitializer = new LocalClientInitializer();
+            MirandaProperties proprties = MirandaProperties.getInstance();
+            MirandaProperties.EncryptionModes mode = proprties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+
+            if (mode == MirandaProperties.EncryptionModes.RemoteCA) {
+                sslContext = Utils.createClientSslContext();
+            } else if (mode == MirandaProperties.EncryptionModes.LocalCA) {
+                String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+                String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
+                String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
+                sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
+            }
+
+            LocalClientInitializer localClientInitializer = new LocalClientInitializer(sslContext);
 
             Bootstrap bootstrap = Utils.createClientBootstrap(localClientInitializer);
             LocalClientHandler localClientHandler = new LocalClientHandler(notify);

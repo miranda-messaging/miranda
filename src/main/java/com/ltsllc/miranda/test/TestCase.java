@@ -210,7 +210,7 @@ public class TestCase {
         setupMirandaProperties();
 
         MirandaProperties properties = MirandaProperties.getInstance();
-        String filename = properties.getProperty(MirandaProperties.PROPERTY_KEY_STORE);
+        String filename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
 
         deleteFile(filename);
         createFile(filename, KEY_STORE_CONTENTS);

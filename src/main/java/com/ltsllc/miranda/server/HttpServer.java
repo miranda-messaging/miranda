@@ -36,8 +36,10 @@ public class HttpServer extends Consumer {
 
         @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
-            SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
-            // socketChannel.pipeline().addLast(sslHandler);
+            if (null != sslContext) {
+                SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
+                socketChannel.pipeline().addLast(sslHandler);
+            }
 
             socketChannel.pipeline().addLast(new HttpServerCodec());
 
@@ -60,15 +62,20 @@ public class HttpServer extends Consumer {
     public void startup() {
 
         MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
 
-        SslContext sslContext = Utils.createServerContext(
-                properties.getProperty(MirandaProperties.PROPERTY_KEY_STORE),
-                properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD),
-                properties.getProperty(MirandaProperties.PROPERTY_KEY_STORE_ALIAS),
-                properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE),
-                properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD),
-                properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS)
-        );
+        SslContext sslContext = null;
+
+        if (mode == MirandaProperties.EncryptionModes.LocalCA || mode == MirandaProperties.EncryptionModes.RemoteCA) {
+            sslContext = Utils.createServerContext(
+                    properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE),
+                    properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD),
+                    properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS),
+                    properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE),
+                    properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD),
+                    properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS)
+            );
+        }
 
         LocalChannelInitializer localChannelInitializer = new LocalChannelInitializer(sslContext, this);
         ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localChannelInitializer);

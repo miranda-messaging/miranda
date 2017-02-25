@@ -107,8 +107,6 @@ public class Utils {
         return defaultCiphers;
     }
 
-
-
     public static SslContext createServerSslContext(String keyFilename, String keyPassword, String keyAlias,
                                                     String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
         SslContext sslContext = null;
@@ -128,6 +126,7 @@ public class Utils {
 
         return sslContext;
     }
+
 
 
     public static KeyStore getKeyStore (String filename, String password, String alias) {
@@ -177,6 +176,26 @@ public class Utils {
         return certificate;
     }
 
+    /**
+     * Create an {@link SslContext} that uses CAs known to the VM.
+     *
+     * @return A new client SslContext.
+     */
+    public static SslContext createClientSslContext() {
+        SslContext sslContext = null;
+
+        try {
+            sslContext = SslContextBuilder
+                    .forClient()
+                    .build();
+        } catch (SSLException e) {
+            logger.fatal("Exception trying to create client SSL context", e);
+            System.exit(1);
+        }
+
+        return sslContext;
+    }
+
     public static SslContext createClientSslContext(String filename, String passwordString, String alias) {
         SslContext sslContext = null;
 
@@ -185,8 +204,6 @@ public class Utils {
 
             sslContext = SslContextBuilder
                     .forClient()
-                    //.ciphers(getDefaultCiphers())
-                    //.trustManager(InsecureTrustManagerFactory.INSTANCE)
                     .trustManager(trustManagerFactory)
                     .build();
 
