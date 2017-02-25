@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.file.MirandaProperties;
 import org.junit.Before;
 import org.junit.Test;

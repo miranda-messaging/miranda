@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.util.file;
+package com.ltsllc.miranda.test;
 
 /**
  * Created by Clark on 2/24/2017.
@@ -15,7 +15,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Create a file with random {@link Event} objects in it.

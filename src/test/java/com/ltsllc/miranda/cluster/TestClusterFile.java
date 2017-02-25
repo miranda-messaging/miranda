@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

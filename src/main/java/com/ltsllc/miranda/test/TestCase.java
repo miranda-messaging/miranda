@@ -1,13 +1,15 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.util.ImprovedRandom;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.*;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,6 +25,48 @@ public class TestCase {
 
     public TestCase () {
 
+    }
+
+    public static boolean deleteFile (File file) {
+        if (file.isDirectory())
+            return false;
+
+        if (!file.exists())
+            return true;
+
+        return file.delete();
+    }
+
+    public static boolean deleteDirectory (String filename) {
+        File file = new File(filename);
+        return deleteDirectory(file);
+    }
+
+    public static boolean deleteDirectory (File directory) {
+        if (!directory.isDirectory()) {
+            return !directory.exists();
+        }
+
+        try {
+            String[] contents = directory.list();
+
+            for (String s : contents) {
+                String fullname = directory.getCanonicalPath() + File.separator + s;
+                File file = new File(fullname);
+                if (file.isDirectory()) {
+                    if (!deleteDirectory(file))
+                        return false;
+                } else {
+                    if (!deleteFile(file))
+                        return false;
+                }
+            }
+
+            return directory.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public BlockingQueue<Message> getNetwork() {
@@ -260,5 +304,49 @@ public class TestCase {
     public static Version createVersion (Object o) {
         String json = toJson(o);
         return new Version (json);
+    }
+
+    public boolean contains (Object o, List list)
+    {
+        for (Object candidate : list) {
+            if (candidate.equals(o))
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean createEventHiearchicy (String rootFilename, String[][] spec) {
+        ImprovedRandom random = new ImprovedRandom();
+        File root = new File(rootFilename);
+        FileCreator randomFileCreator = new RandomFileCreator(1024, random);
+        MirandaProperties properties = MirandaProperties.getInstance();
+        int maxNumberOfEvents = 1 + properties.getIntegerProperty(MirandaProperties.PROPERTY_MESSAGE_FILE_SIZE);
+        FileCreator eventFileCreator = new EventFileCreator(random, maxNumberOfEvents,1024);
+
+        if (!root.isDirectory()) {
+            if (root.exists())
+                return false;
+
+            if (!root.mkdirs())
+                return false;
+
+            for (String[] record : spec) {
+                String fullName = rootFilename + File.separator + record[0];
+                File file = new File(fullName);
+
+
+                if ("directory".equalsIgnoreCase(record[1])) {
+                    if (!file.isDirectory() && !file.mkdirs())
+                        return false;
+                } else if ("file".equalsIgnoreCase(record[1]) || "random file".equalsIgnoreCase(record[1])) {
+                    randomFileCreator.createFile(file);
+                } else if ("event file".equalsIgnoreCase(record[1])) {
+                    eventFileCreator.createFile(file);
+                }
+            }
+        }
+
+        return true;
     }
 }

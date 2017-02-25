@@ -106,4 +106,11 @@ abstract public class Directory extends MirandaFile {
         Version version = new Version(json);
         setVersion(version);
     }
+
+    public void write() {
+        for (MirandaFile file : getFiles())
+        {
+            file.write();
+        }
+    }
 }

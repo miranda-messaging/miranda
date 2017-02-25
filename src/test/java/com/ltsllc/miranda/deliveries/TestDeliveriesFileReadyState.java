@@ -3,7 +3,7 @@ package com.ltsllc.miranda.deliveries;
 import com.ltsllc.miranda.file.MirandaProperties;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 
 /**
  * Created by Clark on 2/22/2017.

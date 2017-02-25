@@ -5,7 +5,7 @@ import com.ltsllc.miranda.file.MirandaProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

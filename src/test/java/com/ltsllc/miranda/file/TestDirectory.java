@@ -1,18 +1,13 @@
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.util.ImprovedRandom;
-import com.ltsllc.miranda.util.file.EventFileCreator;
-import com.ltsllc.miranda.util.file.FileCreator;
-import com.ltsllc.miranda.util.file.RandomFileCreator;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.List;
 
@@ -83,53 +78,6 @@ public class TestDirectory extends TestCase {
         return true;
     }
 
-    public static boolean deleteFile (File file) {
-        if (file.isDirectory())
-            return false;
-
-        if (!file.exists())
-            return true;
-
-        return file.delete();
-    }
-
-    public static boolean deleteDirectory (File directory) {
-        if (!directory.isDirectory()) {
-            return !directory.exists();
-        }
-
-        try {
-            String[] contents = directory.list();
-
-            for (String s : contents) {
-                String fullname = directory.getCanonicalPath() + File.separator + s;
-                File file = new File(fullname);
-                if (file.isDirectory()) {
-                    if (!deleteDirectory(file))
-                        return false;
-                } else {
-                    if (!deleteFile(file))
-                        return false;
-                }
-            }
-
-            return directory.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean contains (Object o, List list)
-    {
-        for (Object candidate : list) {
-            if (candidate.equals(o))
-                return true;
-        }
-
-        return false;
-    }
-
     /**
      * Travese is used to identify files in the chosen directory.  Test to
      * see if it works and that it doesn't flag other files.
@@ -166,40 +114,6 @@ public class TestDirectory extends TestCase {
             {"new/20170122-001.msg", "event file"},
             {"new/20170123-002.msg", "event file"}
     };
-
-    public boolean createEventHiearchicy (String rootFilename, String[][] spec) {
-        ImprovedRandom random = new ImprovedRandom();
-        File root = new File(rootFilename);
-        FileCreator randomFileCreator = new RandomFileCreator(1024, random);
-        MirandaProperties properties = MirandaProperties.getInstance();
-        int maxNumberOfEvents = 1 + properties.getIntegerProperty(MirandaProperties.PROPERTY_MESSAGE_FILE_SIZE);
-        FileCreator eventFileCreator = new EventFileCreator(random, maxNumberOfEvents,1024);
-
-        if (!root.isDirectory()) {
-            if (root.exists())
-                return false;
-
-            if (!root.mkdirs())
-                return false;
-
-            for (String[] record : spec) {
-                String fullName = rootFilename + File.separator + record[0];
-                File file = new File(fullName);
-
-
-                if ("directory".equalsIgnoreCase(record[1])) {
-                    if (!file.isDirectory() && !file.mkdirs())
-                        return false;
-                } else if ("file".equalsIgnoreCase(record[1]) || "random file".equalsIgnoreCase(record[1])) {
-                    randomFileCreator.createFile(file);
-                } else if ("event file".equalsIgnoreCase(record[1])) {
-                    eventFileCreator.createFile(file);
-                }
-            }
-        }
-
-        return true;
-    }
 
     /**
      * load basically just does a {@link Directory#traverse(String, List)} to

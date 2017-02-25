@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.deliveries;
 
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 

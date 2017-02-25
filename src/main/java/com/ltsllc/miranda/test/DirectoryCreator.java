@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.util.file;
+package com.ltsllc.miranda.test;
 
 import java.io.File;
 

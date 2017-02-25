@@ -3,7 +3,7 @@ package com.ltsllc.miranda.deliveries;
 import com.ltsllc.miranda.Subscription;
 import com.ltsllc.miranda.event.Event;
 import org.junit.Before;
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 import org.junit.Test;
 
 /**

@@ -10,7 +10,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.TestCase;
+import com.ltsllc.miranda.test.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
