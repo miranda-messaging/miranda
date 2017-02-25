@@ -55,15 +55,6 @@ public class TestDirectoryReadyState extends TestCase {
     }
 
 
-    public boolean collectedAfter (long time, List<MirandaFile> files) {
-        for (MirandaFile file : files) {
-            if (time > file.getLastCollection())
-                return false;
-        }
-
-        return true;
-    }
-
     /**
      * Garbage collection is not so much of an issue with things that subclass
      * the {@link Directory} class.  This is because the two types of objects

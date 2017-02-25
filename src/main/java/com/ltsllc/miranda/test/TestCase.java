@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -345,6 +346,21 @@ public class TestCase {
                     eventFileCreator.createFile(file);
                 }
             }
+        }
+
+        return true;
+    }
+
+
+    public boolean collectedAfter (long time, MirandaFile file) {
+        return file.getLastCollection() > time;
+    }
+
+
+    public boolean collectedAfter (long time, List<MirandaFile> files) {
+        for (MirandaFile file : files) {
+            if (!collectedAfter(time, file))
+                return false;
         }
 
         return true;
