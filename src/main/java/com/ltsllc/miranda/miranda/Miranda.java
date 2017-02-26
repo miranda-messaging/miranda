@@ -87,7 +87,7 @@ public class Miranda extends Consumer {
         }
     }
 
-    public static void reset () {
+    public static synchronized void reset () {
         ourInstance = null;
         fileWatcher = null;
         timer = null;

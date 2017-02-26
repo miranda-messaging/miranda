@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
@@ -21,6 +20,10 @@ public class FileWatcherService extends Consumer {
     private Timer timer;
     private Map<String, Long> watchedFiles;
     private Map<String, List<FileWatcher>> watchers = new HashMap<String, List<FileWatcher>>();
+
+    public long getPeriod() {
+        return period;
+    }
 
     public FileWatcherService(int period) {
         super("file watcher");
