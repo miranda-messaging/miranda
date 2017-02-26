@@ -19,13 +19,13 @@ public class FileWatcherService extends Consumer {
 
     private long period;
     private Timer timer;
-    private Map<File, Long> watchedFiles;
+    private Map<String, Long> watchedFiles;
     private Map<String, List<FileWatcher>> watchers = new HashMap<String, List<FileWatcher>>();
 
     public FileWatcherService(int period) {
         super("file watcher");
 
-        this.watchedFiles = new HashMap<File, Long>();
+        this.watchedFiles = new HashMap<String, Long>();
         this.period = (long) period;
         this.timer = new Timer("file system scanner", true);
 
@@ -43,18 +43,24 @@ public class FileWatcherService extends Consumer {
     }
 
     public synchronized void checkFiles () {
-        for (File file : watchedFiles.keySet())
+        if (watchedFiles.size() > 0) {
+            int i = 0;
+            i++;
+        }
+
+        for (String canonicalName : watchedFiles.keySet())
         {
+            File file = new File(canonicalName);
             long lastModified = new Long(file.lastModified());
-            Long lastRecordChange = watchedFiles.get(file);
+            Long lastRecordChange = watchedFiles.get(canonicalName);
 
             if (lastModified != lastRecordChange.longValue())
-                fireChanged(file);
+                fireChanged(canonicalName);
         }
     }
 
-    public void fireChanged (File file) {
-        List<FileWatcher> list = watchers.get(file);
+    public void fireChanged (String canonicalName) {
+        List<FileWatcher> list = watchers.get(canonicalName);
         for (FileWatcher fileWatcher : list) {
             fileWatcher.sendMessage();
         }
@@ -91,6 +97,9 @@ public class FileWatcherService extends Consumer {
         }
 
         list.add(fileWatcher);
+
+        Long l = new Long(file.lastModified());
+        watchedFiles.put(canonicalName, l);
     }
 
 
@@ -103,7 +112,7 @@ public class FileWatcherService extends Consumer {
      * @param queue The queue to send messages on.
      * @return true if this file was being watched.  False otherwise.
      */
-    public boolean stopWatching (File file, BlockingQueue<Message> queue) {
+    public synchronized boolean stopWatching (File file, BlockingQueue<Message> queue) {
         String canonicalName = getCanonicalName(file);
         List<FileWatcher> list = watchers.get (canonicalName);
 

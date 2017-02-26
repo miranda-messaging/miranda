@@ -4,14 +4,11 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventsFile;
-import com.ltsllc.miranda.main.Ready;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
 
 /**
  * Created by Clark on 2/25/2017.
@@ -92,28 +89,15 @@ public class TestMirandaFile extends TestCase {
         assert (oldEvent != newEvent);
     }
 
-    public static long touch(String filename, long time) {
-        File file = new File(filename);
-
-        if (!file.setLastModified(time)) {
-            Exception e = new Exception("could not set the time of last modification of " + file);
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        return file.lastModified();
-    }
-
-    public static long touch(String filename) {
-        long now = System.currentTimeMillis();
-        return touch(filename, now);
-    }
-
 
     @Test
     public void testWatch() {
-        Miranda.initialize();
         long then = System.currentTimeMillis();
+
+        MirandaProperties properties = MirandaProperties.getInstance();
+        properties.setProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD, "1000");
+        Miranda.initialize();
+
         getEventsFile().watch();
 
         pause(125);

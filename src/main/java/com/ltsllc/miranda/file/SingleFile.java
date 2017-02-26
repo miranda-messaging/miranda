@@ -90,6 +90,8 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile imple
             Version version = new Version(json);
             setVersion(version);
         }
+
+        setLastLoaded(System.currentTimeMillis());
     }
 
 

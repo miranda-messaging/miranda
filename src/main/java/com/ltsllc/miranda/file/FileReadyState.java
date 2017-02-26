@@ -39,6 +39,11 @@ public class FileReadyState extends State {
                 break;
             }
 
+            case FileChanged: {
+                getFile().load();
+                break;
+            }
+
             default :
                 nextState = super.processMessage(message);
                 break;

@@ -70,6 +70,27 @@ public class TestCase {
         }
     }
 
+    public static long touch(File file, long time) {
+        if (!file.setLastModified(time)) {
+            Exception e = new Exception("could not set the time of last modification of " + file);
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return file.lastModified();
+    }
+
+    public static long touch(String filename) {
+        long now = System.currentTimeMillis();
+        File file = new File(filename);
+        return touch(file, now);
+    }
+
+    public static long touch (File file) {
+        long now = System.currentTimeMillis();
+        return touch(file, now);
+    }
+
     public BlockingQueue<Message> getNetwork() {
         return network;
     }

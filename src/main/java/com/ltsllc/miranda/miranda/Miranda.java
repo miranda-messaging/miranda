@@ -69,17 +69,28 @@ public class Miranda extends Consumer {
         this.systemMessages = systemMessages;
     }
 
-    public static void initialize ()
+    public static synchronized void initialize ()
     {
-        StartState.initialize();
+        if (null == ourInstance) {
 
-        ourInstance = new Miranda();
+            StartState.initialize();
 
-        MirandaProperties properties = MirandaProperties.getInstance();
+            MirandaProperties properties = MirandaProperties.getInstance();
 
-        fileWatcher = new FileWatcherService(properties.getIntegerProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
-        timer = new MirandaTimer();
-        timer.start();
+            fileWatcher = new FileWatcherService(properties.getIntegerProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
+            fileWatcher.start();
+
+            timer = new MirandaTimer();
+            timer.start();
+
+            ourInstance = new Miranda();
+        }
+    }
+
+    public static void reset () {
+        ourInstance = null;
+        fileWatcher = null;
+        timer = null;
     }
 
     public HttpServer getHttpServer() {
