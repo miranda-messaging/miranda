@@ -24,6 +24,8 @@ public class TestMirandaFile extends TestCase {
             {"old/whatever", "random file"},
     };
 
+    private static final String FILENAME = "testdir/new/20170220-001.msg";
+
     private EventsFile eventsFile;
 
     public EventsFile getEventsFile() {
@@ -107,5 +109,58 @@ public class TestMirandaFile extends TestCase {
         pause(2000);
 
         assert (getEventsFile().getLastLoaded() > then);
+    }
+
+    private void changeEvent (Event event) {
+        switch (event.getMethod()) {
+            case DELETE: {
+                event.setMethod(Event.Methods.POST);
+                break;
+            }
+
+            case GET: {
+                event.setMethod(Event.Methods.POST);
+                break;
+            }
+
+            case PUT: {
+                event.setMethod(Event.Methods.POST);
+                break;
+            }
+
+            case POST: {
+                event.setMethod(Event.Methods.DELETE);
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateVersion () {
+        getEventsFile().load();
+        Version oldVersion = getEventsFile().getVersion();
+
+        Event event = getEventsFile().getData().get(0);
+        changeEvent (event);
+        getEventsFile().updateVersion();
+
+        Version newVersion = getEventsFile().getVersion();
+
+        assert (!oldVersion.equals(newVersion));
+    }
+
+    @Test
+    public void testEquals () {
+        getEventsFile().load();
+        EventsFile other = new EventsFile(FILENAME, getWriter());
+        other.load();
+
+        assert (other.equals(getEventsFile()));
+
+        Event event = other.getData().get(0);
+        changeEvent(event);
+        other.updateVersion();
+
+        assert (!other.equals(getEventsFile()));
     }
 }

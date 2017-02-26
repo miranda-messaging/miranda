@@ -85,6 +85,10 @@ public class Event implements Perishable {
         return method;
     }
 
+    public void setMethod (Methods method) {
+        this.method = method;
+    }
+
     /**
      * An Event never expires
      *

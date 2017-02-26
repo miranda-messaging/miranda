@@ -85,11 +85,11 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile imple
             }
 
             setData(temp);
-
-            String json = ourGson.toJson(temp);
-            Version version = new Version(json);
-            setVersion(version);
         }
+
+        String json = ourGson.toJson(getData());
+        Version version = new Version(json);
+        setVersion(version);
 
         setLastLoaded(System.currentTimeMillis());
     }
@@ -171,10 +171,7 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile imple
             return false;
 
         SingleFile other = (SingleFile) o;
-        if (!getData().equals(other.getData()))
-            return false;
-        else
-            return super.equals(o);
+        return getVersion().equals(other.getVersion());
     }
 
 

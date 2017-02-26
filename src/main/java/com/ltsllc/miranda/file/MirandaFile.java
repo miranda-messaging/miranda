@@ -138,18 +138,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
         MirandaFile other = (MirandaFile) o;
 
-        if (
-            !getFilename().equals(other.getFilename())
-            || !getWriterQueue().equals(other.getWriterQueue())
-            || !getElements().equals(other.getElements())
-            || !getVersion().equals(other.getVersion())
-        )
-        {
-            return false;
-        }
-        else {
-            return super.equals(o);
-        }
+        return other.getVersion().equals(getVersion());
     }
 
 
