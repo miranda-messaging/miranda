@@ -81,6 +81,9 @@ abstract public class Directory extends MirandaFile {
             mirandaFile.start();
             getFiles().add(mirandaFile);
         }
+
+        long now = System.currentTimeMillis();
+        setLastLoaded(now);
     }
 
 

@@ -4,9 +4,10 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.StartState;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.FileWatcher;
+import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
+import com.ltsllc.miranda.file.MirandaProperties;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
@@ -24,7 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Miranda extends Consumer {
     private static Logger logger = Logger.getLogger(Miranda.class);
     private static Miranda ourInstance;
-    private static FileWatcher ourFileWatcher;
+    public static FileWatcherService fileWatcher;
     public static MirandaTimer timer;
 
     private HttpServer httpServer;
@@ -73,7 +74,10 @@ public class Miranda extends Consumer {
         StartState.initialize();
 
         ourInstance = new Miranda();
-        ourFileWatcher = new FileWatcher();
+
+        MirandaProperties properties = MirandaProperties.getInstance();
+
+        fileWatcher = new FileWatcherService(properties.getIntegerProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
         timer = new MirandaTimer();
         timer.start();
     }
@@ -86,17 +90,9 @@ public class Miranda extends Consumer {
         this.httpServer = httpServer;
     }
 
-    public static FileWatcher getFileWatcher() {
-        return ourFileWatcher;
-    }
-
     private void setArguments (String[] argv) {
         Startup s = (Startup) getCurrentState();
         s.setArguments(argv);
-    }
-
-    public static FileWatcher getWatchService() {
-        return ourFileWatcher;
     }
 
     public static void performGarbageCollection() {

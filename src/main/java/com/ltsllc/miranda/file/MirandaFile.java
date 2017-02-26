@@ -8,6 +8,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private BlockingQueue<Message> writerQueue;
     private List<Perishable> elements = new ArrayList<Perishable>();
     private Version version;
-
+    private long lastLoaded = -1;
     private long lastCollection;
 
     public long getLastCollection() {
@@ -56,6 +57,14 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         this.version = version;
     }
 
+    public long getLastLoaded() {
+        return lastLoaded;
+    }
+
+    public void setLastLoaded(long lastLoaded) {
+        this.lastLoaded = lastLoaded;
+    }
+
     public MirandaFile (String filename, BlockingQueue<Message> queue)
     {
         super("file");
@@ -75,10 +84,6 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return filename;
     }
 
-    public void fileChanged (String s) {
-        load();
-    }
-
     public void write (String filename, byte[] array)
     {
         Message m = new WriteMessage(filename, array, null, null);
@@ -90,19 +95,22 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         }
     }
 
+    public void write () {
+        write(getFilename(), getBytes());
+    }
 
     public void fileChanged () {
         logger.info(getFilename() + " changed");
-    }
-
-    public void write () {
-        write(getFilename(), getBytes());
+        load();
     }
 
     public void watch () {
         try {
             Method method = this.getClass().getMethod("fileChanged");
-            Miranda.getFileWatcher().watchForChanges(getFilename(), this, method);
+            File file = new File(getFilename());
+            FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
+            WatchMessage message = new WatchMessage(getQueue(), this, file, fileChangedMessage);
+            send(message, Miranda.fileWatcher.getQueue());
         } catch (NoSuchMethodException e) {
             logger.fatal("Exception trying to register file watcher", e);
             System.exit(1);
@@ -129,8 +137,6 @@ abstract public class MirandaFile extends Consumer implements Comparer {
             return false;
 
         MirandaFile other = (MirandaFile) o;
-
-
 
         if (
             !getFilename().equals(other.getFilename())

@@ -51,6 +51,8 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
 
+    public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
+
     public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
 
     public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
@@ -64,6 +66,7 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_KEYSTORE_ALIAS = ENCRYPTION_PACKAGE + "KeyStoreAlias";
 
 
+    public static final String DEFAULT_FILE_CHECK_PERIOD  = "10000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -102,6 +105,7 @@ public class MirandaProperties extends Properties {
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
             {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE},
+            {PROPERTY_FILE_CHECK_PERIOD, DEFAULT_FILE_CHECK_PERIOD},
 
             {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPION_MODE},
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
