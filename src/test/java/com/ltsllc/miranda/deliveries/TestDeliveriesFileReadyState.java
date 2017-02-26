@@ -63,8 +63,12 @@ public class TestDeliveriesFileReadyState extends TestCase {
         // make sure equals returns false in some cases
         //
         temp = new DeliveriesFile("junk", getWriter());
+        temp.load();
+
         DeliveriesFileReadyState notEquivalent = new DeliveriesFileReadyState(temp);
         Integer i = new Integer(13);
+        getDeliveriesFile().load();
+
         assert (!getDeliveriesFileReadyState().equals(i));
         assert (!notEquivalent.equals(getDeliveriesFileReadyState()));
         assert (!getDeliveriesFileReadyState().equals(null));

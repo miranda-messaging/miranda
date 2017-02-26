@@ -159,18 +159,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         map.put (o, Boolean.TRUE);
         MirandaFile other = (MirandaFile) o;
 
-        if (
-            !getFilename().equals(other.getFilename())
-            || !getWriterQueue().equals(other.getWriterQueue())
-            || !getElements().equals(other.getElements())
-            || !getVersion().equals(other.getVersion())
-        )
-        {
-            map.put(o, Boolean.FALSE);
-            return false;
-        }
-
-        return super.compare(map, o);
+        return getVersion().equals(other.getVersion());
     }
 
     public String toString () {
