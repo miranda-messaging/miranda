@@ -133,10 +133,4 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     public List<Perishable> getPerishables() {
         return new ArrayList<Perishable>(getSubscriptionsFile().getData());
     }
-
-
-    @Override
-    public void notifyContainer(Set<Perishable> expired) {
-        logger.warn("Ignoring notifyContainer");
-    }
 }

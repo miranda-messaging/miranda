@@ -5,9 +5,9 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.HealthCheckMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.server.NewTopicHandler;
 import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.ltsllc.miranda.file.MirandaProperties.*;
+import static com.ltsllc.miranda.property.MirandaProperties.*;
 
 /**
  * A class that encapsulates the knowledge of how to start up the system.
@@ -109,10 +109,6 @@ public class Startup extends State {
         return clusterQueue;
     }
 
-    public void setClusterQueue(BlockingQueue<Message> queue) {
-        clusterQueue = queue;
-    }
-
     public LogLevel getLogLevel() {
         return logLevel;
     }
@@ -123,11 +119,6 @@ public class Startup extends State {
 
     public Startup(Consumer container) {
         super(container);
-    }
-
-    public Startup(String[] argv) {
-        super(null);
-        arguments = argv;
     }
 
     @Override
@@ -251,7 +242,7 @@ public class Startup extends State {
      * file.
      */
     private void loadProperties() {
-        MirandaProperties.initialize(getPropertiesFilename());
+        Miranda.properties = new MirandaProperties(getPropertiesFilename(), getWriterQueue());
         PropertiesUtils.log(System.getProperties());
     }
 
@@ -267,7 +258,7 @@ public class Startup extends State {
      * </P>
      */
     private void startSubsystems() {
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         Miranda miranda = Miranda.getInstance();
 
         StartState.initialize();
@@ -355,7 +346,7 @@ public class Startup extends State {
 
 
     public void schedule () {
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
 
         long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
         HealthCheckMessage healthCheckMessage = new HealthCheckMessage(Miranda.getInstance().getQueue(), this);

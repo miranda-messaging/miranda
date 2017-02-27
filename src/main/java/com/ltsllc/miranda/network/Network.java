@@ -3,22 +3,18 @@ package com.ltsllc.miranda.network;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.*;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
-import javax.net.ssl.SSLContext;
 import java.net.InetSocketAddress;
-import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
 
 public class Network extends Consumer {
@@ -152,7 +148,7 @@ public class Network extends Consumer {
 
             SslContext sslContext = null;
 
-            MirandaProperties proprties = MirandaProperties.getInstance();
+            MirandaProperties proprties = Miranda.properties;
             MirandaProperties.EncryptionModes mode = proprties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
 
             if (mode == MirandaProperties.EncryptionModes.RemoteCA) {

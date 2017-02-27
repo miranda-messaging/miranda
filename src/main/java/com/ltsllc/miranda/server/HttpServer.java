@@ -7,7 +7,8 @@ package com.ltsllc.miranda.server;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Utils;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -61,7 +62,7 @@ public class HttpServer extends Consumer {
 
     public void startup() {
 
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
 
         SslContext sslContext = null;

@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +19,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/5/2017.
  */
 abstract public class MirandaFile extends Consumer implements Comparer {
-    abstract public void load ();
+    abstract public void load();
     abstract public byte[] getBytes();
-
 
     private Logger logger = Logger.getLogger(MirandaFile.class);
 
@@ -53,7 +51,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return version;
     }
 
-    public void setVersion (Version version) {
+    public void setVersion(Version version) {
         this.version = version;
     }
 
@@ -65,8 +63,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         this.lastLoaded = lastLoaded;
     }
 
-    public MirandaFile (String filename, BlockingQueue<Message> queue)
-    {
+    public MirandaFile(String filename, BlockingQueue<Message> queue) {
         super("file");
 
         this.filename = filename;
@@ -75,7 +72,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
 
-    public MirandaFile (String filename) {
+    public MirandaFile(String filename) {
         super("file");
         this.filename = filename;
     }
@@ -84,8 +81,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return filename;
     }
 
-    public void write (String filename, byte[] array)
-    {
+    public void write(String filename, byte[] array) {
         Message m = new WriteMessage(filename, array, null, null);
         try {
             getWriterQueue().put(m);
@@ -95,29 +91,23 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         }
     }
 
-    public void write () {
+    public void write() {
         write(getFilename(), getBytes());
     }
 
-    public void fileChanged () {
+    public void fileChanged() {
         logger.info(getFilename() + " changed");
         load();
     }
 
-    public void watch () {
-        try {
-            Method method = this.getClass().getMethod("fileChanged");
-            File file = new File(getFilename());
-            FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
-            WatchMessage message = new WatchMessage(getQueue(), this, file, fileChangedMessage);
-            send(message, Miranda.fileWatcher.getQueue());
-        } catch (NoSuchMethodException e) {
-            logger.fatal("Exception trying to register file watcher", e);
-            System.exit(1);
-        }
+    public void watch() {
+        File file = new File(getFilename());
+        FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
+        WatchMessage message = new WatchMessage(getQueue(), this, file, fileChangedMessage);
+        send(message, Miranda.fileWatcher.getQueue());
     }
 
-    public void updateVersion () {
+    public void updateVersion() {
         StringWriter stringWriter = new StringWriter();
 
         for (Perishable perishable : getElements()) {
@@ -129,7 +119,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
 
@@ -142,27 +132,25 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
 
-    public boolean compare (Map<Object,Boolean> map, Object o)
-    {
+    public boolean compare(Map<Object, Boolean> map, Object o) {
         if (map.containsKey(o))
             return map.get(o).booleanValue();
 
         if (o == this)
             return true;
 
-        if (null == o || !(o instanceof MirandaFile))
-        {
+        if (null == o || !(o instanceof MirandaFile)) {
             map.put(o, Boolean.FALSE);
             return false;
         }
 
-        map.put (o, Boolean.TRUE);
+        map.put(o, Boolean.TRUE);
         MirandaFile other = (MirandaFile) o;
 
         return getVersion().equals(other.getVersion());
     }
 
-    public String toString () {
+    public String toString() {
         return filename;
     }
 }

@@ -1,7 +1,8 @@
 package com.ltsllc.miranda.event;
 
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.property.MirandaProperties;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,14 +21,14 @@ public class TestSystemMessages extends TestCase {
         reset();
         setupMirandaProperties();
 
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
         systemMessages = new SystemMessages(directory, getWriter());
     }
 
     @Test
     public void testConstructor() {
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
         assert (getSystemMessages().getFilename().equals(directory));
         assert (getSystemMessages().getCurrentState() instanceof SystemMessagesReadyState);

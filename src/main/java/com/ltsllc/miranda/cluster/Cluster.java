@@ -4,7 +4,8 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -94,7 +95,7 @@ public class Cluster extends Consumer {
         State state = new ClusterReadyState(this);
         setCurrentState(state);
 
-        int port = PropertiesUtils.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        int port = Miranda.properties.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         networkListener = new NetworkListener(port, getQueue());
         networkListener.listen();
 

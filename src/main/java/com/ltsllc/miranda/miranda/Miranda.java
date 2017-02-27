@@ -7,9 +7,10 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
@@ -25,15 +26,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Miranda extends Consumer {
     private static Logger logger = Logger.getLogger(Miranda.class);
     private static Miranda ourInstance;
+
     public static FileWatcherService fileWatcher;
     public static MirandaTimer timer;
+    public static MirandaProperties properties;
 
     private HttpServer httpServer;
     private SystemMessages systemMessages;
     private SystemDeliveriesFile deliveriesFile;
 
 
-    private Miranda() {
+    public Miranda() {
         super ("miranda");
         State s = new Startup(this);
         setCurrentState(s);
@@ -48,9 +51,8 @@ public class Miranda extends Consumer {
 
     public static void main(String[] argv) {
         logger.info ("Starting");
-        initialize();
-        getInstance().setArguments(argv);
-        getInstance().start();
+        Miranda miranda = new Miranda();
+        miranda.start();
     }
 
     public SystemMessages getSystemMessages() {
@@ -69,23 +71,6 @@ public class Miranda extends Consumer {
         this.systemMessages = systemMessages;
     }
 
-    public static synchronized void initialize ()
-    {
-        if (null == ourInstance) {
-
-            StartState.initialize();
-
-            MirandaProperties properties = MirandaProperties.getInstance();
-
-            fileWatcher = new FileWatcherService(properties.getIntegerProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
-            fileWatcher.start();
-
-            timer = new MirandaTimer();
-            timer.start();
-
-            ourInstance = new Miranda();
-        }
-    }
 
     public static synchronized void reset () {
         ourInstance = null;

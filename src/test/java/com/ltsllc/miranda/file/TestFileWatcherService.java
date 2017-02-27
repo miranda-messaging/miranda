@@ -2,13 +2,13 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -55,14 +55,10 @@ public class TestFileWatcherService extends TestCase {
         setuplog4j();
         setupMirandaProperties();
 
-        MirandaProperties properties = MirandaProperties.getInstance();
-        properties.setProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD, "500");
-
-        Miranda.initialize();
-
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
-        fileWatcherService = Miranda.fileWatcher;
+        fileWatcherService = new FileWatcherService(500);
+        fileWatcherService.start();
         queue = new LinkedBlockingQueue<Message>();
     }
 
@@ -85,7 +81,7 @@ public class TestFileWatcherService extends TestCase {
         File file = new File(FILENAME);
         FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
-        send(watchMessage, Miranda.fileWatcher.getQueue());
+        send(watchMessage, getFileWatcherService().getQueue());
 
         pause(125);
 
@@ -101,7 +97,7 @@ public class TestFileWatcherService extends TestCase {
         File file = new File(FILENAME);
         FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
-        send(watchMessage, Miranda.fileWatcher.getQueue());
+        send(watchMessage, getFileWatcherService().getQueue());
 
         pause(125);
 
@@ -112,7 +108,7 @@ public class TestFileWatcherService extends TestCase {
         assert (contains(Message.Subjects.FileChanged, getQueue()));
 
         UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
-        send(unwatchFileMessage, Miranda.fileWatcher.getQueue());
+        send(unwatchFileMessage, getFileWatcherService().getQueue());
 
         pause (125);
 

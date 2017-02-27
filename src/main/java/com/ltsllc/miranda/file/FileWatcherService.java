@@ -46,11 +46,6 @@ public class FileWatcherService extends Consumer {
     }
 
     public synchronized void checkFiles () {
-        if (watchedFiles.size() > 0) {
-            int i = 0;
-            i++;
-        }
-
         for (String canonicalName : watchedFiles.keySet())
         {
             File file = new File(canonicalName);
@@ -69,7 +64,6 @@ public class FileWatcherService extends Consumer {
         }
     }
 
-
     private String getCanonicalName (File file) {
         String name = null;
 
@@ -81,12 +75,6 @@ public class FileWatcherService extends Consumer {
         }
 
         return name;
-    }
-
-
-    public void watch (String filename, BlockingQueue<Message> queue, Message message) {
-        File file = new File(filename);
-        watch (file, queue, message);
     }
 
     public void watch(File file, BlockingQueue<Message> queue, Message message) {

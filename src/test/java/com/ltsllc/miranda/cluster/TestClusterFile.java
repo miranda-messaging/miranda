@@ -3,7 +3,8 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.NodeElement;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -60,7 +61,7 @@ public class TestClusterFile extends TestCase {
     }
 
     public void setupClusterFile() {
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
         deleteFile(filename);
@@ -74,7 +75,7 @@ public class TestClusterFile extends TestCase {
     public void reset () {
         super.reset();
 
-        MirandaProperties.reset();
+        Miranda.properties = null;
         ClusterFile.reset();
     }
 

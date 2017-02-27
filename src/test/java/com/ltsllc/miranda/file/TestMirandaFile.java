@@ -5,6 +5,7 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -96,9 +97,8 @@ public class TestMirandaFile extends TestCase {
     public void testWatch() {
         long then = System.currentTimeMillis();
 
-        MirandaProperties properties = MirandaProperties.getInstance();
-        properties.setProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD, "1000");
-        Miranda.initialize();
+        Miranda.fileWatcher = new FileWatcherService(500);
+        Miranda.fileWatcher.start();
 
         getEventsFile().watch();
 
@@ -106,7 +106,7 @@ public class TestMirandaFile extends TestCase {
 
         touch(getEventsFile().getFilename());
 
-        pause(2000);
+        pause(1000);
 
         assert (getEventsFile().getLastLoaded() > then);
     }

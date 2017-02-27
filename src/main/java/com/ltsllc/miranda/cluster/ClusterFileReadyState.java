@@ -8,7 +8,8 @@ import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
 import com.ltsllc.miranda.cluster.messages.DropNodeMessage;
 import com.ltsllc.miranda.cluster.messages.HealthCheckUpdateMessage;
 import com.ltsllc.miranda.cluster.messages.NewClusterFileMessage;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
@@ -159,7 +160,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         //
         // check to see if we should drop any nodes
         //
-        long timeout = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT);
+        long timeout = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT);
         long now = System.currentTimeMillis();
         List<NodeElement> drops = new ArrayList<NodeElement>();
         for (NodeElement nodeElement : getClusterFile().getData()) {

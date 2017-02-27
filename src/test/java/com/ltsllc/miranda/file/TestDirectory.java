@@ -1,5 +1,7 @@
 package com.ltsllc.miranda.file;
 
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.SystemMessages;
@@ -35,14 +37,14 @@ public class TestDirectory extends TestCase {
         setuplog4j();
         setupMirandaProperties();
 
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
         this.directory = new SystemMessages(directory, getWriter());
     }
 
     @Test
     public void testConstructor () {
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String dir = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
 
         assert (dir.equals(getDirectory().getFilename()));
@@ -123,7 +125,7 @@ public class TestDirectory extends TestCase {
     @Test
     public void testLoad () throws Exception {
         try {
-            MirandaProperties properties = MirandaProperties.getInstance();
+            MirandaProperties properties = Miranda.properties;
             properties.setProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY, "testdir");
 
             this.directory = new SystemMessages("testdir", getWriter());
@@ -151,7 +153,7 @@ public class TestDirectory extends TestCase {
         File root = new File("testdir");
 
         try {
-            MirandaProperties properties = MirandaProperties.getInstance();
+            MirandaProperties properties = Miranda.properties;
             properties.setProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY, "testdir");
 
             this.directory = new SystemMessages("testdir", getWriter());

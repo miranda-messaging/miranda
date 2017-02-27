@@ -46,10 +46,12 @@ public class DirectoryReadyState extends State {
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
         logger.info ("Garbage collecting " + getDirectory().getFilename());
 
-        for (MirandaFile file : getDirectory().getFiles()) {
-            GarbageCollectionMessage message = new GarbageCollectionMessage(getDirectory().getQueue(), this);
-            send(file.getQueue(), message);
+        for (MirandaFile mirandaFile : getDirectory().getFiles())
+        {
+            mirandaFile.setLastCollection(System.currentTimeMillis());
         }
+
+        getDirectory().setLastCollection(System.currentTimeMillis());
 
         return this;
     }

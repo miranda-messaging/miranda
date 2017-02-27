@@ -20,27 +20,21 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/10/2017.
  */
-abstract public class SingleFile<E extends Perishable> extends MirandaFile implements Comparer {
+abstract public class SingleFile<E> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
     abstract public Type listType();
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
 
+    private static Gson ourGson = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
+
     public SingleFile (String filename, BlockingQueue<Message> writerQueue) {
         super(filename, writerQueue);
     }
 
-    private static Gson ourGson = buildGson();
-
     private List<E> data = buildEmptyList();
-
-    public Gson getGson() {
-        if (null == ourGson)
-            ourGson = new Gson();
-
-        return ourGson;
-    }
-
 
     public List<E> getData () {
         return data;
@@ -96,45 +90,10 @@ abstract public class SingleFile<E extends Perishable> extends MirandaFile imple
 
 
     public byte[] getBytes () {
-        String json = getGson().toJson(getData());
+        String json = ourGson.toJson(getData());
         return json.getBytes();
     }
 
-
-    private static Gson buildGson () {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        return gsonBuilder.setPrettyPrinting().create();
-    }
-
-
-    private static final int BUFFER_SIZE = 8192;
-
-    public String calculateSha1() {
-        FileInputStream fileInputStream = null;
-        byte[] digest = null;
-
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA");
-            fileInputStream = new FileInputStream(getFilename());
-            byte[] buffer = new byte[BUFFER_SIZE];
-
-            int bytesRead;
-
-            do {
-                bytesRead = fileInputStream.read(buffer);
-                messageDigest.update(buffer, 0, bytesRead);
-            } while (bytesRead >= BUFFER_SIZE);
-
-            digest = messageDigest.digest();
-        } catch (Exception e) {
-            logger.fatal("Exception while trying to calculate sha1", e);
-            System.exit(1);
-        }finally {
-            Utils.closeIgnoreExceptions(fileInputStream);
-        }
-
-        return Utils.bytesToString(digest);
-    }
 
     public boolean contains (E e) {
         for (E contained : getData()) {

@@ -2,6 +2,7 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +40,6 @@ public class TestFileWatcherReadyState extends TestCase {
     public void reset() {
         super.reset();
 
-        Miranda.reset();
         fileWatcherService = null;
         queue = null;
     }
@@ -53,13 +53,9 @@ public class TestFileWatcherReadyState extends TestCase {
 
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
-        MirandaProperties properties = MirandaProperties.getInstance();
-        properties.setProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD, "1000");
-        int period = properties.getIntegerProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD);
+        fileWatcherService = new FileWatcherService(500);
+        fileWatcherService.start();
 
-        Miranda.initialize();
-
-        fileWatcherService = Miranda.fileWatcher;
         queue = new LinkedBlockingQueue<Message>();
     }
 
@@ -74,17 +70,14 @@ public class TestFileWatcherReadyState extends TestCase {
     public void testProcessWatchMessage() {
         File file = new File(FILE_NAME);
         FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
-
-        Miranda.initialize();
-
         WatchMessage message = new WatchMessage(getQueue(), this, file, fileChangedMessage);
-        send(message, Miranda.fileWatcher.getQueue());
+        send(message, getFileWatcherService().getQueue());
 
         pause(125);
 
         touch(file);
 
-        pause(2000);
+        pause(1000);
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
     }
@@ -95,15 +88,10 @@ public class TestFileWatcherReadyState extends TestCase {
         File file = new File(FILE_NAME);
         UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
 
-        MirandaProperties properties = MirandaProperties.getInstance();
-        properties.setProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD, "500");
-
         FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
 
-        Miranda.initialize();
-
-        send(watchMessage, Miranda.fileWatcher.getQueue());
+        send(watchMessage, getFileWatcherService().getQueue());
 
         pause(125);
 
@@ -112,7 +100,7 @@ public class TestFileWatcherReadyState extends TestCase {
         pause(1000);
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
-        send(unwatchFileMessage, Miranda.fileWatcher.getQueue());
+        send(unwatchFileMessage, getFileWatcherService().getQueue());
 
         pause(125);
         getQueue().clear();

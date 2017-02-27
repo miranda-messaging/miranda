@@ -1,7 +1,8 @@
 package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class TestCluster extends TestCase {
         deleteFile(CLUSTER_FILENAME);
         com.ltsllc.miranda.cluster.Cluster.reset();
 
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
         com.ltsllc.miranda.cluster.Cluster.initializeClass(filename, getWriter(), getNetwork());

@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import org.junit.Before;
 import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
@@ -32,7 +33,7 @@ public class TestDeliveriesFileReadyState extends TestCase {
         reset();
 
         setupMirandaProperties();
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
         deliveriesFile = new DeliveriesFile(directory, getWriter());
 
@@ -51,7 +52,7 @@ public class TestDeliveriesFileReadyState extends TestCase {
         //
         // equals should return true to a different but equivalent deliveries file
         //
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
         DeliveriesFile temp = new DeliveriesFile(directory, getWriter());
 

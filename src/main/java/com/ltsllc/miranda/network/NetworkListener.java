@@ -3,8 +3,7 @@ package com.ltsllc.miranda.network;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.NetworkMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.WireMessage;
@@ -12,7 +11,6 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
@@ -149,7 +147,7 @@ public class NetworkListener {
     }
 
     public void listen() {
-        MirandaProperties properties = MirandaProperties.getInstance();
+        MirandaProperties properties = Miranda.properties;
         MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SslContext sslContext = null;
 

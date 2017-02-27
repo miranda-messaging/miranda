@@ -1,21 +1,30 @@
-package com.ltsllc.miranda.file;
+package com.ltsllc.miranda.property;
 
-import com.ltsllc.miranda.util.IOUtils;
+import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/21/2017.
+ * The Miranda system's properties.
+ *
+ * <P>
+ *     This class is a Properties object that knows a lot about the Miranda
+ *     system.
+ * </P>
+ *
+ * <P>
+ *
+ * </P>
  */
-public class MirandaProperties extends Properties {
+public class MirandaProperties extends SingleFile<String> {
     private static Logger logger = Logger.getLogger(MirandaProperties.class);
 
     public enum EncryptionModes {
@@ -31,6 +40,8 @@ public class MirandaProperties extends Properties {
 
     public static final String ENCRYPTION_PACKAGE = PACKAGE_NAME + "encryption.";
 
+    public static final String MY_PACKAGE = PACKAGE_NAME + "my.";
+
     public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
     public static final String PROPERTY_CLUSTER_FILE = "com.ltsllc.miranda.ClusterFile";
     public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
@@ -43,10 +54,6 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
     public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
-    public static final String PROPERTY_MY_DNS = PACKAGE_NAME + "my.Dns";
-    public static final String PROPERTY_MY_IP = PACKAGE_NAME + "my.Ip";
-    public static final String PROPERTY_MY_PORT = PACKAGE_NAME + "my.Port";
-    public static final String PROPERTY_MY_DESCIPTION = PACKAGE_NAME + "my.Description";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
@@ -65,8 +72,12 @@ public class MirandaProperties extends Properties {
     public static final String PROPERTY_KEYSTORE_PASSWORD = ENCRYPTION_PACKAGE + "KeyStorePassword";
     public static final String PROPERTY_KEYSTORE_ALIAS = ENCRYPTION_PACKAGE + "KeyStoreAlias";
 
+    public static final String PROPERTY_MY_DNS = MY_PACKAGE + "Dns";
+    public static final String PROPERTY_MY_IP = MY_PACKAGE + "Ip";
+    public static final String PROPERTY_MY_PORT = MY_PACKAGE + "Port";
+    public static final String PROPERTY_MY_DESCIPTION = MY_PACKAGE + "Description";
 
-    public static final String DEFAULT_FILE_CHECK_PERIOD  = "10000";
+    public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -79,7 +90,6 @@ public class MirandaProperties extends Properties {
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
-    public static final String DEFAULT_KEY_STORE_ALIAS = "server";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
     public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // once week
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
@@ -121,47 +131,65 @@ public class MirandaProperties extends Properties {
             {PROPERTY_PORT, DEFAULT_PORT},
     };
 
-    private static MirandaProperties ourInstance;
+    private Properties properties;
 
-    public static synchronized void initialize (String filename) {
-        if (null == ourInstance) {
-            Properties defaults = PropertiesUtils.buildFrom(MirandaProperties.DEFAULT_PROPERTIES);
-            Properties sysProps = PropertiesUtils.merge(System.getProperties(), defaults);
+    public MirandaProperties (String filename, BlockingQueue<Message> writerQueue) {
+        super(filename, writerQueue);
 
-            Properties properties = null;
-
-            try {
-                properties = PropertiesUtils.load(filename);
-            } catch (IOException e) {
-                logger.fatal ("Exception trying to load properties from " + filename, e);
-            }
-
-            PropertiesUtils.augment(sysProps, properties);
-            ourInstance = new MirandaProperties(sysProps);
-            ourInstance.updateSystemProperties();
-        }
+        properties = new Properties();
+        load();
     }
 
-    public static MirandaProperties getInstance() {
-        return ourInstance;
+    /**
+     * Use this constructor for testing only because it <b>it will not work!</b>.
+     * In particular calls to things like {@link #load()} and {@link #watch()}
+     * will result in a NullPointerException.
+     */
+    public MirandaProperties()
+    {
+        super (null, null);
+        setupDefaults();
     }
 
-    private MirandaProperties (Properties p) {
-        Set<String> names = p.stringPropertyNames();
-        for (String name : names)
-        {
-            String value = p.getProperty(name);
-            setProperty(name, value);
-        }
+    /**
+     * Set the properties to their default values.
+     *
+     * <P>
+     *     This method is intended only for use in testing.
+     * </P>
+     */
+    public void setupDefaults () {
+        Properties systemProperties = PropertiesUtils.copy(System.getProperties());
+        Properties defaultProperties = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
+
+        Properties properties = PropertiesUtils.overwrite(systemProperties, defaultProperties);
+
+        this.properties = PropertiesUtils.copy(properties);
     }
 
-    public static synchronized void reset() {
-        ourInstance = null;
+    public void load () {
+        //
+        // start with the defaults
+        //
+        Properties defaults = PropertiesUtils.buildFrom(MirandaProperties.DEFAULT_PROPERTIES);
+
+        //
+        // overwrite with what's in the system properties
+        //
+        Properties system = System.getProperties();
+        Properties properties = PropertiesUtils.overwrite(defaults, system);
+
+        //
+        // overwrite with what's in the properties file
+        //
+        Properties temp = PropertiesUtils.load(getFilename());
+        PropertiesUtils.overwrite(properties, temp);
     }
+
 
     public void updateSystemProperties()
     {
-        PropertiesUtils.setIfNull(System.getProperties(), this);
+        PropertiesUtils.overwrite(System.getProperties(), properties);
     }
 
 
@@ -173,7 +201,10 @@ public class MirandaProperties extends Properties {
         else {
             return Integer.parseInt(temp);
         }
+    }
 
+    public int getIntProperty (String name) {
+        return getIntegerProperty(name);
     }
 
     public long getLongProperty (String name) {
@@ -200,4 +231,26 @@ public class MirandaProperties extends Properties {
 
         return mode;
     }
+
+
+    public String getProperty (String name) {
+        return properties.getProperty(name);
+    }
+
+    public void setProperty (String name, String value) {
+        properties.setProperty(name, value);
+    }
+
+    public Type listType () {
+        return new TypeToken<List<String>>() {} .getType();
+    }
+
+    public List buildEmptyList () {
+        return new ArrayList<String>();
+    }
+
+    public void log () {
+        PropertiesUtils.log(properties);
+    }
+
 }

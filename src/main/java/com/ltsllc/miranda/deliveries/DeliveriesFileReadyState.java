@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.ltsllc.miranda.file.FileReadyState;
+import com.ltsllc.miranda.file.MirandaFileReadyState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * Created by Clark on 2/19/2017.
  */
-public class DeliveriesFileReadyState extends FileReadyState implements Comparer {
+public class DeliveriesFileReadyState extends MirandaFileReadyState {
     public DeliveriesFileReadyState (DeliveriesFile deliveriesFile) {
         super(deliveriesFile);
     }

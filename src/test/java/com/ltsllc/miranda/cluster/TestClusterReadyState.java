@@ -3,7 +3,8 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.*;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.GetVersionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static com.ltsllc.miranda.miranda.Miranda.properties;
 
 /**
  * Created by Clark on 2/20/2017.
@@ -34,8 +37,8 @@ public class TestClusterReadyState extends TestCase {
         Cluster.reset();
 
         deleteFile(PROPERTIES_FILENAME);
-        MirandaProperties.initialize(PROPERTIES_FILENAME);
-        MirandaProperties properties = MirandaProperties.getInstance();
+
+        MirandaProperties properties = new MirandaProperties();
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
         Cluster.initializeClass(filename, getWriter(), getNetwork());
         this.cluster = Cluster.getInstance();
@@ -59,7 +62,7 @@ public class TestClusterReadyState extends TestCase {
     @Test
     public void testProcessMessageLoad() {
         setupMirandaProperties();
-        String filename = MirandaProperties.getInstance().getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+        String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
         LoadMessage message = new LoadMessage(null, filename, this);
         send(message, getCluster().getQueue());
 

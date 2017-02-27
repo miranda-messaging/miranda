@@ -118,10 +118,4 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     public List<Perishable> getPerishables() {
         return new ArrayList<Perishable>(getTopicsFile().getData());
     }
-
-
-    @Override
-    public void notifyContainer(Set<Perishable> expired) {
-        logger.warn("Ignoring notifyContainer");
-    }
 }

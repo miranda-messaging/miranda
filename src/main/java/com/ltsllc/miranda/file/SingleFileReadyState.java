@@ -26,12 +26,6 @@ abstract public class SingleFileReadyState extends State {
     abstract public String getName();
     abstract public List<Perishable> getPerishables();
 
-    public void notifyContainer(Set<Perishable> expired) {
-        ExpiredMessage expiredMessage = new ExpiredMessage (getContainer().getQueue(), this, expired);
-        send(Cluster.getInstance().getQueue(), expiredMessage);
-    }
-
-
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
     private static Gson ourGson = new Gson();
 
@@ -105,26 +99,5 @@ abstract public class SingleFileReadyState extends State {
     }
 
 
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        boolean changed = false;
-
-        Set<Perishable> expired = new HashSet<Perishable>();
-        long now = System.currentTimeMillis();
-
-        for (Perishable perishable : getPerishables()) {
-            if (perishable.expired(now)) {
-                expired.add(perishable);
-                changed = true;
-            }
-        }
-
-        logger.info (getFile().getFilename() + " expiring " + expired);
-
-        getPerishables().removeAll(expired);
-
-        if (changed)
-            notifyContainer (expired);
-
-        return this;
-    }
+    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) { return this; }
 }

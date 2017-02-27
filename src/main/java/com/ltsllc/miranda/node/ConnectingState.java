@@ -3,9 +3,8 @@ package com.ltsllc.miranda.node;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.MirandaProperties;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.network.ConnectedMessage;
-import com.ltsllc.miranda.timer.ScheduleMessage;
 import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
@@ -64,7 +63,7 @@ public class ConnectingState extends NodeState {
         String message = "Failed to get connection to " + getNode().getDns() + ":" + getNode().getPort();
         logger.info(message, connectFailedMessage.getCause());
 
-        MirandaProperties p = MirandaProperties.getInstance();
+        MirandaProperties p = Miranda.properties;
         int delayBetweenRetries = PropertiesUtils.getIntProperty(System.getProperties(), MirandaProperties.PROPERTY_DELAY_BETWEEN_RETRIES);
         RetryMessage retryMessage = new RetryMessage(getNode().getQueue(), this);
         SchedulePeriodicMessage schedulePeriodicMessage = new SchedulePeriodicMessage(getNode().getQueue(), this, retryMessage, delayBetweenRetries);
