@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.util.Utils;
 
 import java.util.concurrent.BlockingQueue;
 

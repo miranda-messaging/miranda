@@ -1,11 +1,10 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.util.ImprovedRandom;
 
-import java.util.Random;
 import java.util.UUID;
 
 /**

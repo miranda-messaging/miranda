@@ -3,7 +3,6 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.util.IOUtils;
@@ -12,7 +11,6 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.security.MessageDigest;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;

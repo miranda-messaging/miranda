@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.node;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.Version;
 
 import java.util.List;

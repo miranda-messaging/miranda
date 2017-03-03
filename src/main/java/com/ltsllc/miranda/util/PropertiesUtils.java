@@ -1,6 +1,5 @@
 package com.ltsllc.miranda.util;
 
-import com.ltsllc.miranda.Utils;
 import org.apache.log4j.Logger;
 
 import java.io.File;

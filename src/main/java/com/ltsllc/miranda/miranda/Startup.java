@@ -4,14 +4,19 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.HealthCheckMessage;
+import com.ltsllc.miranda.commadline.CommandLine;
+import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
+import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.server.NewTopicHandler;
 import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
+import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.NewUserHandler;
@@ -52,20 +57,14 @@ public class Startup extends State {
         INFO
     }
 
-    public static final String DEBUG_FLAG = "-debug";
-
-    public static final String LOG4J_FILE = "log4j.xml";
-
     private static Logger logger;
 
     private String[] arguments = {};
-    private BlockingQueue<Message> clusterQueue;
     private BlockingQueue<Message> writerQueue;
     private int index;
     private LogLevel logLevel = LogLevel.NORMAL;
-    private String propertiesFilename = DEFAULT_PROPERTIES_FILENAME;
-    private boolean debugMode = false;
     private HttpServer httpServer;
+    private MirandaCommandLine commandLine;
 
 
     public HttpServer getHttpServer() {
@@ -76,37 +75,12 @@ public class Startup extends State {
         this.httpServer = httpServer;
     }
 
-    public boolean debugMode () {
-        return getDebugMode();
-    }
-
-    public boolean getDebugMode () {
-        return  debugMode;
-    }
-
-    public void setDebugMode (boolean debugMode) {
-        this.debugMode = debugMode;
-    }
-
-    public String getPropertiesFilename() {
-        return propertiesFilename;
-    }
-
-    public void setPropertiesFilename(String propertiesFilename) {
-        this.propertiesFilename = propertiesFilename;
-    }
-
-
     public int getIndex() {
         return index;
     }
 
     public void setIndex(int i) {
         index = i;
-    }
-
-    public BlockingQueue<Message> getClusterQueue() {
-        return clusterQueue;
     }
 
     public LogLevel getLogLevel() {
@@ -117,8 +91,14 @@ public class Startup extends State {
         this.logLevel = logLevel;
     }
 
-    public Startup(Consumer container) {
+    public MirandaCommandLine getCommandLine() {
+        return commandLine;
+    }
+
+    public Startup(Consumer container, String[] argv) {
         super(container);
+
+        this.commandLine = new MirandaCommandLine(argv);
     }
 
     @Override
@@ -158,32 +138,67 @@ public class Startup extends State {
 
 
     public State start() {
-        parseCommandLine();
-        startLogger();
-        loadProperties();
-        startSubsystems();
-        loadFiles();
-        setRootUser();
-        schedule();
-        startHttpServices();
-        Miranda.performGarbageCollection();
-        return new ReadyState(Miranda.getInstance());
-    }
-
-    private void setRootUser() {
-        User root = new User("root", "System admin");
-
-        if (debugMode())
-        {
-            root = new User("root", "System admin");
+        try {
+            processCommandLine();
+            startLogger();
+            startWriter();
+            loadProperties();
+            startServices();
+            startSubsystems();
+            loadFiles();
+            setupRootUser();
+            schedule();
+            startHttpServices();
+            Miranda.performGarbageCollection();
+            return new ReadyState(Miranda.getInstance());
+        } catch (MirandaException e) {
+            Panic panic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
+            Miranda.getInstance().panic (panic);
+        } catch (Throwable throwable) {
+            Panic panic = new StartupPanic("Unchecked exception during startup", throwable, StartupPanic.StartupReasons.UncheckedException);
+            Miranda.getInstance().panic (panic);
         }
 
+        return StopState.getInstance();
+    }
+
+    private void setupRootUser() {
+        User root = new User("root", "System admin");
         UsersFile.getInstance().add(root, false);
     }
 
+    /**
+     * Services are the static variable of {@link Miranda} like {@link Miranda#timer},
+     * except for {@link Miranda#properties} and {@link Miranda#commandLine}.
+     *
+     * <p>
+     *     Note that {@link Miranda#properties} must have already been initialized when
+     *     this method is called.
+     * </p>
+     *
+     * <p>
+     *     The services that this method initializes:
+     * </p>
+     * <ul>
+     *     <li>{@link Miranda#fileWatcher}</li>
+     *     <li>{@link Miranda#timer}</li>
+     *     <li>{@link Miranda#factory}</li>
+     * </ul>
+     */
+    public void startServices () {
+        MirandaProperties properties = Miranda.properties;
+
+        Miranda.fileWatcher = new FileWatcherService(properties.getIntProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
+        Miranda.fileWatcher.start();
+
+        Miranda.timer = new MirandaTimer();
+        Miranda.timer.start();
+
+        Miranda.factory = new MirandaFactory(Miranda.properties);
+    }
+
     private void startLogger() {
-        Properties p = System.getProperties();
-        String filename = p.getProperty(PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE);
+        String filename = getCommandLine().getLog4jFilename();
         DOMConfigurator.configure(filename);
 
         logger = Logger.getLogger(Startup.class);
@@ -212,19 +227,8 @@ public class Startup extends State {
 
     }
 
-    public void parseCommandLine() {
-        for (String s : getArguments()) {
-            if (s.equals(DEBUG_FLAG)) {
-                setLogLevel(LogLevel.DEBUG);
-                setDebugMode(true);
-                setIndex(getIndex() + 1);
-            }
-        }
-
-        if (getIndex() < getArguments().length) {
-            setPropertiesFilename(getArguments()[getIndex()]);
-            incrementIndex();
-        }
+    public void processCommandLine() {
+        Miranda.commandLine = getCommandLine();
     }
 
 
@@ -242,8 +246,9 @@ public class Startup extends State {
      * file.
      */
     private void loadProperties() {
-        Miranda.properties = new MirandaProperties(getPropertiesFilename(), getWriterQueue());
-        PropertiesUtils.log(System.getProperties());
+        Miranda.properties = new MirandaProperties(getCommandLine().getPropertiesFilename(), getWriterQueue());
+        Miranda.properties.log();
+        Miranda.properties.updateSystemProperties();
     }
 
 
@@ -253,29 +258,25 @@ public class Startup extends State {
      * <p>
      * <p>
      * This method starts the {@link Writer}, the {@link Cluster} and the
-     * {@link Network} object.  The Cluster may start additional subsystems
+     * {@link SocketNetwork} object.  The Cluster may start additional subsystems
      * for the Nodes in the Cluster.
      * </P>
      */
-    private void startSubsystems() {
+    private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
+
+        Miranda.factory = new MirandaFactory(Miranda.properties);
+
         Miranda miranda = Miranda.getInstance();
 
         StartState.initialize();
 
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-
-        setWriterQueue(queue);
-
-        Writer w = new Writer(queue);
-        w.start();
-
         BlockingQueue<Message> networkQueue = new LinkedBlockingQueue<Message>();
-        Network network = new Network(networkQueue);
+        Network network = Miranda.factory.buildNetwork();
         network.start();
 
-        queue = new LinkedBlockingQueue<Message>();
-        String filename = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
         Cluster.initializeClass(filename, getWriterQueue(), queue);
         Cluster.getInstance().start();
@@ -286,8 +287,16 @@ public class Startup extends State {
         httpServer.startup();
         setHttpServer(httpServer);
         miranda.setHttpServer(httpServer);
+
+        Miranda.timer = new MirandaTimer();
     }
 
+    public void startWriter () {
+        Writer writer = new Writer();
+        writer.start();
+
+        setWriterQueue(writer.getQueue());
+    }
 
     private void startHttpServices() {
         HttpServer httpServer = Miranda.getInstance().getHttpServer();
@@ -307,20 +316,22 @@ public class Startup extends State {
 
     private void loadFiles() {
         try {
-            String clusterFile = System.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+            MirandaProperties properties = Miranda.properties;
+
+            String clusterFile = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
             ClusterFile.initialize(clusterFile, getWriterQueue(), Cluster.getInstance().getQueue());
 
-            String filename = System.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
+            String filename = properties.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
             UsersFile.initialize(filename, getWriterQueue());
 
-            filename = System.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
+            filename = properties.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
             TopicsFile.initialize(filename, getWriterQueue());
 
-            filename = System.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
+            filename = properties.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
             SubscriptionsFile.initialize(filename, getWriterQueue());
 
-            String directoryName = System.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
+            String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);
             directoryName = f.getCanonicalPath();
             SystemMessages messages = new SystemMessages(directoryName, getWriterQueue());
@@ -330,7 +341,7 @@ public class Startup extends State {
             Miranda miranda = Miranda.getInstance();
             miranda.setSystemMessages(messages);
 
-            directoryName = System.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
+            directoryName = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
             f = new File(directoryName);
             directoryName = f.getCanonicalPath();
             SystemDeliveriesFile deliveriesFile = new SystemDeliveriesFile(directoryName, getWriterQueue());
@@ -348,18 +359,13 @@ public class Startup extends State {
     public void schedule () {
         MirandaProperties properties = Miranda.properties;
 
-        long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
-        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(Miranda.getInstance().getQueue(), this);
-        SchedulePeriodicMessage scheduleMessage = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this, healthCheckMessage, healthCheckPeriod);
-        Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
-
         long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD);
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);
-        scheduleMessage = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this,
+        SchedulePeriodicMessage periodic = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this,
                 garbageCollectionMessage, garbageCollectionPeriod);
-        Consumer.staticSend(scheduleMessage, Miranda.timer.getQueue());
+        Consumer.staticSend(periodic, Miranda.timer.getQueue());
 
         Miranda.performGarbageCollection();
     }
@@ -376,12 +382,5 @@ public class Startup extends State {
         send(miranda.getDeliveriesFile().getQueue(), garbageCollectionMessage);
 
         return this;
-    }
-
-
-    public void incrementIndex () {
-        int index = getIndex();
-        index++;
-        setIndex(index);
     }
 }

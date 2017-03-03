@@ -54,12 +54,12 @@ public class TestFileWatcherService extends TestCase {
 
         setuplog4j();
         setupMirandaProperties();
+        setupFileWatcher(100);
 
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
-        fileWatcherService = new FileWatcherService(500);
-        fileWatcherService.start();
-        queue = new LinkedBlockingQueue<Message>();
+        this.fileWatcherService = Miranda.fileWatcher;
+        this.queue = new LinkedBlockingQueue<Message>();
     }
 
     @After
@@ -87,7 +87,7 @@ public class TestFileWatcherService extends TestCase {
 
         touch(file);
 
-        pause(1000);
+        pause(250);
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
     }
@@ -103,19 +103,19 @@ public class TestFileWatcherService extends TestCase {
 
         touch(file);
 
-        pause(1000);
+        pause(200);
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
 
         UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
         send(unwatchFileMessage, getFileWatcherService().getQueue());
 
-        pause (125);
+        pause (250);
 
         getQueue().clear();
         touch(file);
 
-        pause(1000);
+        pause(250);
 
         assert (!(contains(Message.Subjects.FileChanged, getQueue())));
     }

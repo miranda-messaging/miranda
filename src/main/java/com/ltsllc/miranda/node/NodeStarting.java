@@ -34,7 +34,7 @@ public class NodeStarting extends NodeState {
 
     private State processConnectedMessage (ConnectedMessage connectedMessage)
     {
-        getNode().setChannel(connectedMessage.getChannel());
+        getNode().setHandle(connectedMessage.getHandle());
 
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         sendOnWire(getVersionsWireMessage);

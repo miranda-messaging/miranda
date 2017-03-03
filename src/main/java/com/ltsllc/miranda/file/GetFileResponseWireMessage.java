@@ -1,6 +1,5 @@
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Utils;
 import com.ltsllc.miranda.node.WireMessage;
 
 /**

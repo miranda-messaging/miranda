@@ -4,7 +4,7 @@ package com.ltsllc.miranda.test;
  * Created by Clark on 2/24/2017.
  */
 
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.util.ImprovedRandom;
 
 import java.io.File;

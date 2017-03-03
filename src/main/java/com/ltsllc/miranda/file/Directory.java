@@ -52,17 +52,18 @@ abstract public class Directory extends MirandaFile {
     public void traverse (String directory, List<String> matches) {
         File f = new File(directory);
         String[] contents = f.list();
-        for (String file : contents)
-        {
-            String fullName = directory + File.separator + file;
-            File entry = new File(fullName);
-            if (entry.isDirectory()) {
-                String name = directory + File.separator + file;
-                traverse(name, matches);
-            }
-            else if (entry.isFile() && isFileOfInterest(file))
-            {
-                matches.add (fullName);
+        if (null == contents)
+            getFiles().clear();
+        else {
+            for (String file : contents) {
+                String fullName = directory + File.separator + file;
+                File entry = new File(fullName);
+                if (entry.isDirectory()) {
+                    String name = directory + File.separator + file;
+                    traverse(name, matches);
+                } else if (entry.isFile() && isFileOfInterest(file)) {
+                    matches.add(fullName);
+                }
             }
         }
     }

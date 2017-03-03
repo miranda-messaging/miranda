@@ -1,6 +1,7 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.deliveries.Comparer;
+import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -43,10 +44,10 @@ public class Consumer extends Subsystem implements Comparer {
 
 
 
-    public State start (BlockingQueue<Message> queue) {
+    public void start (BlockingQueue<Message> queue) {
         setQueue(queue);
         register(getName(), getQueue());
-        return start();
+        start();
     }
 
 
@@ -62,26 +63,66 @@ public class Consumer extends Subsystem implements Comparer {
      * Stat is an instance of {@link StopState}.
      */
     public void run () {
-        State nextState = getCurrentState().start();
+        State nextState = null;
         State stop = StopState.getInstance();
 
         try {
-            logger.info (this + " starting");
-            while (nextState != stop) {
+            nextState = getCurrentState().start();
+        } catch (Throwable throwable) {
+            Panic panic = new StartupPanic("Unchecked exception thrown in start", throwable, StartupPanic.StartupReasons.UncheckedException);
+            Miranda.getInstance().panic(panic);
+        }
+
+        logger.info (this + " starting");
+
+        while (nextState != stop && !Miranda.panicing && nextState != null) {
+            try {
                 State currentState = getCurrentState();
                 setCurrentState(nextState);
                 if (currentState != nextState) {
                     setCurrentState(nextState.start());
                 }
 
-                Message m = getQueue().take();
-                logger.info (this + " in state " + getCurrentState() + " received " + m);
-                nextState = processMessage(m);
+                Message m = getNextMessage();
+                if (null != m) {
+                    logger.info(this + " in state " + getCurrentState() + " received " + m);
+                    nextState = processMessage(m);
+                }
+            } catch (Throwable throwable) {
+                String message = "Uncecked excepption";
+                logger.error (message, throwable);
+                Panic panic = new Panic (message, throwable, Panic.Reasons.UncheckedException);
+                if (Miranda.getInstance().panic(panic)) {
+                    nextState = stop;
+                }
             }
-            logger.info (this + " terminating");
-        } catch (InterruptedException e) {
-            logger.warn("InterruptedException while trying to get next message" + e);
         }
+
+        if (Miranda.panicing) {
+            logger.error(this + " is terminating due to a panic");
+        } else {
+            logger.info(this + " terminating");
+        }
+    }
+
+    public Message getNextMessage () {
+        Message nextMessage = null;
+        boolean keepWaiting = true;
+
+        while (null == nextMessage && keepWaiting) {
+            try {
+                nextMessage = getQueue().take();
+            } catch (InterruptedException e) {
+                String message = "Interupted while waiting for next message";
+                logger.warn(message, e);
+
+                Panic panic = new Panic (message, e, Panic.Reasons.InterruptedGettingNextMessage);
+                if (Miranda.getInstance().panic(panic))
+                    keepWaiting = false;
+            }
+        }
+
+        return nextMessage;
     }
 
     /**

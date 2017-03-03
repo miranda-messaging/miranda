@@ -1,0 +1,42 @@
+package com.ltsllc.miranda;
+
+/**
+ * A request to shutdown.
+ *
+ * <P>
+ *     Use of this class means that something Very Bad happend and that some
+ *     part of the system thinks that we should stop.
+ * </P>
+ */
+public class Panic extends Exception {
+    public enum Reasons {
+        InterruptedGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
+        ExceptionDuringSendMessage,
+        ExceptionDuringNewConnection,
+        ExceptionWhileWaitingForNextConnection, // an exception was thrown while waiting for a new node
+        ExceptionReceivingMessage,
+        NetworkThreadCrashed, // one of our network connections died
+        Network, // We cannot communicate with anyone
+        Startup, // something happend during startup this usually means we are an instance of StartupPanic
+        Select,
+        UncheckedException // an unchecked exception was thrown
+    }
+
+    private Reasons reason;
+
+    public Reasons getReason() {
+        return reason;
+    }
+
+    public Panic (String message, Throwable cause, Reasons reason) {
+        super(message, cause);
+
+        this.reason = reason;
+    }
+
+    public Panic (Throwable cause, Reasons reason) {
+        super(cause);
+
+        this.reason = reason;
+    }
+}

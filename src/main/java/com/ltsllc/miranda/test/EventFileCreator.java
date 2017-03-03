@@ -6,7 +6,7 @@ package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.util.ImprovedRandom;
 

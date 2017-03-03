@@ -3,6 +3,7 @@ package com.ltsllc.miranda.node;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.network.ConnectFailedMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.network.ConnectedMessage;
 import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
@@ -48,9 +49,9 @@ public class ConnectingState extends NodeState {
 
 
     private State processConnectedMessage (ConnectedMessage connectedMessage) {
-        logger.info("got connection to " + connectedMessage.getChannel().remoteAddress());
+        logger.info("got connection");
 
-        getNode().setChannel(connectedMessage.getChannel());
+        getNode().setHandle(connectedMessage.getHandle());
 
         JoinWireMessage joinWireMessage = new JoinWireMessage(getNode());
         sendOnWire(joinWireMessage);

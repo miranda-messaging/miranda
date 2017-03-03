@@ -1,26 +1,25 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.util;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
-import java.security.KeyStore;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.net.Socket;
+import java.nio.channels.Channel;
+import java.security.*;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.List;
+
+import static ssltest.Util.getKeyStore;
 
 /**
  * Created by Clark on 2/3/2017.
@@ -29,8 +28,7 @@ public class Utils {
     private static Logger logger = Logger.getLogger(Utils.class);
 
 
-    public static PrivateKey loadKey (String filename, String passwordString, String alias)
-    {
+    public static PrivateKey loadKey(String filename, String passwordString, String alias) {
         PrivateKey privateKey = null;
         FileInputStream fileInputStream = null;
 
@@ -50,8 +48,7 @@ public class Utils {
     }
 
 
-    public static X509Certificate loadCertificate (String filename, String passwordString, String alias)
-    {
+    public static X509Certificate loadCertificate(String filename, String passwordString, String alias) {
         X509Certificate certificate = null;
         FileInputStream fileInputStream = null;
 
@@ -71,7 +68,7 @@ public class Utils {
     }
 
 
-    public static ServerBootstrap createServerBootstrap (ChannelHandler channelHandler) {
+    public static ServerBootstrap createServerBootstrap(ChannelHandler channelHandler) {
         ServerBootstrap serverBootstrap = null;
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -86,9 +83,7 @@ public class Utils {
     }
 
 
-
-
-    public static KeyStore loadKeyStore (String filename, String passwordString) {
+    public static KeyStore loadKeyStore(String filename, String passwordString) {
         KeyStore keyStore = null;
         FileInputStream fileInputStream = null;
 
@@ -99,7 +94,7 @@ public class Utils {
             keyStore.load(fileInputStream, passwordString.toCharArray());
 
         } catch (Exception e) {
-            logger.fatal ("Exception trying to load key store", e);
+            logger.fatal("Exception trying to load key store", e);
             System.exit(1);
         } finally {
             closeIgnoreExceptions(fileInputStream);
@@ -109,17 +104,16 @@ public class Utils {
     }
 
 
-
-    public static void closeIgnoreExceptions (InputStream inputStream)
-    {
+    public static void closeIgnoreExceptions(InputStream inputStream) {
         if (null != inputStream) {
             try {
                 inputStream.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
     }
 
-    public static void closeIgnoreExceptions (Writer writer) {
+    public static void closeIgnoreExceptions(Writer writer) {
         if (null != writer) {
             try {
                 writer.close();
@@ -129,7 +123,7 @@ public class Utils {
         }
     }
 
-    public static void closeIgnoreExceptions (OutputStream outputStream) {
+    public static void closeIgnoreExceptions(OutputStream outputStream) {
         if (null != outputStream) {
             try {
                 outputStream.close();
@@ -139,10 +133,55 @@ public class Utils {
         }
     }
 
+    public static void closeIgnoreExceptions (Socket socket) {
+        if (null != socket) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+    public static void closeIgnoreExceptions (ChannelHandlerContext channelHandlerContext) {
+        if (null != channelHandlerContext) {
+            channelHandlerContext.close();
+        }
+    }
+
+    public static void closeLogExceptions (InputStream inputStream, Logger logger) {
+        if (null != inputStream) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                logger.error("Exception closing input stream", e);
+            }
+        }
+    }
+
+    public static void closeLogExceptions (OutputStream outputStream, Logger logger) {
+        if (null != outputStream) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                logger.error("Exception closing output stream", e);
+            }
+        }
+    }
+
+    public static void closeLogExceptions (Socket socket, Logger logger) {
+        if (null != socket) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                logger.error("Exception trying to close socket", e);
+            }
+        }
+    }
 
     private static final int BUFFER_SIZE = 8192;
 
-    public static byte[] calculateSha1 (FileInputStream fileInputStream) {
+    public static byte[] calculateSha1(FileInputStream fileInputStream) {
         MessageDigest messageDigest = null;
 
         try {
@@ -157,7 +196,7 @@ public class Utils {
             } while (BUFFER_SIZE == bytesRead);
 
         } catch (Exception e) {
-            logger.fatal ("Exception trying to calculate sha1", e);
+            logger.fatal("Exception trying to calculate sha1", e);
             System.exit(1);
         }
 
@@ -181,7 +220,7 @@ public class Utils {
     }
 
 
-    public static String bytesToString (byte[] bytes) {
+    public static String bytesToString(byte[] bytes) {
         StringWriter stringWriter = new StringWriter();
 
         for (byte b : bytes) {
@@ -192,7 +231,7 @@ public class Utils {
     }
 
 
-    public static byte[] hexStringToBytes (String hexString) {
+    public static byte[] hexStringToBytes(String hexString) {
         StringReader reader = null;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -203,8 +242,7 @@ public class Utils {
 
             int bytesRead = reader.read(buffer);
 
-            while (-1 != bytesRead)
-            {
+            while (-1 != bytesRead) {
                 byte b = toByte(buffer);
                 byteArrayOutputStream.write(b);
                 bytesRead = reader.read(buffer);
@@ -218,7 +256,7 @@ public class Utils {
     }
 
 
-    public static byte toByte (char[] buffer) {
+    public static byte toByte(char[] buffer) {
         int value = toNibble(buffer[0]);
         value = value << 4;
         int temp = 0xF & toNibble(buffer[1]);
@@ -228,7 +266,7 @@ public class Utils {
     }
 
 
-    public static int toNibble (char c) {
+    public static int toNibble(char c) {
         if (c >= '0' && c <= '9')
             return (c - '0');
         else if (c >= 'A' && c <= 'F')
@@ -239,14 +277,14 @@ public class Utils {
     }
 
 
-    public static String calculateSha1 (byte[] buffer) {
+    public static String calculateSha1(byte[] buffer) {
         MessageDigest messageDigest = null;
 
         try {
             messageDigest = MessageDigest.getInstance("SHA");
             messageDigest.update(buffer);
         } catch (NoSuchAlgorithmException e) {
-            logger.fatal ("Exception trying to calculate sha1", e);
+            logger.fatal("Exception trying to calculate sha1", e);
             System.exit(1);
         }
 
@@ -255,14 +293,14 @@ public class Utils {
     }
 
 
-    public static String calculateSha1 (String s) {
+    public static String calculateSha1(String s) {
         byte[] buffer = s.getBytes();
         return calculateSha1(buffer);
     }
 
 
-    public static SslContext createServerContext (String serverFilename, String serverPassword, String serverAlias,
-                                                  String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
+    public static SslContext createServerSslContext(String serverFilename, String serverPassword, String serverAlias,
+                                                 String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
         SslContext sslContext = null;
 
         try {
@@ -275,7 +313,7 @@ public class Utils {
                     .trustManager(trustManagerFactory)
                     .build();
         } catch (Exception e) {
-            logger.fatal ("Exception while trying to create SslContext", e);
+            logger.fatal("Exception while trying to create SslContext", e);
             System.exit(1);
         }
 
@@ -283,7 +321,7 @@ public class Utils {
     }
 
 
-    public static TrustManagerFactory createTrustManagerFactory (String filename, String passwordString) {
+    public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString) {
         FileInputStream fileInputStream = null;
         TrustManagerFactory trustManagerFactory = null;
 
@@ -302,6 +340,38 @@ public class Utils {
         }
 
         return trustManagerFactory;
+    }
 
+    public static KeyManagerFactory createKeyManagerFactoy(String filename, String password) {
+        KeyManagerFactory keyManagerFactory = null;
+
+        try {
+            KeyStore keyStore = loadKeyStore(filename, password);
+            keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, password.toCharArray());
+        } catch (Exception e) {
+            logger.fatal("Exception while trying to get key manager factory", e);
+            System.exit(1);
+        }
+
+        return keyManagerFactory;
+    }
+
+    public static Bootstrap createClientBootstrap (ChannelInitializer<SocketChannel> channelInitializer) {
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.handler(channelInitializer);
+
+        return bootstrap;
+    }
+
+    public static SslContext createClientSslContext (String filename, String password) throws SSLException {
+        TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, password);
+
+        SslContext sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(trustManagerFactory)
+                .build();
+
+        return sslContext;
     }
 }

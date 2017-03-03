@@ -6,7 +6,7 @@ package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import io.netty.bootstrap.ServerBootstrap;
@@ -68,7 +68,7 @@ public class HttpServer extends Consumer {
         SslContext sslContext = null;
 
         if (mode == MirandaProperties.EncryptionModes.LocalCA || mode == MirandaProperties.EncryptionModes.RemoteCA) {
-            sslContext = Utils.createServerContext(
+            sslContext = Utils.createServerSslContext(
                     properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE),
                     properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD),
                     properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS),

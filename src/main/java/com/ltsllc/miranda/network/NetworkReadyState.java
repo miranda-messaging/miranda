@@ -33,6 +33,18 @@ public class NetworkReadyState extends State {
                 break;
             }
 
+            case SendMessage: {
+                SendMessageMessage sendMessageMessage = (SendMessageMessage) m;
+                nextState = processSendMessageMessage(sendMessageMessage);
+                break;
+            }
+
+            case Disconnect: {
+                CloseMessage disconnectMessage = (CloseMessage) m;
+                nextState = processDisconectMessage(disconnectMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(m);
                 break;
@@ -43,22 +55,26 @@ public class NetworkReadyState extends State {
     }
 
 
-/*
-    private State processListenMessage (ListenMessage listenMessage) {
-        getNetwork().listen(listenMessage.getPort());
-
-        return this;
-    }
-    */
-
-
     private State processConnectToMessage (ConnectToMessage connectToMessage) {
         State nextState = this;
 
         logger.info ("Conecting to " + connectToMessage.getHost() + ":" + connectToMessage.getPort());
 
-        getNetwork().connectTo(connectToMessage.getSender(), connectToMessage.getHost(), connectToMessage.getPort());
+        getNetwork().connect(connectToMessage);
 
         return nextState;
+    }
+
+
+    private State processSendMessageMessage (SendMessageMessage sendMessageMessage) {
+        getNetwork().send(sendMessageMessage);
+
+        return this;
+    }
+
+    private State processDisconectMessage (CloseMessage disconnectMessage) {
+        getNetwork().disconnect(disconnectMessage);
+
+        return this;
     }
 }

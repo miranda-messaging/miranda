@@ -1,185 +1,81 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.node.NetworkMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.WireMessage;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
+import com.ltsllc.miranda.property.MirandaProperties;
 import org.apache.log4j.Logger;
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.BlockingQueue;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by Clark on 1/31/2017.
+ * A class to make switching between netty and sockets easier.
+ *
+ * <P>
+ *     This class has the responsiblity of listening for new connections from
+ *     other nodes. Subclases need to define the listen method.
+ * </P>
  */
-public class NetworkListener {
-    private static class LocalHandler extends ChannelInboundHandlerAdapter {
-        private Logger logger = Logger.getLogger(LocalHandler.class);
-        private BlockingQueue<Message> node;
-
-        public LocalHandler (BlockingQueue<Message> node) {
-            this.node = node;
-        }
-
-        public void channelRead (ChannelHandlerContext channelHandlerContext, Object message) {
-            ByteBuf byteBuf = (ByteBuf) message;
-            byte[] buffer = new byte[byteBuf.readableBytes()];
-            byteBuf.getBytes(0, buffer);
-            String s = new String(buffer);
-            logger.info("Got " + s);
-
-            JsonParser jsonParser = new JsonParser(s);
-
-            for (WireMessage wireMessage : jsonParser.getMessages()) {
-                NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
-                Consumer.staticSend(networkMessage, node);
-            }
-        }
-
-        @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            ctx.close();
-
-            ConnectionClosedMessage connectionClosedMessage = new ConnectionClosedMessage(null, this);
-            Consumer.staticSend(connectionClosedMessage, node);
-        }
-    }
-
-
-    private static class LocalInitializer extends ChannelInitializer<SocketChannel> {
-        private static Logger logger = Logger.getLogger(LocalInitializer.class);
-
-        private SslContext sslContext;
-
-        public LocalInitializer (SslContext sslContext) {
-            this.sslContext = sslContext;
-        }
-
-        public void initChannel (SocketChannel socketChannel) {
-            InetSocketAddress inetSocketAddress = (InetSocketAddress) socketChannel.remoteAddress();
-            logger.info("Got connection from " + inetSocketAddress);
-
-            if (null != sslContext) {
-                SslHandler sslHandler = sslContext.newHandler(socketChannel.alloc());
-                socketChannel.pipeline().addLast(sslHandler);
-            }
-
-            Node node = new Node(inetSocketAddress, socketChannel);
-            node.start();
-
-            NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
-            Consumer.staticSend(newConnectionMessage, Miranda.getInstance().getQueue());
-
-            LocalHandler localHandler = new LocalHandler(node.getQueue());
-            socketChannel.pipeline().addLast(localHandler);
-       }
-
-
-        @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            logger.error("Exception caught, closing channel", cause);
-            ctx.close();
-        }
-    }
-
-    private static class LocalChannelListener implements ChannelFutureListener {
-        private static Logger logger = Logger.getLogger(LocalChannelListener.class);
-
-        public void operationComplete (ChannelFuture channelFuture) {
-            if (channelFuture.isSuccess())
-            {
-                InetSocketAddress inetSocketAddress = (InetSocketAddress) channelFuture.channel().remoteAddress();
-
-                // if (channelFuture.channel() instanceof NioServerSocketChannel) {
-                    // logger.warn("Spurious connection");
-                    // return;
-                // }
-
-
-                //
-                // for some reason, we occasionally get empty connections
-                //
-                if (null == inetSocketAddress) {
-                    logger.error("spurious connection");
-                    return;
-                }
-
-                Node node = new Node(channelFuture.channel());
-                node.start();
-
-                LocalHandler localHandler = new LocalHandler(node.getQueue());
-                channelFuture.channel().pipeline().addLast(localHandler);
-
-                NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
-                Consumer.staticSend(newConnectionMessage, Miranda.getInstance().getQueue());
-            }
-
-        }
-
-    }
-
-    private Logger logger = Logger.getLogger(NetworkListener.class);
+abstract public class NetworkListener extends Consumer {
+    abstract public void startup() throws NetworkException;
+    abstract public Handle nextConnection ();
 
     private int port;
-    private BlockingQueue<Message> cluster;
-
-    public NetworkListener (int port, BlockingQueue<Message> cluster) {
-        this.port = port;
-        this.cluster = cluster;
-    }
+    private boolean keepGoing = true;
 
     public int getPort() {
         return port;
     }
 
-    public BlockingQueue<Message> getCluster() {
-        return cluster;
+    public boolean keepGoing () {
+        return keepGoing;
     }
 
-    public void listen() {
+    public void setKeepGoing (boolean keepGoing) {
+        this.keepGoing = keepGoing;
+    }
+
+    public NetworkListener () {
+        super("network liastener");
+
         MirandaProperties properties = Miranda.properties;
-        MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-        SslContext sslContext = null;
+        port = properties.getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+    }
 
-        if (mode == MirandaProperties.EncryptionModes.LocalCA || mode == MirandaProperties.EncryptionModes.RemoteCA)
-        {
-            String keyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
-            String keyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            String keyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
-
-            String certificateFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String certificatePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-            String certificateAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
-
-            sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, certificateFilename, certificatePassword, certificateAlias);
-        }
-
-        LocalInitializer localInitializer = new LocalInitializer(sslContext);
-
-        ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localInitializer);
-
-        logger.info ("listening at " + port);
-        serverBootstrap.bind(port);
-        ChannelFuture channelFuture = null;
-
+    public void start () {
         try {
-            // channelFuture = serverBootstrap.bind(port).sync();
-            channelFuture = serverBootstrap.bind(port);
-        } catch (Exception e) {
-            e.printStackTrace();
+            startup();
+        } catch (NetworkException e) {
+            StartupPanic startupPanic = new StartupPanic ("Exception in the NetworkListener during setup", e, StartupPanic.StartupReasons.NetworkListener);
+            boolean continuePanic = Miranda.getInstance().panic(startupPanic);
+            if (continuePanic) {
+                shutdown();
+            }
         }
 
-        LocalChannelListener localChannelListener = new LocalChannelListener();
-        channelFuture.addListener(localChannelListener);
+        while (keepGoing()) {
+            Handle newConnection = nextConnection();
+
+            if (null != newConnection) {
+                int handle = Network.getInstance().newConnection(newConnection);
+                Node node = new Node(handle);
+                node.start();
+
+                NewConnectionMessage message = new NewConnectionMessage(getQueue(), this, node);
+                send(message, Cluster.getInstance().getQueue());
+                send(message, Miranda.getInstance().getQueue());
+            }
+        }
+
+        setCurrentState(StopState.getInstance());
+    }
+
+    public void shutdown () {
+        setKeepGoing(false);
     }
 }

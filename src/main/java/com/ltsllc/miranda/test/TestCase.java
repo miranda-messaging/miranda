@@ -2,12 +2,15 @@ package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Utils;
+import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.timer.MirandaTimer;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.util.ImprovedRandom;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.*;
@@ -21,6 +24,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class TestCase {
     private static Gson ourGson = new Gson();
+
+    private static Logger logger;
 
     private BlockingQueue<Message> network = new LinkedBlockingQueue<Message>();
     private BlockingQueue<Message> writer = new LinkedBlockingQueue<Message>();
@@ -37,6 +42,10 @@ public class TestCase {
             return true;
 
         return file.delete();
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 
     public static boolean deleteDirectory (String filename) {
@@ -141,6 +150,7 @@ public class TestCase {
     public static void setuplog4j () {
         putFile(LOG4J_CONFIG_FILENAME, LOG4J_CONFIG_FILE_CONTENTS);
         DOMConfigurator.configure(LOG4J_CONFIG_FILENAME);
+        logger = Logger.getLogger(TestCase.class);
     }
 
     public static void putFile (String filename, String[] contents) {
@@ -314,8 +324,16 @@ public class TestCase {
         // force it to use the defaults
         //
         Miranda.properties = new MirandaProperties();
-        MirandaProperties properties = Miranda.properties;
-        properties.setProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE, "none");
+    }
+
+    public void setupMiranda () {
+        String[] empty = {};
+
+        new Miranda(empty);
+    }
+
+    public static void setupTimer () {
+        Miranda.timer = new MirandaTimer();
     }
 
 
@@ -386,5 +404,10 @@ public class TestCase {
         }
 
         return true;
+    }
+
+    public static void setupFileWatcher (int period) {
+        Miranda.fileWatcher = new FileWatcherService(period);
+        Miranda.fileWatcher.start();
     }
 }

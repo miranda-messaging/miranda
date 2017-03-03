@@ -10,14 +10,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/21/2017.
  */
 public class ConnectedMessage extends Message {
-    private Channel channel;
+    private int handle;
 
-    public Channel getChannel() {
-        return channel;
+    public int getHandle() {
+        return handle;
     }
 
-    public ConnectedMessage(Channel channel, BlockingQueue<Message> sender, Object senderObject) {
+    public ConnectedMessage(BlockingQueue<Message> sender, Object senderObject, int handle) {
         super(Message.Subjects.Connected, sender, senderObject);
-        this.channel = channel;
+
+        this.handle = handle;
     }
 }

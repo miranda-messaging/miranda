@@ -55,6 +55,7 @@ public abstract class Subsystem implements Runnable,Comparer {
     public BlockingQueue<Message> getQueue () {
         return queue;
     }
+
     public void setQueue (BlockingQueue<Message> newQueue) {
         queue = newQueue;
     }
@@ -79,10 +80,9 @@ public abstract class Subsystem implements Runnable,Comparer {
      *     This version of the method starts a new thread.
      * </P>
      */
-    public State start() {
+    public void start() {
         thread = new Thread(this, getName());
         thread.start();
-        return StartState.getInstance();
     }
 
 

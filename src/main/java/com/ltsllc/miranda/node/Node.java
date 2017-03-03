@@ -3,6 +3,7 @@ package com.ltsllc.miranda.node;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.ConnectToMessage;
+import com.ltsllc.miranda.network.SendMessageMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -28,7 +29,7 @@ public class Node extends Consumer
         setCurrentState(nodeStartState);
     }
 
-    public Node (InetSocketAddress address, Channel channel) {
+    public Node (InetSocketAddress address, int handle) {
         super("node");
 
         if (null != address) {
@@ -37,23 +38,18 @@ public class Node extends Consumer
             port = address.getPort();
         }
 
-        this.channel = channel;
+        this.handle = handle;
 
         State connectedState = new ConnectedState(this);
         setCurrentState(connectedState);
     }
 
 
-    /**
-     * When a node is added as a result of getting a new connection.
-     *
-     * @param channel
-     */
-    public Node (Channel channel)
+    public Node (int handle)
     {
         super("node");
 
-        this.channel =  channel;
+        this.handle = handle;
         setCurrentState(new NewNodeState(this));
     }
 
@@ -69,7 +65,7 @@ public class Node extends Consumer
     private String description;
     private int port;
     private BlockingQueue<Message> network;
-    private Channel channel;
+    private int handle = -1;
 
 
     public String getDns() {
@@ -113,12 +109,12 @@ public class Node extends Consumer
         this.network = network;
     }
 
-    public Channel getChannel() {
-        return channel;
+    public int getHandle() {
+        return handle;
     }
 
-    public void setChannel(Channel channel) {
-        this.channel = channel;
+    public void setHandle (int handle) {
+        this.handle = handle;
     }
 
     public boolean equalsElement (NodeElement nodeElement) {
@@ -144,9 +140,9 @@ public class Node extends Consumer
     public void sendOnWire(WireMessage wireMessage) {
         String json = wireMessage.getJson();
         byte[] buffer = json.getBytes();
-        ByteBuf byteBuf = Unpooled.directBuffer(buffer.length);
-        ByteBufUtil.writeUtf8(byteBuf, json);
-        getChannel().writeAndFlush(byteBuf);
+
+        SendMessageMessage message = new SendMessageMessage(getQueue(), this, getHandle(), buffer);
+        send(message, getNetwork());
     }
 
 
@@ -157,7 +153,7 @@ public class Node extends Consumer
 
 
     public boolean isConnected() {
-        return null != channel;
+        return -1 != handle;
     }
 
 
@@ -167,12 +163,6 @@ public class Node extends Consumer
         nodeElement.setLastConnected(date.getTime());
         return nodeElement;
     }
-
-
-    public void disconnect () {
-        getChannel().close();
-    }
-
 
     public NodeElement getNodeElement() {
         NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());

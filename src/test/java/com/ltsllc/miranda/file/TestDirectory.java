@@ -128,14 +128,24 @@ public class TestDirectory extends TestCase {
             MirandaProperties properties = Miranda.properties;
             properties.setProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY, "testdir");
 
-            this.directory = new SystemMessages("testdir", getWriter());
+            pause (125);
 
+            this.directory = new SystemMessages("testdir", getWriter());
+            SystemMessages temp = new SystemMessages("testdir", getWriter());
             createEventHiearchicy("testdir", LOAD_SPEC);
 
+            pause (500);
+
             getDirectory().load();
+            temp.load();
 
-            assert (getDirectory().getFiles().size() == 3);
+            pause( 125);
 
+            int directorySize = getDirectory().getFiles().size();
+            getLogger().info ("directory size = " + directorySize);
+            getLogger().info ("temp size = " + temp.getFiles().size());
+            assert (temp.getFiles().size() == directorySize);
+            assert (directorySize == 3);
         } finally {
             File root = new File("testdir");
             deleteDirectory(root);

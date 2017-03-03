@@ -45,6 +45,8 @@ public class TestCluster extends TestCase {
     public void setup () {
         setuplog4j();
         setupMirandaProperties();
+        setupMiranda();
+        setupTimer();
         setupTrustStore();
         deleteFile(CLUSTER_FILENAME);
         com.ltsllc.miranda.cluster.Cluster.reset();
@@ -82,7 +84,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testStart () {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getNetwork());
+        Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getNetwork());
         getCluster().load(CLUSTER_FILENAME);
 
         pause(125);

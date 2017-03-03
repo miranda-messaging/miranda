@@ -1,9 +1,7 @@
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.StartState;
-import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
@@ -30,15 +28,21 @@ public class Miranda extends Consumer {
     public static FileWatcherService fileWatcher;
     public static MirandaTimer timer;
     public static MirandaProperties properties;
+    public static MirandaFactory factory;
+    public static MirandaCommandLine commandLine;
+    public static boolean panicing = false;
 
     private HttpServer httpServer;
     private SystemMessages systemMessages;
     private SystemDeliveriesFile deliveriesFile;
 
 
-    public Miranda() {
+    public Miranda (String[] argv) {
         super ("miranda");
-        State s = new Startup(this);
+
+        ourInstance = this;
+
+        State s = new Startup(this, argv);
         setCurrentState(s);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
@@ -49,9 +53,29 @@ public class Miranda extends Consumer {
         return ourInstance;
     }
 
+    /**
+     * Something Very Bad happend and part of the system wants to shutdown.
+     * Return true if we agree, which means shutting down the system and false
+     * if we want to try and keep going.
+     *
+     * @param panic
+     * @return
+     */
+    public boolean panic (Panic panic) {
+        boolean keepGoing = false;
+
+        logger.fatal ("System terminating due to a panic", panic);
+
+        if (!keepGoing) {
+            System.exit(1);
+        }
+
+        return keepGoing;
+    }
+
     public static void main(String[] argv) {
         logger.info ("Starting");
-        Miranda miranda = new Miranda();
+        Miranda miranda = new Miranda(argv);
         miranda.start();
     }
 

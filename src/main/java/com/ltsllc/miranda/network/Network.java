@@ -1,177 +1,174 @@
 package com.ltsllc.miranda.network;
 
-import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.node.*;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.BlockingQueue;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Network extends Consumer {
-    private Logger logger = Logger.getLogger(Network.class);
+/**
+ * This class takes care of mapping from integer handles to Handle objects.
+ */
+abstract public class Network extends Consumer {
+    abstract public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException;
 
-    private static class LocalServerHandler extends ChannelInboundHandlerAdapter {
-        private static Gson ourGson = new Gson();
+    private static Logger logger = Logger.getLogger(NetworkListener.class);
+    private static Network ourInstance;
 
-        private BlockingQueue<Message> notify;
+    private Map<Integer, Handle> integerToHandle = new HashMap<Integer, Handle>();
+    private int handleCount = 0;
+    private long lastPanic;
 
+    public Network () {
+        super("network");
 
-        public LocalServerHandler (BlockingQueue<Message> notify) {
-            this.notify = notify;
-        }
+        this.lastPanic = -1;
 
-        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            ByteBuf byteBuf = (ByteBuf) msg;
-            byte[] buffer = new byte[byteBuf.readableBytes()];
-            String s = new String(buffer);
-            System.out.println("got " + s);
+        NetworkReadyState networkReadyState = new NetworkReadyState(this);
+        setCurrentState(networkReadyState);
+    }
 
-            WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
-            String className = wireMessage.getClassName();
-            Class clazz = getClass().forName(className);
+    public static Network getInstance() {
+        return ourInstance;
+    }
 
-            wireMessage = (WireMessage) ourGson.fromJson(s, clazz);
-
-            NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
-            Consumer.staticSend(networkMessage, notify);
+    protected static synchronized void setInstance (Network network) {
+        if (null == ourInstance) {
+            ourInstance = network;
         }
     }
 
-    private static class LocalServerInitializer extends ChannelInitializer<SocketChannel> {
-        public void initChannel(SocketChannel sc) {
-            LocalServerHandler localServerHandler = new LocalServerHandler(null);
-            sc.pipeline().addLast(localServerHandler);
-        }
+    public Handle getHandle (int handle) {
+        return integerToHandle.get(handle);
     }
 
-
-    private static class LocalClientHandler extends ChannelInboundHandlerAdapter {
-        private static Logger logger = Logger.getLogger(LocalClientHandler.class);
-        private static Gson ourGson = new Gson();
-
-        private BlockingQueue<Message> notify;
-
-        public LocalClientHandler (BlockingQueue<Message> notify) {
-            this.notify = notify;
-        }
-
-        @Override
-        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            ByteBuf byteBuf = (ByteBuf) msg;
-            byte[] buffer = new byte[byteBuf.readableBytes()];
-            byteBuf.getBytes(0, buffer);
-            String s = new String(buffer);
-            logger.info ("got " + s);
-
-            JsonParser jsonParser = new JsonParser(s);
-
-            for (WireMessage wireMessage : jsonParser.getMessages()) {
-                NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
-                Consumer.staticSend(networkMessage, notify);
-            }
-
-        }
+    public Map<Integer, Handle> getHandleMap () {
+        return integerToHandle;
     }
 
-    private static class LocalClientInitializer extends ChannelInitializer<SocketChannel> {
-        private SslContext sslContext;
-
-        public LocalClientInitializer (SslContext sslContext) {
-            this.sslContext = sslContext;
-        }
-
-        public void initChannel(SocketChannel sc) {
-            if (null != sslContext) {
-                SslHandler sslHandler = sslContext.newHandler(sc.alloc());
-                sc.pipeline().addLast(sslHandler);
-            }
-
-            InetSocketAddress inetSocketAddress = (InetSocketAddress) sc.remoteAddress();
-            Node node = new Node(inetSocketAddress, sc);
-            node.start();
-
-            LocalClientHandler localClientHandler = new LocalClientHandler(node.getQueue());
-            sc.pipeline().addLast(localClientHandler);
-        }
-
+    public int nextHandle () {
+        return handleCount++;
     }
 
-    private static class LocalChannelFutureListener implements ChannelFutureListener {
-        private BlockingQueue<Message> notify;
-        private SslContext sslContext;
-
-
-        public LocalChannelFutureListener (BlockingQueue<Message> notify, SslContext sslContext) {
-            this.notify = notify;
-            this.sslContext = sslContext;
-        }
-
-        public void operationComplete (ChannelFuture channelFuture) {
-            try {
-                if (channelFuture.isSuccess()) {
-                    SslHandler sslHandler = sslContext.newHandler(channelFuture.channel().alloc());
-                    // channelFuture.channel().pipeline().addLast(sslHandler);
-
-                    ConnectedMessage connectedMessage = new ConnectedMessage(channelFuture.channel(), null, null);
-                    Consumer.staticSend(connectedMessage, notify);
-                } else {
-                    ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, channelFuture.cause(), null);
-                    Consumer.staticSend(connectFailedMessage, notify);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
+    public void setHandle (int handle, Handle theHandle) {
+        integerToHandle.put(handle, theHandle);
     }
 
-    public Network (BlockingQueue<Message> queue) {
-        super("Network");
-
-        setQueue(queue);
-        setCurrentState(new NetworkReadyState((this)));
+    public void clearHandle (int handle)
+    {
+        integerToHandle.put(handle, null);
     }
 
-    public void connectTo (BlockingQueue<Message> notify, String host, int port) {
+    public void send (SendMessageMessage sendMessageMessage) {
+        Handle handle = getHandle(sendMessageMessage.getHandle());
+        if (null == handle) {
+            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(getQueue(), this, sendMessageMessage.getHandle());
+            sendMessageMessage.reply(unknownHandleMessage);
+        }
+
+        SendMessageMessage sendMessageMessage2 = new SendMessageMessage(getQueue(),this, sendMessageMessage.getHandle(), sendMessageMessage.getContent());
+        send(sendMessageMessage2, handle.getQueue());
+    }
+
+    public void connect (ConnectToMessage connectToMessage) {
         try {
-            logger.info("Connecting to " + host + ":" +port);
+            Handle handle = basicConnectTo(connectToMessage);
 
-            SslContext sslContext = null;
-
-            MirandaProperties proprties = Miranda.properties;
-            MirandaProperties.EncryptionModes mode = proprties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-
-            if (mode == MirandaProperties.EncryptionModes.RemoteCA) {
-                sslContext = Utils.createClientSslContext();
-            } else if (mode == MirandaProperties.EncryptionModes.LocalCA) {
-                String trustStoreFilename = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-                String trustStorePassword = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-                String certificateAlias = System.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
-                sslContext = Utils.createClientSslContext(trustStoreFilename, trustStorePassword, certificateAlias);
+            if (null != handle) {
+                int handleValue = nextHandle();
+                setHandle(handleValue, handle);
+                ConnectedMessage connectedMessage = new ConnectedMessage(getQueue(), this, handleValue);
+                connectToMessage.reply(connectedMessage);
             }
-
-            LocalClientInitializer localClientInitializer = new LocalClientInitializer(sslContext);
-
-            Bootstrap bootstrap = Utils.createClientBootstrap(localClientInitializer);
-            LocalClientHandler localClientHandler = new LocalClientHandler(notify);
-            bootstrap.handler(localClientHandler);
-            ChannelFuture channelFuture = bootstrap.connect(host, port);
-
-            LocalChannelFutureListener localChannelFutureListener = new LocalChannelFutureListener(notify, sslContext);
-            channelFuture.addListener(localChannelFutureListener);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+        } catch (NetworkException e) {
+            ConnectFailedMessage message = new ConnectFailedMessage(getQueue(), this, e.getCause());
+            connectToMessage.reply(message);
         }
+    }
+
+
+    public void disconnect (CloseMessage disconnectMessage) {
+        Handle handle = getHandle(disconnectMessage.getHandle());
+
+        if (null == handle) {
+            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(getQueue(), this, disconnectMessage.getHandle());
+            disconnectMessage.reply(unknownHandleMessage);
+        }
+
+        handle.close(disconnectMessage);
+
+        setHandle(disconnectMessage.getHandle(), null);
+
+        DisconnectedMessage disconectedMessage = new DisconnectedMessage(getQueue(), this);
+        disconnectMessage.reply(disconectedMessage);
+    }
+
+    /**
+     * Something Very Bad happend.  Decide if we should shut down.
+     * @param panic The problem that caused the panic
+     * @return true if we should shut down, false otherwise
+     */
+    public boolean panic (Panic panic) {
+        //
+        // if one of our connections failed, and other connections are working,
+        // then try to keep going
+        //
+        if (
+                panic.getReason() == Panic.Reasons.NetworkThreadCrashed
+                && integerToHandle.size() > 1)
+        {
+            return false;
+        }
+
+        //
+        // if we can't talk to anyone, ask the system what to do
+        //
+        else if (panic.getReason() == Panic.Reasons.NetworkThreadCrashed)
+        {
+            Panic newPanic = new Panic(panic.getCause(), Panic.Reasons.Network);
+            boolean decisionPanic = Miranda.getInstance().panic(newPanic);
+
+            if (decisionPanic) {
+                NetworkPanicState panicState = new NetworkPanicState(this);
+                setCurrentState(panicState);
+                return decisionPanic;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Close the connection, without sending a sign-off.
+     *
+     * @param handleID The handle to disconnect from.
+     */
+    public void forceDisconnect (int handleID) {
+        Handle handle = getHandle(handleID);
+
+        if (null != handle) {
+            handle.panic();
+            clearHandle(handleID);
+        }
+    }
+
+    /**
+     * This is called when the {@link NetworkListener} gets a new connection.
+     *
+     * <P>
+     *     The handle rturned can be used in susequent {@link SendMessageMessage} and
+     *     {@link CloseMessage}s.
+     * </P>
+     *
+     * @param handle The new connection.
+     * @return The handle for the new connection.
+     */
+    public int newConnection (Handle handle) {
+        int handleId = nextHandle();
+        setHandle(handleId, handle);
+
+        return handleId;
     }
 }

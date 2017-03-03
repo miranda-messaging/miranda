@@ -4,12 +4,9 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.netty.NettyNetworkListener;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public class Cluster extends Consumer {
     private List<Node> nodes = new ArrayList<Node>();
     private BlockingQueue<Message> network;
     private BlockingQueue<Message> clusterFileQueue;
-    private NetworkListener networkListener;
+    private NettyNetworkListener networkListener;
 
     public BlockingQueue<Message> getClusterFileQueue() {
         return clusterFileQueue;
@@ -85,21 +82,15 @@ public class Cluster extends Consumer {
         return network;
     }
 
-    public NetworkListener getNetworkListener() {
+    public NettyNetworkListener getNetworkListener() {
         return networkListener;
     }
 
-    public State start () {
+    public void start () {
         super.start();
 
         State state = new ClusterReadyState(this);
         setCurrentState(state);
-
-        int port = Miranda.properties.getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-        networkListener = new NetworkListener(port, getQueue());
-        networkListener.listen();
-
-        return getCurrentState();
     }
 
 

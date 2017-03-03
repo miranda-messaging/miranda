@@ -2,6 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.network.SendMessageMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -29,16 +30,10 @@ public class NodeState extends State {
     }
 
     public void sendOnWire (WireMessage wireMessage) {
-        String s = wireMessage.getJson() + '\n';
-        logger.info("Sending " + s);
-        ByteBuf byteBuf = Unpooled.directBuffer(1 + s.length());
-        ByteBufUtil.writeUtf8(byteBuf, s);
-        try {
-            getNode().getChannel().writeAndFlush(byteBuf).sync();
-        } catch (InterruptedException e) {
-            logger.fatal("Interrupted while trying to send message", e);
-            System.exit(1);
-        }
+        String json = wireMessage.getJson() + '\n';
+        logger.info("Sending " + json);
+        SendMessageMessage message = new SendMessageMessage(getNode().getQueue(), this, getNode().getHandle(),json);
+        send(getNode().getNetwork(), message);
     }
 
     public State processNetworkMessage (NetworkMessage networkMessage) {

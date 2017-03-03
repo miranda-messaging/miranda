@@ -1,19 +1,18 @@
 package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
-import com.ltsllc.miranda.cluster.messages.DropNodeMessage;
-import com.ltsllc.miranda.cluster.messages.HealthCheckUpdateMessage;
-import com.ltsllc.miranda.cluster.messages.NewClusterFileMessage;
+import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -269,5 +268,18 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         logger.error("Failed to write cluster file: " + message.getFilename(), message.getCause());
 
         return this;
+    }
+
+    public State start () {
+        State nextState = super.start();
+
+        MirandaProperties properties = Miranda.properties;
+
+        long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
+        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(Miranda.getInstance().getQueue(), this);
+        SchedulePeriodicMessage scheduleMessage = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this, healthCheckMessage, healthCheckPeriod);
+        send(Miranda.timer.getQueue(), scheduleMessage);
+
+        return nextState;
     }
 }

@@ -45,12 +45,6 @@ public class NodeStartState extends State {
                 break;
             }
 
-            case Connected: {
-                ConnectedMessage connectedMessage = (ConnectedMessage) m;
-                nextState = processConnectedMessage(connectedMessage);
-                break;
-            }
-
             case NetworkMessage: {
                 NetworkMessage networkMessage = (NetworkMessage) m;
                 nextState = processNetworkMessage(networkMessage);
@@ -83,11 +77,5 @@ public class NodeStartState extends State {
         State nextState = this;
 
         return nextState;
-    }
-
-
-    private State processConnectedMessage (ConnectedMessage connectedMessage) {
-        getNode().setChannel (connectedMessage.getChannel());
-        return new NodeReadyState(getNode());
     }
 }

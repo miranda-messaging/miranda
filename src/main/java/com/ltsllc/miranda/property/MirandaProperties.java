@@ -2,7 +2,10 @@ package com.ltsllc.miranda.property;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
@@ -16,12 +19,8 @@ import java.util.concurrent.BlockingQueue;
  * The Miranda system's properties.
  *
  * <P>
- *     This class is a Properties object that knows a lot about the Miranda
- *     system.
- * </P>
- *
- * <P>
- *
+ *     This class is a SingleFile object that knows a lot about {@link Properties}
+ *     objects.
  * </P>
  */
 public class MirandaProperties extends SingleFile<String> {
@@ -32,6 +31,25 @@ public class MirandaProperties extends SingleFile<String> {
         None,
         LocalCA,
         RemoteCA
+    }
+
+    public enum LoggingLevel {
+        Debug,
+        Info,
+        Warning,
+        Error,
+        Fatal
+    }
+
+    public enum MirandaModes {
+        Normal,
+        Debugging
+    }
+
+    public enum Networks {
+        Unknown,
+        Netty,
+        Socket
     }
 
     public static final String PACKAGE_NAME = "com.ltsllc.miranda.";
@@ -52,11 +70,15 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_MESSAGES_DIRECTORY = "com.ltsllc.miranda.MessageDirectory";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
+    public static final String PROPERTY_LOGGING_LEVEL = PACKAGE_NAME + "LoggingLevel";
     public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
+    public static final String PROPERTY_PROPERTIES_FILE = PACKAGE_NAME + "PropertiesFile";
+    public static final String PROPERTY_MIRANDA_MODE = PACKAGE_NAME + "MirandaMode";
+    public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
 
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
 
@@ -88,11 +110,14 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_DELIVERY_DIRECTORY = "data/deliveries";
     public static final String DEFAULT_MESSAGES_DIRECTORY = "data/messages";
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
+    public static final String DEFAULT_LOGGING_LEVEL = LoggingLevel.Warning.toString();
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
     public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // once week
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
+    public static final String DEFAULT_MIRANDA_MODE = MirandaModes.Normal.toString();
+    public static final String DEFAULT_NETWORK = Networks.Socket.toString();
 
     public static final String DEFAULT_ENCRYPION_MODE = "localCA";
     public static final String DEFAULT_TRUST_STORE = "truststore";
@@ -114,8 +139,12 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_MESSAGES_DIRECTORY, DEFAULT_MESSAGES_DIRECTORY},
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
+            {PROPERTY_LOGGING_LEVEL, DEFAULT_LOGGING_LEVEL},
             {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE},
             {PROPERTY_FILE_CHECK_PERIOD, DEFAULT_FILE_CHECK_PERIOD},
+            {PROPERTY_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILENAME},
+            {PROPERTY_MIRANDA_MODE, DEFAULT_MIRANDA_MODE},
+            {PROPERTY_NETWORK, DEFAULT_NETWORK},
 
             {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPION_MODE},
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
@@ -184,6 +213,14 @@ public class MirandaProperties extends SingleFile<String> {
         //
         Properties temp = PropertiesUtils.load(getFilename());
         PropertiesUtils.overwrite(properties, temp);
+
+        //
+        // overwrite with whatever was on the command line
+        //
+        temp = Miranda.commandLine.asProperties();
+        PropertiesUtils.overwrite(properties, temp);
+
+        this.properties = properties;
     }
 
 
@@ -232,6 +269,21 @@ public class MirandaProperties extends SingleFile<String> {
         return mode;
     }
 
+    public Networks getNetworkProperty (String name) {
+        String value = getProperty(name);
+        Networks network = Networks.Unknown;
+
+        if (null != value) {
+            network = Networks.valueOf(value);
+        }
+
+        return network;
+    }
+
+    public Networks getNetworkProperty () {
+        return getNetworkProperty(PROPERTY_NETWORK);
+    }
+
 
     public String getProperty (String name) {
         return properties.getProperty(name);
@@ -252,5 +304,4 @@ public class MirandaProperties extends SingleFile<String> {
     public void log () {
         PropertiesUtils.log(properties);
     }
-
 }

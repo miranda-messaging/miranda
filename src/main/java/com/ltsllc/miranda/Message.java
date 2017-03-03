@@ -2,6 +2,7 @@ package com.ltsllc.miranda;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.file.Perishable;
+import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -9,10 +10,9 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 12/30/2016.
  */
 public class Message implements Perishable {
-    private Gson ourGson = new Gson();
-
     public enum Subjects {
         Ballot,
+        Closed,
         ClusterFile,
         ClusterFileChanged,
         ClusterHealthCheck,
@@ -22,6 +22,8 @@ public class Message implements Perishable {
         ConnectionError,
         ConnectTo,
         ConnectionClosed,
+        Disconnect,
+        Disconnected,
         DropNode,
         DoneSynchronizing,
         Election,
@@ -52,17 +54,22 @@ public class Message implements Perishable {
         NewMessage,
         NewNodeElement,
         NewSubscription,
+        NoConnection,
         NodeAdded,
         NodesLoaded,
         NodeUpdated,
+        Panic,
         RemoteVersion,
         Retry,
         Results,
         ScheduleOnce,
         SchedulePeriodic,
+        SendError,
+        SendMessage,
         Starting,
         Synchronize,
         Timeout,
+        UnknownHandle,
         UnwatchFile,
         Version,
         Versions,
@@ -72,8 +79,11 @@ public class Message implements Perishable {
         WriteFailed,
         Error
     }
-    private Subjects subject;
 
+    private static Gson ourGson = new Gson();
+    private static Logger logger = Logger.getLogger(Message.class);
+
+    private Subjects subject;
     private BlockingQueue<Message> sender;
     private Object senderObject;
     private Exception where;
@@ -112,5 +122,14 @@ public class Message implements Perishable {
 
     public String toJson() {
         return ourGson.toJson(this);
+    }
+
+    public void reply (Message message) {
+        try {
+            getSender().put(message);
+        } catch (InterruptedException e) {
+            logger.fatal ("Interrupted while trying to reply", e);
+            System.exit(1);
+        }
     }
 }
