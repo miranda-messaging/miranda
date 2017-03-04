@@ -83,6 +83,7 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
 
     public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
+    public static final String PROPERTY_HTTP_BASE = HTTP_PACKAGE_NAME + "Base";
 
     public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
 
@@ -93,6 +94,10 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_KEYSTORE = ENCRYPTION_PACKAGE + "KeyStore";
     public static final String PROPERTY_KEYSTORE_PASSWORD = ENCRYPTION_PACKAGE + "KeyStorePassword";
     public static final String PROPERTY_KEYSTORE_ALIAS = ENCRYPTION_PACKAGE + "KeyStoreAlias";
+
+    public static final String PROPERTY_CERTIFICATE_STORE = ENCRYPTION_PACKAGE + "CertificateStore";
+    public static final String PROPERTY_CERTIFICATE_PASSWORD = ENCRYPTION_PACKAGE + "CertificatePassword";
+    public static final String PROPERTY_CERTIFICATE_ALIAS = ENCRYPTION_PACKAGE + "CerticateAlias";
 
     public static final String PROPERTY_MY_DNS = MY_PACKAGE + "Dns";
     public static final String PROPERTY_MY_IP = MY_PACKAGE + "Ip";
@@ -124,9 +129,12 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_KEYSTORE = "serverkeystore";
     public static final String DEFAULT_KEYSTORE_ALIAS = "server";
+    public static final String DEFAULT_CERTIFICATE_STORE = "certifate";
+    public static final String DEFAULT_CERTIFICATE_ALIAS = "server";
 
 
     public static final String DEFAULT_PORT = "443";
+    public static final String DEFAULT_HTTP_BASE = "html";
 
 
     public static String[][] DEFAULT_PROPERTIES = {
@@ -151,6 +159,8 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_KEYSTORE, DEFAULT_KEYSTORE},
             {PROPERTY_KEYSTORE_ALIAS, DEFAULT_KEYSTORE_ALIAS},
+            {PROPERTY_CERTIFICATE_STORE, DEFAULT_CERTIFICATE_STORE},
+            {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
 
             {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES},
             {PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD},
@@ -158,6 +168,7 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
 
             {PROPERTY_PORT, DEFAULT_PORT},
+            {PROPERTY_HTTP_BASE, DEFAULT_HTTP_BASE},
     };
 
     private Properties properties;

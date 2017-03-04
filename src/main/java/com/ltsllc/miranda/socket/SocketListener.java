@@ -1,8 +1,9 @@
-package com.ltsllc.miranda.network;
+package com.ltsllc.miranda.socket;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.NetworkMessage;
 import com.ltsllc.miranda.node.WireMessage;
 import com.ltsllc.miranda.util.Utils;

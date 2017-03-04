@@ -1,6 +1,10 @@
-package com.ltsllc.miranda.network;
+package com.ltsllc.miranda.socket;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.network.CloseMessage;
+import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.NetworkException;
+import com.ltsllc.miranda.network.SendMessageMessage;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 

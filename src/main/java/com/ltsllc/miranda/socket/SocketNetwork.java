@@ -1,5 +1,9 @@
-package com.ltsllc.miranda.network;
+package com.ltsllc.miranda.socket;
 
+import com.ltsllc.miranda.network.ConnectToMessage;
+import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;

@@ -11,6 +11,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
@@ -133,7 +134,7 @@ public class Utils {
         }
     }
 
-    public static void closeIgnoreExceptions (Socket socket) {
+    public static void closeIgnoreExceptions(Socket socket) {
         if (null != socket) {
             try {
                 socket.close();
@@ -143,13 +144,13 @@ public class Utils {
         }
     }
 
-    public static void closeIgnoreExceptions (ChannelHandlerContext channelHandlerContext) {
+    public static void closeIgnoreExceptions(ChannelHandlerContext channelHandlerContext) {
         if (null != channelHandlerContext) {
             channelHandlerContext.close();
         }
     }
 
-    public static void closeLogExceptions (InputStream inputStream, Logger logger) {
+    public static void closeLogExceptions(InputStream inputStream, Logger logger) {
         if (null != inputStream) {
             try {
                 inputStream.close();
@@ -159,7 +160,7 @@ public class Utils {
         }
     }
 
-    public static void closeLogExceptions (OutputStream outputStream, Logger logger) {
+    public static void closeLogExceptions(OutputStream outputStream, Logger logger) {
         if (null != outputStream) {
             try {
                 outputStream.close();
@@ -169,7 +170,7 @@ public class Utils {
         }
     }
 
-    public static void closeLogExceptions (Socket socket, Logger logger) {
+    public static void closeLogExceptions(Socket socket, Logger logger) {
         if (null != socket) {
             try {
                 socket.close();
@@ -300,7 +301,7 @@ public class Utils {
 
 
     public static SslContext createServerSslContext(String serverFilename, String serverPassword, String serverAlias,
-                                                 String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
+                                                    String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
         SslContext sslContext = null;
 
         try {
@@ -357,14 +358,14 @@ public class Utils {
         return keyManagerFactory;
     }
 
-    public static Bootstrap createClientBootstrap (ChannelInitializer<SocketChannel> channelInitializer) {
+    public static Bootstrap createClientBootstrap(ChannelInitializer<SocketChannel> channelInitializer) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.handler(channelInitializer);
 
         return bootstrap;
     }
 
-    public static SslContext createClientSslContext (String filename, String password) throws SSLException {
+    public static SslContext createClientSslContext(String filename, String password) throws SSLException {
         TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, password);
 
         SslContext sslContext = SslContextBuilder
@@ -372,6 +373,16 @@ public class Utils {
                 .trustManager(trustManagerFactory)
                 .build();
 
+        return sslContext;
+    }
+
+    public static SSLContext createSocketServerSslContext(String serverFilename, String serverPassword, String serverAlias,
+                                                          String trustStoreFilename, String trustStorePassword, String trustStoreAlias)
+            throws NoSuchAlgorithmException {
+        PrivateKey key = loadKey(serverFilename, serverPassword, serverAlias);
+        X509Certificate certificate = loadCertificate(trustStoreFilename, trustStorePassword, trustStoreAlias);
+
+        SSLContext sslContext = SSLContext.getDefault();
         return sslContext;
     }
 }

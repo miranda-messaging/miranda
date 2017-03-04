@@ -3,16 +3,15 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.cluster.messages.HealthCheckMessage;
-import com.ltsllc.miranda.commadline.CommandLine;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.SocketNetwork;
-import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.server.HttpServer;
+import com.ltsllc.miranda.socket.SocketNetwork;
+import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.netty.NettyHttpServer;
 import com.ltsllc.miranda.server.NewTopicHandler;
 import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -21,18 +20,14 @@ import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.NewUserHandler;
 import com.ltsllc.miranda.user.UsersFile;
-import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
-import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import static com.ltsllc.miranda.property.MirandaProperties.*;
 
 /**
  * A class that encapsulates the knowledge of how to start up the system.
@@ -63,15 +58,15 @@ public class Startup extends State {
     private BlockingQueue<Message> writerQueue;
     private int index;
     private LogLevel logLevel = LogLevel.NORMAL;
-    private HttpServer httpServer;
+    private NettyHttpServer httpServer;
     private MirandaCommandLine commandLine;
 
 
-    public HttpServer getHttpServer() {
+    public NettyHttpServer getHttpServer() {
         return httpServer;
     }
 
-    public void setHttpServer(HttpServer httpServer) {
+    public void setHttpServer(NettyHttpServer httpServer) {
         this.httpServer = httpServer;
     }
 
@@ -264,6 +259,7 @@ public class Startup extends State {
      */
     private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
+        MirandaFactory factory = Miranda.factory;
 
         Miranda.factory = new MirandaFactory(Miranda.properties);
 
@@ -282,11 +278,8 @@ public class Startup extends State {
         Cluster.getInstance().start();
         Cluster.getInstance().connect();
 
-        int port = properties.getIntegerProperty(MirandaProperties.PROPERTY_PORT);
-        HttpServer httpServer = new HttpServer(port);
-        httpServer.startup();
-        setHttpServer(httpServer);
-        miranda.setHttpServer(httpServer);
+        HttpServer httpServer = factory.buildWebServer();
+        Miranda.getInstance().setHttpServer(httpServer);
 
         Miranda.timer = new MirandaTimer();
     }
@@ -299,6 +292,7 @@ public class Startup extends State {
     }
 
     private void startHttpServices() {
+        /*
         HttpServer httpServer = Miranda.getInstance().getHttpServer();
 
         NewUserHandler newUserHandler = new NewUserHandler(UsersFile.getInstance());
@@ -312,6 +306,7 @@ public class Startup extends State {
         NewSubscriptionHandler newSubscriptionHandler = new NewSubscriptionHandler(SubscriptionsFile.getInstance());
         newSubscriptionHandler.start();
         httpServer.registerPostHandler("/subscriptions", newSubscriptionHandler.getQueue());
+        */
     }
 
     private void loadFiles() {

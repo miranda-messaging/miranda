@@ -1,11 +1,13 @@
-package com.ltsllc.miranda.network;
+package com.ltsllc.miranda.socket;
 
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.util.Utils;
-import io.netty.handler.ssl.SslContext;
 import org.apache.log4j.Logger;
 
 import javax.net.ServerSocketFactory;

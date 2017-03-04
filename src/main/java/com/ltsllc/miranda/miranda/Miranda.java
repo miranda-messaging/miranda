@@ -6,9 +6,9 @@ import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.netty.NettyHttpServer;
 import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
@@ -121,10 +121,11 @@ public class Miranda extends Consumer {
 
         Miranda.getInstance().getCurrentState().processMessage(garbageCollectionMessage);
     }
-
+/*
     public static void registerPostHandler(String path, BlockingQueue<Message> handlerQueue) {
         Miranda miranda = Miranda.getInstance();
         HttpServer httpServer = miranda.getHttpServer();
         httpServer.registerPostHandler(path, handlerQueue);
     }
+    */
 }

@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.server;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
+import com.ltsllc.miranda.netty.NettyHttpServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
@@ -15,9 +14,9 @@ import java.io.ByteArrayOutputStream;
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
     private Logger logger = Logger.getLogger(HttpServerHandler.class);
 
-    private HttpServer server;
+    private NettyHttpServer server;
 
-    public HttpServerHandler (HttpServer server) {
+    public HttpServerHandler (NettyHttpServer server) {
         this.server = server;
     }
 
