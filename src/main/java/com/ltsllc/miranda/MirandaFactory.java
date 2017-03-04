@@ -3,6 +3,8 @@ package com.ltsllc.miranda;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.netty.NettyNetwork;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.servlet.PropertiesServlet;
+import com.ltsllc.miranda.servlet.TestServlet;
 import com.ltsllc.miranda.socket.SocketHttpServer;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -16,7 +18,8 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.servlet.ServletHandler;
+
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -246,11 +249,25 @@ public class MirandaFactory {
             // In this example it is the current directory but it can be configured to anything that the jvm has access to.
             resource_handler.setDirectoriesListed(true);
             resource_handler.setWelcomeFiles(new String[]{ "index.html" });
-            resource_handler.setResourceBase(".");
+            resource_handler.setResourceBase(base);
+
+            // The ServletHandler is a dead simple way to create a context handler
+            // that is backed by an instance of a Servlet.
+            // This handler then needs to be registered with the Server object.
+            ServletHandler servletHandler = new ServletHandler();
+
+
+            // Passing in the class for the Servlet allows jetty to instantiate an
+            // instance of that Servlet and mount it on a given context path.
+
+            // IMPORTANT:
+            // This is a raw Servlet, not a Servlet that has been configured
+            // through a web.xml @WebServlet annotation, or anything similar.
+            servletHandler.addServletWithMapping(PropertiesServlet.class, "/admin/properties");
 
             // Add the ResourceHandler to the server.
             HandlerList handlers = new HandlerList();
-            handlers.setHandlers(new Handler[] { resource_handler, new DefaultHandler() });
+            handlers.setHandlers(new Handler[] { servletHandler, resource_handler, new DefaultHandler()});
             jetty.setHandler(handlers);
 
             jetty.start();

@@ -315,4 +315,9 @@ public class MirandaProperties extends SingleFile<String> {
     public void log () {
         PropertiesUtils.log(properties);
     }
+
+    public Properties asProperties () {
+        Properties temp = new Properties(properties);
+        return temp;
+    }
 }
