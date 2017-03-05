@@ -320,4 +320,5 @@ public class MirandaProperties extends SingleFile<String> {
         Properties temp = new Properties(properties);
         return temp;
     }
+
 }

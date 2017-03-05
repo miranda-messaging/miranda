@@ -182,4 +182,9 @@ public class Node extends Consumer
                         && getPort() == nodeElement.getPort()
         );
     }
+
+    public NodeElement asNodeElement () {
+        NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+        return nodeElement;
+    }
 }

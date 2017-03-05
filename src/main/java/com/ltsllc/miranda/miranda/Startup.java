@@ -260,10 +260,9 @@ public class Startup extends State {
     private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
         MirandaFactory factory = Miranda.factory;
+        Miranda miranda = Miranda.getInstance();
 
         Miranda.factory = new MirandaFactory(Miranda.properties);
-
-        Miranda miranda = Miranda.getInstance();
 
         StartState.initialize();
 
@@ -277,6 +276,7 @@ public class Startup extends State {
         Cluster.initializeClass(filename, getWriterQueue(), queue);
         Cluster.getInstance().start();
         Cluster.getInstance().connect();
+        miranda.setCluster(Cluster.getInstance());
 
         HttpServer httpServer = factory.buildWebServer();
         Miranda.getInstance().setHttpServer(httpServer);

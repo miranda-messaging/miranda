@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
@@ -35,6 +36,7 @@ public class Miranda extends Consumer {
     private HttpServer httpServer;
     private SystemMessages systemMessages;
     private SystemDeliveriesFile deliveriesFile;
+    private Cluster cluster;
 
 
     public Miranda (String[] argv) {
@@ -48,6 +50,13 @@ public class Miranda extends Consumer {
         setQueue(queue);
     }
 
+    public Cluster getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
+    }
 
     public synchronized static Miranda getInstance() {
         return ourInstance;

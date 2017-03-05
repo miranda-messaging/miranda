@@ -4,6 +4,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.netty.NettyNetwork;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.servlet.PropertiesServlet;
+import com.ltsllc.miranda.servlet.StatusServlet;
 import com.ltsllc.miranda.servlet.TestServlet;
 import com.ltsllc.miranda.socket.SocketHttpServer;
 import com.ltsllc.miranda.socket.SocketNetwork;
@@ -256,18 +257,16 @@ public class MirandaFactory {
             // This handler then needs to be registered with the Server object.
             ServletHandler servletHandler = new ServletHandler();
 
-
-            // Passing in the class for the Servlet allows jetty to instantiate an
-            // instance of that Servlet and mount it on a given context path.
-
             // IMPORTANT:
             // This is a raw Servlet, not a Servlet that has been configured
             // through a web.xml @WebServlet annotation, or anything similar.
             servletHandler.addServletWithMapping(PropertiesServlet.class, "/admin/properties");
+            servletHandler.addServletWithMapping(StatusServlet.class, "/admin/status");
 
-            // Add the ResourceHandler to the server.
+            // Add the handlers to the server.
             HandlerList handlers = new HandlerList();
-            handlers.setHandlers(new Handler[] { servletHandler, resource_handler, new DefaultHandler()});
+            // handlers.setHandlers(new Handler[] { servletHandler, resource_handler, new DefaultHandler()});
+            handlers.setHandlers(new Handler[] { resource_handler, servletHandler, new DefaultHandler()});
             jetty.setHandler(handlers);
 
             jetty.start();
