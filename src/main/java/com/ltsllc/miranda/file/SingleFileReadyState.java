@@ -96,5 +96,8 @@ abstract public class SingleFileReadyState extends State {
     }
 
 
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) { return this; }
+    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        getFile().setLastCollection(System.currentTimeMillis());
+        return this;
+    }
 }

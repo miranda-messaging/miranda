@@ -175,7 +175,7 @@ public class NettyNetworkListener {
 
     public void startup () {
         MirandaProperties properties = Miranda.properties;
-        MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        MirandaProperties.EncryptionModes mode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SslContext sslContext = null;
 
         if (mode == MirandaProperties.EncryptionModes.LocalCA || mode == MirandaProperties.EncryptionModes.RemoteCA)

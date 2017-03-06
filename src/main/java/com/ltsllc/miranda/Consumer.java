@@ -17,11 +17,11 @@ public class Consumer extends Subsystem implements Comparer {
 
     private State currentState;
 
-    public State getCurrentState () {
+    public State getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState (State s) {
+    public void setCurrentState(State s) {
         if (null == currentState)
             logger.info(this + " transitioning from null to " + s);
         else if (null == s)
@@ -29,22 +29,26 @@ public class Consumer extends Subsystem implements Comparer {
         else if (currentState.getClass() != s.getClass())
             logger.info(this + " in state " + currentState + " transitioning to " + s);
 
-        currentState = s;
+        State nextState = s.start();
+
+        if (nextState == s)
+            currentState = nextState;
+        else {
+            logger.info("The start method in " + s + " transitioned to " + nextState + " for " + this);
+            currentState = nextState;
+        }
     }
 
-    public Consumer (String name)
-    {
+    public Consumer(String name) {
         super(name);
     }
 
-    public Consumer (String name, BlockingQueue<Message> queue)
-    {
+    public Consumer(String name, BlockingQueue<Message> queue) {
         super(name, queue);
     }
 
 
-
-    public void start (BlockingQueue<Message> queue) {
+    public void start(BlockingQueue<Message> queue) {
         setQueue(queue);
         register(getName(), getQueue());
         start();
@@ -53,16 +57,16 @@ public class Consumer extends Subsystem implements Comparer {
 
     /**
      * run a Consumer.
-     *
-     * <P>
+     * <p>
+     * <p>
      * This method implents {@link Runnable#run()}.
      * </P>
-     *
+     * <p>
      * This method simply takes the next message off the object's queue
      * and processes it.  By defualt, the method sotps when the next
      * Stat is an instance of {@link StopState}.
      */
-    public void run () {
+    public void run() {
         State nextState = null;
         State stop = StopState.getInstance();
 
@@ -73,9 +77,9 @@ public class Consumer extends Subsystem implements Comparer {
             Miranda.getInstance().panic(panic);
         }
 
-        logger.info (this + " starting");
+        logger.info(this + " starting");
 
-        while (nextState != stop && !Miranda.panicing && nextState != null) {
+        while (nextState != stop && !Miranda.panicking && nextState != null) {
             try {
                 State currentState = getCurrentState();
                 setCurrentState(nextState);
@@ -90,22 +94,22 @@ public class Consumer extends Subsystem implements Comparer {
                 }
             } catch (Throwable throwable) {
                 String message = "Uncecked excepption";
-                logger.error (message, throwable);
-                Panic panic = new Panic (message, throwable, Panic.Reasons.UncheckedException);
+                logger.error(message, throwable);
+                Panic panic = new Panic(message, throwable, Panic.Reasons.UncheckedException);
                 if (Miranda.getInstance().panic(panic)) {
                     nextState = stop;
                 }
             }
         }
 
-        if (Miranda.panicing) {
+        if (Miranda.panicking) {
             logger.error(this + " is terminating due to a panic");
         } else {
             logger.info(this + " terminating");
         }
     }
 
-    public Message getNextMessage () {
+    public Message getNextMessage() {
         Message nextMessage = null;
         boolean keepWaiting = true;
 
@@ -116,7 +120,7 @@ public class Consumer extends Subsystem implements Comparer {
                 String message = "Interupted while waiting for next message";
                 logger.warn(message, e);
 
-                Panic panic = new Panic (message, e, Panic.Reasons.InterruptedGettingNextMessage);
+                Panic panic = new Panic(message, e, Panic.Reasons.InterruptedGettingNextMessage);
                 if (Miranda.getInstance().panic(panic))
                     keepWaiting = false;
             }
@@ -127,20 +131,18 @@ public class Consumer extends Subsystem implements Comparer {
 
     /**
      * Process the next message.
-     *
+     * <p>
      * The defualt implementation ignores the message and returns {@link #getCurrentState()}.
      *
      * @param m The message to prcess
      * @return The next state.
      */
-    public State processMessage (Message m)
-    {
+    public State processMessage(Message m) {
         return getCurrentState().processMessage(m);
     }
 
 
-    public void send (Message m, BlockingQueue<Message> queue)
-    {
+    public void send(Message m, BlockingQueue<Message> queue) {
         logger.info(this + " in state " + getCurrentState() + " is sending " + m);
         try {
             queue.put(m);
@@ -150,8 +152,7 @@ public class Consumer extends Subsystem implements Comparer {
     }
 
 
-    public static void staticSend (Message m, BlockingQueue<Message> queue)
-    {
+    public static void staticSend(Message m, BlockingQueue<Message> queue) {
         logger.info("Sending " + m);
         try {
             queue.put(m);
@@ -160,7 +161,42 @@ public class Consumer extends Subsystem implements Comparer {
         }
     }
 
+    /**
+     * Send if the Consumer is non-null.
+     *
+     * @param m
+     * @param consumer
+     */
+    public void sendIfNotNull (Message m, Consumer consumer) {
+        if (null != consumer)
+        {
+            consumer.send(m);
+        }
+    }
 
+    /**
+     * Send a message if the queue id non-null
+     *
+     * @param m
+     * @param queue
+     */
+    public void sendIfNotNull (Message m, BlockingQueue<Message> queue) {
+        if (queue != null)
+        {
+            send (m, queue);
+        }
+    }
+
+    /**
+     * Send a message to this object.
+     */
+    public void send (Message message) {
+        try {
+            getQueue().put(message);
+        } catch (InterruptedException e) {
+            Panic panic = new Panic("Exception trying to send message", e, Panic.Reasons.ExceptionSendingMessage);
+        }
+    }
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -169,13 +205,13 @@ public class Consumer extends Subsystem implements Comparer {
         if (null == o || !(o instanceof Consumer))
             return false;
 
-        Map<Object,Boolean> map = new HashMap<Object,Boolean>();
+        Map<Object, Boolean> map = new HashMap<Object, Boolean>();
 
         return compare(map, o);
     }
 
 
-    public boolean compare (Map<Object, Boolean> map, Object o) {
+    public boolean compare(Map<Object, Boolean> map, Object o) {
         if (map.containsKey(o))
             return map.get(o).booleanValue();
 
@@ -191,5 +227,9 @@ public class Consumer extends Subsystem implements Comparer {
 
         Consumer other = (Consumer) o;
         return getCurrentState().compare(map, other.getCurrentState());
+    }
+
+    public void setCurrentStateWithoutStart(State state) {
+        currentState = state;
     }
 }

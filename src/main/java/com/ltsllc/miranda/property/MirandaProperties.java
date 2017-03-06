@@ -2,6 +2,7 @@ package com.ltsllc.miranda.property;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -9,6 +10,8 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +63,8 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String MY_PACKAGE = PACKAGE_NAME + "my.";
 
+    public static final String PANIC_PACKAGE = PACKAGE_NAME + "panic.";
+
     public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
     public static final String PROPERTY_CLUSTER_FILE = "com.ltsllc.miranda.ClusterFile";
     public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
@@ -81,6 +86,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
 
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
+
+    public static final String PROPERTY_PANIC_LIMIT = PANIC_PACKAGE + "Limit";
+    public static final String PROPERTY_PANIC_TIMEOUT = PANIC_PACKAGE + "Timeout";
 
     public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
     public static final String PROPERTY_HTTP_BASE = HTTP_PACKAGE_NAME + "Base";
@@ -123,6 +131,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
     public static final String DEFAULT_MIRANDA_MODE = MirandaModes.Normal.toString();
     public static final String DEFAULT_NETWORK = Networks.Socket.toString();
+
+    public static final String DEFAULT_PANIC_LIMIT = "3";
+    public static final String DEFAULT_PANIC_TIMEOUT = "3600000"; // one hour
 
     public static final String DEFAULT_ENCRYPION_MODE = "localCA";
     public static final String DEFAULT_TRUST_STORE = "truststore";
@@ -169,6 +180,9 @@ public class MirandaProperties extends SingleFile<String> {
 
             {PROPERTY_PORT, DEFAULT_PORT},
             {PROPERTY_HTTP_BASE, DEFAULT_HTTP_BASE},
+
+            {PROPERTY_PANIC_LIMIT, DEFAULT_PANIC_LIMIT},
+            {PROPERTY_PANIC_TIMEOUT, DEFAULT_PANIC_TIMEOUT},
     };
 
     private Properties properties;
@@ -207,7 +221,7 @@ public class MirandaProperties extends SingleFile<String> {
         this.properties = PropertiesUtils.copy(properties);
     }
 
-    public void load () {
+    public void load (MirandaCommandLine mirandaCommandLine) {
         //
         // start with the defaults
         //
@@ -228,7 +242,7 @@ public class MirandaProperties extends SingleFile<String> {
         //
         // overwrite with whatever was on the command line
         //
-        temp = Miranda.commandLine.asProperties();
+        temp = mirandaCommandLine.asProperties();
         PropertiesUtils.overwrite(properties, temp);
 
         this.properties = properties;
@@ -264,7 +278,7 @@ public class MirandaProperties extends SingleFile<String> {
             return Long.parseLong(value);
     }
 
-    public EncryptionModes getEncrptionModeProperty (String name) {
+    public EncryptionModes getEncryptionModeProperty (String name) {
         String value = getProperty(name);
 
         EncryptionModes mode = EncryptionModes.Unknown;
@@ -295,7 +309,6 @@ public class MirandaProperties extends SingleFile<String> {
         return getNetworkProperty(PROPERTY_NETWORK);
     }
 
-
     public String getProperty (String name) {
         return properties.getProperty(name);
     }
@@ -321,4 +334,32 @@ public class MirandaProperties extends SingleFile<String> {
         return temp;
     }
 
+    public void load () {
+        FileInputStream fileInputStream = null;
+
+        try {
+            Properties defaults = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
+
+            Properties fromFile = new Properties();
+            fileInputStream = new FileInputStream(getFilename());
+            fromFile.load(fileInputStream);
+
+            Properties properties = PropertiesUtils.overwrite(defaults, fromFile);
+
+            if (null != Miranda.commandLine) {
+                Properties fromCommandLine = Miranda.commandLine.asProperties();
+
+                properties = PropertiesUtils.overwrite(properties, fromCommandLine);
+            }
+            
+            setProperties(properties);
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception loading properties", e, Panic.Reasons.ExceptionLoadingProperties);
+            Miranda.getInstance().panic(panic);
+        }
+    }
+
+    public void setProperties (Properties properties) {
+        this.properties = properties;
+    }
 }

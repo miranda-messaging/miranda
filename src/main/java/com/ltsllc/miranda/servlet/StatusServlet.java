@@ -21,7 +21,10 @@ import java.util.List;
 public class StatusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
+        /*
         List<NodeElement> nodes = new ArrayList<NodeElement>();
+
+
         Cluster cluster = Miranda.getInstance().getCluster();
         for (Node node : cluster.getNodes()) {
             nodes.add(node.asNodeElement());
@@ -50,6 +53,6 @@ public class StatusServlet extends HttpServlet {
         response.setContentType("text/jason");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(gson.toJson(status));
-
+*/
     }
 }

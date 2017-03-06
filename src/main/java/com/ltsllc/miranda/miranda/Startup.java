@@ -12,13 +12,10 @@ import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.netty.NettyHttpServer;
-import com.ltsllc.miranda.server.NewTopicHandler;
-import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.NewUserHandler;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Level;
@@ -90,29 +87,14 @@ public class Startup extends State {
         return commandLine;
     }
 
-    public Startup(Consumer container, String[] argv) {
-        super(container);
-
-        this.commandLine = new MirandaCommandLine(argv);
+    public Miranda getMiranda () {
+        return (Miranda) getContainer();
     }
 
-    @Override
-    public State processMessage(Message message) {
-        State nextState = this;
+    public Startup (Miranda miranda, String[] argv){
+        super(miranda);
 
-        switch (message.getSubject())  {
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage (garbageCollectionMessage);
-                break;
-            }
-
-            default:
-                nextState = super.processMessage(message);
-                break;
-        }
-
-        return nextState;
+        this.commandLine = new MirandaCommandLine(argv);
     }
 
     public String[] getArguments() {
@@ -133,6 +115,8 @@ public class Startup extends State {
 
 
     public State start() {
+        super.start();
+
         try {
             processCommandLine();
             startLogger();
@@ -141,11 +125,11 @@ public class Startup extends State {
             startServices();
             startSubsystems();
             loadFiles();
-            setupRootUser();
-            schedule();
+            setupSchedule();
             startHttpServices();
-            Miranda.performGarbageCollection();
-            return new ReadyState(Miranda.getInstance());
+            setupRootUser();
+            getMiranda().performGarbageCollection();
+            return new ReadyState(getMiranda());
         } catch (MirandaException e) {
             Panic panic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
             Miranda.getInstance().panic (panic);
@@ -164,7 +148,7 @@ public class Startup extends State {
 
     /**
      * Services are the static variable of {@link Miranda} like {@link Miranda#timer},
-     * except for {@link Miranda#properties} and {@link Miranda#commandLine}.
+     * except for {@link Miranda#properties}.
      *
      * <p>
      *     Note that {@link Miranda#properties} must have already been initialized when
@@ -177,7 +161,6 @@ public class Startup extends State {
      * <ul>
      *     <li>{@link Miranda#fileWatcher}</li>
      *     <li>{@link Miranda#timer}</li>
-     *     <li>{@link Miranda#factory}</li>
      * </ul>
      */
     public void startServices () {
@@ -189,41 +172,28 @@ public class Startup extends State {
         Miranda.timer = new MirandaTimer();
         Miranda.timer.start();
 
-        Miranda.factory = new MirandaFactory(Miranda.properties);
+        Miranda.commandLine = getCommandLine();
     }
 
-    private void startLogger() {
-        String filename = getCommandLine().getLog4jFilename();
-        DOMConfigurator.configure(filename);
+    private static class LocalRunnable implements Runnable {
+        private String filename;
 
-        logger = Logger.getLogger(Startup.class);
-
-        switch (getLogLevel()) {
-            case DEBUG:
-                logger.setLevel(Level.DEBUG);
-                break;
-
-            case ERROR:
-                logger.setLevel(Level.ERROR);
-                break;
-
-            case INFO:
-                logger.setLevel(Level.INFO);
-                break;
-
-            case NORMAL:
-                logger.setLevel(Level.ERROR);
-                break;
-
-            case WARN:
-                logger.setLevel(Level.WARN);
-                break;
+        public LocalRunnable (String filename) {
+            this.filename = filename;
         }
 
+        public void run () {
+            DOMConfigurator.configure(filename);
+        }
+    }
+
+
+    private void startLogger() {
+        DOMConfigurator.configure(getLogConfigurationFile());
     }
 
     public void processCommandLine() {
-        Miranda.commandLine = getCommandLine();
+        this.commandLine = getCommandLine();
     }
 
 
@@ -246,8 +216,6 @@ public class Startup extends State {
         Miranda.properties.updateSystemProperties();
     }
 
-
-
     /**
      * Start the Miranda subsystems.
      * <p>
@@ -259,15 +227,13 @@ public class Startup extends State {
      */
     private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
-        MirandaFactory factory = Miranda.factory;
+        MirandaFactory factory = new MirandaFactory(properties);
         Miranda miranda = Miranda.getInstance();
-
-        Miranda.factory = new MirandaFactory(Miranda.properties);
 
         StartState.initialize();
 
         BlockingQueue<Message> networkQueue = new LinkedBlockingQueue<Message>();
-        Network network = Miranda.factory.buildNetwork();
+        Network network = factory.buildNetwork();
         network.start();
 
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
@@ -276,10 +242,10 @@ public class Startup extends State {
         Cluster.initializeClass(filename, getWriterQueue(), queue);
         Cluster.getInstance().start();
         Cluster.getInstance().connect();
-        miranda.setCluster(Cluster.getInstance());
+        miranda.setCluster(Cluster.getInstance().getQueue());
 
         HttpServer httpServer = factory.buildWebServer();
-        Miranda.getInstance().setHttpServer(httpServer);
+        Miranda.getInstance().setHttp(httpServer.getQueue());
 
         Miranda.timer = new MirandaTimer();
     }
@@ -311,20 +277,24 @@ public class Startup extends State {
 
     private void loadFiles() {
         try {
+            Miranda miranda = Miranda.getInstance();
             MirandaProperties properties = Miranda.properties;
 
             String clusterFile = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-
             ClusterFile.initialize(clusterFile, getWriterQueue(), Cluster.getInstance().getQueue());
+            miranda.setCluster(ClusterFile.getInstance().getQueue());
 
             String filename = properties.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
             UsersFile.initialize(filename, getWriterQueue());
+            miranda.setUsers(UsersFile.getInstance().getQueue());
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
             TopicsFile.initialize(filename, getWriterQueue());
+            miranda.setTopics(TopicsFile.getInstance().getQueue());
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
             SubscriptionsFile.initialize(filename, getWriterQueue());
+            miranda.setSubscriptions(SubscriptionsFile.getInstance().getQueue());
 
             String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);
@@ -333,8 +303,7 @@ public class Startup extends State {
             messages.start();
             messages.load();
             messages.updateVersion();
-            Miranda miranda = Miranda.getInstance();
-            miranda.setSystemMessages(messages);
+            miranda.setEvents(messages.getQueue());
 
             directoryName = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
             f = new File(directoryName);
@@ -343,7 +312,7 @@ public class Startup extends State {
             deliveriesFile.start();
             deliveriesFile.load();
             deliveriesFile.updateVersion();
-            miranda.setDeliveriesFile(deliveriesFile);
+            miranda.setDeliveries(deliveriesFile.getQueue());
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -351,7 +320,7 @@ public class Startup extends State {
     }
 
 
-    public void schedule () {
+    public void setupSchedule () {
         MirandaProperties properties = Miranda.properties;
 
         long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD);
@@ -360,22 +329,39 @@ public class Startup extends State {
                 Miranda.timer);
         SchedulePeriodicMessage periodic = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this,
                 garbageCollectionMessage, garbageCollectionPeriod);
-        Consumer.staticSend(periodic, Miranda.timer.getQueue());
-
-        Miranda.performGarbageCollection();
+        send(Miranda.timer.getQueue(), periodic);
     }
 
+    /**
+     * Get the log4j configuration file, before the properties have been loaded.
+     *
+     * <p>
+     *     Normally, this would be obtained from the properties file, but since
+     *     logging needs to be setup early, this method is provided.
+     * </p>
+     *
+     * @return
+     */
+    public String getLogConfigurationFile () {
+        //
+        // if its defined on the command line, use that
+        //
+        String filename = getCommandLine().getLog4jFilename();
 
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        send(ClusterFile.getInstance().getQueue(), garbageCollectionMessage);
-        send(UsersFile.getInstance().getQueue(), garbageCollectionMessage);
-        send(TopicsFile.getInstance().getQueue(), garbageCollectionMessage);
-        send(SubscriptionsFile.getInstance().getQueue(), garbageCollectionMessage);
+        //
+        // otherwise, try for the environment
+        //
+        if (null == filename) {
+            filename = System.getenv().get(MirandaProperties.PROPERTY_LOG4J_FILE);
+        }
 
-        Miranda miranda = Miranda.getInstance();
-        send(miranda.getSystemMessages().getQueue(), garbageCollectionMessage);
-        send(miranda.getDeliveriesFile().getQueue(), garbageCollectionMessage);
+        //
+        // if we still don't have a name, then use a default
+        //
+        if (null == filename) {
+            filename = MirandaProperties.DEFAULT_LOG4J_FILE;
+        }
 
-        return this;
+        return filename;
     }
 }

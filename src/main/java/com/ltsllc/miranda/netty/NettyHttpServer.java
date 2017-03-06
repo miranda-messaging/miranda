@@ -61,23 +61,6 @@ public class NettyHttpServer extends HttpServer {
         this.sslContext = sslContext;
     }
 
-    public void startup() {
-        try {
-            MirandaProperties properties = Miranda.properties;
-            MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-
-            SslContext sslContext = Miranda.factory.buildServerSslContext();
-
-            LocalChannelInitializer localChannelInitializer = new LocalChannelInitializer(sslContext, this);
-            ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localChannelInitializer);
-
-            serverBootstrap.bind(port);
-        } catch (MirandaException e) {
-            Panic panic = new StartupPanic("Exception trying to create SSL context", e, StartupPanic.StartupReasons.WebServer);
-            Miranda.getInstance().panic(panic);
-        }
-    }
-
     private SslContext sslContext;
 
     public SslContext getSslContext() {

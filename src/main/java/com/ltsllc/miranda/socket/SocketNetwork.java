@@ -38,7 +38,7 @@ public class SocketNetwork extends Network {
             MirandaProperties properties = Miranda.properties;
             SocketFactory socketFactory = SocketFactory.getDefault();
 
-            if (properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE) == MirandaProperties.EncryptionModes.LocalCA) {
+            if (properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE) == MirandaProperties.EncryptionModes.LocalCA) {
                 String trustStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
                 String trustStorePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
                 TrustManagerFactory trustManagerFactory = Utils.createTrustManagerFactory(trustStoreFilename, trustStorePassword);

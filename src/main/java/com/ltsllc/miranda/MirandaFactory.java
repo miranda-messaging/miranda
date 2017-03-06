@@ -20,6 +20,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 
 import javax.net.ssl.SSLContext;
@@ -88,7 +89,7 @@ public class MirandaFactory {
 
     public SslContext buildServerSslContext() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
-        MirandaProperties.EncryptionModes encryptionMode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        MirandaProperties.EncryptionModes encryptionMode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SslContext sslContext = null;
 
         switch (encryptionMode) {
@@ -168,7 +169,7 @@ public class MirandaFactory {
 
     public HttpServer buildWebServer () throws MirandaException {
         MirandaProperties properties = Miranda.properties;
-        MirandaProperties.EncryptionModes mode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        MirandaProperties.EncryptionModes mode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         HttpServer server = null;
 
         switch (mode) {
@@ -242,7 +243,7 @@ public class MirandaFactory {
             properties.setProperty(JETTY_TAG, DEFAULT_JETTY_TAG);
             properties.updateSystemProperties();
 
-            Server jetty = new Server(80);
+            Server jetty = new Server();
 
             ResourceHandler resource_handler = new ResourceHandler();
 
@@ -269,33 +270,31 @@ public class MirandaFactory {
             handlers.setHandlers(new Handler[] { resource_handler, servletHandler, new DefaultHandler()});
             jetty.setHandler(handlers);
 
+            String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
+            checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
+
+            String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
+            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
+
+            HttpConfiguration https = new HttpConfiguration();
+            https.addCustomizer(new SecureRequestCustomizer());
+
+            SslContextFactory sslContextFactory = new SslContextFactory();
+            sslContextFactory.setKeyStorePath(serverKeyStoreFilename);
+            sslContextFactory.setKeyStorePassword(serverKeyStorePassword);
+            sslContextFactory.setKeyManagerPassword(serverKeyStorePassword);
+
+            ServerConnector sslConnector = new ServerConnector(jetty,
+                    new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                    new HttpConnectionFactory(https));
+            sslConnector.setPort(443);
+
+            ServerConnector connector = new ServerConnector(jetty);
+            connector.setPort(80);
+
+            jetty.setConnectors(new Connector[] { sslConnector });
+
             jetty.start();
-
-
-            // ServerConnector connector = new ServerConnector(jetty);
-            // connector.setPort(80);
-
-            //
-            // String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
-            // checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
-
-            // String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            // checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
-
-            // HttpConfiguration https = new HttpConfiguration();
-            // https.addCustomizer(new SecureRequestCustomizer());
-
-            // SslContextFactory sslContextFactory = new SslContextFactory();
-            // sslContextFactory.setKeyStorePath(serverKeyStoreFilename);
-            // sslContextFactory.setKeyStorePassword(serverKeyStorePassword);
-            // sslContextFactory.setKeyManagerPassword(serverKeyStorePassword);
-
-            // ServerConnector sslConnector = new ServerConnector(jetty,
-                    // new SslConnectionFactory(sslContextFactory, "http/1.1"),
-                    // new HttpConnectionFactory(https));
-            // sslConnector.setPort(port);
-
-            // jetty.setConnectors(new Connector[] { connector });
 
             return new SocketHttpServer(jetty);
         } catch (Exception e) {

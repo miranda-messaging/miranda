@@ -16,7 +16,6 @@ import java.util.concurrent.BlockingQueue;
 public class UsersFile extends SingleFile<User> {
     private static UsersFile ourInstance;
 
-    private List<User> users = new ArrayList<User>();
 
     public static UsersFile getInstance() {
         return ourInstance;
@@ -31,12 +30,12 @@ public class UsersFile extends SingleFile<User> {
 
 
     public void addUser (User user) {
-        users.add(user);
+        getData().add(user);
         write();
     }
 
     public void add (User user, boolean write) {
-        users.add(user);
+        getData().add(user);
 
         if (write) {
             write();

@@ -1,14 +1,9 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.netty.NettyHttpServer;
-import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
 
@@ -20,7 +15,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * This is also the main class for the system.
  *
- * Created by Clark on 12/30/2016.
  */
 public class Miranda extends Consumer {
     private static Logger logger = Logger.getLogger(Miranda.class);
@@ -29,15 +23,89 @@ public class Miranda extends Consumer {
     public static FileWatcherService fileWatcher;
     public static MirandaTimer timer;
     public static MirandaProperties properties;
-    public static MirandaFactory factory;
     public static MirandaCommandLine commandLine;
-    public static boolean panicing = false;
+    public static boolean panicking = false;
 
-    private HttpServer httpServer;
-    private SystemMessages systemMessages;
-    private SystemDeliveriesFile deliveriesFile;
-    private Cluster cluster;
+    private int panicCount = 0;
+    private BlockingQueue<Message> http;
+    private BlockingQueue<Message> events;
+    private BlockingQueue<Message> deliveries;
+    private BlockingQueue<Message> users;
+    private BlockingQueue<Message> topics;
+    private BlockingQueue<Message> subscriptions;
+    private BlockingQueue<Message> cluster;
 
+    public static Logger getLogger () {
+        return logger;
+    }
+
+    public BlockingQueue<Message> getHttp() {
+        return http;
+    }
+
+    public void setHttp(BlockingQueue<Message> http) {
+        this.http = http;
+    }
+
+    public BlockingQueue<Message> getEvents() {
+        return events;
+    }
+
+    public BlockingQueue<Message> getDeliveries() {
+        return deliveries;
+    }
+
+    public void setDeliveries(BlockingQueue<Message> deliveries) {
+        this.deliveries = deliveries;
+    }
+
+    public BlockingQueue<Message> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(BlockingQueue<Message> topics) {
+        this.topics = topics;
+    }
+
+    public BlockingQueue<Message> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(BlockingQueue<Message> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    public BlockingQueue<Message> getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(BlockingQueue<Message> cluster) {
+        this.cluster = cluster;
+    }
+
+    public BlockingQueue<Message> getUsers() {
+        return users;
+    }
+
+    public void setUsers(BlockingQueue<Message> users) {
+        this.users = users;
+    }
+
+    public void setEvents(BlockingQueue<Message> events) {
+        this.events = events;
+    }
+
+    public int getPanicCount() {
+        return panicCount;
+    }
+
+    public void setPanicCount(int panicCount) {
+        this.panicCount = panicCount;
+    }
+
+    public void incrementPanicCount () {
+        this.panicCount++;
+    }
 
     public Miranda (String[] argv) {
         super ("miranda");
@@ -45,17 +113,10 @@ public class Miranda extends Consumer {
         ourInstance = this;
 
         State s = new Startup(this, argv);
-        setCurrentState(s);
+        setCurrentStateWithoutStart(s);
+
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
-    }
-
-    public Cluster getCluster() {
-        return cluster;
-    }
-
-    public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
     }
 
     public synchronized static Miranda getInstance() {
@@ -71,14 +132,20 @@ public class Miranda extends Consumer {
      * @return
      */
     public boolean panic (Panic panic) {
-        boolean keepGoing = false;
+        boolean keepGoing = true;
 
-        logger.fatal ("System terminating due to a panic", panic);
+        int panicLimit = 3;
+        if (panic.getReason() == Panic.Reasons.DoesNotUnderstand)
+            panicLimit = properties.getIntegerProperty(MirandaProperties.PROPERTY_PANIC_LIMIT);
 
-        if (!keepGoing) {
+        if (panic.getReason() == Panic.Reasons.DoesNotUnderstand && getPanicCount() < panicLimit) {
+            logger.error ("Ignoring message, will attempt to continue");
+        } else {
+            logger.fatal("System terminating due to a panic", panic);
             System.exit(1);
         }
 
+        panicking = !keepGoing;
         return keepGoing;
     }
 
@@ -88,53 +155,44 @@ public class Miranda extends Consumer {
         miranda.start();
     }
 
-    public SystemMessages getSystemMessages() {
-        return systemMessages;
-    }
-
-    public SystemDeliveriesFile getDeliveriesFile() {
-        return deliveriesFile;
-    }
-
-    public void setDeliveriesFile(SystemDeliveriesFile deliveriesFile) {
-        this.deliveriesFile = deliveriesFile;
-    }
-
-    public void setSystemMessages(SystemMessages systemMessages) {
-        this.systemMessages = systemMessages;
-    }
-
-
-    public static synchronized void reset () {
-        ourInstance = null;
+    public void reset () {
         fileWatcher = null;
+        properties = null;
         timer = null;
+        logger = null;
+
+        http = null;
+        users = null;
+        topics = null;
+        subscriptions = null;
+        events = null;
+        deliveries = null;
+        panicCount = 0;
     }
 
-    public HttpServer getHttpServer() {
-        return httpServer;
+
+    public void performGarbageCollection() {
+        GarbageCollectionMessage message = new GarbageCollectionMessage(null, this);
+        send(message, getQueue());
     }
 
-    public void setHttpServer(HttpServer httpServer) {
-        this.httpServer = httpServer;
-    }
+    public void stop () {
+        StopState stop = StopState.getInstance();
+        setCurrentState(stop);
 
-    private void setArguments (String[] argv) {
-        Startup s = (Startup) getCurrentState();
-        s.setArguments(argv);
-    }
+        StopMessage message = new StopMessage(getQueue(), this);
 
-    public static void performGarbageCollection() {
-        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
-                Miranda.getInstance());
+        sendIfNotNull (message, getCluster());
+        sendIfNotNull (message, getHttp());
 
-        Miranda.getInstance().getCurrentState().processMessage(garbageCollectionMessage);
+        sendIfNotNull(message, fileWatcher);
+        sendIfNotNull(message, properties);
+        sendIfNotNull(message, timer);
+
+        sendIfNotNull (message, getUsers());
+        sendIfNotNull (message, getTopics());
+        sendIfNotNull (message, getSubscriptions());
+        sendIfNotNull (message, getEvents());
+        sendIfNotNull (message, getDeliveries());
     }
-/*
-    public static void registerPostHandler(String path, BlockingQueue<Message> handlerQueue) {
-        Miranda miranda = Miranda.getInstance();
-        HttpServer httpServer = miranda.getHttpServer();
-        httpServer.registerPostHandler(path, handlerQueue);
-    }
-    */
 }

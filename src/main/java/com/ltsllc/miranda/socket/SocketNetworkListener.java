@@ -46,7 +46,7 @@ public class SocketNetworkListener extends NetworkListener {
 
     private SSLContext createSslContext () throws GeneralSecurityException {
         MirandaProperties properties = Miranda.getInstance().properties;
-        MirandaProperties.EncryptionModes encryptionMode = properties.getEncrptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        MirandaProperties.EncryptionModes encryptionMode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SSLContext sslContext = null;
 
         if (encryptionMode == MirandaProperties.EncryptionModes.LocalCA) {

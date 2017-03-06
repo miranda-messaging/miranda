@@ -62,6 +62,12 @@ public class ReadyState extends State {
                 break;
             }
 
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -115,4 +121,14 @@ public class ReadyState extends State {
     }
 
 
+    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        GarbageCollectionMessage garbageCollectionMessage2 = new GarbageCollectionMessage(getMiranda().getQueue(), this);
+
+        send(getMiranda().getCluster(), garbageCollectionMessage2);
+        send(getMiranda().getSubscriptions(), garbageCollectionMessage2);
+        send(getMiranda().getTopics(), garbageCollectionMessage2);
+        send(getMiranda().getUsers(), garbageCollectionMessage2);
+
+        return this;
+    }
 }

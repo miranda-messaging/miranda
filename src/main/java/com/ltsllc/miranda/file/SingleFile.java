@@ -108,7 +108,6 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         add(e, true);
     }
 
-
     public void add(E e, boolean write) {
         getData().add(e);
         updateVersion();

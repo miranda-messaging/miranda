@@ -13,6 +13,14 @@ public class User extends StatusObject implements Perishable {
     private String description;
     private long expires;
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public User (String name, String desciption) {
         super(Status.New);
 
@@ -31,6 +39,18 @@ public class User extends StatusObject implements Perishable {
             return true;
 
         return 0 == expires || time > expires;
+    }
+
+    public boolean equals (Object o) {
+        if (this == o)
+            return true;
+
+        if (null == o || !(o instanceof User))
+            return false;
+
+        User other = (User) o;
+
+        return getName().equals(other.getName());
     }
 
     public String toJson() {

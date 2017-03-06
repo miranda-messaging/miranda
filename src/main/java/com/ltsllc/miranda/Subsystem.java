@@ -47,6 +47,7 @@ public abstract class Subsystem implements Runnable,Comparer {
     private String name;
     private BlockingQueue<Message> queue;
     private Thread thread;
+    private boolean started = false;
 
     public String getName () {
         return name;
@@ -64,6 +65,13 @@ public abstract class Subsystem implements Runnable,Comparer {
         return thread;
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
 
     public Subsystem (String name) {
         this(name, new LinkedBlockingQueue<Message>());
@@ -83,6 +91,7 @@ public abstract class Subsystem implements Runnable,Comparer {
     public void start() {
         thread = new Thread(this, getName());
         thread.start();
+        setStarted(true);
     }
 
 

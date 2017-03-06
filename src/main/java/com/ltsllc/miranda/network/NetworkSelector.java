@@ -4,7 +4,6 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
-import io.netty.channel.socket.SocketChannel;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -92,7 +91,7 @@ public class NetworkSelector implements Runnable {
                 getNotify().put(message);
             } catch (InterruptedException e) {
                 logger.error("Exception during message send", e);
-                Panic panic = new Panic("Exception during message send", e, Panic.Reasons.ExceptionDuringSendMessage);
+                Panic panic = new Panic("Exception during message send", e, Panic.Reasons.ExceptionSendingMessage);
                 if (Miranda.getInstance().panic(panic))
                     setTerminate(true);
             }

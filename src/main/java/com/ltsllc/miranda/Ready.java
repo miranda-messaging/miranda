@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.main;
+package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;

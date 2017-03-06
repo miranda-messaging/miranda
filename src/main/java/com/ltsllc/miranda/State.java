@@ -1,5 +1,6 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
@@ -14,6 +15,15 @@ public abstract class State {
     private static Logger logger = Logger.getLogger(State.class);
 
     private Consumer container;
+    private boolean started = false;
+
+    public boolean stated () {
+        return started;
+    }
+
+    public void setStarted (boolean started) {
+        this.started = started;
+    }
 
     public Consumer getContainer() {
         return container;
@@ -25,6 +35,7 @@ public abstract class State {
 
     public State start ()
     {
+        setStarted(true);
         logger.info (getContainer() + " starting");
         return this;
     }
@@ -49,10 +60,14 @@ public abstract class State {
     {
         IllegalStateException e = new IllegalStateException();
         logger.error(this + " does not understand " + m, e);
-
         logger.error ("message created at", m.getWhere());
 
-        return StopState.getInstance();
+        Panic panic = new Panic(this + " does not understand " + m, e, Panic.Reasons.DoesNotUnderstand);
+        if (Miranda.getInstance().panic(panic)) {
+            return StopState.getInstance();
+        } else {
+            return this;
+        }
     }
 
 
