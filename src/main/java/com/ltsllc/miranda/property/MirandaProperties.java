@@ -95,7 +95,8 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_PANIC_LIMIT = PANIC_PACKAGE + "Limit";
     public static final String PROPERTY_PANIC_TIMEOUT = PANIC_PACKAGE + "Timeout";
 
-    public static final String PROPERTY_HTTP_PORT = HTTP_PACKAGE_NAME + "Port";
+    public static final String PROPERTY_HTTP_SSL_PORT = HTTP_PACKAGE_NAME + "SslPort";
+    public static final String PROPERTY_HTTP_PORT = HTTP_PACKAGE_NAME + "HttpPort";
     public static final String PROPERTY_HTTP_BASE = HTTP_PACKAGE_NAME + "Base";
     public static final String PROPERTY_HTTP_SERVER = HTTP_PACKAGE_NAME + "Server";
 
@@ -150,7 +151,8 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_CERTIFICATE_ALIAS = "server";
 
     public static final String DEFAULT_HTTP_BASE = "html";
-    public static final String DEFAULT_HTTP_PORT = "443";
+    public static final String DEFAULT_HTTP_SSL_PORT = "443";
+    public static final String DEFAULT_HTTP_PORT = "80";
     public static final String DEFAULT_HTTP_SERVER = "jetty";
 
 
@@ -185,6 +187,7 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
 
             {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},
+            {PROPERTY_HTTP_SSL_PORT, DEFAULT_HTTP_SSL_PORT},
             {PROPERTY_HTTP_BASE, DEFAULT_HTTP_BASE},
             {PROPERTY_HTTP_SERVER, DEFAULT_HTTP_SERVER},
 

@@ -3,7 +3,6 @@ package com.ltsllc.miranda;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
-import com.ltsllc.miranda.netty.NettyHttpServer;
 import com.ltsllc.miranda.netty.NettyNetwork;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -175,13 +174,15 @@ public class MirandaFactory {
 
     public HttpServer buildHttpServer () throws MirandaException {
         MirandaProperties.WebSevers whichServer = getProperties().getHttpServerProperty(MirandaProperties.PROPERTY_HTTP_SERVER);
-        int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_PORT);
+        int httpPort = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_PORT);
+        int sslPort = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_SSL_PORT);
         String httpBase = getProperties().getProperty(MirandaProperties.PROPERTY_HTTP_BASE);
+
         HttpServer httpServer = null;
 
         switch (whichServer) {
             default: {
-                httpServer = buildJetty(port, httpBase);
+                httpServer = buildJetty(httpPort, sslPort, httpBase);
                 break;
             }
         }
@@ -190,7 +191,7 @@ public class MirandaFactory {
     }
 
 
-    public HttpServer buildJetty (int port, String httpBase) throws MirandaException {
+    public HttpServer buildJetty (int httpPort, int sslPort, String httpBase) throws MirandaException {
         try {
             MirandaProperties properties = Miranda.properties;
 
@@ -251,10 +252,10 @@ public class MirandaFactory {
             ServerConnector sslConnector = new ServerConnector(jetty,
                     new SslConnectionFactory(sslContextFactory, "http/1.1"),
                     new HttpConnectionFactory(https));
-            sslConnector.setPort(443);
+            sslConnector.setPort(sslPort);
 
             ServerConnector connector = new ServerConnector(jetty);
-            connector.setPort(80);
+            connector.setPort(httpPort);
 
             jetty.setConnectors(new Connector[] { sslConnector });
 
@@ -262,7 +263,7 @@ public class MirandaFactory {
 
             return new SocketHttpServer(jetty);
         } catch (Exception e) {
-            throw new MirandaException("Exception trying to setup web server", e);
+            throw new MirandaException("Exception trying to setup http server", e);
         }
     }
 

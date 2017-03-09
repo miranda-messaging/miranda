@@ -7,6 +7,7 @@ public class StartupPanic extends Panic {
     public enum StartupReasons {
         CreatingSelector,
         CreatingSslContext, // we could not create an SSL context for the NetworkListener
+        ExceptionCreatingHttpServer,
         ExceptionListening,
         NetworkListener, // NetworkListener.startup threw an exception
         SendingMessage, // An exception occurred while trying to send a message

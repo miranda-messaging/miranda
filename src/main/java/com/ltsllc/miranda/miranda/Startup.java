@@ -161,6 +161,8 @@ public class Startup extends State {
      * <ul>
      *     <li>{@link Miranda#fileWatcher}</li>
      *     <li>{@link Miranda#timer}</li>
+     *     <li>{@link Miranda#commandLine}</li>
+     *     <li>{@link Miranda#factory}</li>
      * </ul>
      */
     public void startServices () {
@@ -246,9 +248,6 @@ public class Startup extends State {
         Cluster.getInstance().connect();
         miranda.setCluster(Cluster.getInstance().getQueue());
 
-        HttpServer httpServer = factory.buildHttpServer();
-        miranda.setHttp(httpServer.getQueue());
-
         PanicPolicy panicPolicy = factory.buildPanicPolicy();
         miranda.setPanicPolicy(panicPolicy);
     }
@@ -261,21 +260,14 @@ public class Startup extends State {
     }
 
     private void startHttpServices() {
-        /*
-        HttpServer httpServer = Miranda.getInstance().getHttpServer();
-
-        NewUserHandler newUserHandler = new NewUserHandler(UsersFile.getInstance());
-        newUserHandler.start();
-        getHttpServer().registerPostHandler("/users", newUserHandler.getQueue());
-
-        NewTopicHandler newTopicHandler = new NewTopicHandler(TopicsFile.getInstance());
-        newTopicHandler.start();
-        httpServer.registerPostHandler("/topics", newTopicHandler.getQueue());
-
-        NewSubscriptionHandler newSubscriptionHandler = new NewSubscriptionHandler(SubscriptionsFile.getInstance());
-        newSubscriptionHandler.start();
-        httpServer.registerPostHandler("/subscriptions", newSubscriptionHandler.getQueue());
-        */
+        try {
+            MirandaFactory factory = getMiranda().factory;
+            HttpServer httpServer = factory.buildHttpServer();
+            Miranda.getInstance().setHttp(httpServer.getQueue());
+        } catch (MirandaException e) {
+            Panic panic = new StartupPanic("Exception trying to create http server", e, StartupPanic.StartupReasons.ExceptionCreatingHttpServer);
+            Miranda.getInstance().panic(panic);
+        }
     }
 
     private void loadFiles() {
