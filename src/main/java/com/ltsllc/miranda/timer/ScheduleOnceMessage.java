@@ -10,8 +10,10 @@ import java.util.concurrent.BlockingQueue;
 public class ScheduleOnceMessage extends ScheduleMessage {
     private long delay;
 
-    public ScheduleOnceMessage (long delay, BlockingQueue<Message> senderQueue, Object sender) {
-        super(Subjects.ScheduleOnce, senderQueue, sender);
+
+    public ScheduleOnceMessage (BlockingQueue<Message> senderQueue, Object sender, long delay,
+                                Message message, BlockingQueue<Message> receiver) {
+        super(Subjects.ScheduleOnce, senderQueue, sender, receiver, message);
 
         this.delay = delay;
     }
@@ -19,4 +21,6 @@ public class ScheduleOnceMessage extends ScheduleMessage {
     public long getDelay() {
         return delay;
     }
+
+
 }

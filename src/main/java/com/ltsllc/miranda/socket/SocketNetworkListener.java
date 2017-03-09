@@ -69,36 +69,24 @@ public class SocketNetworkListener extends NetworkListener {
         return sslContext;
     }
 
-    public void startup() {
-        ServerSocket serverSocket = null;
-        SSLContext sslContext = null;
+    public void startup(BlockingQueue<Handle> queue) {
         Panic panic = null;
+        SSLContext sslContext = Miranda.factory.buildServerSSLContext();
+
+        ServerSocketFactory serverSocketFactory = ServerSocketFactory.getDefault();
+        if (null != sslContext) {
+            serverSocketFactory = sslContext.getServerSocketFactory();
+        }
 
         try {
-            sslContext = createSslContext();
-        } catch (GeneralSecurityException e) {
-            String message = "Exception trying to create SSL context";
+            setServerSocket(serverSocketFactory.createServerSocket());
+        } catch (IOException e) {
+            String message = "Exception trying to create server socket";
             logger.error (message, e);
-            panic = new StartupPanic(message, e, StartupPanic.StartupReasons.CreatingSslContext);
-            if (!Miranda.getInstance().panic(panic))
-                panic = null;
+            panic = new StartupPanic(message, e, StartupPanic.StartupReasons.NetworkListener);
+            Miranda.getInstance().panic(panic);
         }
 
-        if (panic == null) {
-            ServerSocketFactory serverSocketFactory = ServerSocketFactory.getDefault();
-            if (null != sslContext) {
-                serverSocketFactory = sslContext.getServerSocketFactory();
-            }
-
-            try {
-                setServerSocket(serverSocketFactory.createServerSocket());
-            } catch (IOException e) {
-                String message = "Exception trying to create server socket";
-                logger.error (message, e);
-                panic = new StartupPanic(message, e, StartupPanic.StartupReasons.NetworkListener);
-                Miranda.getInstance().panic(panic);
-            }
-        }
 
         if (panic == null) {
             InetSocketAddress address = new InetSocketAddress(getPort());
@@ -111,39 +99,25 @@ public class SocketNetworkListener extends NetworkListener {
                 Miranda.getInstance().panic(panic);
             }
         }
+
+        getConnections();
     }
 
     public void getConnections () {
         while (keepGoing()) {
             try {
                 Socket socket = getServerSocket().accept();
-                SocketHandle handle = new SocketHandle(-1, Network.getInstance().getQueue(), socket);
+                SocketHandle handle = new SocketHandle(Network.getInstance().getQueue(), socket);
                 getHandleQueue().put(handle);
             } catch (Exception e) {
                 String message = "Exception while trying to get new connection";
                 logger.error(message, e);
-                Panic panic = new Panic (message, e, Panic.Reasons.ExceptionWhileWaitingForNextConnection);
+                Panic panic = new Panic (message, e, Panic.Reasons.ExceptionWaitingForNextConnection);
                 if (Network.getInstance().panic(panic)) {
                     setKeepGoing(false);
                 }
             }
         }
-    }
-
-    public Handle nextConnection () {
-        Handle handle = null;
-
-        try {
-            Socket socket = getServerSocket().accept();
-            handle = new SocketHandle(-1, Network.getInstance().getQueue(), socket);
-        } catch (Exception e) {
-            String message = "Exception while getting new connection";
-            logger.error (message, e);
-            Panic panic = new Panic(message, e, Panic.Reasons.ExceptionWhileWaitingForNextConnection);
-            Miranda.getInstance().panic(panic);
-        }
-
-        return handle;
     }
 
 }

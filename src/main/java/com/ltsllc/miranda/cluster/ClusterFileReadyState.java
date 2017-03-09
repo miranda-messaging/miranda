@@ -277,8 +277,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
         long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
         HealthCheckMessage healthCheckMessage = new HealthCheckMessage(Miranda.getInstance().getQueue(), this);
-        SchedulePeriodicMessage scheduleMessage = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this, healthCheckMessage, healthCheckPeriod);
-        send(Miranda.timer.getQueue(), scheduleMessage);
+        Miranda.timer.schedulePeriodic(healthCheckPeriod, getClusterQueue(), healthCheckMessage);
 
         return nextState;
     }

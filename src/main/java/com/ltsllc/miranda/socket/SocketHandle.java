@@ -30,8 +30,8 @@ public class SocketHandle extends Handle {
     private InputStream inputStream;
     private SocketListener socketListener;
 
-    public SocketHandle (int handle, BlockingQueue<Message> notify, Socket socket) throws NetworkException {
-        super(handle, notify);
+    public SocketHandle (BlockingQueue<Message> notify, Socket socket) throws NetworkException {
+        super(notify);
 
         this.socket = socket;
 

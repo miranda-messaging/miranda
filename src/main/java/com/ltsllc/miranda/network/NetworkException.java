@@ -9,6 +9,7 @@ public class NetworkException extends Exception {
         ErrorGettingStreams,
         ExceptionSending,
         ExceptionConnecting,
+        ExceptionCreating,
         ExceptionReceiving,
         InterruptedSending
     }

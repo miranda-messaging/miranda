@@ -173,6 +173,8 @@ public class Startup extends State {
         Miranda.timer.start();
 
         Miranda.commandLine = getCommandLine();
+
+        Miranda.factory = new MirandaFactory(Miranda.properties);
     }
 
     private static class LocalRunnable implements Runnable {
@@ -244,10 +246,11 @@ public class Startup extends State {
         Cluster.getInstance().connect();
         miranda.setCluster(Cluster.getInstance().getQueue());
 
-        HttpServer httpServer = factory.buildWebServer();
-        Miranda.getInstance().setHttp(httpServer.getQueue());
+        HttpServer httpServer = factory.buildHttpServer();
+        miranda.setHttp(httpServer.getQueue());
 
-        Miranda.timer = new MirandaTimer();
+        PanicPolicy panicPolicy = factory.buildPanicPolicy();
+        miranda.setPanicPolicy(panicPolicy);
     }
 
     public void startWriter () {
@@ -327,9 +330,7 @@ public class Startup extends State {
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);
-        SchedulePeriodicMessage periodic = new SchedulePeriodicMessage(Miranda.getInstance().getQueue(), this,
-                garbageCollectionMessage, garbageCollectionPeriod);
-        send(Miranda.timer.getQueue(), periodic);
+        Miranda.timer.schedulePeriodic(garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
     }
 
     /**

@@ -78,7 +78,7 @@ public class NettyNetworkListener {
                 socketChannel.pipeline().addLast(sslHandler);
             }
 
-            NettyHandle nettyHandle = new NettyHandle(-1, Network.getInstance().getQueue(), socketChannel);
+            NettyHandle nettyHandle = new NettyHandle(Network.getInstance().getQueue(), socketChannel);
             int handle = Network.getInstance().newConnection(nettyHandle);
 
             Node node = new Node(inetSocketAddress, handle);
@@ -210,10 +210,10 @@ public class NettyNetworkListener {
     public Handle nextConnection () {
         try {
             Channel channel = getChannelQueue().take();
-            NettyHandle nettyHandle = new NettyHandle(-1, Network.getInstance().getQueue(), channel);
+            NettyHandle nettyHandle = new NettyHandle(Network.getInstance().getQueue(), channel);
             return nettyHandle;
         } catch (InterruptedException e) {
-            Panic panic = new Panic ("Interrupted while waiting for next connection", e, Panic.Reasons.ExceptionWhileWaitingForNextConnection);
+            Panic panic = new Panic ("Interrupted while waiting for next connection", e, Panic.Reasons.ExceptionWaitingForNextConnection);
             boolean continuePanic = Network.getInstance().panic(panic);
             if (continuePanic) {
                 shutdown();

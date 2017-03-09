@@ -10,8 +10,9 @@ import java.util.concurrent.BlockingQueue;
 public class SchedulePeriodicMessage extends ScheduleMessage {
     private long period;
 
-    public SchedulePeriodicMessage (BlockingQueue<Message> senderQueue, Object sender, Message message, long period) {
-        super(Subjects.SchedulePeriodic, senderQueue, sender, message);
+    public SchedulePeriodicMessage (BlockingQueue<Message> senderQueue, Object sender, long period, Message message,
+                                    BlockingQueue<Message> receiver) {
+        super(Subjects.SchedulePeriodic, senderQueue, sender, receiver, message);
 
         this.period = period;
     }

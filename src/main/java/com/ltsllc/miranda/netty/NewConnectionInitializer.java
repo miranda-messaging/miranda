@@ -32,7 +32,7 @@ public class NewConnectionInitializer extends ChannelInitializer<SocketChannel> 
             socketChannel.pipeline().addLast(sslHandler);
         }
 
-        NettyHandle nettyHandle = new NettyHandle(-1, Network.getInstance().getQueue(), socketChannel);
+        NettyHandle nettyHandle = new NettyHandle(Network.getInstance().getQueue(), socketChannel);
         Network.getInstance().newConnection(nettyHandle);
     }
 }

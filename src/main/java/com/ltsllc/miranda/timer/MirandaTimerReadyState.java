@@ -39,8 +39,12 @@ public class MirandaTimerReadyState extends State {
 
     private Logger logger = Logger.getLogger(MirandaTimerReadyState.class);
 
-    public MirandaTimerReadyState (Consumer consumer) {
-        super(consumer);
+    public MirandaTimerReadyState (MirandaTimer timer) {
+        super(timer);
+    }
+
+    public MirandaTimer getTimer () {
+        return (MirandaTimer) getContainer();
     }
 
     @Override
@@ -71,17 +75,17 @@ public class MirandaTimerReadyState extends State {
 
     private State processScheduleOnceMessage (ScheduleOnceMessage scheduleOnceMessage) {
         Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getSender(), Miranda.timer.getQueue());
+        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getSender(), getTimer().getQueue());
         timer.schedule(localTimerTask, scheduleOnceMessage.getDelay());
 
         return this;
     }
 
 
-    private State processSchedulePeriodicMessage (SchedulePeriodicMessage schedulePeriodicMessage) {
+    private State processSchedulePeriodicMessage (SchedulePeriodicMessage message) {
         Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(schedulePeriodicMessage.getSender(), Miranda.timer.getQueue());
-        timer.scheduleAtFixedRate(localTimerTask, schedulePeriodicMessage.getPeriod(), schedulePeriodicMessage.getPeriod());
+        LocalTimerTask localTimerTask = new LocalTimerTask(message.getReceiver(), getTimer().getQueue());
+        timer.scheduleAtFixedRate(localTimerTask, message.getPeriod(), message.getPeriod());
 
         return this;
     }

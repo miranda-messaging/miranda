@@ -11,11 +11,12 @@ package com.ltsllc.miranda;
 public class Panic extends Exception {
     public enum Reasons {
         DoesNotUnderstand, // A state received a message it does not know how to process
-        InterruptedGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
+        ExceptionCreatingSslContext,
+        ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionSendingMessage,
         ExceptionDuringNewConnection,
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
-        ExceptionWhileWaitingForNextConnection, // an exception was thrown while waiting for a new node
+        ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
         ExceptionReceivingMessage,
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone

@@ -24,9 +24,9 @@ public class Miranda extends Consumer {
     public static MirandaTimer timer;
     public static MirandaProperties properties;
     public static MirandaCommandLine commandLine;
+    public static MirandaFactory factory;
     public static boolean panicking = false;
 
-    private int panicCount = 0;
     private BlockingQueue<Message> http;
     private BlockingQueue<Message> events;
     private BlockingQueue<Message> deliveries;
@@ -34,6 +34,15 @@ public class Miranda extends Consumer {
     private BlockingQueue<Message> topics;
     private BlockingQueue<Message> subscriptions;
     private BlockingQueue<Message> cluster;
+    private PanicPolicy panicPolicy;
+
+    public PanicPolicy getPanicPolicy() {
+        return panicPolicy;
+    }
+
+    public void setPanicPolicy(PanicPolicy panicPolicy) {
+        this.panicPolicy = panicPolicy;
+    }
 
     public static Logger getLogger () {
         return logger;
@@ -95,18 +104,6 @@ public class Miranda extends Consumer {
         this.events = events;
     }
 
-    public int getPanicCount() {
-        return panicCount;
-    }
-
-    public void setPanicCount(int panicCount) {
-        this.panicCount = panicCount;
-    }
-
-    public void incrementPanicCount () {
-        this.panicCount++;
-    }
-
     public Miranda (String[] argv) {
         super ("miranda");
 
@@ -132,21 +129,9 @@ public class Miranda extends Consumer {
      * @return
      */
     public boolean panic (Panic panic) {
-        boolean keepGoing = true;
-
-        int panicLimit = 3;
-        if (panic.getReason() == Panic.Reasons.DoesNotUnderstand)
-            panicLimit = properties.getIntegerProperty(MirandaProperties.PROPERTY_PANIC_LIMIT);
-
-        if (panic.getReason() == Panic.Reasons.DoesNotUnderstand && getPanicCount() < panicLimit) {
-            logger.error ("Ignoring message, will attempt to continue");
-        } else {
-            logger.fatal("System terminating due to a panic", panic);
-            System.exit(1);
-        }
-
-        panicking = !keepGoing;
-        return keepGoing;
+        boolean continuePanic = getPanicPolicy().panic(panic);
+        panicking = continuePanic;
+        return continuePanic;
     }
 
     public static void main(String[] argv) {
@@ -167,7 +152,7 @@ public class Miranda extends Consumer {
         subscriptions = null;
         events = null;
         deliveries = null;
-        panicCount = 0;
+        panicPolicy = null;
     }
 
 

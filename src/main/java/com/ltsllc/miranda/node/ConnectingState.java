@@ -67,8 +67,7 @@ public class ConnectingState extends NodeState {
         MirandaProperties p = Miranda.properties;
         int delayBetweenRetries = PropertiesUtils.getIntProperty(System.getProperties(), MirandaProperties.PROPERTY_DELAY_BETWEEN_RETRIES);
         RetryMessage retryMessage = new RetryMessage(getNode().getQueue(), this);
-        SchedulePeriodicMessage schedulePeriodicMessage = new SchedulePeriodicMessage(getNode().getQueue(), this, retryMessage, delayBetweenRetries);
-        send(Miranda.timer.getQueue(), schedulePeriodicMessage);
+        Miranda.timer.schedulePeriodic(delayBetweenRetries, getNode().getQueue(), retryMessage);
 
         return new RetryingState(getNode());
     }

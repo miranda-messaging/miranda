@@ -50,7 +50,7 @@ public class SocketNetwork extends Network {
             }
 
             Socket socket = socketFactory.createSocket(connectToMessage.getHost(), connectToMessage.getPort());
-            SocketHandle socketHandle = new SocketHandle(-1, getQueue(), socket);
+            SocketHandle socketHandle = new SocketHandle(getQueue(), socket);
 
             return socketHandle;
         } catch (Exception e) {

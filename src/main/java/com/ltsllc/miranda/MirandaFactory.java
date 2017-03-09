@@ -1,16 +1,17 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
+import com.ltsllc.miranda.miranda.PanicPolicy;
+import com.ltsllc.miranda.netty.NettyHttpServer;
 import com.ltsllc.miranda.netty.NettyNetwork;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.servlet.PropertiesServlet;
 import com.ltsllc.miranda.servlet.StatusServlet;
-import com.ltsllc.miranda.servlet.TestServlet;
 import com.ltsllc.miranda.socket.SocketHttpServer;
 import com.ltsllc.miranda.socket.SocketNetwork;
-import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.netty.NettyHttpServer;
-import com.ltsllc.miranda.server.HttpServer;
 import com.ltsllc.miranda.util.Utils;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -22,13 +23,12 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
-
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.*;
 import java.security.cert.X509Certificate;
 
 /**
@@ -167,75 +167,39 @@ public class MirandaFactory {
 
     }
 
-    public HttpServer buildWebServer () throws MirandaException {
-        MirandaProperties properties = Miranda.properties;
-        MirandaProperties.EncryptionModes mode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-        HttpServer server = null;
-
-        switch (mode) {
-            case LocalCA: {
-                server = buildLocalCaWebServer();
-                break;
-            }
-
-            case RemoteCA: {
-                logger.error("remote CA not implemented");
-                break;
-            }
-        }
-
-        return server;
-    }
-
-
-    public HttpServer buildLocalCaWebServer () throws MirandaException {
-        MirandaProperties properties = Miranda.properties;
-        MirandaProperties.Networks network = properties.getNetworkProperty();
-        HttpServer server = null;
-
-        switch (network) {
-            case Netty: {
-                server = buildLocalCaNettyWebServer();
-                break;
-            }
-
-            case Socket: {
-                server = buildLocalCaSocketWebServer();
-                break;
-            }
-        }
-
-        return server;
-    }
-
-    public HttpServer buildLocalCaNettyWebServer () throws MirandaException {
-        MirandaProperties properties = Miranda.properties;
-        SslContext sslContext = buildLocalCaServerSslContext();
-
-        int port = properties.getIntProperty(MirandaProperties.PROPERTY_PORT);
-
-        HttpServer httpServer = new NettyHttpServer(port, sslContext);
-
-        return httpServer;
-    }
-
     private static final String JETTY_BASE = "jetty.base";
     private static final String JETTY_HOME = "jetty.home";
     private static final String JETTY_TAG = "jetty.tag.version";
     private static final String DEFAULT_JETTY_TAG = "master";
 
 
-    public HttpServer buildLocalCaSocketWebServer () throws MirandaException {
+    public HttpServer buildHttpServer () throws MirandaException {
+        MirandaProperties.WebSevers whichServer = getProperties().getHttpServerProperty(MirandaProperties.PROPERTY_HTTP_SERVER);
+        int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_PORT);
+        String httpBase = getProperties().getProperty(MirandaProperties.PROPERTY_HTTP_BASE);
+        HttpServer httpServer = null;
+
+        switch (whichServer) {
+            default: {
+                httpServer = buildJetty(port, httpBase);
+                break;
+            }
+        }
+
+        return httpServer;
+    }
+
+
+    public HttpServer buildJetty (int port, String httpBase) throws MirandaException {
         try {
             MirandaProperties properties = Miranda.properties;
-            int port = properties.getIntProperty(MirandaProperties.PROPERTY_PORT);
 
             //
             // jetty wants some properties defined
             //
             String base = properties.getProperty(MirandaProperties.PROPERTY_HTTP_BASE);
 
-            File file = new File(base);
+            File file = new File(httpBase);
             base = file.getCanonicalPath();
 
             properties.setProperty(JETTY_BASE, base);
@@ -334,4 +298,81 @@ public class MirandaFactory {
 
         return sslContext;
     }
+
+    public SSLContext buildServerSSLContext () {
+        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        SSLContext sslContext = null;
+
+        switch (mode) {
+            case LocalCA: {
+                sslContext = buildLocalCaServerSSLContext();
+                break;
+            }
+
+            case RemoteCA: {
+                sslContext = buildRemoteCaServerSSLContext();
+                break;
+            }
+        }
+
+        return sslContext;
+    }
+
+    public SSLContext buildRemoteCaServerSSLContext () {
+        SSLContext sslContext = null;
+
+        try {
+            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE);
+            String keyStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
+            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
+        } catch (GeneralSecurityException e) {
+            Panic panic = new Panic ("Exception while trying to create SSL context", e,
+                    Panic.Reasons.ExceptionCreatingSslContext);
+
+            Miranda.getInstance().panic(panic);
+        }
+
+        return sslContext;
+    }
+
+    public SSLContext buildLocalCaServerSSLContext () {
+        SSLContext sslContext = null;
+
+        try {
+            String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            String trustStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
+            KeyStore trustKeyStore = Utils.loadKeyStore(trustStoreFilename, trustStorePassword);
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(trustKeyStore);
+
+            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE);
+            String keyStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
+            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+        } catch (GeneralSecurityException e) {
+            Panic panic = new Panic ("Exception while trying to create SSL context", e,
+                    Panic.Reasons.ExceptionCreatingSslContext);
+
+            Miranda.getInstance().panic(panic);
+        }
+
+        return sslContext;
+    }
+
+    public PanicPolicy buildPanicPolicy () {
+        int maxPanics = getProperties().getIntProperty(MirandaProperties.PROPERTY_PANIC_LIMIT);
+        long timeout = getProperties().getLongProperty(MirandaProperties.PROPERTY_PANIC_TIMEOUT);
+
+        return new MirandaPanicPolicy(maxPanics, timeout, Miranda.getInstance(), Miranda.timer);
+    }
+
 }

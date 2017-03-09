@@ -100,7 +100,7 @@ public class TestStartup extends TestCase {
         assert (getMiranda().getCurrentState() instanceof ReadyState);
         assert (getMiranda().getCluster() != null);
         assert (getMiranda().getUsers() != null);
-        assert (getMiranda().getPanicCount() < 3);
+        assert (getMiranda().getPanicPolicy() != null);
         assert (getMiranda().getEvents() != null);
         assert (getMiranda().getDeliveries() != null);
         assert (getMiranda().getTopics() != null);

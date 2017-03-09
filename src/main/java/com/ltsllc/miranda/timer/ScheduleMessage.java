@@ -8,17 +8,14 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ScheduleMessage extends Message {
     private Message message;
+    private BlockingQueue<Message> receiver;
 
-    public ScheduleMessage(Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
-        super(subject, sender, senderObject);
-
-        this.message = new TimeoutMessage (getSender(), getSenderObject());
-    }
-
-    public ScheduleMessage (Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Message message) {
+    public ScheduleMessage (Subjects subject, BlockingQueue<Message> senderQueue, Object sender,
+                            BlockingQueue<Message> receiver, Message message) {
         super(subject, senderQueue, sender);
 
         this.message = message;
+        this.receiver = receiver;
     }
 
 
@@ -26,4 +23,7 @@ public class ScheduleMessage extends Message {
         return message;
     }
 
+    public BlockingQueue<Message> getReceiver() {
+        return receiver;
+    }
 }

@@ -18,8 +18,8 @@ public class NettyHandle extends Handle {
     private Channel channel;
 
 
-    public NettyHandle(int handle, BlockingQueue<Message> notify, Channel channel) {
-        super(handle, notify);
+    public NettyHandle(BlockingQueue<Message> notify, Channel channel) {
+        super(notify);
 
         this.channel = channel;
     }
@@ -38,7 +38,7 @@ public class NettyHandle extends Handle {
     public void close (CloseMessage disconnectMessage) {
         getChannel().close();
 
-        ClosedMessage closedMessage = new ClosedMessage(null, this, getHandle());
+        ClosedMessage closedMessage = new ClosedMessage(null, this, -1);
         disconnectMessage.reply(closedMessage);
     }
 

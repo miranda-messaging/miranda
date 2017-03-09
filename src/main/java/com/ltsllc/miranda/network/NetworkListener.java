@@ -1,9 +1,6 @@
 package com.ltsllc.miranda.network;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.StartupPanic;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
@@ -12,6 +9,8 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A class to make switching between netty and sockets easier.
@@ -22,8 +21,7 @@ import java.util.Map;
  * </P>
  */
 abstract public class NetworkListener extends Consumer {
-    abstract public void startup() throws NetworkException;
-    abstract public Handle nextConnection ();
+    abstract public void startup (BlockingQueue<Handle> queue) throws NetworkException;
 
     private int port;
     private boolean keepGoing = true;
@@ -48,8 +46,10 @@ abstract public class NetworkListener extends Consumer {
     }
 
     public void start () {
+        LinkedBlockingQueue<Handle> queue = new LinkedBlockingQueue<Handle>();
+
         try {
-            startup();
+            startup(queue);
         } catch (NetworkException e) {
             StartupPanic startupPanic = new StartupPanic ("Exception in the NetworkListener during setup", e, StartupPanic.StartupReasons.NetworkListener);
             boolean continuePanic = Miranda.getInstance().panic(startupPanic);
@@ -59,7 +59,15 @@ abstract public class NetworkListener extends Consumer {
         }
 
         while (keepGoing()) {
-            Handle newConnection = nextConnection();
+            Handle newConnection = null;
+
+            try {
+                newConnection = queue.take();
+            } catch (InterruptedException e) {
+                Panic panic = new Panic("Exception getting new connection", e, Panic.Reasons.ExceptionWaitingForNextConnection);
+                if (Miranda.getInstance().panic(panic))
+                    setKeepGoing(false);
+            }
 
             if (null != newConnection) {
                 int handle = Network.getInstance().newConnection(newConnection);

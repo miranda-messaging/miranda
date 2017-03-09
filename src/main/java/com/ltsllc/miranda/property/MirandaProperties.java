@@ -55,6 +55,11 @@ public class MirandaProperties extends SingleFile<String> {
         Socket
     }
 
+    public enum WebSevers {
+        Netty,
+        Jetty
+    }
+
     public static final String PACKAGE_NAME = "com.ltsllc.miranda.";
 
     public static final String HTTP_PACKAGE_NAME = PACKAGE_NAME + "http.";
@@ -90,8 +95,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_PANIC_LIMIT = PANIC_PACKAGE + "Limit";
     public static final String PROPERTY_PANIC_TIMEOUT = PANIC_PACKAGE + "Timeout";
 
-    public static final String PROPERTY_PORT = HTTP_PACKAGE_NAME + "Port";
+    public static final String PROPERTY_HTTP_PORT = HTTP_PACKAGE_NAME + "Port";
     public static final String PROPERTY_HTTP_BASE = HTTP_PACKAGE_NAME + "Base";
+    public static final String PROPERTY_HTTP_SERVER = HTTP_PACKAGE_NAME + "Server";
 
     public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
 
@@ -143,9 +149,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_CERTIFICATE_STORE = "certifate";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "server";
 
-
-    public static final String DEFAULT_PORT = "443";
     public static final String DEFAULT_HTTP_BASE = "html";
+    public static final String DEFAULT_HTTP_PORT = "443";
+    public static final String DEFAULT_HTTP_SERVER = "jetty";
 
 
     public static String[][] DEFAULT_PROPERTIES = {
@@ -178,8 +184,9 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
 
-            {PROPERTY_PORT, DEFAULT_PORT},
+            {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},
             {PROPERTY_HTTP_BASE, DEFAULT_HTTP_BASE},
+            {PROPERTY_HTTP_SERVER, DEFAULT_HTTP_SERVER},
 
             {PROPERTY_PANIC_LIMIT, DEFAULT_PANIC_LIMIT},
             {PROPERTY_PANIC_TIMEOUT, DEFAULT_PANIC_TIMEOUT},
@@ -303,6 +310,17 @@ public class MirandaProperties extends SingleFile<String> {
         }
 
         return network;
+    }
+
+    public WebSevers getHttpServerProperty (String name) {
+        String value = getProperty(name);
+        value.trim();
+        WebSevers webServer = WebSevers.Jetty;
+
+        if (value.equalsIgnoreCase("netty"))
+            webServer = WebSevers.Netty;
+
+        return webServer;
     }
 
     public Networks getNetworkProperty () {

@@ -2,6 +2,9 @@ package com.ltsllc.miranda.network;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.node.NetworkMessage;
 import com.ltsllc.miranda.node.WireMessage;
 
 import java.lang.reflect.Type;
@@ -17,19 +20,13 @@ abstract public class Handle {
 
     private static Gson ourGson = new Gson();
 
-    private int handle;
     private BlockingQueue<Message> queue;
 
     public BlockingQueue<Message> getQueue() {
         return queue;
     }
 
-    public int getHandle() {
-        return handle;
-    }
-
-    public Handle (int handle, BlockingQueue<Message> queue) {
-        this.handle = handle;
+    public Handle (BlockingQueue<Message> queue) {
         this.queue = queue;
     }
 
@@ -51,8 +48,14 @@ abstract public class Handle {
         return jsonToWireMessage(firstPass, json);
     }
 
-    @Override
-    public int hashCode() {
-        return handle;
+    public void deliver (WireMessage wireMessage) {
+        NetworkMessage message = new NetworkMessage(null,this, wireMessage);
+        try {
+            getQueue().put(message);
+        } catch (InterruptedException e) {
+            Panic panic = new Panic ("Exception trying to send mesage", e, Panic.Reasons.ExceptionSendingMessage);
+            Miranda.getInstance().panic(panic);
+        }
     }
+
 }

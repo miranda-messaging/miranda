@@ -120,7 +120,7 @@ public class Consumer extends Subsystem implements Comparer {
                 String message = "Interupted while waiting for next message";
                 logger.warn(message, e);
 
-                Panic panic = new Panic(message, e, Panic.Reasons.InterruptedGettingNextMessage);
+                Panic panic = new Panic(message, e, Panic.Reasons.ExceptionGettingNextMessage);
                 if (Miranda.getInstance().panic(panic))
                     keepWaiting = false;
             }
