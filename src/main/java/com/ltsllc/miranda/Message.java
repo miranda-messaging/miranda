@@ -68,6 +68,7 @@ public class Message implements Perishable {
         SchedulePeriodic,
         SendError,
         SendMessage,
+        SetupServlets,
         Starting,
         Stop,
         Synchronize,

@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.server;
+package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Message;
 import io.netty.channel.ChannelHandlerContext;

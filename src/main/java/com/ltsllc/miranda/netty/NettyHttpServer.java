@@ -5,13 +5,10 @@ package com.ltsllc.miranda.netty;
  */
 
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.server.HttpPostMessage;
-import com.ltsllc.miranda.server.HttpServer;
-import com.ltsllc.miranda.server.HttpServerHandler;
-import com.ltsllc.miranda.util.Utils;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
-import io.netty.bootstrap.ServerBootstrap;
+import com.ltsllc.miranda.http.HttpPostMessage;
+import com.ltsllc.miranda.http.HttpServer;
+import com.ltsllc.miranda.http.HttpServerHandler;
+import com.ltsllc.miranda.servlet.ServletMapping;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -21,6 +18,7 @@ import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -28,6 +26,11 @@ import java.util.concurrent.BlockingQueue;
  * The HTTP server for the system.
  */
 public class NettyHttpServer extends HttpServer {
+    @Override
+    public void addServlets(List<ServletMapping> servlets) {
+        throw new IllegalStateException("not implented");
+    }
+
     private class LocalChannelInitializer extends ChannelInitializer<SocketChannel> {
         private SslContext sslContext;
         private NettyHttpServer server;

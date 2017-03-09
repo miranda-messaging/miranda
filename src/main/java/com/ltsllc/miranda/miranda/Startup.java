@@ -8,17 +8,19 @@ import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.server.HttpServer;
+import com.ltsllc.miranda.http.HttpServer;
+import com.ltsllc.miranda.servlet.PropertiesServlet;
+import com.ltsllc.miranda.servlet.ServletMapping;
+import com.ltsllc.miranda.http.SetupServletsMessage;
+import com.ltsllc.miranda.servlet.StatusServlet;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.netty.NettyHttpServer;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.writer.Writer;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -128,6 +130,7 @@ public class Startup extends State {
             setupSchedule();
             startHttpServices();
             setupRootUser();
+            setupServlets();
             getMiranda().performGarbageCollection();
             return new ReadyState(getMiranda());
         } catch (MirandaException e) {
@@ -145,6 +148,18 @@ public class Startup extends State {
         User root = new User("root", "System admin");
         UsersFile.getInstance().add(root, false);
     }
+
+    public void setupServlets () {
+        ServletMapping servletMapping1 = new ServletMapping("/servelets/status", StatusServlet.class);
+        ServletMapping servletMapping2 = new ServletMapping("/servelets/properties", PropertiesServlet.class);
+
+        ServletMapping[] mappings = { servletMapping1, servletMapping2 };
+
+        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this, mappings);
+
+        send (getMiranda().getHttp(), setupServletsMessage);
+    }
+
 
     /**
      * Services are the static variable of {@link Miranda} like {@link Miranda#timer},

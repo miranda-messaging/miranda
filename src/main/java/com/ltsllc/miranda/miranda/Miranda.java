@@ -27,7 +27,7 @@ public class Miranda extends Consumer {
     public static MirandaFactory factory;
     public static boolean panicking = false;
 
-    private BlockingQueue<Message> http;
+    private BlockingQueue<Message> httpServer;
     private BlockingQueue<Message> events;
     private BlockingQueue<Message> deliveries;
     private BlockingQueue<Message> users;
@@ -49,11 +49,11 @@ public class Miranda extends Consumer {
     }
 
     public BlockingQueue<Message> getHttp() {
-        return http;
+        return httpServer;
     }
 
-    public void setHttp(BlockingQueue<Message> http) {
-        this.http = http;
+    public void setHttp(BlockingQueue<Message> httpServer) {
+        this.httpServer = httpServer;
     }
 
     public BlockingQueue<Message> getEvents() {
@@ -146,7 +146,7 @@ public class Miranda extends Consumer {
         timer = null;
         logger = null;
 
-        http = null;
+        httpServer = null;
         users = null;
         topics = null;
         subscriptions = null;

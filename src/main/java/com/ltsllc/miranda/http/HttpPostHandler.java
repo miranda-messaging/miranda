@@ -1,9 +1,7 @@
-package com.ltsllc.miranda.server;
+package com.ltsllc.miranda.http;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
 
 import java.lang.reflect.Type;
 

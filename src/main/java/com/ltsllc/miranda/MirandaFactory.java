@@ -1,12 +1,13 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.http.JettyHttpServer;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.netty.NettyNetwork;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.server.HttpServer;
+import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.servlet.PropertiesServlet;
 import com.ltsllc.miranda.servlet.StatusServlet;
 import com.ltsllc.miranda.socket.SocketHttpServer;
@@ -17,6 +18,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -198,10 +200,8 @@ public class MirandaFactory {
             //
             // jetty wants some properties defined
             //
-            String base = properties.getProperty(MirandaProperties.PROPERTY_HTTP_BASE);
-
             File file = new File(httpBase);
-            base = file.getCanonicalPath();
+            String base = file.getCanonicalPath();
 
             properties.setProperty(JETTY_BASE, base);
             properties.setProperty(JETTY_HOME, base);
@@ -210,30 +210,16 @@ public class MirandaFactory {
 
             Server jetty = new Server();
 
-            ResourceHandler resource_handler = new ResourceHandler();
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(true);
+            resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
+            resourceHandler.setResourceBase(base);
 
-            // Configure the ResourceHandler. Setting the resource base indicates where the files should be served out of.
-            // In this example it is the current directory but it can be configured to anything that the jvm has access to.
-            resource_handler.setDirectoriesListed(true);
-            resource_handler.setWelcomeFiles(new String[]{ "index.html" });
-            resource_handler.setResourceBase(base);
+            HandlerCollection handlerCollection = new HandlerCollection(true);
+            handlerCollection.addHandler(resourceHandler);
+            handlerCollection.addHandler(new DefaultHandler());
 
-            // The ServletHandler is a dead simple way to create a context handler
-            // that is backed by an instance of a Servlet.
-            // This handler then needs to be registered with the Server object.
-            ServletHandler servletHandler = new ServletHandler();
-
-            // IMPORTANT:
-            // This is a raw Servlet, not a Servlet that has been configured
-            // through a web.xml @WebServlet annotation, or anything similar.
-            servletHandler.addServletWithMapping(PropertiesServlet.class, "/admin/properties");
-            servletHandler.addServletWithMapping(StatusServlet.class, "/admin/status");
-
-            // Add the handlers to the server.
-            HandlerList handlers = new HandlerList();
-            // handlers.setHandlers(new Handler[] { servletHandler, resource_handler, new DefaultHandler()});
-            handlers.setHandlers(new Handler[] { resource_handler, servletHandler, new DefaultHandler()});
-            jetty.setHandler(handlers);
+            jetty.setHandler(handlerCollection);
 
             String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
             checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
@@ -261,7 +247,10 @@ public class MirandaFactory {
 
             jetty.start();
 
-            return new SocketHttpServer(jetty);
+            HttpServer httpServer = new JettyHttpServer(jetty, handlerCollection);
+            httpServer.start();
+
+            return httpServer;
         } catch (Exception e) {
             throw new MirandaException("Exception trying to setup http server", e);
         }
