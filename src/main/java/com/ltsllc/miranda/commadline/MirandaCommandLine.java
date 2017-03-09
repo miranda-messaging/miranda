@@ -68,6 +68,8 @@ public class MirandaCommandLine extends CommandLine {
 
     public MirandaCommandLine (String[] argv) {
         super(argv);
+
+        parse();
     }
 
     public Properties asProperties () {
@@ -84,25 +86,26 @@ public class MirandaCommandLine extends CommandLine {
     public void parse () {
         super.parse();
 
-        if (null != getArg()) {
-            String mode = getArgAndAdvance();
-
-            if (mode.equalsIgnoreCase("normal"))
-                setMirandaMode(MirandaProperties.MirandaModes.Normal.toString());
-            else if (mode.equalsIgnoreCase("debug"))
-                setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
-            else {
-                printUsage();
-                throw new IllegalArgumentException ("Unknown Mirana mode: " + mode);
-            }
-        }
 
         if (null != getArg()) {
             setPropertiesFilename(getArgAndAdvance());
         }
 
         while (hasMoreArgs()) {
-            if (getArg().equalsIgnoreCase("-debug")) {
+            if (null != getArg() && getArg().equalsIgnoreCase("-mode")) {
+                advance();
+
+                String mode = getArgAndAdvance();
+
+                if (mode.equalsIgnoreCase("normal"))
+                    setMirandaMode(MirandaProperties.MirandaModes.Normal.toString());
+                else if (mode.equalsIgnoreCase("debug"))
+                    setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
+                else {
+                    printUsage();
+                    throw new IllegalArgumentException ("Unknown Mirana mode: " + mode);
+                }
+            } else if (getArg().equalsIgnoreCase("-debug")) {
                 setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
                 setLoggingLevel(MirandaProperties.LoggingLevel.Debug.toString());
             } else if (getArg().equalsIgnoreCase("-log4j")) {
@@ -118,6 +121,6 @@ public class MirandaCommandLine extends CommandLine {
     }
 
     public void printUsage () {
-        System.err.println ("usage: miranda [<properties file> [<mirada mode>  [-debug] [-log4j <log4j config file>]");
+        System.err.println ("usage: miranda [<properties file> [-mode <miranda mode>] [-debug] [-log4j <log4j config file>]]");
     }
 }
