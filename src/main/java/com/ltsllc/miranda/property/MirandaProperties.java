@@ -7,6 +7,7 @@ import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.servlet.Property;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.apache.log4j.Logger;
 
@@ -382,5 +383,17 @@ public class MirandaProperties extends SingleFile<String> {
 
     public void setProperties (Properties properties) {
         this.properties = properties;
+    }
+
+    public List<Property> asPropertyList () {
+        Properties properties = asProperties();
+        List<Property> list = new ArrayList<Property>(properties.size());
+        for (String name : properties.stringPropertyNames()) {
+            String value = properties.getProperty(name);
+            Property property = new Property(name, value);
+            list.add(property);
+        }
+
+        return list;
     }
 }

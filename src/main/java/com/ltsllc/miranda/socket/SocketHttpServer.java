@@ -24,4 +24,9 @@ public class SocketHttpServer extends HttpServer {
     public SocketHttpServer (Server jetty) {
         this.jetty = jetty;
     }
+
+    @Override
+    public void startServer() {
+
+    }
 }

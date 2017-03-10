@@ -19,8 +19,13 @@ import java.util.List;
  * Created by Clark on 3/4/2017.
  */
 public class StatusServlet extends HttpServlet {
+    private static Gson ourGson = new Gson();
+
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
+        MirandaStatus mirandaStatus = MirandaStatus.getInstance();
+        StatusObject statusObject = mirandaStatus.getStatus();
 
+        response.getOutputStream().print(ourGson.toJson(statusObject));
     }
 }

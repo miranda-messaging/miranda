@@ -8,6 +8,7 @@ public class StartupPanic extends Panic {
         CreatingSelector,
         CreatingSslContext, // we could not create an SSL context for the NetworkListener
         ExceptionCreatingHttpServer,
+        ExceptionStartingHttpServer,
         ExceptionListening,
         NetworkListener, // NetworkListener.startup threw an exception
         SendingMessage, // An exception occurred while trying to send a message

@@ -10,6 +10,7 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.servlet.PropertiesServlet;
 import com.ltsllc.miranda.servlet.StatusServlet;
+import com.ltsllc.miranda.servlet.TestServlet;
 import com.ltsllc.miranda.socket.SocketHttpServer;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.util.Utils;
@@ -21,6 +22,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
@@ -210,14 +212,14 @@ public class MirandaFactory {
 
             Server jetty = new Server();
 
+
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);
             resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
             resourceHandler.setResourceBase(base);
 
-            HandlerCollection handlerCollection = new HandlerCollection(true);
+            HandlerCollection handlerCollection = new HandlerCollection();
             handlerCollection.addHandler(resourceHandler);
-            handlerCollection.addHandler(new DefaultHandler());
 
             jetty.setHandler(handlerCollection);
 
@@ -243,12 +245,10 @@ public class MirandaFactory {
             ServerConnector connector = new ServerConnector(jetty);
             connector.setPort(httpPort);
 
-            jetty.setConnectors(new Connector[] { sslConnector });
-
-            jetty.start();
+            jetty.setConnectors(new Connector[] { sslConnector, connector });
 
             HttpServer httpServer = new JettyHttpServer(jetty, handlerCollection);
-            httpServer.start();
+            httpServer.start(); // this starts the HttpServer instance not jetty
 
             return httpServer;
         } catch (Exception e) {

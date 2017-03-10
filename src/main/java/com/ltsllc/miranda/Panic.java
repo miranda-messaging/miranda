@@ -18,6 +18,7 @@ public class Panic extends Exception {
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
         ExceptionReceivingMessage,
+        ExceptionStartingServletHandler,
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone
         Startup, // something happend during startup this usually means we are an instance of StartupPanic

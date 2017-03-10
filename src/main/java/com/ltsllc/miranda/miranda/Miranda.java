@@ -3,10 +3,14 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.servlet.*;
+import com.ltsllc.miranda.servlet.StatusObject;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -179,5 +183,26 @@ public class Miranda extends Consumer {
         sendIfNotNull (message, getSubscriptions());
         sendIfNotNull (message, getEvents());
         sendIfNotNull (message, getDeliveries());
+    }
+
+    public void getStatus (BlockingQueue<Message> respondTo) {
+        GetStatusMessage getStatusMessage = new GetStatusMessage(respondTo, this);
+        send(getStatusMessage, getQueue());
+    }
+
+    public com.ltsllc.miranda.servlet.StatusObject getStatusImpl () {
+        MirandaProperties properties = Miranda.properties;
+
+        String localDns = properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);
+        String localIp = properties.getProperty(MirandaProperties.PROPERTY_MY_IP);
+        int localPort = properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
+        String localDescription = properties.getProperty(MirandaProperties.PROPERTY_MY_DESCIPTION);
+
+        NodeElement local = new NodeElement(localDns, localIp, localPort, localDescription);
+        List<Property> list = properties.asPropertyList();
+
+        StatusObject statusObject = new StatusObject(local, list, null);
+
+        return statusObject;
     }
 }

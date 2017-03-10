@@ -7,18 +7,18 @@ import javax.servlet.http.HttpServlet;
  */
 public class ServletMapping {
     private String path;
-    private Class servlet;
+    private Class servletClass;
 
     public String getPath() {
         return path;
     }
 
-    public Class getServlet() {
-        return servlet;
+    public Class getServletClass() {
+        return servletClass;
     }
 
-    public ServletMapping (String path, Class servlet) {
+    public ServletMapping (String path, Class servletClass) {
         this.path = path;
-        this.servlet = servlet;
+        this.servletClass = servletClass;
     }
 }

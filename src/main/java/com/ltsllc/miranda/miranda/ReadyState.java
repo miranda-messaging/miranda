@@ -6,6 +6,9 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.servlet.GetStatusMessage;
+import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
+import com.ltsllc.miranda.servlet.StatusObject;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.node.GetVersionMessage;
@@ -65,6 +68,12 @@ public class ReadyState extends State {
             case GarbageCollection: {
                 GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
                 nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                break;
+            }
+
+            case GetStatus: {
+                GetStatusMessage getStatusMessage = (GetStatusMessage) message;
+                nextState = processGetStatusMessage(getStatusMessage);
                 break;
             }
 
@@ -128,6 +137,15 @@ public class ReadyState extends State {
         send(getMiranda().getSubscriptions(), garbageCollectionMessage2);
         send(getMiranda().getTopics(), garbageCollectionMessage2);
         send(getMiranda().getUsers(), garbageCollectionMessage2);
+
+        return this;
+    }
+
+    private State processGetStatusMessage (GetStatusMessage getStatusMessage) {
+        StatusObject statusObject = getMiranda().getStatusImpl();
+
+        GetStatusResponseMessage response = new GetStatusResponseMessage(getMiranda().getQueue(), this, statusObject);
+        getStatusMessage.reply(response);
 
         return this;
     }

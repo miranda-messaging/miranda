@@ -99,4 +99,8 @@ public class NettyHttpServer extends HttpServer {
 
     public void processDelete(String url, HttpRequest request) {
     }
+
+    @Override
+    public void startServer() {
+    }
 }

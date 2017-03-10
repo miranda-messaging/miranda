@@ -25,6 +25,13 @@ public class HttpReadyState extends State {
                 nextState = processSetupServletsMessage(setupServletsMessage);
                 break;
             }
+
+            case StartHttpServer: {
+                StartHttpServerMessage startHttpServerMessage = (StartHttpServerMessage) message;
+                nextState = processStartHttpServerMessage(startHttpServerMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -36,6 +43,13 @@ public class HttpReadyState extends State {
 
     private State processSetupServletsMessage (SetupServletsMessage message) {
         getHttpServer().addServlets(message.getMappings());
+
+        return this;
+    }
+
+
+    private State processStartHttpServerMessage (StartHttpServerMessage message) {
+        getHttpServer().startServer();
 
         return this;
     }

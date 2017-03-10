@@ -9,10 +9,8 @@ import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.http.HttpServer;
-import com.ltsllc.miranda.servlet.PropertiesServlet;
-import com.ltsllc.miranda.servlet.ServletMapping;
+import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.http.SetupServletsMessage;
-import com.ltsllc.miranda.servlet.StatusServlet;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.netty.NettyHttpServer;
@@ -57,15 +55,15 @@ public class Startup extends State {
     private BlockingQueue<Message> writerQueue;
     private int index;
     private LogLevel logLevel = LogLevel.NORMAL;
-    private NettyHttpServer httpServer;
+    private HttpServer httpServer;
     private MirandaCommandLine commandLine;
 
 
-    public NettyHttpServer getHttpServer() {
+    public HttpServer getHttpServer() {
         return httpServer;
     }
 
-    public void setHttpServer(NettyHttpServer httpServer) {
+    public void setHttpServer(HttpServer httpServer) {
         this.httpServer = httpServer;
     }
 
@@ -128,9 +126,10 @@ public class Startup extends State {
             startSubsystems();
             loadFiles();
             setupSchedule();
-            startHttpServices();
+            setupHttpServices();
             setupRootUser();
             setupServlets();
+            startHttpServer();
             getMiranda().performGarbageCollection();
             return new ReadyState(getMiranda());
         } catch (MirandaException e) {
@@ -150,10 +149,16 @@ public class Startup extends State {
     }
 
     public void setupServlets () {
-        ServletMapping servletMapping1 = new ServletMapping("/servelets/status", StatusServlet.class);
-        ServletMapping servletMapping2 = new ServletMapping("/servelets/properties", PropertiesServlet.class);
+        ServletMapping servletMapping1 = new ServletMapping("/servlets/status", StatusServlet.class);
+        ServletMapping servletMapping2 = new ServletMapping("/servlets/properties", PropertiesServlet.class);
+        ServletMapping servletMapping3 = new ServletMapping("/servlets/test", TestServlet.class);
 
-        ServletMapping[] mappings = { servletMapping1, servletMapping2 };
+
+
+        ServletMapping[] mappings = { servletMapping1, servletMapping2, servletMapping3 };
+
+        MirandaStatus.initialize();
+        MirandaStatus.getInstance().start();
 
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this, mappings);
 
@@ -274,11 +279,12 @@ public class Startup extends State {
         setWriterQueue(writer.getQueue());
     }
 
-    private void startHttpServices() {
+    private void setupHttpServices() {
         try {
             MirandaFactory factory = getMiranda().factory;
             HttpServer httpServer = factory.buildHttpServer();
             Miranda.getInstance().setHttp(httpServer.getQueue());
+            setHttpServer(httpServer);
         } catch (MirandaException e) {
             Panic panic = new StartupPanic("Exception trying to create http server", e, StartupPanic.StartupReasons.ExceptionCreatingHttpServer);
             Miranda.getInstance().panic(panic);
@@ -371,5 +377,9 @@ public class Startup extends State {
         }
 
         return filename;
+    }
+
+    public void startHttpServer () {
+        getHttpServer().sendStart(getMiranda().getQueue());
     }
 }
