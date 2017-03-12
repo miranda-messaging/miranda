@@ -4,6 +4,7 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.NewNodeState;
 import com.ltsllc.miranda.node.states.NodeStartState;
@@ -107,11 +108,6 @@ public class Node extends Consumer
         return getDns().equals(nodeElement.getDns()) && getIp().equals(nodeElement.getIp()) && getPort() == nodeElement.getPort();
     }
 
-    public void connect (BlockingQueue<Message> senderQueue, Object sender) {
-        ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender, getDns(), getPort());
-        send(connectMessage, getQueue());
-    }
-
     public void connect () {
         getNetwork().sendConnect (getQueue(), this, getDns(), getPort());
     }
@@ -154,6 +150,11 @@ public class Node extends Consumer
 
     public NodeElement asNodeElement () {
         NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+
+        if (isConnected()) {
+            nodeElement.setLastConnected(System.currentTimeMillis());
+        }
+
         return nodeElement;
     }
 }

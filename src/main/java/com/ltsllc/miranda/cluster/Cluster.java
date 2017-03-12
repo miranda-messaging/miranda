@@ -139,15 +139,26 @@ public class Cluster extends Consumer {
     }
 
     public void merge (List<NodeElement> newNodes) {
+        boolean update = false;
+
         List<NodeElement> reallyNewNodes = new ArrayList<NodeElement>();
         for (NodeElement element : newNodes) {
-            if (!contains(element))
+            if (!contains(element)) {
                 reallyNewNodes.add(element);
+                update = true;
+            }
         }
 
-        for (NodeElement element : reallyNewNodes) {
-            Node node = new Node(element, getNetwork());
-            getNodes().add(node);
+        if (update) {
+            for (NodeElement element : reallyNewNodes) {
+                Node node = new Node(element, getNetwork());
+                node.start();
+                getNodes().add(node);
+            }
+
+            List<NodeElement> nodeList = asNodeElements();
+            NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage(getQueue(), this, nodeList);
+            send(nodesUpdatedMessage, getClusterFileQueue());
         }
     }
 
@@ -189,5 +200,16 @@ public class Cluster extends Consumer {
             NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage (getQueue(), this, nodeList);
             send(nodesUpdatedMessage, getClusterFileQueue());
         }
+    }
+
+    public List<NodeElement> asNodeElements () {
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>(getNodes().size());
+
+        for (Node node : getNodes()) {
+            NodeElement nodeElement = node.asNodeElement();
+            nodeElements.add(nodeElement);
+        }
+
+        return nodeElements;
     }
 }

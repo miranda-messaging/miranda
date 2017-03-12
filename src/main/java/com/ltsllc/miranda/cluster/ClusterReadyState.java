@@ -107,31 +107,17 @@ public class ClusterReadyState extends State {
 
 
     private State processLoad (LoadMessage loadMessage) {
-        State nextState = this;
+        getCluster().load();
 
-        send(getCluster().getClusterFileQueue(), loadMessage);
-
-        return nextState;
+        return this;
     }
 
 
     private State processNodesLoaded(NodesLoadedMessage nodesLoadedMessage)
     {
-        State nextState = this;
+        getCluster().merge(nodesLoadedMessage.getNodes());
 
-        //
-        // determine if we need to connect to a new node
-        //
-        for (NodeElement element : nodesLoadedMessage.getNodes()) {
-            if (!contains(element)) {
-                Node node = new Node(element, getCluster().getNetwork());
-                node.start();
-                node.connect();
-                getCluster().getNodes().add(node);
-            }
-        }
-
-        return nextState;
+        return this;
     }
 
     /**
@@ -167,16 +153,6 @@ public class ClusterReadyState extends State {
         getCluster().performHealthCheck();
 
         return this;
-    }
-
-
-    private boolean contains (NodeElement nodeElement) {
-        for (Node node : getCluster().getNodes()) {
-            if (node.equals(nodeElement))
-                return true;
-        }
-
-        return false;
     }
 
 
