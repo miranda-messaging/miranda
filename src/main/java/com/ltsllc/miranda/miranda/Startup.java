@@ -9,6 +9,7 @@ import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.http.HttpServer;
+import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.socket.SocketNetwork;
@@ -122,6 +123,8 @@ public class Startup extends State {
             startLogger();
             startWriter();
             loadProperties();
+            defineFactory();
+            definePanicPolicy();
             startServices();
             startSubsystems();
             loadFiles();
@@ -152,13 +155,16 @@ public class Startup extends State {
         ServletMapping servletMapping1 = new ServletMapping("/servlets/status", StatusServlet.class);
         ServletMapping servletMapping2 = new ServletMapping("/servlets/properties", PropertiesServlet.class);
         ServletMapping servletMapping3 = new ServletMapping("/servlets/test", TestServlet.class);
+        ServletMapping servletMapping4 = new ServletMapping("/servlets/clusterStatus", ClusterStatusServlet.class);
 
 
-
-        ServletMapping[] mappings = { servletMapping1, servletMapping2, servletMapping3 };
+        ServletMapping[] mappings = { servletMapping1, servletMapping2, servletMapping3, servletMapping4 };
 
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
+
+        ClusterStatus.initialize();
+        ClusterStatus.getInstance().start();
 
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this, mappings);
 
@@ -182,7 +188,6 @@ public class Startup extends State {
      *     <li>{@link Miranda#fileWatcher}</li>
      *     <li>{@link Miranda#timer}</li>
      *     <li>{@link Miranda#commandLine}</li>
-     *     <li>{@link Miranda#factory}</li>
      * </ul>
      */
     public void startServices () {
@@ -195,8 +200,6 @@ public class Startup extends State {
         Miranda.timer.start();
 
         Miranda.commandLine = getCommandLine();
-
-        Miranda.factory = new MirandaFactory(Miranda.properties);
     }
 
     private static class LocalRunnable implements Runnable {
@@ -235,7 +238,7 @@ public class Startup extends State {
      * file.
      */
     private void loadProperties() {
-        Miranda.properties = new MirandaProperties(getCommandLine().getPropertiesFilename(), getWriterQueue());
+        Miranda.properties = new MirandaProperties(getPropertiesFilename(), getWriterQueue());
         Miranda.properties.log();
         Miranda.properties.updateSystemProperties();
     }
@@ -256,20 +259,16 @@ public class Startup extends State {
 
         StartState.initialize();
 
-        BlockingQueue<Message> networkQueue = new LinkedBlockingQueue<Message>();
         Network network = factory.buildNetwork();
         network.start();
 
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        NetworkListener listener = factory.buildNetworkListener();
+        listener.start();
+
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initializeClass(filename, getWriterQueue(), queue);
-        Cluster.getInstance().start();
-        Cluster.getInstance().connect();
+        Cluster.initializeClass(filename, getWriterQueue(), network);
         miranda.setCluster(Cluster.getInstance().getQueue());
-
-        PanicPolicy panicPolicy = factory.buildPanicPolicy();
-        miranda.setPanicPolicy(panicPolicy);
     }
 
     public void startWriter () {
@@ -381,5 +380,41 @@ public class Startup extends State {
 
     public void startHttpServer () {
         getHttpServer().sendStart(getMiranda().getQueue());
+    }
+
+    public void definePanicPolicy () {
+        PanicPolicy panicPolicy = Miranda.factory.buildPanicPolicy();
+        Miranda.getInstance().setPanicPolicy(panicPolicy);
+    }
+
+    public void defineFactory () {
+        Miranda.factory = new MirandaFactory(Miranda.properties);
+    }
+
+    public String getPropertiesFilename () {
+        String filename = null;
+
+        //
+        // Start with the default
+        //
+        filename = MirandaProperties.DEFAULT_PROPERTIES_FILENAME;
+
+        //
+        // if there is a name defined in the environment, use that
+        //
+        if (System.getenv().get(MirandaProperties.PROPERTY_PROPERTIES_FILE) != null)
+        {
+            filename = (String) System.getenv().get(MirandaProperties.PROPERTY_PROPERTIES_FILE);
+        }
+
+        //
+        // if it was on the commad line, use that
+        //
+        if (getCommandLine().getPropertiesFilename() != null)
+        {
+            filename = getCommandLine().getPropertiesFilename();
+        }
+
+        return filename;
     }
 }

@@ -32,6 +32,10 @@ public class SocketNetworkListener extends NetworkListener {
     private ServerSocket serverSocket;
     private BlockingQueue<Handle> handleQueue;
 
+    public SocketNetworkListener (int port) {
+        super(port);
+    }
+
     public ServerSocket getServerSocket() {
         return serverSocket;
     }

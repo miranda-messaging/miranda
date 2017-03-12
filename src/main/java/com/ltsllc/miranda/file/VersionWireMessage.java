@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.node.NameVersion;
-import com.ltsllc.miranda.node.WireMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 
 /**
  * Created by Clark on 2/11/2017.

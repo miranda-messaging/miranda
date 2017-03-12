@@ -3,9 +3,12 @@ package com.ltsllc.miranda.cluster;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.cluster.messages.HealthCheckUpdateMessage;
-import com.ltsllc.miranda.cluster.messages.NewClusterFileMessage;
+import com.ltsllc.miranda.cluster.messages.*;
+import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.NodeUpdatedMessage;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteSucceededMessage;
 import org.apache.log4j.Logger;
@@ -13,22 +16,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
+import org.mockito.Matchers;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
 /**
  * Created by Clark on 2/20/2017.
  */
 public class TestClusterFileReadyState extends TestCase {
-    private static Logger logger = Logger.getLogger(TestClusterFileReadyState.class);
-    private static Gson ourGson = new Gson();
-
-    private ClusterFile clusterFile;
-    private BlockingQueue<Message> cluster;
-
     private static final String CLUSTER_FILENAME = "cluster.json";
 
     private static final String[] CLUSTER_FILE_CONTENTS = {
@@ -43,33 +45,61 @@ public class TestClusterFileReadyState extends TestCase {
             "]"
     };
 
+    private static Logger logger = Logger.getLogger(TestClusterFileReadyState.class);
+    private static Gson ourGson = new Gson();
 
-    public ClusterFile getClusterFile() {
-        return clusterFile;
+    private ClusterFileReadyState clusterFileReadyState;
+    private BlockingQueue<Message> clusterQueue;
+
+    @Mock
+    private ClusterFile mockClusterfile = mock(ClusterFile.class);
+
+    @Mock
+    private Logger mockLogger = mock(Logger.class);
+
+    public ClusterFileReadyState getClusterFileReadyState() {
+        return clusterFileReadyState;
     }
 
-    public BlockingQueue<Message> getCluster() {
-        return cluster;
+    public BlockingQueue<Message> getClusterQueue() {
+        return clusterQueue;
+    }
+
+    public ClusterFile getMockClusterfile() {
+        return mockClusterfile;
     }
 
     public void reset() {
         super.reset();
 
         ClusterFile.reset();
-        this.cluster = new LinkedBlockingQueue<Message>();
+        this.clusterQueue = new LinkedBlockingQueue<Message>();
+        this.mockClusterfile = mock(ClusterFile.class);
+        this.mockLogger = mock(Logger.class);
     }
 
 
     private static final String MIRANADA_PROPERTIES_FILENAME = "junk.properties";
 
+    public Logger getMockLogger() {
+        return mockLogger;
+    }
+
+    public void setupMockLogger () {
+        getClusterFileReadyState().setLogger(getMockLogger());
+    }
 
     @Before
     public void setup() {
         reset();
+        setuplog4j();
+        setupMirandaProperties();
+        setupTimer();
         deleteFile(CLUSTER_FILENAME);
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        ClusterFile.initialize(CLUSTER_FILENAME, getWriter(), getCluster());
-        this.clusterFile = ClusterFile.getInstance();
+
+        this.clusterQueue = new LinkedBlockingQueue<Message>();
+        this.clusterFileReadyState = new ClusterFileReadyState(getMockClusterfile(), clusterQueue);
     }
 
     @After
@@ -79,222 +109,86 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessMessageGetVersion() {
-        BlockingQueue<Message> myQueue = new LinkedBlockingQueue<Message>();
-        GetVersionMessage getVersionMessage = new GetVersionMessage(null, this, myQueue);
-        send(getVersionMessage, getClusterFile().getQueue());
+    public void testProcessLoadMessage () {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        LoadMessage loadMessage = new LoadMessage (queue, "whatever", this);
 
-        pause(125);
+        getClusterFileReadyState().processMessage(loadMessage);
 
-        assert (myQueue.size() == 1);
-        assert (contains(Message.Subjects.Version, myQueue));
+        verify(getMockClusterfile(), atLeastOnce()).load();
+        assert(contains(Message.Subjects.LoadResponse, queue));
     }
 
     @Test
-    public void testProcessMessageNewNode() {
-        BlockingQueue<Message> myQueue = new LinkedBlockingQueue<Message>();
-        Version oldVersion = getClusterFile().getVersion();
+    public void testProcessGetVersionMessage () {
+        Version version = new Version();
+        version.setSha1("foo");
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        GetVersionMessage message = new GetVersionMessage(queue, null, queue);
 
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6789, "a different ssltest node");
-        getClusterFile().add(nodeElement);
-        Version newVersion = getClusterFile().getVersion();
+        when(getMockClusterfile().getVersion()).thenReturn(version);
 
-        assert (getClusterFile().contains(nodeElement));
-        assert (oldVersion != newVersion);
-        assert (!oldVersion.equals(newVersion));
-    }
+        getClusterFileReadyState().processMessage(message);
 
-    @Test
-    public void testProcessMessageWriteSucceeded() {
-        WriteSucceededMessage message = new WriteSucceededMessage(null, getClusterFile().getFilename(), this);
-        send(message, getClusterFile().getQueue());
-
-        //
-        // this message should be ignored
-        //
-        assert (0 == getCluster().size());
-        assert (0 == getWriter().size());
-    }
-
-    @Test
-    public void testProcessMessageWriteFailed() {
-        setuplog4j();
-        WriteFailedMessage message = new WriteFailedMessage(null, getClusterFile().getFilename(), null, this);
-        send(message, getClusterFile().getQueue());
-
-        pause(125);
-    }
-
-
-    @Test
-    public void testProcessMessageNodeUpdated() {
-        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
-        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
-        NodeUpdatedMessage message = new NodeUpdatedMessage(null, this, oldNode, newNode);
-        send(message, getClusterFile().getQueue());
-
-        pause(500);
-
-        assert (getClusterFile().contains(newNode));
-        assert (!getClusterFile().contains(oldNode));
-        assert (contains(Message.Subjects.Write, getWriter()));
-    }
-
-    @Test
-    public void testProcessMessageGetClusterFile() {
-        BlockingQueue<Message> myQueue = new LinkedBlockingQueue<Message>();
-
-        GetClusterFileMessage message = new GetClusterFileMessage(myQueue, this);
-        send(message, getClusterFile().getQueue());
-
-        pause(500);
-
-        assert (contains(Message.Subjects.ClusterFile, myQueue));
+        assert(contains(Message.Subjects.Version, queue));
     }
 
     /**
-     * This happens when we connect to a cluster, and it has a different version
-     * of the cluster file.  In this case we should merge the cluster's file
-     * with our local copy.
+     * This message is ignored.
      */
     @Test
-    public void testProcessMessageNewClusterFile() {
-        List<NodeElement> file = new ArrayList<NodeElement>();
-        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a diffent ssltest node");
-        file.add(newNode);
-        String json = ourGson.toJson(file);
-        Version junk = new Version(json);
+    public void testProcessWriteSucceededMesssage () {
+        WriteSucceededMessage message = new WriteSucceededMessage(null, "whatever", this);
 
-        NewClusterFileMessage message = new NewClusterFileMessage(null, this, file, junk);
-        send(message, getClusterFile().getQueue());
+        getClusterFileReadyState().processMessage(message);
 
-        //
-        // yield the prcessor
-        //
-        pause(250);
-
-        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
-
-        assert (getClusterFile().contains(oldNode));
-        assert (getClusterFile().contains(newNode));
+        assert(getWriter().size() == 0);
+        assert(getClusterQueue().size() == 0);
     }
 
     /**
-     * A {@link HealthCheckUpdateMessage} signifies that
-     * the specifed nodes are connected, and should have their times of last
-     * connection updated to now.
+     * This message cause a error log event.
      */
     @Test
-    public void testProcessMessageHealthCheckUpdate() {
-        //
-        // MirandaProperties are used to determine if a node should be dropped
-        //
-        setupMirandaProperties();
+    public void testProcessWriteFailedMessage () {
+        setupMockLogger();
+        WriteFailedMessage message = new WriteFailedMessage(null, "whatever", null, this);
 
-        for (NodeElement element : getClusterFile().getData()) {
-            element.setLastConnected(0);
-        }
+        getClusterFileReadyState().processMessage(message);
 
-        //
-        // update some nodes
-        //
-        NodeElement node = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
-        List<NodeElement> updates = new ArrayList<NodeElement>();
-        updates.add(node);
-        HealthCheckUpdateMessage message = new HealthCheckUpdateMessage(null, this, updates);
-        send(message, getClusterFile().getQueue());
-
-        //
-        // yield the processor
-        //
-        pause(250);
-
-        //
-        // if everything worked, then all the nodes should have updated
-        //
-        boolean updated = true;
-
-        for (NodeElement element : getClusterFile().getData()) {
-            if (element.getLastConnected() <= 0) {
-                updated = false;
-            }
-        }
-
-        assert (updated);
-        assert (contains(Message.Subjects.Write, getWriter()));
-    }
-
-    @Test
-    public void testProcessMessageHealthCheckUpdateDropNode() {
-        //
-        // MirandaProperties are used to determine if a node should be dropped
-        //
-        setupMirandaProperties();
-
-        NodeElement oldNode = new NodeElement("oldfoo.com", "192.168.1.3", 6791, "a node that hasn't reconnected");
-        getClusterFile().getData().add(oldNode);
-
-        //
-        // set the last connected time to 0 for all nodes
-        //
-        for (NodeElement element : getClusterFile().getData()) {
-            element.setLastConnected(0);
-        }
-
-        NodeElement node = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
-        List<NodeElement> updates = new ArrayList<NodeElement>();
-        updates.add(node);
-        HealthCheckUpdateMessage message = new HealthCheckUpdateMessage(null, this, updates);
-        send(message, getClusterFile().getQueue());
-
-        //
-        // yield the processor
-        //
-        pause(250);
-
-        //
-        // old node should have been dropped
-        //
-        assert (!getClusterFile().contains(oldNode));
-        assert (contains(Message.Subjects.DropNode, getCluster()));
+        verify(getMockLogger(), atLeastOnce()).error(Matchers.anyString(), Matchers.any(Throwable.class));
     }
 
     /**
-     * This is used by the superclass, when synchronizing with a remote file.
-     * It basically just sends a write message on to the file.
+     * The cluster tells the cluster file it has updated the nodes
      */
     @Test
-    public void testWrite() {
-        ClusterFileReadyState clusterFileReadyState = (ClusterFileReadyState) getClusterFile().getCurrentState();
-        clusterFileReadyState.write();
+    public void testProcessNodesUpdatedMessage () {
+        List<NodeElement> nodeList = new ArrayList<NodeElement>();
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        nodeList.add(nodeElement);
 
-        pause(125);
+        NodesUpdatedMessage message = new NodesUpdatedMessage(null, this, nodeList);
 
-        assert (contains(Message.Subjects.Write, getWriter()));
+        getClusterFileReadyState().processMessage(message);
+
+        verify(getMockClusterfile(), atLeastOnce()).setData(eq(nodeList));
+        verify(getMockClusterfile(), atLeastOnce()).write();
     }
 
     /**
-     * Contains is used by many other methods; just test that it is at least
-     * minimally working.
+     * This is called when someone else in the cluster wants a copy of our
+     * cluster file.
      */
     @Test
-    public void testContains() {
-        NodeElement present = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
-        NodeElement absent = new NodeElement("bar.com", "192.168.1.2", 6790, "a diffenet test node");
+    public void testProcessGetClusterFileMessage () {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        GetClusterFileMessage message = new GetClusterFileMessage(queue, this);
 
-        ClusterFileReadyState clusterFileReadyState = (ClusterFileReadyState) getClusterFile().getCurrentState();
+        getClusterFileReadyState().processMessage(message);
 
-        assert (clusterFileReadyState.contains(present));
-        assert (!clusterFileReadyState.contains(absent));
-    }
-
-    @Test
-    public void testGetVersion() {
-        ClusterFileReadyState clusterFileReadyState = (ClusterFileReadyState) getClusterFile().getCurrentState();
-        Version cfrsVersion = clusterFileReadyState.getVersion();
-
-        Version cfVersion = getClusterFile().getVersion();
-
-        assert (cfrsVersion.equals(cfrsVersion));
+        verify(getMockClusterfile(), atLeastOnce()).getData();
+        verify(getMockClusterfile(), atLeastOnce()).getVersion();
+        assert(contains(Message.Subjects.ClusterFile, queue));
     }
 }

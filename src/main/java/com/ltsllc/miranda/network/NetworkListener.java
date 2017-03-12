@@ -3,12 +3,9 @@ package com.ltsllc.miranda.network;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.property.MirandaProperties;
-import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -38,14 +35,16 @@ abstract public class NetworkListener extends Consumer {
         this.keepGoing = keepGoing;
     }
 
-    public NetworkListener () {
-        super("network liastener");
+    public NetworkListener (int port) {
+        super("network listener");
 
-        MirandaProperties properties = Miranda.properties;
-        port = properties.getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        this.port = port;
+
+        NetworkListenerReadyState readyState = new NetworkListenerReadyState(this);
+        setCurrentState(readyState);
     }
 
-    public void start () {
+    public void getConnections () {
         LinkedBlockingQueue<Handle> queue = new LinkedBlockingQueue<Handle>();
 
         try {
@@ -71,7 +70,8 @@ abstract public class NetworkListener extends Consumer {
 
             if (null != newConnection) {
                 int handle = Network.getInstance().newConnection(newConnection);
-                Node node = new Node(handle);
+
+                Node node = new Node(handle, Network.getInstance(), Cluster.getInstance());
                 node.start();
 
                 NewConnectionMessage message = new NewConnectionMessage(getQueue(), this, node);

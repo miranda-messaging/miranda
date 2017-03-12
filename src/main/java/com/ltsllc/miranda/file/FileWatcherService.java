@@ -100,7 +100,7 @@ public class FileWatcherService extends Consumer {
      * of no more watchers.
      *
      * @param file The file to watch.
-     * @param queue The queue to send messages on.
+     * @param queue The queue to sendToMe messages on.
      * @return true if this file was being watched.  False otherwise.
      */
     public synchronized boolean stopWatching (File file, BlockingQueue<Message> queue) {

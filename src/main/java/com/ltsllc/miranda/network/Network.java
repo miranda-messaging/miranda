@@ -1,12 +1,16 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.messages.*;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * This class takes care of mapping from integer handles to Handle objects.
@@ -79,8 +83,6 @@ abstract public class Network extends Consumer {
             if (null != handle) {
                 int handleValue = nextHandle();
                 setHandle(handleValue, handle);
-                ConnectedMessage connectedMessage = new ConnectedMessage(getQueue(), this, handleValue);
-                connectToMessage.reply(connectedMessage);
             }
         } catch (NetworkException e) {
             ConnectFailedMessage message = new ConnectFailedMessage(getQueue(), this, e.getCause());
@@ -97,7 +99,7 @@ abstract public class Network extends Consumer {
             disconnectMessage.reply(unknownHandleMessage);
         }
 
-        handle.close(disconnectMessage);
+        handle.close();
 
         setHandle(disconnectMessage.getHandle(), null);
 
@@ -167,8 +169,44 @@ abstract public class Network extends Consumer {
      */
     public int newConnection (Handle handle) {
         int handleId = nextHandle();
+
         setHandle(handleId, handle);
 
         return handleId;
+    }
+
+
+    /**
+     * Tell the network to close a connection.
+     */
+    public void sendClose (BlockingQueue<Message> senderQueue, Object sender, int handle) {
+        CloseMessage closeMessage = new CloseMessage(senderQueue, sender, handle);
+        sendToMe(closeMessage);
+    }
+
+    /**
+     * Ask the network to send a message.
+     */
+    public void sendMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
+        SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, handle);
+        sendToMe(sendNetworkMessage);
+    }
+
+    /**
+     * Ask the network to create a connection to someone
+     */
+    public void sendConnect(BlockingQueue<Message> senderQueue, Object sender, String host, int port) {
+        ConnectToMessage connectToMessage = new ConnectToMessage(host, port, senderQueue, sender);
+        sendToMe(connectToMessage);
+    }
+
+    /**
+     * This is called when we have successfully made a connection.
+     *
+     * @param handleID The handle ID
+     * @param handle The handle that it maps to
+     */
+    public void mapHandle (int handleID, Handle handle) {
+        integerToHandle.put(handleID, handle);
     }
 }

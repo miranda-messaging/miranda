@@ -2,21 +2,31 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.node.Node;
+import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
+import org.mockito.Matchers;
+import org.mockito.Mock;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Clark on 2/20/2017.
  */
 public class TestCluster extends TestCase {
     private ClusterFile clusterFile;
-    private com.ltsllc.miranda.cluster.Cluster cluster;
+    private Cluster cluster;
+
 
     public ClusterFile getClusterFile() {
         return clusterFile;
@@ -48,14 +58,15 @@ public class TestCluster extends TestCase {
         setupMiranda();
         setupTimer();
         setupTrustStore();
+
         deleteFile(CLUSTER_FILENAME);
-        com.ltsllc.miranda.cluster.Cluster.reset();
+        Cluster.reset();
 
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        com.ltsllc.miranda.cluster.Cluster.initializeClass(filename, getWriter(), getNetwork());
-        this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
+        Cluster.initializeClass(filename, getWriter(), getMockNetwork());
+        this.cluster = Cluster.getInstance();
         this.clusterFile = ClusterFile.getInstance();
     }
 
@@ -72,7 +83,7 @@ public class TestCluster extends TestCase {
     public void testInitialize() {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
         com.ltsllc.miranda.cluster.Cluster.reset();
-        com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getNetwork());
+        com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getMockNetwork());
         this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
 
         ClusterFile temp = ClusterFile.getInstance();
@@ -84,8 +95,12 @@ public class TestCluster extends TestCase {
     @Test
     public void testStart () {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getNetwork());
-        getCluster().load(CLUSTER_FILENAME);
+        getCluster().load();
+
+        pause(50);
+
+        Cluster cluster = Cluster.getInstance();
+        Node node = cluster.getNodes().get(0);
 
         pause(125);
 
@@ -93,7 +108,7 @@ public class TestCluster extends TestCase {
 
         pause(125);
 
-        assert(contains(Message.Subjects.ConnectTo, getNetwork()));
+        verify(getMockNetwork(), atLeastOnce()).sendConnect(eq(node.getQueue()), Matchers.any(), eq("foo.com"), eq(6789));
     }
 
     /**
@@ -105,7 +120,7 @@ public class TestCluster extends TestCase {
         getCluster().replaceClusterFileQueue(queue);
 
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        getCluster().load(CLUSTER_FILENAME);
+        // TODO: getCluster().load(CLUSTER_FILENAME);
 
         pause(125);
 

@@ -4,6 +4,10 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.servlet.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.GetStatusMessage;
+import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -79,6 +83,18 @@ public class ClusterReadyState extends State {
                 break;
             }
 
+            case GetStatus: {
+                GetStatusMessage getStatusMessage = (GetStatusMessage) m;
+                nextState = processGetStatusMessage (getStatusMessage);
+                break;
+            }
+
+            case NewNode: {
+                NewNodeMessage newNodeMessage = (NewNodeMessage) m;
+                nextState = processNewNodeMessage(newNodeMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(m);
                 break;
@@ -148,17 +164,7 @@ public class ClusterReadyState extends State {
     }
 
     private State processHealthCheck (HealthCheckMessage healthCheckMessage) {
-        List<NodeElement> list = new ArrayList<NodeElement>();
-
-        for (Node node : getCluster().getNodes()) {
-            if (node.isConnected()) {
-                NodeElement nodeElement = node.getUpdatedElement();
-                list.add(nodeElement);
-            }
-        }
-
-        HealthCheckUpdateMessage healthCheckUpdateMessage = new HealthCheckUpdateMessage(getCluster().getQueue(),this, list);
-        send (getCluster().getClusterFileQueue(), healthCheckUpdateMessage);
+        getCluster().performHealthCheck();
 
         return this;
     }
@@ -198,6 +204,21 @@ public class ClusterReadyState extends State {
                 getCluster().getNodes().remove(node);
             }
         }
+
+        return this;
+    }
+
+
+    private State processGetStatusMessage (GetStatusMessage getStatusMessage) {
+        ClusterStatusObject clusterStatusObject = getCluster().getStatus();
+        GetStatusResponseMessage response = new GetStatusResponseMessage(getCluster().getQueue(), this, clusterStatusObject);
+        getStatusMessage.reply(response);
+
+        return this;
+    }
+
+    private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
+        getCluster().getNodes().add(newNodeMessage.getNode());
 
         return this;
     }

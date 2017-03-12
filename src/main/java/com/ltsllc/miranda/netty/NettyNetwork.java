@@ -2,7 +2,7 @@ package com.ltsllc.miranda.netty;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.MirandaFactory;
-import com.ltsllc.miranda.network.ConnectToMessage;
+import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkException;

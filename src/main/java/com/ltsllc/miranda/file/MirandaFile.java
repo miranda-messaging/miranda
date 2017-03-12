@@ -86,7 +86,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         try {
             getWriterQueue().put(m);
         } catch (InterruptedException e) {
-            logger.fatal("Exception while trying to send message to writer", e);
+            logger.fatal("Exception while trying to sendToMe message to writer", e);
             System.exit(1);
         }
     }

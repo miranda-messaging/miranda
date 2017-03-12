@@ -47,6 +47,7 @@ public class NodeElement implements Perishable {
         this.port = port;
     }
 
+
     public NodeElement (Node node) {
         this.dns = node.getDns();
         this.ip = node.getIp();

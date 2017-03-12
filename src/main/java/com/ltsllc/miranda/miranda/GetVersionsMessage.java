@@ -10,15 +10,7 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/11/2017.
  */
 public class GetVersionsMessage extends Message {
-    private Node requester;
-
-    public GetVersionsMessage (BlockingQueue<Message> senderQueue, Object sender, Node requester) {
+    public GetVersionsMessage (BlockingQueue<Message> senderQueue, Object sender) {
         super(Subjects.GetVersions, senderQueue, sender);
-
-        this.requester = requester;
-    }
-
-    public Node getRequester() {
-        return requester;
     }
 }

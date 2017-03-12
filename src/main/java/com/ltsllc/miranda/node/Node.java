@@ -1,16 +1,15 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
-import com.ltsllc.miranda.network.ConnectToMessage;
-import com.ltsllc.miranda.network.SendMessageMessage;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
+import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
+import com.ltsllc.miranda.node.states.NewNodeState;
+import com.ltsllc.miranda.node.states.NodeStartState;
+import com.ltsllc.miranda.node.states.SyncingState;
 import org.apache.log4j.Logger;
 
-import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
@@ -19,42 +18,30 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Node extends Consumer
 {
-    public Node(NodeElement element, BlockingQueue<Message> network) {
+    public Node(NodeElement element, Network network) {
         super("node");
         dns = element.getDns();
         ip = element.getIp();
         port = element.getPort();
         this.network = network;
+
         NodeStartState nodeStartState = new NodeStartState(this, getNetwork());
         setCurrentState(nodeStartState);
     }
 
-    public Node (InetSocketAddress address, int handle) {
+    /**
+     * This constructor is used when a new cluster node connects to us.
+     *
+     * @param handle
+     */
+    public Node (int handle, Network network, Cluster cluster) {
         super("node");
 
-        if (null != address) {
-            dns = address.getHostName();
-            ip = address.toString();
-            port = address.getPort();
-        }
 
         this.handle = handle;
 
-        State connectedState = new ConnectedState(this);
-        setCurrentState(connectedState);
-    }
-
-
-    public Node (int handle)
-    {
-        super("node");
-
-        this.handle = handle;
-        setCurrentState(new NewNodeState(this));
-    }
-
-    public Node() {
-        super("node");
+        State newNodeState = new NewNodeState(this, network, cluster);
+        setCurrentState(newNodeState);
     }
 
 
@@ -64,7 +51,7 @@ public class Node extends Consumer
     private String ip;
     private String description;
     private int port;
-    private BlockingQueue<Message> network;
+    private Network network;
     private int handle = -1;
 
 
@@ -101,12 +88,8 @@ public class Node extends Consumer
         this.port = port;
     }
 
-    public BlockingQueue<Message> getNetwork() {
+    public Network getNetwork() {
         return network;
-    }
-
-    public void setNetwork(BlockingQueue<Message> network) {
-        this.network = network;
     }
 
     public int getHandle() {
@@ -126,29 +109,15 @@ public class Node extends Consumer
 
     public void connect (BlockingQueue<Message> senderQueue, Object sender) {
         ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender, getDns(), getPort());
-        send (connectMessage, getQueue());
+        send(connectMessage, getQueue());
     }
 
     public void connect () {
-        ConnectToMessage connectToMessage = new ConnectToMessage(getDns(), getPort(), getQueue(), this);
-        send (connectToMessage, getNetwork());
-
-        ConnectingState connectingState = new ConnectingState(this);
-        setCurrentState(connectingState);
+        getNetwork().sendConnect (getQueue(), this, getDns(), getPort());
     }
 
     public void sendOnWire(WireMessage wireMessage) {
-        String json = wireMessage.getJson();
-        byte[] buffer = json.getBytes();
-
-        SendMessageMessage message = new SendMessageMessage(getQueue(), this, getHandle(), buffer);
-        send(message, getNetwork());
-    }
-
-
-    public void sync () {
-        SyncingState syncingState = new SyncingState(this);
-        setCurrentState(syncingState);
+        getNetwork().sendMessage(getQueue(), this, getHandle(), wireMessage);
     }
 
 

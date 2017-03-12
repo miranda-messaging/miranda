@@ -6,15 +6,20 @@ import org.apache.log4j.Logger;
 import java.util.Properties;
 
 /**
- * Created by Clark on 2/28/2017.
+ * The arguments to the program.
+ *
+ * <p>
+ *     Note that the default value for things like the properties filename is
+ *     null.  This means it was absent from the arguments.
+ * </p>
  */
 public class MirandaCommandLine extends CommandLine {
     private static Logger logger = Logger.getLogger(MirandaCommandLine.class);
 
-    private String loggingLevel = MirandaProperties.LoggingLevel.Warning.toString();
-    private String log4jFilename = MirandaProperties.DEFAULT_LOG4J_FILE;
-    private String propertiesFilename = MirandaProperties.DEFAULT_PROPERTIES_FILENAME;
-    private String mirandaMode = MirandaProperties.DEFAULT_MIRANDA_MODE;
+    private String loggingLevel;
+    private String log4jFilename;
+    private String propertiesFilename;
+    private String mirandaMode;
 
     public String getLoggingLevel() {
         return loggingLevel;

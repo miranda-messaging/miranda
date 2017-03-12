@@ -6,9 +6,9 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
-import com.ltsllc.miranda.node.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;
-import com.ltsllc.miranda.node.VersionMessage;
+import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.UsersFile;
 import org.apache.log4j.Logger;
@@ -140,13 +140,13 @@ public class GettingVersionsState extends State {
             RemoteVersionMessage remoteVersion = new RemoteVersionMessage(getMiranda().getQueue(), this, versionsMessage);
 
             if (nameVersion.getName().equalsIgnoreCase("cluster")) {
-                send(Cluster.getInstance().getQueue(), remoteVersion);
+                sendToMe(Cluster.getInstance().getQueue(), remoteVersion);
             } else if (nameVersion.getName().equalsIgnoreCase("users")) {
-                send(UsersFile.getInstance().getQueue(), remoteVersion);
+                sendToMe(UsersFile.getInstance().getQueue(), remoteVersion);
             } else if (nameVersion.getName().equalsIgnoreCase("topics")) {
-                send(TopicsFile.getInstance().getQueue(), remoteVersion);
+                sendToMe(TopicsFile.getInstance().getQueue(), remoteVersion);
             } else if (nameVersion.getName().equalsIgnoreCase("suscriptions")) {
-                send(SubscriptionsFile.getInstance().getQueue(), remoteVersion);
+                sendToMe(SubscriptionsFile.getInstance().getQueue(), remoteVersion);
             }
         }
 

@@ -2,7 +2,6 @@ package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.User;
-import com.ltsllc.miranda.network.NewConnectionMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.topics.TopicsFile;
@@ -11,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Clark on 3/5/2017.

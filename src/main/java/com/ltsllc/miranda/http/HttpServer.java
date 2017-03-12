@@ -23,6 +23,6 @@ abstract public class HttpServer extends Consumer {
 
     public void sendStart (BlockingQueue<Message> senderQueue) {
         StartHttpServerMessage startHttpServerMessage = new StartHttpServerMessage(senderQueue, this);
-        send(startHttpServerMessage);
+        sendToMe(startHttpServerMessage);
     }
 }

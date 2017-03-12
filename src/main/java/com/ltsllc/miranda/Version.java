@@ -26,7 +26,7 @@ public class Version  {
 
     private String sha1;
 
-    private Version () {}
+    public Version () {}
 
     public Version (String content) {
         this.sha1 = Utils.calculateSha1(content);
@@ -62,6 +62,10 @@ public class Version  {
 
     public String getSha1() {
         return sha1;
+    }
+
+    public void setSha1 (String sha1) {
+        this.sha1 = sha1;
     }
 
     public boolean equals (Version other) {

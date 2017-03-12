@@ -3,6 +3,7 @@ package com.ltsllc.miranda.network;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.PanicMessage;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.network.messages.CloseMessage;
 
 /**
  * Created by Clark on 3/2/2017.

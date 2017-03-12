@@ -53,7 +53,8 @@ public class MirandaProperties extends SingleFile<String> {
     public enum Networks {
         Unknown,
         Netty,
-        Socket
+        Socket,
+        Mina
     }
 
     public enum WebSevers {
@@ -71,27 +72,30 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String PANIC_PACKAGE = PACKAGE_NAME + "panic.";
 
+    public static final String CLUSTER_PACKAGE = PACKAGE_NAME + "cluster.";
+
     public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
-    public static final String PROPERTY_CLUSTER_FILE = "com.ltsllc.miranda.ClusterFile";
     public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
     public static final String PROPERTY_TOPICS_FILE = "com.ltsllc.miranda.TopicsFile";
     public static final String PROPERTY_SUBSCRIPTIONS_FILE = "com.ltsllc.miranda.SubscriptionsFile";
     public static final String PROPERTY_MESSAGE_PORT = "com.ltsllc.miranda.MessagePort";
-    public static final String PROPERTY_CLUSTER_PORT = "com.ltsllc.miranda.ClusterPort";
     public static final String PROPERTY_MESSAGES_DIRECTORY = "com.ltsllc.miranda.MessageDirectory";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
     public static final String PROPERTY_LOGGING_LEVEL = PACKAGE_NAME + "LoggingLevel";
     public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
-    public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = PACKAGE_NAME + "cluster.HealthCheckPeriod";
-    public static final String PROPERTY_CLUSTER_TIMEOUT = PACKAGE_NAME + "cluster.Timeout";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
     public static final String PROPERTY_PROPERTIES_FILE = PACKAGE_NAME + "PropertiesFile";
     public static final String PROPERTY_MIRANDA_MODE = PACKAGE_NAME + "MirandaMode";
     public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
 
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
+
+    public static final String PROPERTY_CLUSTER_FILE = CLUSTER_PACKAGE + "File";
+    public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = CLUSTER_PACKAGE + "HealthCheckPeriod";
+    public static final String PROPERTY_CLUSTER_TIMEOUT = CLUSTER_PACKAGE + "Timeout";
+    public static final String PROPERTY_CLUSTER_PORT = CLUSTER_PACKAGE + "Port";
 
     public static final String PROPERTY_PANIC_LIMIT = PANIC_PACKAGE + "Limit";
     public static final String PROPERTY_PANIC_TIMEOUT = PANIC_PACKAGE + "Timeout";
@@ -122,23 +126,24 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
-    public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
     public static final String DEFAULT_TOPICS_FILE = "data/topics.json";
     public static final String DEFAULT_SUBSCRIPTIONS_FILE = "data/subscriptions.json";
     public static final String DEFAULT_MESSAGE_PORT = "443";
-    public static final String DEFAULT_CLUSTER_PORT = "6789";
     public static final String DEFAULT_DELIVERY_DIRECTORY = "data/deliveries";
     public static final String DEFAULT_MESSAGES_DIRECTORY = "data/messages";
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
     public static final String DEFAULT_LOGGING_LEVEL = LoggingLevel.Warning.toString();
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
-    public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // once/day
-    public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // once week
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
     public static final String DEFAULT_MIRANDA_MODE = MirandaModes.Normal.toString();
-    public static final String DEFAULT_NETWORK = Networks.Socket.toString();
+    public static final String DEFAULT_NETWORK = Networks.Mina.toString();
+
+    public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
+    public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // one day
+    public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // one week
+    public static final String DEFAULT_CLUSTER_PORT = "6789";
 
     public static final String DEFAULT_PANIC_LIMIT = "3";
     public static final String DEFAULT_PANIC_TIMEOUT = "3600000"; // one hour
@@ -158,12 +163,10 @@ public class MirandaProperties extends SingleFile<String> {
 
 
     public static String[][] DEFAULT_PROPERTIES = {
-            {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
             {PROPERTY_TOPICS_FILE, DEFAULT_TOPICS_FILE},
             {PROPERTY_SUBSCRIPTIONS_FILE, DEFAULT_SUBSCRIPTIONS_FILE},
             {PROPERTY_MESSAGE_PORT, DEFAULT_MESSAGE_PORT},
-            {PROPERTY_CLUSTER_PORT, DEFAULT_CLUSTER_PORT},
             {PROPERTY_MESSAGES_DIRECTORY, DEFAULT_MESSAGES_DIRECTORY},
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
@@ -182,9 +185,12 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_CERTIFICATE_STORE, DEFAULT_CERTIFICATE_STORE},
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
 
-            {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES},
+            {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},
             {PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD},
+            {PROPERTY_CLUSTER_PORT, DEFAULT_CLUSTER_PORT},
             {PROPERTY_CLUSTER_TIMEOUT, DEFAULT_CLUSTER_TIMEOUT},
+
+            {PROPERTY_DELAY_BETWEEN_RETRIES, DEFAULT_DELAY_BETWEEN_RETRIES},
             {PROPERTY_GARBAGE_COLLECTION_PERIOD, DEFAULT_GARBAGE_COLLECTION_PERIOD},
 
             {PROPERTY_HTTP_PORT, DEFAULT_HTTP_PORT},

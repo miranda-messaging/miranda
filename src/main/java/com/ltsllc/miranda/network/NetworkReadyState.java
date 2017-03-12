@@ -2,6 +2,9 @@ package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.network.messages.CloseMessage;
+import com.ltsllc.miranda.network.messages.ConnectToMessage;
+import com.ltsllc.miranda.network.messages.SendMessageMessage;
 import org.apache.log4j.Logger;
 
 /**
@@ -58,7 +61,7 @@ public class NetworkReadyState extends State {
     private State processConnectToMessage (ConnectToMessage connectToMessage) {
         State nextState = this;
 
-        logger.info ("Conecting to " + connectToMessage.getHost() + ":" + connectToMessage.getPort());
+        logger.info ("Connecting to " + connectToMessage.getHost() + ":" + connectToMessage.getPort());
 
         getNetwork().connect(connectToMessage);
 

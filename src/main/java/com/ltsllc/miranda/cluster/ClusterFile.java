@@ -2,11 +2,8 @@ package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
-import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.cluster.messages.NodesLoadedMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
@@ -25,7 +22,6 @@ public class ClusterFile extends SingleFile<NodeElement> {
     private static ClusterFile ourInstance;
 
     private BlockingQueue<Message> cluster;
-    private Version version;
 
     public static ClusterFile getInstance () {
         return ourInstance;
@@ -35,16 +31,11 @@ public class ClusterFile extends SingleFile<NodeElement> {
         if (null == ourInstance) {
             ourInstance = new ClusterFile(filename, writerQueue, cluster);
             ourInstance.start();
-            ourInstance.load();
         }
     }
 
     public static void reset () {
         ourInstance = null;
-    }
-
-    public void setVersion(Version version) {
-        this.version = version;
     }
 
     public BlockingQueue<Message> getCluster() {
@@ -59,42 +50,6 @@ public class ClusterFile extends SingleFile<NodeElement> {
         ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this, getCluster());
         setCurrentState(clusterFileReadyState);
     }
-
-    public Version getVersion() {
-        return version;
-    }
-
-    public State processMessage (Message message) {
-        State nextState = getCurrentState();
-
-        switch (message.getSubject()) {
-            case Load: {
-                LoadMessage loadMessage = (LoadMessage) message;
-                nextState = processLoadMessage(loadMessage);
-                break;
-            }
-
-            default:
-                nextState = super.processMessage(message);
-                break;
-        }
-
-        return nextState;
-    }
-
-
-    public State processLoadMessage (LoadMessage loadMessage) {
-        State nextState = getCurrentState();
-
-        load();
-
-        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(getData(), getQueue(), this);
-        send(nodesLoadedMessage, getCluster());
-
-        return nextState;
-    }
-
-
 
     public void addNode(Node node) {
         if (!containsNode(node)) {
@@ -179,7 +134,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
             WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
             send(writeMessage, getWriterQueue());
 
-            ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getQueue(), this, getData(), version);
+            ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(getQueue(), this, getData(), getVersion());
             send(clusterFileChangedMessage, getCluster());
         }
     }

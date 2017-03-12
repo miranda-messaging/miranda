@@ -1,10 +1,9 @@
 package com.ltsllc.miranda.socket;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.network.CloseMessage;
-import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.network.NetworkException;
-import com.ltsllc.miranda.network.SendMessageMessage;
+import com.ltsllc.miranda.network.*;
+import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
@@ -24,6 +23,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class SocketHandle extends Handle {
     private static Logger logger = Logger.getLogger(SocketHandle.class);
+    private static Gson ourGson = new Gson();
 
     private Socket socket;
     private OutputStream outputStream;
@@ -58,16 +58,17 @@ public class SocketHandle extends Handle {
     }
 
 
-    public void send (SendMessageMessage sendMessageMessage) throws NetworkException {
+    public void send (SendNetworkMessage sendNetworkMessage) throws NetworkException {
         try {
-            outputStream.write(sendMessageMessage.getContent());
+            String json = ourGson.toJson(sendNetworkMessage.getWireMessage());
+            outputStream.write(json.getBytes());
             outputStream.flush();
         } catch (IOException e) {
-            throw new NetworkException ("Exception trying to send or flush message", e, NetworkException.Errors.ExceptionSending);
+            throw new NetworkException ("Exception trying to sendToMe or flush message", e, NetworkException.Errors.ExceptionSending);
         }
     }
 
-    public void close (CloseMessage disconnectMessage) {
+    public void close () {
         Utils.closeLogExceptions(getInputStream(), logger);
         Utils.closeLogExceptions(getOutputStream(), logger);
         Utils.closeLogExceptions(getSocket(), logger);

@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.node.GetFileMessage;
 
 import java.util.concurrent.BlockingQueue;
 

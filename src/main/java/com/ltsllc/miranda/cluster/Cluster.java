@@ -2,11 +2,14 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
+import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.netty.NettyNetworkListener;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.servlet.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.NodeStatus;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public class Cluster extends Consumer {
     private static Cluster ourInstance;
 
 
-    public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> network) {
+    public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, Network network) {
         if (null == ourInstance) {
             BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
 
@@ -50,19 +53,19 @@ public class Cluster extends Consumer {
         ourInstance = null;
     }
 
-    private Cluster(BlockingQueue<Message> network, BlockingQueue<Message> queue) {
+    private Cluster(Network network, BlockingQueue<Message> queue) {
         super("cluster", queue);
         this.clusterFileQueue = ClusterFile.getInstance().getQueue();
 
-        ClusterReadyState readyState = new ClusterReadyState(this);
-        setCurrentState(readyState);
+        ClusterStartingState clusterStartingState = new ClusterStartingState(this);
+        setCurrentState(clusterStartingState);
 
         this.network = network;
     }
 
 
     private List<Node> nodes = new ArrayList<Node>();
-    private BlockingQueue<Message> network;
+    private Network network;
     private BlockingQueue<Message> clusterFileQueue;
     private NettyNetworkListener networkListener;
 
@@ -78,27 +81,13 @@ public class Cluster extends Consumer {
         return nodes;
     }
 
-    public BlockingQueue<Message> getNetwork() {
+    public Network getNetwork() {
         return network;
     }
 
     public NettyNetworkListener getNetworkListener() {
         return networkListener;
     }
-
-    public void start () {
-        super.start();
-
-        State state = new ClusterReadyState(this);
-        setCurrentState(state);
-    }
-
-
-    public void load (String filename) {
-        LoadMessage loadMessage = new LoadMessage(getInstance().getQueue(), filename, null);
-        getInstance().send(loadMessage, getClusterFileQueue());
-    }
-
 
     public boolean contains (NodeElement nodeElement) {
         for (Node node : nodes) {
@@ -136,5 +125,69 @@ public class Cluster extends Consumer {
         }
 
         return null;
+    }
+
+    public ClusterStatusObject getStatus () {
+        List<NodeStatus> nodes = new ArrayList<NodeStatus>(getNodes().size());
+
+        for (Node node : getNodes()) {
+            NodeStatus.NodeStatuses status = node.isConnected() ? NodeStatus.NodeStatuses.Online : NodeStatus.NodeStatuses.Online;
+            NodeStatus nodeStatus = new NodeStatus(node.getDns(), node.getIp(), node.getPort(), node.getDescription(), status);
+        }
+
+        return new ClusterStatusObject(nodes);
+    }
+
+    public void merge (List<NodeElement> newNodes) {
+        List<NodeElement> reallyNewNodes = new ArrayList<NodeElement>();
+        for (NodeElement element : newNodes) {
+            if (!contains(element))
+                reallyNewNodes.add(element);
+        }
+
+        for (NodeElement element : reallyNewNodes) {
+            Node node = new Node(element, getNetwork());
+            getNodes().add(node);
+        }
+    }
+
+    /**
+     * This gets called when a node connects "out of the blue."
+     *
+     * @param node The node that just connected.
+     */
+    public void newNode (Node node) {
+
+    }
+
+    /**
+     * Tell the cluster about the new node.
+     */
+    public void sendNewNode (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+        NewNodeMessage newNodeMessage = new NewNodeMessage(senderQueue, sender, node);
+        sendToMe(newNodeMessage);
+    }
+
+    public void load () {
+        LoadMessage loadMessage = new LoadMessage(getQueue(), "junk", this);
+    }
+
+    public void performHealthCheck () {
+        long now = System.currentTimeMillis();
+
+        boolean updated = false;
+        List<NodeElement> nodeList = new ArrayList<NodeElement>(getNodes().size());
+        for (Node node : getNodes()) {
+            NodeElement nodeElement = node.asNodeElement();
+            if (node.isConnected()) {
+                nodeElement.setLastConnected(now);
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage (getQueue(), this, nodeList);
+            send(nodesUpdatedMessage, getClusterFileQueue());
+        }
     }
 }

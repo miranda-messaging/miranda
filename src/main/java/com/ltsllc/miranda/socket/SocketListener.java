@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.node.NetworkMessage;
-import com.ltsllc.miranda.node.WireMessage;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 

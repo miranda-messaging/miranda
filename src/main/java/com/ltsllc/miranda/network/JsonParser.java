@@ -5,7 +5,7 @@ package com.ltsllc.miranda.network;
  */
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.node.WireMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

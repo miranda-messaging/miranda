@@ -1,11 +1,11 @@
 package com.ltsllc.miranda.netty;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.network.CloseMessage;
-import com.ltsllc.miranda.network.ClosedMessage;
-import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.network.SendMessageMessage;
+import com.ltsllc.miranda.network.*;
+import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 
@@ -15,6 +15,8 @@ import java.util.concurrent.BlockingQueue;
  * A handle for use with the netty library
  */
 public class NettyHandle extends Handle {
+    private static Gson ourGson = new Gson();
+
     private Channel channel;
 
 
@@ -28,18 +30,16 @@ public class NettyHandle extends Handle {
         return channel;
     }
 
-    public void send (SendMessageMessage sendMessageMessage) {
-        ByteBuf byteBuf = Unpooled.directBuffer(sendMessageMessage.getContent().length);
-        byteBuf.setBytes(0, sendMessageMessage.getContent());
+    public void send (SendNetworkMessage sendNetworkMessage) {
+        String json = ourGson.toJson(sendNetworkMessage.getWireMessage());
+        ByteBuf byteBuf = Unpooled.directBuffer(json.length());
+        ByteBufUtil.writeUtf8(byteBuf, json);
         getChannel().writeAndFlush(byteBuf);
     }
 
 
-    public void close (CloseMessage disconnectMessage) {
+    public void close () {
         getChannel().close();
-
-        ClosedMessage closedMessage = new ClosedMessage(null, this, -1);
-        disconnectMessage.reply(closedMessage);
     }
 
 

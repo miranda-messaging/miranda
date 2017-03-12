@@ -1,18 +1,18 @@
 package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.NodeUpdatedMessage;
+import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.node.*;
-import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -45,6 +45,10 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return clusterQueue;
     }
 
+    public static void setLogger(Logger logger) {
+        ClusterFileReadyState.logger = logger;
+    }
+
     @Override
     public State processMessage(Message message) {
         State nextState = this;
@@ -66,27 +70,27 @@ public class ClusterFileReadyState extends SingleFileReadyState {
                 break;
             }
 
-            case NodeUpdated: {
-                NodeUpdatedMessage nodeUpdatedMessage = (NodeUpdatedMessage) message;
-                nextState = processNodeUpdatedMessage(nodeUpdatedMessage);
-                break;
-            }
-
             case GetClusterFile: {
                 GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) message;
                 nextState = processGetClusterFileMessage(getClusterFileMessage);
                 break;
             }
 
-            case NewClusterFile: {
-                NewClusterFileMessage newClusterFileMessage = (NewClusterFileMessage) message;
-                nextState = processNewClusterFileMessage (newClusterFileMessage);
+            case NodesUpdated: {
+                NodesUpdatedMessage nodesUpdatedMessage = (NodesUpdatedMessage) message;
+                nextState = processNodesUpdatedMessage(nodesUpdatedMessage);
                 break;
             }
 
             case HealthCheckUpdate: {
                 HealthCheckUpdateMessage healthCheckUpdateMessage = (HealthCheckUpdateMessage) message;
                 nextState = processHealthCheckUpdateMessage(healthCheckUpdateMessage);
+                break;
+            }
+
+            case Load: {
+                LoadMessage loadMessage = (LoadMessage) message;
+                nextState = processLoadMessage(loadMessage);
                 break;
             }
 
@@ -100,19 +104,13 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    private State processNodeUpdatedMessage(NodeUpdatedMessage nodeUpdatedMessage) {
-        getClusterFile().updateNode(nodeUpdatedMessage.getOldNode(), nodeUpdatedMessage.getNewNode());
-
-        return this;
-    }
-
-
     private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
         List<NodeElement> newList = new ArrayList<NodeElement>(getClusterFile().getData());
 
         ClusterFileMessage clusterFileMessage = new ClusterFileMessage (getClusterFile().getQueue(), this,
                 newList, getClusterFile().getVersion());
-        send(getClusterFileMessage.getSender(), clusterFileMessage);
+
+        getClusterFileMessage.reply(clusterFileMessage);
 
         return this;
     }
@@ -203,7 +201,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
         NameVersion nameVersion = new NameVersion("cluster", getClusterFile().getVersion());
         VersionMessage versionMessage = new VersionMessage(getClusterFile().getQueue(), this, nameVersion);
-        send(getVersionMessage.getRequester(), versionMessage);
+        getVersionMessage.reply(versionMessage);
 
         return this;
     }
@@ -276,9 +274,26 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         MirandaProperties properties = Miranda.properties;
 
         long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
-        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(Miranda.getInstance().getQueue(), this);
+        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(getClusterQueue(), this);
         Miranda.timer.schedulePeriodic(healthCheckPeriod, getClusterQueue(), healthCheckMessage);
 
         return nextState;
+    }
+
+    private State processLoadMessage (LoadMessage loadMessage) {
+        getClusterFile().load();
+
+        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getClusterQueue(), this, getClusterFile().getData());
+        loadMessage.reply(loadResponseMessage);
+
+        return this;
+    }
+
+    private State processNodesUpdatedMessage (NodesUpdatedMessage nodesUpdatedMessage) {
+        List<NodeElement> copy = new ArrayList<NodeElement>(nodesUpdatedMessage.getNodeList());
+        getClusterFile().setData(copy);
+        getClusterFile().write();
+
+        return this;
     }
 }

@@ -2,8 +2,9 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
-import com.ltsllc.miranda.node.GetFileMessage;
+import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
@@ -35,6 +36,12 @@ abstract public class SingleFileReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
+            case Load: {
+                LoadMessage loadMessage = (LoadMessage) message;
+                nextState = processLoadMessage(loadMessage);
+                break;
+            }
+
             case GetFileResponse: {
                 GetFileResponseMessage getFileResponseMessage = (GetFileResponseMessage) message;
                 nextState = processGetFileResponseMessage (getFileResponseMessage);
@@ -98,6 +105,14 @@ abstract public class SingleFileReadyState extends State {
 
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
         getFile().setLastCollection(System.currentTimeMillis());
+        return this;
+    }
+
+    private State processLoadMessage (LoadMessage loadMessage) {
+        getFile().load();
+        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getFile().getQueue(), this, getFile().getData());
+        loadMessage.reply(loadResponseMessage);
+
         return this;
     }
 }

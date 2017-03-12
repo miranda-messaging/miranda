@@ -8,13 +8,13 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 3/9/2017.
  */
 public class GetStatusResponseMessage extends Message {
-    private StatusObject statusObject;
+    private Object statusObject;
 
-    public StatusObject getStatusObject() {
+    public Object getStatusObject() {
         return statusObject;
     }
 
-    public GetStatusResponseMessage (BlockingQueue<Message> senderQueue, Object sender, StatusObject statusObject) {
+    public GetStatusResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Object statusObject) {
         super(Subjects.GetStatusResponse, senderQueue, sender);
 
         this.statusObject = statusObject;

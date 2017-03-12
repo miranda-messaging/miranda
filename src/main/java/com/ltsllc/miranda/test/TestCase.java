@@ -2,7 +2,9 @@ package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.Version;
@@ -12,12 +14,15 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.mockito.Mock;
 
 import java.io.*;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by Clark on 2/20/2017.
@@ -30,8 +35,18 @@ public class TestCase {
     private BlockingQueue<Message> network = new LinkedBlockingQueue<Message>();
     private BlockingQueue<Message> writer = new LinkedBlockingQueue<Message>();
 
+    @Mock
+    private Network mockNetwork = mock(Network.class);
+
+    @Mock
+    private Cluster mockCluster = mock(Cluster.class);
+
     public TestCase () {
 
+    }
+
+    public Cluster getMockCluster() {
+        return mockCluster;
     }
 
     public static boolean deleteFile (File file) {
@@ -409,5 +424,14 @@ public class TestCase {
     public static void setupFileWatcher (int period) {
         Miranda.fileWatcher = new FileWatcherService(period);
         Miranda.fileWatcher.start();
+    }
+
+    public Network getMockNetwork () {
+        return mockNetwork;
+    }
+
+    public boolean queueIsEmpty (BlockingQueue<Message> queue)
+    {
+        return 0 == queue.size();
     }
 }

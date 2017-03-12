@@ -1,10 +1,11 @@
 package com.ltsllc.miranda.mina;
 
+import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.NewNodeMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.network.ConnectToMessage;
-import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.NetworkException;
+import com.ltsllc.miranda.network.*;
+import com.ltsllc.miranda.network.messages.ConnectToMessage;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.mina.core.future.ConnectFuture;
@@ -26,6 +27,11 @@ import java.security.SecureRandom;
  */
 public class MinaNetwork extends Network {
 
+    public MinaNetwork () {
+        NetworkReadyState readyState = new NetworkReadyState(this);
+        setCurrentState(readyState);
+    }
+
     public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException
     {
         Handle handle = null;
@@ -44,6 +50,8 @@ public class MinaNetwork extends Network {
 
             SslFilter sslFilter = new SslFilter(sslContext);
 
+            sslFilter.setUseClientMode(true);
+
             NioSocketConnector connector = new NioSocketConnector();
             connector.getFilterChain().addLast("tls",sslFilter);
 
@@ -51,9 +59,17 @@ public class MinaNetwork extends Network {
             ProtocolCodecFilter protocolCodecFilter = new ProtocolCodecFilter(textLineCodecFactory);
             connector.getFilterChain().addLast("line", protocolCodecFilter);
 
+            MinaHandler minaHandler = new MinaHandler();
+
+            connector.setHandler(minaHandler);
+
             InetSocketAddress address = new InetSocketAddress(connectToMessage.getHost(), connectToMessage.getPort());
-            ConnectFuture future = connector.connect(address);
-            handle = new MinaHandle(connectToMessage.getSender(), future, connector);
+            ConnectFuture connectFuture = connector.connect(address);
+
+            handle = new MinaHandle(minaHandler, connectToMessage.getSender());
+
+            FutureListener futureListener = new FutureListener(connectToMessage.getSender(), nextHandle(), this, handle);
+            connectFuture.addListener(futureListener);
         } catch (GeneralSecurityException e) {
             throw new NetworkException("Exception trying to create mina network", e, NetworkException.Errors.ExceptionCreating);
         }
@@ -62,4 +78,16 @@ public class MinaNetwork extends Network {
     }
 
 
+    public MinaIncomingHandle newConnection (MinaIncomingHandler minaIncomingHandler) {
+        int handle = nextHandle();
+        Node node = new Node(handle, this, Cluster.getInstance());
+
+        MinaIncomingHandle minaIncomingHandle = new MinaIncomingHandle(node.getQueue(), minaIncomingHandler);
+        setHandle(handle, minaIncomingHandle);
+
+        NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node);
+        send(newNodeMessage, Cluster.getInstance().getQueue());
+
+        return minaIncomingHandle;
+    }
 }

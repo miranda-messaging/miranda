@@ -7,13 +7,15 @@ import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Clark on 2/11/2017.

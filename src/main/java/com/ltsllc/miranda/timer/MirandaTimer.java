@@ -2,12 +2,8 @@ package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.StartState;
-import com.ltsllc.miranda.State;
-import org.apache.log4j.Logger;
 
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -31,13 +27,13 @@ public class MirandaTimer extends Consumer {
         ScheduleOnceMessage scheduleOnceMessage = new ScheduleOnceMessage(null, this, delay,
                 message, receiver);
 
-        send(scheduleOnceMessage);
+        sendToMe(scheduleOnceMessage);
     }
 
     public void schedulePeriodic (long period, BlockingQueue<Message> receiver, Message message) {
         SchedulePeriodicMessage periodicMessage = new SchedulePeriodicMessage(null, this, period,
                 message, receiver);
 
-        send(periodicMessage);
+        sendToMe(periodicMessage);
     }
 }

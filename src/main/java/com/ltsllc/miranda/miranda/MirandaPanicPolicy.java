@@ -61,7 +61,7 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
 
     public boolean panic (Panic panic) {
         String fatalMessage = "The system is terminating due to a panic";
-        boolean keepGoing = false;
+        boolean continuePanic = false;
 
         if (panic instanceof StartupPanic) {
             logger.fatal(fatalMessage, panic);
@@ -81,14 +81,14 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
             DecrementPanicCountMessage decrementMessage = new DecrementPanicCountMessage(getQueue(), this);
             Miranda.timer.schedulePeriodic(ONE_HOUR, getQueue(), decrementMessage);
 
-            keepGoing = true;
+            continuePanic = false;
         }
 
-        if (!keepGoing) {
+        if (continuePanic) {
             logger.fatal(fatalMessage, panic);
             System.exit(1);
         }
 
-        return keepGoing;
+        return continuePanic;
     }
 }

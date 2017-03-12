@@ -29,7 +29,7 @@ public class Consumer extends Subsystem implements Comparer {
         else if (currentState.getClass() != s.getClass())
             logger.info(this + " in state " + currentState + " transitioning to " + s);
 
-        State nextState = s.start();
+        State nextState = s;
 
         if (nextState == s)
             currentState = nextState;
@@ -73,7 +73,7 @@ public class Consumer extends Subsystem implements Comparer {
         try {
             nextState = getCurrentState().start();
         } catch (Throwable throwable) {
-            Panic panic = new StartupPanic("Unchecked exception thrown in start", throwable, StartupPanic.StartupReasons.UncheckedException);
+            Panic panic = new StartupPanic("Unchecked exception thrown in start by " + this, throwable, StartupPanic.StartupReasons.UncheckedException);
             Miranda.getInstance().panic(panic);
         }
 
@@ -147,7 +147,7 @@ public class Consumer extends Subsystem implements Comparer {
         try {
             queue.put(m);
         } catch (InterruptedException e) {
-            logger.info("Exception trying to send message", e);
+            logger.info("Exception trying to sendToMe message", e);
         }
     }
 
@@ -157,7 +157,7 @@ public class Consumer extends Subsystem implements Comparer {
         try {
             queue.put(m);
         } catch (InterruptedException e) {
-            logger.info("Exception trying to send message", e);
+            logger.info("Exception trying to sendToMe message", e);
         }
     }
 
@@ -170,7 +170,7 @@ public class Consumer extends Subsystem implements Comparer {
     public void sendIfNotNull (Message m, Consumer consumer) {
         if (null != consumer)
         {
-            consumer.send(m);
+            consumer.sendToMe(m);
         }
     }
 
@@ -183,18 +183,18 @@ public class Consumer extends Subsystem implements Comparer {
     public void sendIfNotNull (Message m, BlockingQueue<Message> queue) {
         if (queue != null)
         {
-            send (m, queue);
+            send(m, queue);
         }
     }
 
     /**
      * Send a message to this object.
      */
-    public void send (Message message) {
+    public void sendToMe(Message message) {
         try {
             getQueue().put(message);
         } catch (InterruptedException e) {
-            Panic panic = new Panic("Exception trying to send message", e, Panic.Reasons.ExceptionSendingMessage);
+            Panic panic = new Panic("Exception trying to sendToMe message", e, Panic.Reasons.ExceptionSendingMessage);
         }
     }
     @Override

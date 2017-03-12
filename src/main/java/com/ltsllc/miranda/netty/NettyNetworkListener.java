@@ -3,13 +3,16 @@ package com.ltsllc.miranda.netty;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.network.*;
+import com.ltsllc.miranda.network.messages.ConnectionClosedMessage;
+import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.node.NetworkMessage;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.WireMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -26,7 +29,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Clark on 1/31/2017.
  */
-public class NettyNetworkListener {
+public class NettyNetworkListener extends NetworkListener {
+    public void startup (BlockingQueue<Handle> queue) {
+        // TODO: implement this
+    }
+
     private static class LocalHandler extends ChannelInboundHandlerAdapter {
         private Logger logger = Logger.getLogger(LocalHandler.class);
         private BlockingQueue<Message> node;
@@ -81,7 +88,7 @@ public class NettyNetworkListener {
             NettyHandle nettyHandle = new NettyHandle(Network.getInstance().getQueue(), socketChannel);
             int handle = Network.getInstance().newConnection(nettyHandle);
 
-            Node node = new Node(inetSocketAddress, handle);
+            Node node = new Node(handle, Network.getInstance(), Cluster.getInstance());
             node.start();
 
             NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
@@ -143,18 +150,14 @@ public class NettyNetworkListener {
 
     private Logger logger = Logger.getLogger(NettyNetworkListener.class);
 
-    private int port;
     private BlockingQueue<Message> cluster;
     private BlockingQueue<Channel> channelQueue = new LinkedBlockingQueue<Channel>();
     private ServerBootstrap serverBootstrap;
 
     public NettyNetworkListener(int port, BlockingQueue<Message> cluster) {
-        this.port = port;
-        this.cluster = cluster;
-    }
+        super(port);
 
-    public int getPort() {
-        return port;
+        this.cluster = cluster;
     }
 
     public BlockingQueue<Message> getCluster() {
@@ -196,11 +199,11 @@ public class NettyNetworkListener {
         ServerBootstrap serverBootstrap = Utils.createServerBootstrap(localInitializer);
         setServerBootstrap(serverBootstrap);
 
-        logger.info ("listening at " + port);
-        serverBootstrap.bind(port);
+        logger.info ("listening at " + getPort());
+        serverBootstrap.bind(getPort());
         ChannelFuture channelFuture = null;
 
-        channelFuture = serverBootstrap.bind(port);
+        channelFuture = serverBootstrap.bind(getPort());
 
         LocalChannelListener localChannelListener = new LocalChannelListener(getChannelQueue());
         channelFuture.addListener(localChannelListener);

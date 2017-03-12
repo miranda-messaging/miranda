@@ -26,5 +26,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.4.2.v20170220" level="project" />
     <orderEntry type="library" name="Maven: org.apache.mina:mina-core:2.0.16" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
+    <orderEntry type="library" name="Maven: org.mockito:mockito-all:1.10.19" level="project" />
   </component>
 </module>

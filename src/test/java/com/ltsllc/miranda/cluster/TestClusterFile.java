@@ -96,6 +96,7 @@ public class TestClusterFile extends TestCase {
     @Test
     public void testInitialize() {
         NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
+        getClusterFile().add(nodeElement);
         assert (getClusterFile().contains(nodeElement));
     }
 

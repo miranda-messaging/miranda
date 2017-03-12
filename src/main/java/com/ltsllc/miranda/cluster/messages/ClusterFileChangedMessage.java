@@ -26,7 +26,6 @@ public class ClusterFileChangedMessage extends Message {
     }
 
     public List<NodeElement> getFile() {
-
         return file;
     }
 }

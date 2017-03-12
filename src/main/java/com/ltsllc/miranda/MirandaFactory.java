@@ -1,11 +1,16 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.http.JettyHttpServer;
+import com.ltsllc.miranda.mina.MinaNetwork;
+import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.netty.NettyNetwork;
+import com.ltsllc.miranda.netty.NettyNetworkListener;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.servlet.PropertiesServlet;
@@ -13,6 +18,7 @@ import com.ltsllc.miranda.servlet.StatusServlet;
 import com.ltsllc.miranda.servlet.TestServlet;
 import com.ltsllc.miranda.socket.SocketHttpServer;
 import com.ltsllc.miranda.socket.SocketNetwork;
+import com.ltsllc.miranda.socket.SocketNetworkListener;
 import com.ltsllc.miranda.util.Utils;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -51,6 +57,37 @@ public class MirandaFactory {
         this.properties = properties;
     }
 
+    public NetworkListener buildNetworkListener () {
+        NetworkListener networkListener = null;
+        MirandaProperties.Networks networks = getProperties().getNetworkProperty();
+        int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+
+        switch (networks) {
+            case Mina: {
+                networkListener = new MinaNetworkListener(port);
+                break;
+            }
+
+            case Netty: {
+                networkListener = new NettyNetworkListener(port, Cluster.getInstance().getQueue());
+                break;
+            }
+
+            case Socket: {
+                networkListener = new SocketNetworkListener(port);
+                break;
+            }
+
+            default: {
+                logger.fatal("Unrecognized network: " + networks);
+                Panic panic = new StartupPanic("Unrecognized network", null, StartupPanic.StartupReasons.NetworkListener);
+                Miranda.getInstance().panic(panic);
+            }
+        }
+
+        return networkListener;
+    }
+
     public Network buildNetwork () throws MirandaException {
         Network network = null;
         MirandaProperties.Networks networks = getProperties().getNetworkProperty();
@@ -63,6 +100,11 @@ public class MirandaFactory {
 
             case Socket: {
                 network = new SocketNetwork();
+                break;
+            }
+
+            case Mina: {
+                network = new MinaNetwork();
                 break;
             }
 

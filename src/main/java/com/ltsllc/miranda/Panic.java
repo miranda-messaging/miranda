@@ -23,6 +23,7 @@ public class Panic extends Exception {
         Network, // We cannot communicate with anyone
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         Select,
+        ServletTimeout, // A servlet timed out waiting for a response from the system
         UncheckedException // an unchecked exception was thrown
     }
 
