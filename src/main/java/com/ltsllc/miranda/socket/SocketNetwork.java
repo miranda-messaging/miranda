@@ -61,4 +61,8 @@ public class SocketNetwork extends Network {
                     NetworkException.Errors.ExceptionConnecting);
         }
     }
+
+    public Handle createHandle (Object o) {
+        throw new IllegalStateException("not implemented");
+    }
 }

@@ -50,6 +50,7 @@ public class Message implements Perishable {
         Listen,
         Load,
         LoadResponse,
+        NetworkError,
         NewNode,
         NewUser,
         NewTopic,

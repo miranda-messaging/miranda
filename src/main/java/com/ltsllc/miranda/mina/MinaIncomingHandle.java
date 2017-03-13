@@ -22,6 +22,12 @@ public class MinaIncomingHandle extends Handle {
         this.handler = handler;
     }
 
+    public MinaIncomingHandle (MinaIncomingHandler handler) {
+        super(null);
+
+        this.handler = handler;
+    }
+
     public void close () {
         getHandler().close();
     }

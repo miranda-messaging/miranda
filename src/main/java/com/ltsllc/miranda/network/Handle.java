@@ -27,6 +27,10 @@ abstract public class Handle {
         return queue;
     }
 
+    public void setQueue(BlockingQueue<Message> queue) {
+        this.queue = queue;
+    }
+
     public Handle (BlockingQueue<Message> queue) {
         this.queue = queue;
     }

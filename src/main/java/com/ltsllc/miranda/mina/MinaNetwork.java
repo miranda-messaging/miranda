@@ -26,34 +26,55 @@ import java.security.SecureRandom;
  * Created by Clark on 3/6/2017.
  */
 public class MinaNetwork extends Network {
+    private boolean useEncryption = true;
+
+    public boolean getUseEncryption() {
+        return useEncryption;
+    }
+
+    public void setUseEncryption(boolean useEncryption) {
+        this.useEncryption = useEncryption;
+    }
 
     public MinaNetwork () {
         NetworkReadyState readyState = new NetworkReadyState(this);
         setCurrentState(readyState);
+        setInstance(this);
+    }
+
+    public MinaNetwork (boolean useEncryption) {
+        this();
+        setUseEncryption(false);
     }
 
     public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException
     {
         Handle handle = null;
+        MirandaProperties properties = Miranda.properties;
+        SslFilter sslFilter = null;
 
         try {
-            MirandaProperties properties = Miranda.properties;
-            String filename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String password = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
+            if (getUseEncryption()) {
+                String filename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+                String password = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
 
-            KeyStore keyStore = Utils.loadKeyStore(filename, password);
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
+                KeyStore keyStore = Utils.loadKeyStore(filename, password);
+                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init(keyStore);
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+                sslFilter = new SslFilter(sslContext);
 
-            SslFilter sslFilter = new SslFilter(sslContext);
+                sslFilter.setUseClientMode(true);
+            }
 
-            sslFilter.setUseClientMode(true);
 
             NioSocketConnector connector = new NioSocketConnector();
-            connector.getFilterChain().addLast("tls",sslFilter);
+
+            if (null != sslFilter) {
+                connector.getFilterChain().addLast("tls",sslFilter);
+            }
 
             TextLineCodecFactory textLineCodecFactory = new TextLineCodecFactory(Charset.forName( "UTF-8" ));
             ProtocolCodecFilter protocolCodecFilter = new ProtocolCodecFilter(textLineCodecFactory);
@@ -71,14 +92,15 @@ public class MinaNetwork extends Network {
             FutureListener futureListener = new FutureListener(connectToMessage.getSender(), nextHandle(), this, handle);
             connectFuture.addListener(futureListener);
         } catch (GeneralSecurityException e) {
-            throw new NetworkException("Exception trying to create mina network", e, NetworkException.Errors.ExceptionCreating);
+            throw new NetworkException("Exception trying to create mina connection", e, NetworkException.Errors.ExceptionCreating);
         }
 
         return handle;
     }
 
 
-    public MinaIncomingHandle newConnection (MinaIncomingHandler minaIncomingHandler) {
+    public Handle createHandle (Object o) {
+        MinaIncomingHandler minaIncomingHandler = (MinaIncomingHandler) o;
         int handle = nextHandle();
         Node node = new Node(handle, this, Cluster.getInstance());
 

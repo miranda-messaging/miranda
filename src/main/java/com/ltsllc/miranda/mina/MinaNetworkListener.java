@@ -3,8 +3,10 @@ package com.ltsllc.miranda.mina;
 import com.ltsllc.miranda.MirandaFactory;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import org.apache.mina.core.service.IoAcceptor;
@@ -23,13 +25,28 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 3/6/2017.
  */
 public class MinaNetworkListener extends NetworkListener {
+    private boolean useEncryption = true;
+
+    public boolean getUseEncryption() {
+        return useEncryption;
+    }
+
+    public void setUseEncryption(boolean useEncryption) {
+        this.useEncryption = useEncryption;
+    }
+
     public MinaNetworkListener (int port) {
         super(port);
     }
 
+    public MinaNetworkListener (int port, boolean useEncryption)
+    {
+        this(port);
+        setUseEncryption(useEncryption);
+    }
+
     public void startup (BlockingQueue<Handle> queue) {
         MirandaFactory factory = Miranda.factory;
-        MirandaProperties properties = Miranda.properties;
 
         IoAcceptor acceptor = new NioSocketAcceptor();
 
@@ -44,7 +61,7 @@ public class MinaNetworkListener extends NetworkListener {
         ProtocolCodecFilter protocolCodecFilter = new ProtocolCodecFilter(textLineCodecFactory);
         acceptor.getFilterChain().addLast("lines", protocolCodecFilter);
 
-        MinaIncomingHandler handler = new MinaIncomingHandler();
+        MinaIncomingHandler handler = new MinaIncomingHandler(queue);
         acceptor.setHandler (handler);
 
         InetSocketAddress address = new InetSocketAddress(getPort());

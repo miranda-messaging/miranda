@@ -17,6 +17,7 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class Network extends Consumer {
     abstract public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException;
+    abstract public Handle createHandle (Object o);
 
     private static Logger logger = Logger.getLogger(NetworkListener.class);
     private static Network ourInstance;
@@ -63,17 +64,6 @@ abstract public class Network extends Consumer {
     public void clearHandle (int handle)
     {
         integerToHandle.put(handle, null);
-    }
-
-    public void send (SendMessageMessage sendMessageMessage) {
-        Handle handle = getHandle(sendMessageMessage.getHandle());
-        if (null == handle) {
-            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(getQueue(), this, sendMessageMessage.getHandle());
-            sendMessageMessage.reply(unknownHandleMessage);
-        }
-
-        SendMessageMessage sendMessageMessage2 = new SendMessageMessage(getQueue(),this, sendMessageMessage.getHandle(), sendMessageMessage.getContent());
-        send(sendMessageMessage2, handle.getQueue());
     }
 
     public void connect (ConnectToMessage connectToMessage) {
@@ -208,5 +198,36 @@ abstract public class Network extends Consumer {
      */
     public void mapHandle (int handleID, Handle handle) {
         integerToHandle.put(handleID, handle);
+    }
+
+    public void sendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
+        Handle handle = integerToHandle.get(sendNetworkMessage.getHandle());
+
+        if (handle == null) {
+            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(
+                    getQueue(),
+                    this,
+                    sendNetworkMessage.getHandle()
+            );
+            sendNetworkMessage.reply(unknownHandleMessage);
+        } else {
+            try {
+                handle.send(sendNetworkMessage);
+            } catch (NetworkException e) {
+                handle.close();
+                unMapHandle(sendNetworkMessage.getHandle());
+                NetworkErrorMessage networkErrorMessage = new NetworkErrorMessage (getQueue(), this, e);
+                sendNetworkMessage.reply(networkErrorMessage);
+            }
+        }
+    }
+
+    public void unMapHandle (int handle) {
+        integerToHandle.put(handle, null);
+    }
+
+    public void sendSendNetworkMessage(BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
+        SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, handle);
+        sendToMe(sendNetworkMessage);
     }
 }

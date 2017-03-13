@@ -47,6 +47,7 @@ public class NettyNetwork extends Network {
             throw new MirandaException("Exception trying to create SSL context", e);
         }
     }
+
     public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException
     {
         getBootstrap().connect(connectToMessage.getHost(), connectToMessage.getPort());
@@ -54,4 +55,8 @@ public class NettyNetwork extends Network {
         return null;
     }
 
+
+    public Handle createHandle (Object o) {
+        throw new IllegalStateException("not implemented");
+    }
 }

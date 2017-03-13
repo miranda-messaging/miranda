@@ -58,6 +58,7 @@ public class Startup extends State {
     private LogLevel logLevel = LogLevel.NORMAL;
     private HttpServer httpServer;
     private MirandaCommandLine commandLine;
+    private MirandaFactory factory;
 
 
     public HttpServer getHttpServer() {
@@ -114,6 +115,13 @@ public class Startup extends State {
         this.writerQueue = writerQueue;
     }
 
+    public MirandaFactory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(MirandaFactory factory) {
+        this.factory = factory;
+    }
 
     public State start() {
         super.start();
@@ -133,6 +141,7 @@ public class Startup extends State {
             setupRootUser();
             setupServlets();
             startHttpServer();
+            startListening();
             getMiranda().performGarbageCollection();
             return new ReadyState(getMiranda());
         } catch (MirandaException e) {
@@ -262,13 +271,12 @@ public class Startup extends State {
         Network network = factory.buildNetwork();
         network.start();
 
-        NetworkListener listener = factory.buildNetworkListener();
-        listener.start();
-
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
         Cluster.initializeClass(filename, getWriterQueue(), network);
         miranda.setCluster(Cluster.getInstance().getQueue());
+
+        Cluster.getInstance().sendConnect (null, this);
     }
 
     public void startWriter () {
@@ -389,6 +397,8 @@ public class Startup extends State {
 
     public void defineFactory () {
         Miranda.factory = new MirandaFactory(Miranda.properties);
+
+        setFactory(Miranda.factory);
     }
 
     public String getPropertiesFilename () {
@@ -416,5 +426,10 @@ public class Startup extends State {
         }
 
         return filename;
+    }
+
+    public void startListening () {
+        NetworkListener networkListener = getFactory().buildNetworkListener();
+        networkListener.start();
     }
 }

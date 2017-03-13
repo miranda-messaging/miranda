@@ -70,7 +70,8 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
 
         if (
                 panic.getReason() == Panic.Reasons.DoesNotUnderstand ||
-                panic.getReason() == Panic.Reasons.ExceptionGettingNextMessage
+                panic.getReason() == Panic.Reasons.ExceptionGettingNextMessage ||
+                panic.getReason() == Panic.Reasons.ExceptionDuringNetworkSend
         )
         {
             incrementPanicCount();

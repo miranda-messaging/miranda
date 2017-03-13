@@ -5,6 +5,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.messages.CloseMessage;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.messages.SendMessageMessage;
+import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import org.apache.log4j.Logger;
 
 /**
@@ -36,9 +37,9 @@ public class NetworkReadyState extends State {
                 break;
             }
 
-            case SendMessage: {
-                SendMessageMessage sendMessageMessage = (SendMessageMessage) m;
-                nextState = processSendMessageMessage(sendMessageMessage);
+            case SendNetworkMessage: {
+                SendNetworkMessage sendNetworkMessage = (SendNetworkMessage) m;
+                nextState = processSendNetworkMessage(sendNetworkMessage);
                 break;
             }
 
@@ -69,14 +70,14 @@ public class NetworkReadyState extends State {
     }
 
 
-    private State processSendMessageMessage (SendMessageMessage sendMessageMessage) {
-        getNetwork().send(sendMessageMessage);
+    private State processDisconectMessage (CloseMessage disconnectMessage) {
+        getNetwork().disconnect(disconnectMessage);
 
         return this;
     }
 
-    private State processDisconectMessage (CloseMessage disconnectMessage) {
-        getNetwork().disconnect(disconnectMessage);
+    private State processSendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
+        getNetwork().sendNetworkMessage(sendNetworkMessage);
 
         return this;
     }

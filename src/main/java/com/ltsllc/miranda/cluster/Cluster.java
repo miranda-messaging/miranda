@@ -2,6 +2,7 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.netty.NettyNetworkListener;
@@ -57,8 +58,8 @@ public class Cluster extends Consumer {
         super("cluster", queue);
         this.clusterFileQueue = ClusterFile.getInstance().getQueue();
 
-        ClusterStartingState clusterStartingState = new ClusterStartingState(this);
-        setCurrentState(clusterStartingState);
+        ClusterLoadingState clusterLoadingState = new ClusterLoadingState(this);
+        setCurrentState(clusterLoadingState);
 
         this.network = network;
     }
@@ -107,12 +108,20 @@ public class Cluster extends Consumer {
     }
 
     /**
-     * Used for debugging only.
+     * When the cluster is starting
      *
      * @param newNodes
      */
-    public void replaceNodes (List<Node> newNodes) {
-        this.nodes = newNodes;
+    public void replaceNodes (List<NodeElement> newNodes) {
+        List<Node> nodeList = new ArrayList<Node>();
+
+        for (NodeElement nodeElement : newNodes) {
+            Node node = new Node(nodeElement, getNetwork());
+            node.start();
+            nodeList.add(node);
+        }
+
+        this.nodes = nodeList;
     }
 
     /**
@@ -153,6 +162,7 @@ public class Cluster extends Consumer {
             for (NodeElement element : reallyNewNodes) {
                 Node node = new Node(element, getNetwork());
                 node.start();
+                node.connect();
                 getNodes().add(node);
             }
 
@@ -165,10 +175,19 @@ public class Cluster extends Consumer {
     /**
      * This gets called when a node connects "out of the blue."
      *
+     * <p>
+     *     Add the node, then tell the cluster file we have changed
+     * </p>
+     *
      * @param node The node that just connected.
      */
     public void newNode (Node node) {
+        getNodes().add(node);
 
+        List<NodeElement> nodeElementList = asNodeElements();
+        NodesUpdatedMessage message = new NodesUpdatedMessage(getQueue(), this, nodeElementList);
+
+        send (message, getClusterFileQueue());
     }
 
     /**
@@ -211,5 +230,10 @@ public class Cluster extends Consumer {
         }
 
         return nodeElements;
+    }
+
+    public void sendConnect (BlockingQueue<Message> senderQueue, Object sender) {
+        ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender);
+        sendToMe(connectMessage);
     }
 }

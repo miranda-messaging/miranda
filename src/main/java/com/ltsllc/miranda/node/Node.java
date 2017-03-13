@@ -6,9 +6,7 @@ import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.node.states.NewNodeState;
-import com.ltsllc.miranda.node.states.NodeStartState;
-import com.ltsllc.miranda.node.states.SyncingState;
+import com.ltsllc.miranda.node.states.*;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -26,8 +24,8 @@ public class Node extends Consumer
         port = element.getPort();
         this.network = network;
 
-        NodeStartState nodeStartState = new NodeStartState(this, getNetwork());
-        setCurrentState(nodeStartState);
+        ConnectingState connectingState = new ConnectingState(this, network);
+        setCurrentState(connectingState);
     }
 
     /**
@@ -38,11 +36,10 @@ public class Node extends Consumer
     public Node (int handle, Network network, Cluster cluster) {
         super("node");
 
-
         this.handle = handle;
 
-        State newNodeState = new NewNodeState(this, network, cluster);
-        setCurrentState(newNodeState);
+        State nodeIncomingState = new NodeIncomingStartState(this, network, cluster);
+        setCurrentState(nodeIncomingState);
     }
 
 

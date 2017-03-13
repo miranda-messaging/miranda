@@ -69,14 +69,11 @@ abstract public class NetworkListener extends Consumer {
             }
 
             if (null != newConnection) {
-                int handle = Network.getInstance().newConnection(newConnection);
+                int handleID = Network.getInstance().newConnection(newConnection);
 
-                Node node = new Node(handle, Network.getInstance(), Cluster.getInstance());
+                Node node = new Node(handleID, Network.getInstance(), Cluster.getInstance());
+                newConnection.setQueue(node.getQueue());
                 node.start();
-
-                NewConnectionMessage message = new NewConnectionMessage(getQueue(), this, node);
-                send(message, Cluster.getInstance().getQueue());
-                send(message, Miranda.getInstance().getQueue());
             }
         }
 

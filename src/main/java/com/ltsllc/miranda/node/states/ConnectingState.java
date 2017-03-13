@@ -44,7 +44,6 @@ public class ConnectingState extends NodeState {
                 nextState = super.processMessage(m);
                 break;
             }
-
         }
 
         return nextState;
@@ -59,7 +58,7 @@ public class ConnectingState extends NodeState {
         JoinWireMessage joinWireMessage = new JoinWireMessage(getNode());
         sendOnWire(joinWireMessage);
 
-        return new JoiningState(getNode(), Cluster.getInstance(), getNetwork());
+        return new JoiningState(getNode(), getNetwork());
     }
 
 
@@ -69,5 +68,4 @@ public class ConnectingState extends NodeState {
 
         return new RetryingState(getNode(), getNetwork());
     }
-
 }

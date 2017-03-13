@@ -14,6 +14,7 @@ public class Panic extends Exception {
         ExceptionCreatingSslContext,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionSendingMessage,
+        ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node

@@ -3,6 +3,7 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.NodeElement;
@@ -41,6 +42,12 @@ public class ClusterStartingState extends State {
                 break;
             }
 
+            case Connect: {
+                ConnectMessage connectMessage = (ConnectMessage) message;
+                nextState = processConnectMessage(connectMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -50,11 +57,17 @@ public class ClusterStartingState extends State {
     }
 
     private State processLoadResponseMessage (LoadResponseMessage loadResponseMessage) {
-        List<NodeElement> nodes = loadResponseMessage.getData();
-        getCluster().merge(nodes);
+        getCluster().replaceNodes(loadResponseMessage.getData());
+
+        return this;
+    }
+
+    private State processConnectMessage (ConnectMessage connectMessage) {
+        State nextState = this;
+
         getCluster().connect();
 
-        ClusterConnectingState clusterConnectingState = new ClusterConnectingState(getCluster());
-        return clusterConnectingState;
+        ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
+        return clusterReadyState;
     }
 }

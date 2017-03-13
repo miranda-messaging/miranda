@@ -1,35 +1,25 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.JettyHttpServer;
 import com.ltsllc.miranda.mina.MinaNetwork;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
-import com.ltsllc.miranda.netty.NettyNetwork;
 import com.ltsllc.miranda.netty.NettyNetworkListener;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.http.HttpServer;
-import com.ltsllc.miranda.servlet.PropertiesServlet;
-import com.ltsllc.miranda.servlet.StatusServlet;
-import com.ltsllc.miranda.servlet.TestServlet;
-import com.ltsllc.miranda.socket.SocketHttpServer;
-import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.socket.SocketNetworkListener;
 import com.ltsllc.miranda.util.Utils;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -64,17 +54,17 @@ public class MirandaFactory {
 
         switch (networks) {
             case Mina: {
-                networkListener = new MinaNetworkListener(port);
+                networkListener = buildMinaNetworkListener();
                 break;
             }
 
             case Netty: {
-                networkListener = new NettyNetworkListener(port, Cluster.getInstance().getQueue());
+                networkListener = buildNettyNetworkListener();
                 break;
             }
 
             case Socket: {
-                networkListener = new SocketNetworkListener(port);
+                networkListener = buildSocketNetworkListener();
                 break;
             }
 
@@ -94,17 +84,17 @@ public class MirandaFactory {
 
         switch (networks) {
             case Netty: {
-                network = new NettyNetwork(this);
+                network = buildNettyNetwork();
                 break;
             }
 
             case Socket: {
-                network = new SocketNetwork();
+                network = buildSocketNetwork();
                 break;
             }
 
             case Mina: {
-                network = new MinaNetwork();
+                network = buildMinaNetwork();
                 break;
             }
 
@@ -407,4 +397,67 @@ public class MirandaFactory {
         return new MirandaPanicPolicy(maxPanics, timeout, Miranda.getInstance(), Miranda.timer);
     }
 
+    public Network buildNettyNetwork () {
+        throw new IllegalStateException("not impelmented");
+    }
+
+    public Network buildSocketNetwork () {
+        throw new IllegalStateException("not impelmented");
+    }
+
+    public Network buildMinaNetwork () {
+        Network network = null;
+        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+
+        switch (mode) {
+            case LocalCA: {
+                network = new MinaNetwork();
+                break;
+            }
+
+            case None: {
+                network = new MinaNetwork(false);
+                break;
+            }
+
+            default: {
+                Panic panic = new StartupPanic("Unrecogized encrypion mode: " + mode, null, StartupPanic.StartupReasons.UnrecognizedEncryptionMode);
+                Miranda.getInstance().panic(panic);
+            }
+        }
+        return network;
+    }
+
+    public NetworkListener buildNettyNetworkListener () {
+        throw new IllegalStateException("not impelmented");
+    }
+
+    public NetworkListener buildSocketNetworkListener () {
+        throw new IllegalStateException("not impelmented");
+    }
+
+    public NetworkListener buildMinaNetworkListener () {
+        NetworkListener networkListener = null;
+        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+
+        switch (mode) {
+            case LocalCA: {
+                networkListener = new MinaNetworkListener(port);
+                break;
+            }
+
+            case None: {
+                networkListener = new MinaNetworkListener(port, false);
+                break;
+            }
+
+            default: {
+                Panic panic = new StartupPanic("Unregognized encryption mode: " + mode, null, StartupPanic.StartupReasons.UnrecognizedEncryptionMode);
+                Miranda.getInstance().panic(panic);
+            }
+        }
+
+        return networkListener;
+    }
 }

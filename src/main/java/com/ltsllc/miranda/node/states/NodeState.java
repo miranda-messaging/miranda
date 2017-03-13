@@ -2,7 +2,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.messages.SendMessageMessage;
+import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
@@ -31,10 +31,7 @@ public class NodeState extends State {
     }
 
     public void sendOnWire (WireMessage wireMessage) {
-        String json = wireMessage.getJson() + '\n';
-        logger.info("Sending " + json);
-        SendMessageMessage message = new SendMessageMessage(getNode().getQueue(), this, getNode().getHandle(),json);
-        send(getNode().getNetwork().getQueue(), message);
+        getNetwork().sendSendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
     }
 
     public State processNetworkMessage (NetworkMessage networkMessage) {

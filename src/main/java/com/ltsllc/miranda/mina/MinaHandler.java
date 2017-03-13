@@ -1,6 +1,8 @@
 package com.ltsllc.miranda.mina;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -33,12 +35,16 @@ public class MinaHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
+        logger.info ("Got connection from " + session.getRemoteAddress());
         this.session = session;
     }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         String json = message.toString();
+
+        logger.info("Receieved " + json);
+
         WireMessage pass1 = ourGson.fromJson(json, WireMessage.class);
         Type type = getClass().forName(pass1.getClassName());
         WireMessage wireMessage = ourGson.fromJson(json, type);
@@ -55,6 +61,7 @@ public class MinaHandler extends IoHandlerAdapter {
 
     public void sendOnWire (WireMessage wireMessage) {
         String json = ourGson.toJson(wireMessage);
+        logger.info ("Sending " + json);
         getSession().write(json);
     }
 }

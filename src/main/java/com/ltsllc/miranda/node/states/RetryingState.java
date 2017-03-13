@@ -109,7 +109,7 @@ public class RetryingState extends NodeState {
     private State processConnectSuceeededMessage (ConnectSucceededMessage connectSucceededMessage) {
         getNode().setHandle(connectSucceededMessage.getHandle());
 
-        JoiningState joiningState = new JoiningState(getNode(), Cluster.getInstance(), getNetwork());
+        JoiningState joiningState = new JoiningState(getNode(), getNetwork());
         return joiningState;
     }
 }

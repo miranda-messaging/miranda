@@ -18,22 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Clark on 1/29/2017.
+ * A node which has sent a join message enters this state and remains here
+ * until it receives a reply.
  */
 public class JoiningState extends NodeState {
     private Logger logger = Logger.getLogger(JoiningState.class);
 
-    private Cluster cluster;
 
-
-    public Cluster getCluster() {
-        return cluster;
-    }
-
-    public JoiningState (Node node, Cluster cluster, Network network) {
+    public JoiningState (Node node, Network network) {
         super (node, network);
-
-        this.cluster = cluster;
     }
 
     public State processMessage (Message m) {
@@ -153,8 +146,6 @@ public class JoiningState extends NodeState {
 
         if (joinResponse.getResult() == JoinResponseWireMessage.Responses.Success) {
             logger.info ("Successfully joined cluster");
-
-            getCluster().sendNewNode(getNode().getQueue(), this, getNode());
 
             NodeReadyState nodeReadyState = new NodeReadyState(getNode(), getNetwork());
             nextState = nodeReadyState;

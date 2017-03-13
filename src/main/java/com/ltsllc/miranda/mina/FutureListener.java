@@ -50,7 +50,7 @@ public class FutureListener implements IoFutureListener<ConnectFuture> {
 
     public void operationComplete(ConnectFuture connectFuture) {
         if (connectFuture.isConnected()) {
-            logger.info("connect completed successfully");
+            logger.info("connect to " + connectFuture.getSession().getRemoteAddress() + " completed successfully");
             sendConnectSuceeded();
             getNetwork().mapHandle (getHandleID(), getHandle());
         } else {
