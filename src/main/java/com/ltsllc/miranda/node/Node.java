@@ -7,6 +7,7 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.*;
+import com.ltsllc.miranda.servlet.NodeStatus;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -153,5 +154,11 @@ public class Node extends Consumer
         }
 
         return nodeElement;
+    }
+
+    public NodeStatus getStatus () {
+        NodeStatus.NodeStatuses status = isConnected() ? NodeStatus.NodeStatuses.Online : NodeStatus.NodeStatuses.Offline;
+        NodeStatus nodeStatus = new NodeStatus(getDns(), getIp(), getPort(), getDescription(), status);
+        return nodeStatus;
     }
 }

@@ -1,7 +1,10 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 
 /**
@@ -22,6 +25,7 @@ public class ClusterStatus extends Consumer {
         }
     }
 
+
     public ClusterStatusObject getClusterStatusObject() {
         return clusterStatusObject;
     }
@@ -40,12 +44,15 @@ public class ClusterStatus extends Consumer {
     public void receivedClusterStatus (GetStatusResponseMessage message) {
         ClusterStatusObject clusterStatusObject = (ClusterStatusObject) message.getStatusObject();
         setClusterStatusObject(clusterStatusObject);
-        notifyAll();
+        synchronized (this) {
+            notifyAll();
+        }
     }
 
     public ClusterStatusObject getClusterStatus () {
         setClusterStatusObject(null);
 
+        Cluster.getInstance().sendGetStatus(getQueue(), this);
         try {
             synchronized (this) {
                 wait(1000);
@@ -54,9 +61,6 @@ public class ClusterStatus extends Consumer {
             Panic panic = new Panic("Exception waiting for cluster status", e, Panic.Reasons.ServletTimeout);
             Miranda.getInstance().panic(panic);
         }
-
-        GetStatusMessage getStatusMessage = new GetStatusMessage(getQueue(), this);
-        send(getStatusMessage, Miranda.getInstance().getCluster());
 
         return getClusterStatusObject();
     }

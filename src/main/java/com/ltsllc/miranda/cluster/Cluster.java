@@ -10,6 +10,7 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.servlet.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.GetStatusMessage;
 import com.ltsllc.miranda.servlet.NodeStatus;
 import org.apache.log4j.Logger;
 
@@ -137,14 +138,14 @@ public class Cluster extends Consumer {
     }
 
     public ClusterStatusObject getStatus () {
-        List<NodeStatus> nodes = new ArrayList<NodeStatus>(getNodes().size());
+        List<NodeStatus> statusOfNodes = new ArrayList<NodeStatus>(getNodes().size());
 
         for (Node node : getNodes()) {
-            NodeStatus.NodeStatuses status = node.isConnected() ? NodeStatus.NodeStatuses.Online : NodeStatus.NodeStatuses.Online;
-            NodeStatus nodeStatus = new NodeStatus(node.getDns(), node.getIp(), node.getPort(), node.getDescription(), status);
+            NodeStatus status = node.getStatus();
+            statusOfNodes.add(status);
         }
 
-        return new ClusterStatusObject(nodes);
+        return new ClusterStatusObject(statusOfNodes);
     }
 
     public void merge (List<NodeElement> newNodes) {
@@ -235,5 +236,10 @@ public class Cluster extends Consumer {
     public void sendConnect (BlockingQueue<Message> senderQueue, Object sender) {
         ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender);
         sendToMe(connectMessage);
+    }
+
+    public void sendGetStatus (BlockingQueue<Message> senderQueue, Object sender) {
+        GetStatusMessage getStatusMessage = new GetStatusMessage(senderQueue, sender);
+        sendToMe(getStatusMessage);
     }
 }

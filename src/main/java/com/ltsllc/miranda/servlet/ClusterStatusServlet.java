@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.servlet;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.miranda.Miranda;
 
@@ -13,8 +14,14 @@ import java.io.IOException;
  * Created by Clark on 3/9/2017.
  */
 public class ClusterStatusServlet extends HttpServlet {
+    private static Gson ourGson = new Gson();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        ClusterStatus clusterStatus = ClusterStatus.getInstance();
+        ClusterStatusObject clusterStatusObject = clusterStatus.getClusterStatus();
+        String json = ourGson.toJson(clusterStatusObject);
+        resp.setContentType("text/json");
+        resp.getOutputStream().print(json);
     }
 }
