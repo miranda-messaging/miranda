@@ -7,6 +7,7 @@ import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
@@ -27,9 +28,9 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return ourInstance;
     }
 
-    public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue, BlockingQueue<Message> cluster) {
+    public static synchronized void initialize(String filename, Writer writer, BlockingQueue<Message> cluster) {
         if (null == ourInstance) {
-            ourInstance = new ClusterFile(filename, writerQueue, cluster);
+            ourInstance = new ClusterFile(filename, writer, cluster);
             ourInstance.start();
         }
     }
@@ -42,7 +43,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return cluster;
     }
 
-    private ClusterFile (String filename, BlockingQueue<Message> writer, BlockingQueue<Message> cluster) {
+    private ClusterFile (String filename, Writer writer, BlockingQueue<Message> cluster) {
         super(filename, writer);
 
         this.cluster = cluster;

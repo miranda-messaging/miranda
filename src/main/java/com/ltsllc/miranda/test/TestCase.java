@@ -2,16 +2,16 @@ package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.util.Utils;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.util.ImprovedRandom;
+import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.mockito.Mock;
@@ -40,6 +40,13 @@ public class TestCase {
 
     @Mock
     private Cluster mockCluster = mock(Cluster.class);
+
+    @Mock
+    private Writer mockWriter = mock(Writer.class);
+
+    public Writer getMockWriter() {
+        return mockWriter;
+    }
 
     public TestCase () {
 
@@ -127,6 +134,16 @@ public class TestCase {
     public void reset () {
         network = new LinkedBlockingQueue<Message>();
         writer = new LinkedBlockingQueue<Message>();
+
+        this.mockCluster = null;
+        this.mockNetwork = null;
+        this.mockWriter = null;
+    }
+
+    public void setup () {
+        this.mockWriter = mock(Writer.class);
+        this.mockNetwork = mock(Network.class);
+        this.mockCluster = mock(Cluster.class);
     }
 
 
@@ -433,5 +450,12 @@ public class TestCase {
     public boolean queueIsEmpty (BlockingQueue<Message> queue)
     {
         return 0 == queue.size();
+    }
+
+    public void setupWriter () {
+        com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer();
+
+        this.writer = new LinkedBlockingQueue<Message>();
+        writer.setQueue(this.writer);
     }
 }

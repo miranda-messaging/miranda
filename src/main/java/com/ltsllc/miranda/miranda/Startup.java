@@ -12,9 +12,9 @@ import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.http.SetupServletsMessage;
+import com.ltsllc.miranda.servlet.holder.ClusterStatus;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.netty.NettyHttpServer;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicsFile;
@@ -25,7 +25,6 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A class that encapsulates the knowledge of how to start up the system.
@@ -53,7 +52,7 @@ public class Startup extends State {
     private static Logger logger;
 
     private String[] arguments = {};
-    private BlockingQueue<Message> writerQueue;
+    private Writer writer;
     private int index;
     private LogLevel logLevel = LogLevel.NORMAL;
     private HttpServer httpServer;
@@ -108,11 +107,15 @@ public class Startup extends State {
     }
 
     public BlockingQueue<Message> getWriterQueue() {
-        return writerQueue;
+        return writer.getQueue();
     }
 
-    public void setWriterQueue (BlockingQueue<Message> writerQueue) {
-        this.writerQueue = writerQueue;
+    public Writer getWriter() {
+        return writer;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
     }
 
     public MirandaFactory getFactory() {
@@ -163,7 +166,7 @@ public class Startup extends State {
     public void setupServlets () {
         ServletMapping servletMapping1 = new ServletMapping("/servlets/status", StatusServlet.class);
         ServletMapping servletMapping2 = new ServletMapping("/servlets/properties", PropertiesServlet.class);
-        ServletMapping servletMapping3 = new ServletMapping("/servlets/test", TestServlet.class);
+        ServletMapping servletMapping3 = new ServletMapping("/servlets/setProperty", SetPropertyServlet.class);
         ServletMapping servletMapping4 = new ServletMapping("/servlets/clusterStatus", ClusterStatusServlet.class);
 
 
@@ -247,7 +250,7 @@ public class Startup extends State {
      * file.
      */
     private void loadProperties() {
-        Miranda.properties = new MirandaProperties(getPropertiesFilename(), getWriterQueue());
+        Miranda.properties = new MirandaProperties(getPropertiesFilename(), Writer.getInstance());
         Miranda.properties.log();
         Miranda.properties.updateSystemProperties();
     }
@@ -273,7 +276,7 @@ public class Startup extends State {
 
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initializeClass(filename, getWriterQueue(), network);
+        Cluster.initializeClass(filename, Writer.getInstance(), network);
         miranda.setCluster(Cluster.getInstance().getQueue());
 
         Cluster.getInstance().sendConnect (null, this);
@@ -283,7 +286,7 @@ public class Startup extends State {
         Writer writer = new Writer();
         writer.start();
 
-        setWriterQueue(writer.getQueue());
+        setWriter(writer);
     }
 
     private void setupHttpServices() {
@@ -304,25 +307,25 @@ public class Startup extends State {
             MirandaProperties properties = Miranda.properties;
 
             String clusterFile = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-            ClusterFile.initialize(clusterFile, getWriterQueue(), Cluster.getInstance().getQueue());
+            ClusterFile.initialize(clusterFile, getWriter(), Cluster.getInstance().getQueue());
             miranda.setCluster(ClusterFile.getInstance().getQueue());
 
             String filename = properties.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
-            UsersFile.initialize(filename, getWriterQueue());
+            UsersFile.initialize(filename, getWriter());
             miranda.setUsers(UsersFile.getInstance().getQueue());
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
-            TopicsFile.initialize(filename, getWriterQueue());
+            TopicsFile.initialize(filename, getWriter());
             miranda.setTopics(TopicsFile.getInstance().getQueue());
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
-            SubscriptionsFile.initialize(filename, getWriterQueue());
+            SubscriptionsFile.initialize(filename, getWriter());
             miranda.setSubscriptions(SubscriptionsFile.getInstance().getQueue());
 
             String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);
             directoryName = f.getCanonicalPath();
-            SystemMessages messages = new SystemMessages(directoryName, getWriterQueue());
+            SystemMessages messages = new SystemMessages(directoryName, getWriter());
             messages.start();
             messages.load();
             messages.updateVersion();
@@ -331,7 +334,7 @@ public class Startup extends State {
             directoryName = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
             f = new File(directoryName);
             directoryName = f.getCanonicalPath();
-            SystemDeliveriesFile deliveriesFile = new SystemDeliveriesFile(directoryName, getWriterQueue());
+            SystemDeliveriesFile deliveriesFile = new SystemDeliveriesFile(directoryName, getWriter());
             deliveriesFile.start();
             deliveriesFile.load();
             deliveriesFile.updateVersion();

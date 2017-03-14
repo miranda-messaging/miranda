@@ -6,6 +6,7 @@ import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -61,6 +62,7 @@ public class TestClusterFile extends TestCase {
     }
 
     public void setupClusterFile() {
+        setupWriter();
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
@@ -68,7 +70,7 @@ public class TestClusterFile extends TestCase {
 
         putFile(filename, CLUSTER_FILE_CONTENTS);
 
-        ClusterFile.initialize(filename, getWriter(), getCluster());
+        ClusterFile.initialize(filename, Writer.getInstance(), getCluster());
         this.clusterFile = ClusterFile.getInstance();
     }
 
@@ -83,7 +85,11 @@ public class TestClusterFile extends TestCase {
     @Before
     public void setup() {
         reset();
+
+        super.setup();
+
         setuplog4j();
+        setupWriter();
         setupMirandaProperties();
         setupClusterFile();
     }
@@ -138,9 +144,6 @@ public class TestClusterFile extends TestCase {
         pause(125);
 
         assert (getClusterFile().contains(nodeElement));
-
-        logger.info("my writer: " + getWriter() + ", clusterFile writer: " + getClusterFile().getWriterQueue());
-
         assert (contains(Message.Subjects.Write, getWriter()));
     }
 }

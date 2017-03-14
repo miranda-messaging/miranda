@@ -6,6 +6,7 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,10 @@ public class TestCluster extends TestCase {
 
     @Before
     public void setup () {
+        super.setup();
+
         setuplog4j();
+        setupWriter();
         setupMirandaProperties();
         setupMiranda();
         setupTimer();
@@ -65,7 +69,7 @@ public class TestCluster extends TestCase {
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initializeClass(filename, getWriter(), getMockNetwork());
+        Cluster.initializeClass(filename, Writer.getInstance(), getMockNetwork());
         this.cluster = Cluster.getInstance();
         this.clusterFile = ClusterFile.getInstance();
     }
@@ -83,7 +87,7 @@ public class TestCluster extends TestCase {
     public void testInitialize() {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
         com.ltsllc.miranda.cluster.Cluster.reset();
-        com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, getWriter(), getMockNetwork());
+        com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, Writer.getInstance(), getMockNetwork());
         this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
 
         ClusterFile temp = ClusterFile.getInstance();

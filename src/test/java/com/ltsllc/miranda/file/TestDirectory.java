@@ -5,6 +5,7 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.SystemMessages;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,12 +35,16 @@ public class TestDirectory extends TestCase {
     @Before
     public void setup () {
         reset();
+
+        super.setup();
+
         setuplog4j();
+        setupWriter();
         setupMirandaProperties();
 
         MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
-        this.directory = new SystemMessages(directory, getWriter());
+        this.directory = new SystemMessages(directory, Writer.getInstance());
     }
 
     @Test
@@ -48,7 +53,6 @@ public class TestDirectory extends TestCase {
         String dir = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
 
         assert (dir.equals(getDirectory().getFilename()));
-        assert (getWriter() == getDirectory().getWriterQueue());
     }
 
     private String[][] TRAVERSE_TEST = {
@@ -130,8 +134,8 @@ public class TestDirectory extends TestCase {
 
             pause (125);
 
-            this.directory = new SystemMessages("testdir", getWriter());
-            SystemMessages temp = new SystemMessages("testdir", getWriter());
+            this.directory = new SystemMessages("testdir", Writer.getInstance());
+            SystemMessages temp = new SystemMessages("testdir", Writer.getInstance());
             createEventHiearchicy("testdir", LOAD_SPEC);
 
             pause (500);
@@ -166,7 +170,7 @@ public class TestDirectory extends TestCase {
             MirandaProperties properties = Miranda.properties;
             properties.setProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY, "testdir");
 
-            this.directory = new SystemMessages("testdir", getWriter());
+            this.directory = new SystemMessages("testdir", Writer.getInstance());
 
             createEventHiearchicy("testdir", LOAD_SPEC);
 

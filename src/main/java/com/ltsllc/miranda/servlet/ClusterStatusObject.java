@@ -18,6 +18,6 @@ public class ClusterStatusObject {
     }
 
     public ClusterStatusObject (List<NodeStatus> nodes) {
-        nodes = new ArrayList<NodeStatus>(nodes);
+        this.nodes = new ArrayList<NodeStatus>(nodes);
     }
 }

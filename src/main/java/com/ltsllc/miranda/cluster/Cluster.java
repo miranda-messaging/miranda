@@ -12,6 +12,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.servlet.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.GetStatusMessage;
 import com.ltsllc.miranda.servlet.NodeStatus;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -36,11 +37,11 @@ public class Cluster extends Consumer {
     private static Cluster ourInstance;
 
 
-    public static synchronized void initializeClass(String filename, BlockingQueue<Message> writerQueue, Network network) {
+    public static synchronized void initializeClass(String filename, Writer writer, Network network) {
         if (null == ourInstance) {
             BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
 
-            ClusterFile.initialize(filename, writerQueue, clusterQueue);
+            ClusterFile.initialize(filename, writer, clusterQueue);
 
             ourInstance = new Cluster(network, clusterQueue);
             ourInstance.start();

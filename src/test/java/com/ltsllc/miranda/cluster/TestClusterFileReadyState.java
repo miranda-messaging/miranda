@@ -92,6 +92,9 @@ public class TestClusterFileReadyState extends TestCase {
     @Before
     public void setup() {
         reset();
+
+        super.setup();
+
         setuplog4j();
         setupMirandaProperties();
         setupTimer();

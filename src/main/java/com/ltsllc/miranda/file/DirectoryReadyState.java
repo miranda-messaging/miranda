@@ -48,7 +48,7 @@ public class DirectoryReadyState extends State {
 
         for (MirandaFile mirandaFile : getDirectory().getFiles())
         {
-            mirandaFile.setLastCollection(System.currentTimeMillis());
+            mirandaFile.performGarbageCollection();
         }
 
         getDirectory().setLastCollection(System.currentTimeMillis());

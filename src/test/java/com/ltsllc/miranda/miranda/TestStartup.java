@@ -75,6 +75,8 @@ public class TestStartup extends TestCase {
     public void setup () {
         reset();
 
+        super.setup();
+
         String[] empty = new String[0];
         this.miranda = new Miranda(empty);
         this.startup = new Startup(miranda, empty);

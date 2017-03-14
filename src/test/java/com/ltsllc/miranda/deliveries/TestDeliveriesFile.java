@@ -3,6 +3,7 @@ package com.ltsllc.miranda.deliveries;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.Before;
 import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
@@ -25,11 +26,14 @@ public class TestDeliveriesFile extends TestCase {
     public void setup () {
         reset();
 
+        super.setup();
+
+        setupWriter();
         setupMirandaProperties();
         MirandaProperties properties = Miranda.properties;
 
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
-        this.deliveriesFile = new DeliveriesFile(directory, getWriter());
+        this.deliveriesFile = new DeliveriesFile(directory, Writer.getInstance());
     }
 
     @Test

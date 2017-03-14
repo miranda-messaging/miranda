@@ -6,7 +6,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.util.IOUtils;
-import com.ltsllc.miranda.writer.WriteMessage;
+import com.ltsllc.miranda.writer.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -28,8 +28,8 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
             .setPrettyPrinting()
             .create();
 
-    public SingleFile (String filename, BlockingQueue<Message> writerQueue) {
-        super(filename, writerQueue);
+    public SingleFile (String filename, com.ltsllc.miranda.writer.Writer writer) {
+        super(filename, writer);
     }
 
     private List<E> data = buildEmptyList();

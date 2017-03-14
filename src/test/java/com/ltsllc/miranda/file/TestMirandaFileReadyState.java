@@ -4,6 +4,7 @@ import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,13 +45,16 @@ public class TestMirandaFileReadyState extends TestCase {
     public void setup () {
         reset();
 
+        super.setup();
+
         setuplog4j();
+        setupWriter();
         setupMirandaProperties();
 
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
         setupFileWatcher(100);
 
-        this.eventsFile = new EventsFile(FILENAME, getWriter());
+        this.eventsFile = new EventsFile(FILENAME, Writer.getInstance());
         this.eventsFile.start();
 
         this.mirandaFileReadyState = (MirandaFileReadyState) eventsFile.getCurrentState();

@@ -27,6 +27,8 @@ public class TestGetFileResponseMessage extends TestCase {
 
     @Before
     public void setup () {
+        super.setup();
+
         setuplog4j();
 
         getFileResponseMessage = new GetFileResponseMessage(null, this, "me");

@@ -2,6 +2,7 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.*;
+import com.ltsllc.miranda.writer.Writer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,9 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/8/2017.
  */
 public class SystemMessages extends Directory {
-    public SystemMessages (String directory, BlockingQueue<Message> writerQueue)
+    public SystemMessages (String directory, Writer writer)
     {
-        super(directory, writerQueue);
+        super(directory, writer);
 
         SystemMessagesReadyState readyState = new SystemMessagesReadyState(this);
         setCurrentState(readyState);
@@ -32,6 +33,6 @@ public class SystemMessages extends Directory {
 
     @Override
     public MirandaFile createMirandaFile(String filename) {
-        return new EventsFile(filename, getWriterQueue());
+        return new EventsFile(filename, getWriter());
     }
 }

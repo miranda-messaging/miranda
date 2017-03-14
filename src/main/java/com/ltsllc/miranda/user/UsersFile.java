@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.User;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.writer.Writer;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ public class UsersFile extends SingleFile<User> {
         return ourInstance;
     }
 
-    public UsersFile (BlockingQueue<Message> queue, String filename) {
-        super(filename, queue);
+    public UsersFile (Writer writer, String filename) {
+        super(filename, writer);
 
         UsersFileReadyState usersFileReadyState = new UsersFileReadyState(this, this);
         setCurrentState(usersFileReadyState);
@@ -42,9 +43,9 @@ public class UsersFile extends SingleFile<User> {
         }
     }
 
-    public static synchronized void initialize(String filename, BlockingQueue<Message> writerQueue) {
+    public static synchronized void initialize(String filename, Writer writer) {
         if (null == ourInstance) {
-            ourInstance = new UsersFile(writerQueue, filename);
+            ourInstance = new UsersFile(writer, filename);
             ourInstance.start();
             ourInstance.load();
         }

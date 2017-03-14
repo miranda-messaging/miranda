@@ -22,6 +22,8 @@ public class TestMiranda extends TestCase {
 
     @Before
     public void setup () {
+        super.setup();
+
         String[] empty = new String[0];
 
         miranda = new Miranda(empty);

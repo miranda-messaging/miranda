@@ -2,6 +2,7 @@ package com.ltsllc.miranda.deliveries;
 
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.Before;
 import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
@@ -32,10 +33,13 @@ public class TestDeliveriesFileReadyState extends TestCase {
     public void setup() {
         reset();
 
+        super.setup();
+
+        setupWriter();
         setupMirandaProperties();
         MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
-        deliveriesFile = new DeliveriesFile(directory, getWriter());
+        deliveriesFile = new DeliveriesFile(directory, Writer.getInstance());
 
         deliveriesFileReadyState = new DeliveriesFileReadyState(deliveriesFile);
     }
@@ -54,7 +58,7 @@ public class TestDeliveriesFileReadyState extends TestCase {
         //
         MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
-        DeliveriesFile temp = new DeliveriesFile(directory, getWriter());
+        DeliveriesFile temp = new DeliveriesFile(directory, Writer.getInstance());
 
         DeliveriesFileReadyState eqivalent = new DeliveriesFileReadyState(temp);
 
@@ -63,7 +67,7 @@ public class TestDeliveriesFileReadyState extends TestCase {
         //
         // make sure equals returns false in some cases
         //
-        temp = new DeliveriesFile("junk", getWriter());
+        temp = new DeliveriesFile("junk", Writer.getInstance());
         temp.load();
 
         DeliveriesFileReadyState notEquivalent = new DeliveriesFileReadyState(temp);

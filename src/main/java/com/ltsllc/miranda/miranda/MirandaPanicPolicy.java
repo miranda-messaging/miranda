@@ -64,25 +64,22 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
         boolean continuePanic = false;
 
         if (panic instanceof StartupPanic) {
-            logger.fatal(fatalMessage, panic);
-            System.exit(1);
-        }
-
-        if (
+            continuePanic = true;
+        } else if (
                 panic.getReason() == Panic.Reasons.DoesNotUnderstand ||
                 panic.getReason() == Panic.Reasons.ExceptionGettingNextMessage ||
-                panic.getReason() == Panic.Reasons.ExceptionDuringNetworkSend
+                panic.getReason() == Panic.Reasons.ExceptionDuringNetworkSend ||
+                panic.getReason() == Panic.Reasons.ExceptionWritingFile
         )
         {
             incrementPanicCount();
             if (beyondMaxCount()) {
                 fatalMessage = "Too many panics: " + getPanicCount();
+                continuePanic = true;
             }
 
             DecrementPanicCountMessage decrementMessage = new DecrementPanicCountMessage(getQueue(), this);
             Miranda.timer.schedulePeriodic(ONE_HOUR, getQueue(), decrementMessage);
-
-            continuePanic = false;
         }
 
         if (continuePanic) {

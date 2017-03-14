@@ -7,6 +7,7 @@ import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,12 +44,16 @@ public class TestMirandaFile extends TestCase {
     @Before
     public void setup() {
         reset();
+
+        super.setup();
+
         setuplog4j();
         setupMirandaProperties();
+        setupWriter();
 
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
-        eventsFile = new EventsFile("testdir/new/20170220-001.msg", getWriter());
+        eventsFile = new EventsFile("testdir/new/20170220-001.msg", Writer.getInstance());
         eventsFile.start();
         eventsFile.load();
     }
@@ -151,8 +156,9 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testEquals () {
+        setupWriter();
         getEventsFile().load();
-        EventsFile other = new EventsFile(FILENAME, getWriter());
+        EventsFile other = new EventsFile(FILENAME, Writer.getInstance());
         other.load();
 
         assert (other.equals(getEventsFile()));

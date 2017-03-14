@@ -52,6 +52,8 @@ public class TestFileWatcherService extends TestCase {
     public void setup () {
         reset();
 
+        super.setup();
+
         setuplog4j();
         setupMirandaProperties();
         setupFileWatcher(100);

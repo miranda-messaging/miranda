@@ -40,6 +40,8 @@ public class TestFileWatcherReadyState extends TestCase {
     public void reset() {
         super.reset();
 
+        super.setup();
+
         fileWatcherService = null;
         queue = null;
     }

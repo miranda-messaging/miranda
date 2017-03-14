@@ -5,6 +5,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Topic;
 import com.ltsllc.miranda.User;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.writer.Writer;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -21,16 +22,16 @@ public class TopicsFile extends SingleFile<Topic> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, BlockingQueue<Message> writerQueue) {
+    public static synchronized void initialize (String filename, Writer writer) {
         if (null == ourInstance) {
-            ourInstance = new TopicsFile(filename, writerQueue);
+            ourInstance = new TopicsFile(filename, writer);
             ourInstance.start();
             ourInstance.load();
         }
     }
 
-    private TopicsFile(String filename,BlockingQueue<Message> queue) {
-        super(filename, queue);
+    private TopicsFile(String filename, Writer writer) {
+        super(filename, writer);
         TopicsFileReadyState topicsFileReadyState = new TopicsFileReadyState(this);
         setCurrentState(topicsFileReadyState);
     }

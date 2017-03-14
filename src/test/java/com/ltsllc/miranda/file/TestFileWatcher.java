@@ -46,6 +46,8 @@ public class TestFileWatcher extends TestCase {
     public void setup () {
         reset();
 
+        super.setup();
+
         setupMirandaProperties();
 
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);

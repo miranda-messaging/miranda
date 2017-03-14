@@ -4,13 +4,18 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.event.SystemMessages;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 2/25/2017.
@@ -26,27 +31,46 @@ public class TestDirectoryReadyState extends TestCase {
             {"old/whatever", "random file"},
     };
 
+    @Mock
+    private Directory mockDirectory;
 
-    private Directory directory;
+    @Mock
+    private MirandaFile mockMirandaFile;
 
+    private DirectoryReadyState directoryReadyState;
 
-    public Directory getDirectory() {
-        return directory;
+    public DirectoryReadyState getDirectoryReadyState() {
+        return directoryReadyState;
+    }
+
+    public Directory getMockDirectory() {
+        return mockDirectory;
+    }
+
+    public MirandaFile getMockMirandaFile() {
+        return mockMirandaFile;
     }
 
     public void reset () {
         super.reset();
-        directory = null;
+
+        this.mockMirandaFile = null;
+        this.directoryReadyState = null;
+        this.mockDirectory = null;
     }
 
     @Before
     public void setup () {
         reset();
-        setupMirandaProperties();
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
-        directory = new SystemMessages(ROOT, getWriter());
-        directory.start();
+        super.setup();
+
+        setupWriter();
+        setupMirandaProperties();
+
+        this.mockMirandaFile = mock(MirandaFile.class);
+        this.mockDirectory = mock(Directory.class);
+        this.directoryReadyState = new DirectoryReadyState(getMockDirectory());
     }
 
     @After
@@ -64,27 +88,17 @@ public class TestDirectoryReadyState extends TestCase {
      */
     @Test
     public void testProcessGarbageCollectionMessage () {
-        long then = System.currentTimeMillis();
-
         setuplog4j();
 
-        getDirectory().load();
+        List<MirandaFile> files = new ArrayList<MirandaFile>();
+        files.add(getMockMirandaFile());
 
+        when(getMockDirectory().getFiles()).thenReturn(files);
         GarbageCollectionMessage message = new GarbageCollectionMessage(null, this);
-        send(message, getDirectory().getQueue());
+        getDirectoryReadyState().processMessage(message);
 
-        pause(125);
-
-        assert (collectedAfter(then, getDirectory().getFiles()));
+        verify(getMockDirectory(), atLeastOnce()).getFiles();
+        verify(getMockMirandaFile(), atLeastOnce()).performGarbageCollection();
     }
 
-    @Test
-    public void testWrite () {
-        getDirectory().load();
-        getDirectory().write();
-
-        pause(125);
-
-        assert (contains(Message.Subjects.Write, getWriter()));
-    }
 }

@@ -1,7 +1,9 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
+import com.ltsllc.miranda.servlet.holder.ClusterStatus;
 
 /**
  * Created by Clark on 3/10/2017.

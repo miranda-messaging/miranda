@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -22,13 +23,10 @@ abstract public class Directory extends MirandaFile {
     abstract public boolean isFileOfInterest (String filename);
     abstract public MirandaFile createMirandaFile (String filename);
 
-    private BlockingQueue<Message> writerQueue;
     private List<MirandaFile> files = new ArrayList<MirandaFile>();
 
-    public Directory (String filename, BlockingQueue<Message> writerQueue) {
-        super(filename);
-
-        this.writerQueue = writerQueue;
+    public Directory (String filename, Writer writer) {
+        super(filename, writer);
 
         DirectoryReadyState readyState = new DirectoryReadyState(this);
         setCurrentState(readyState);
@@ -36,11 +34,6 @@ abstract public class Directory extends MirandaFile {
 
     public List<MirandaFile> getFiles() {
         return files;
-    }
-
-    @Override
-    public BlockingQueue<Message> getWriterQueue() {
-        return writerQueue;
     }
 
     public List<String> traverse () {

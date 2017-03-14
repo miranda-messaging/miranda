@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +19,10 @@ public class TestSystemDeliveriesFile extends TestCase {
     public void setup () {
         reset();
 
-        this.systemDeliveriesFile = new SystemDeliveriesFile("deliveries", getWriter());
+        super.setup();
+
+        setupWriter();
+        this.systemDeliveriesFile = new SystemDeliveriesFile("deliveries", Writer.getInstance());
     }
 
     @Test

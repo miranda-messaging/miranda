@@ -13,8 +13,12 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/3/2017.
  */
 public class WriterReadyState extends State {
-    public WriterReadyState(Consumer container) {
-        super(container);
+    public Writer getWriter () {
+        return (Writer) getContainer();
+    }
+
+    public WriterReadyState(Writer writer) {
+        super(writer);
     }
 
     public State processMessage (Message m)
@@ -38,26 +42,15 @@ public class WriterReadyState extends State {
     }
 
     private State processWriteMessage (WriteMessage writeMessage) {
-        State nextState = this;
-
-        String filename = writeMessage.getFilename();
-        byte[] buffer = writeMessage.getBuffer();
-
-        FileOutputStream fos = null;
-
-        try {
-            fos = new FileOutputStream(writeMessage.getFilename());
-            fos.write(buffer);
-            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(writeMessage.getSender(), filename, this);
-            send(writeMessage.getSender(), writeSucceededMessage);
+        try{
+            getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
+            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getWriter().getQueue(), writeMessage.getFilename(), this);
+            writeMessage.reply(writeSucceededMessage);
         } catch (IOException e) {
-            WriteFailedMessage writeFailedMessage = new WriteFailedMessage (writeMessage.getSender(), filename, e, this);
-            send (writeMessage.getSender(), writeFailedMessage);
-        } finally {
-            IOUtils.closeNoExceptions(fos);
+            WriteFailedMessage writeFailedMessage = new WriteFailedMessage(getWriter().getQueue(), writeMessage.getFilename(), e, this);
+            writeMessage.reply(writeFailedMessage);
         }
 
-
-        return nextState;
+        return this;
     }
 }

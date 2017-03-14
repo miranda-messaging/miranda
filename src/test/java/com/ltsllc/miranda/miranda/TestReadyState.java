@@ -24,6 +24,9 @@ public class TestReadyState extends TestCase {
     @Before
     public void setup () {
         reset();
+
+        super.setup();
+
         setuplog4j();
 
         String[] empty = new String[0];

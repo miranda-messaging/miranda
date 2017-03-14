@@ -3,6 +3,7 @@ package com.ltsllc.miranda.event;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.writer.Writer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,11 +20,15 @@ public class TestSystemMessages extends TestCase {
     @Before
     public void setup() {
         reset();
+
+        super.setup();
+
+        setupWriter();
         setupMirandaProperties();
 
         MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
-        systemMessages = new SystemMessages(directory, getWriter());
+        systemMessages = new SystemMessages(directory, Writer.getInstance());
     }
 
     @Test

@@ -11,19 +11,19 @@ package com.ltsllc.miranda;
 public class Panic extends Exception {
     public enum Reasons {
         DoesNotUnderstand, // A state received a message it does not know how to process
+
         ExceptionCreatingSslContext,
-        ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
-        ExceptionSendingMessage,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
+        ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
-        ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
         ExceptionReceivingMessage,
-        ExceptionStartingServletHandler,
+        ExceptionSendingMessage,
+        ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
+        ExceptionWritingFile,
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
-        Select,
         ServletTimeout, // A servlet timed out waiting for a response from the system
         UncheckedException // an unchecked exception was thrown
     }

@@ -57,6 +57,9 @@ public class TestClusterReadyState extends TestCase {
     @Before
     public void setup() {
         reset();
+
+        super.setup();
+
         setuplog4j();
         this.mockCluster = mock(Cluster.class);
         this.clusterReadyState = new ClusterReadyState(getMockCluster());

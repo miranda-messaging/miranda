@@ -20,6 +20,8 @@ public class TestDelivery extends TestCase {
     public void setup() {
         reset();
 
+        super.setup();
+
         Event event = new Event(Event.Methods.POST, "junk");
         Subscription subscription = new Subscription();
 

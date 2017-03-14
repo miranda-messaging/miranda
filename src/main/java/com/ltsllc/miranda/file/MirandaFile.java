@@ -6,6 +6,7 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteMessage;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -25,7 +26,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private Logger logger = Logger.getLogger(MirandaFile.class);
 
     private String filename;
-    private BlockingQueue<Message> writerQueue;
+    private Writer writer;
     private List<Perishable> elements = new ArrayList<Perishable>();
     private Version version;
     private long lastLoaded = -1;
@@ -40,7 +41,11 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
     public BlockingQueue<Message> getWriterQueue() {
-        return writerQueue;
+        return writer.getQueue();
+    }
+
+    public Writer getWriter() {
+        return writer;
     }
 
     public List<Perishable> getElements() {
@@ -63,19 +68,14 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         this.lastLoaded = lastLoaded;
     }
 
-    public MirandaFile(String filename, BlockingQueue<Message> queue) {
+    public MirandaFile(String filename, Writer writer) {
         super("file");
 
         this.filename = filename;
-        this.writerQueue = queue;
+        this.writer = writer;
         this.lastCollection = -1;
     }
 
-
-    public MirandaFile(String filename) {
-        super("file");
-        this.filename = filename;
-    }
 
     public String getFilename() {
         return filename;
@@ -152,5 +152,9 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
     public String toString() {
         return filename;
+    }
+
+    public void performGarbageCollection () {
+        setLastCollection(System.currentTimeMillis());
     }
 }

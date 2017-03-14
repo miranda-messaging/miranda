@@ -24,6 +24,8 @@ public class TestEvent extends TestCase {
     public void setup () {
         reset();
 
+        super.setup();
+
         this.event = new Event(Event.Methods.POST, "junk");
     }
 

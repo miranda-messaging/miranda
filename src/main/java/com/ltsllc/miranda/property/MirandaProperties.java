@@ -9,10 +9,14 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.servlet.Property;
 import com.ltsllc.miranda.util.PropertiesUtils;
+import com.ltsllc.miranda.writer.WriteMessage;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -204,8 +208,12 @@ public class MirandaProperties extends SingleFile<String> {
 
     private Properties properties;
 
-    public MirandaProperties (String filename, BlockingQueue<Message> writerQueue) {
-        super(filename, writerQueue);
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public MirandaProperties (String filename, Writer writer) {
+        super(filename, writer);
 
         properties = new Properties();
         load();
@@ -401,5 +409,21 @@ public class MirandaProperties extends SingleFile<String> {
         }
 
         return list;
+    }
+
+    public void write () {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+
+            getProperties().store(outputStreamWriter, null);
+            outputStreamWriter.close();
+            byteArrayOutputStream.close();
+
+
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception trying to write properties file", e, Panic.Reasons.ExceptionWritingFile);
+            Miranda.getInstance().panic(panic);
+        }
     }
 }

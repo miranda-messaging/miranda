@@ -1,8 +1,7 @@
 package com.ltsllc.miranda.servlet;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.servlet.holder.ClusterStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
