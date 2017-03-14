@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.util.IOUtils;
 import com.ltsllc.miranda.writer.*;
@@ -150,5 +151,10 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         }
 
         return super.compare(map, o);
+    }
+
+    public void sendLoad (BlockingQueue<Message> senderQueue, Object sender) {
+        LoadMessage loadMessage = new LoadMessage(senderQueue, "ignore me", sender);
+        sendToMe(loadMessage);
     }
 }

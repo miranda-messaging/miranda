@@ -85,7 +85,7 @@ public class TestStartup extends TestCase {
     @Test
     public void testStart () {
         //
-        // Wait 180 seconds for the sockets to close
+        // Wait 2 minutes for the sockets to close
         //
         pause (120000);
 

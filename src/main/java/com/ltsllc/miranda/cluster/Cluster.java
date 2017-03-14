@@ -36,6 +36,9 @@ public class Cluster extends Consumer {
 
     private static Cluster ourInstance;
 
+    private List<Node> nodes = new ArrayList<Node>();
+    private Network network;
+    private ClusterFile clusterFile;
 
     public static synchronized void initializeClass(String filename, Writer writer, Network network) {
         if (null == ourInstance) {
@@ -43,7 +46,7 @@ public class Cluster extends Consumer {
 
             ClusterFile.initialize(filename, writer, clusterQueue);
 
-            ourInstance = new Cluster(network, clusterQueue);
+            ourInstance = new Cluster(network, ClusterFile.getInstance());
             ourInstance.start();
         }
     }
@@ -56,9 +59,10 @@ public class Cluster extends Consumer {
         ourInstance = null;
     }
 
-    private Cluster(Network network, BlockingQueue<Message> queue) {
-        super("cluster", queue);
-        this.clusterFileQueue = ClusterFile.getInstance().getQueue();
+    private Cluster(Network network, ClusterFile clusterFile) {
+        super("cluster");
+
+        this.clusterFile = clusterFile;
 
         ClusterLoadingState clusterLoadingState = new ClusterLoadingState(this);
         setCurrentState(clusterLoadingState);
@@ -66,30 +70,28 @@ public class Cluster extends Consumer {
         this.network = network;
     }
 
-
-    private List<Node> nodes = new ArrayList<Node>();
-    private Network network;
-    private BlockingQueue<Message> clusterFileQueue;
-    private NettyNetworkListener networkListener;
-
     public BlockingQueue<Message> getClusterFileQueue() {
-        return clusterFileQueue;
+        return clusterFile.getQueue();
     }
 
-    public void replaceClusterFileQueue (BlockingQueue<Message> newQueue) {
-        this.clusterFileQueue = newQueue;
+    public ClusterFile getClusterFile() {
+        return clusterFile;
+    }
+
+    public void setClusterFile(ClusterFile clusterFile) {
+        this.clusterFile = clusterFile;
     }
 
     public List<Node> getNodes() {
         return nodes;
     }
 
-    public Network getNetwork() {
-        return network;
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
     }
 
-    public NettyNetworkListener getNetworkListener() {
-        return networkListener;
+    public Network getNetwork() {
+        return network;
     }
 
     public boolean contains (NodeElement nodeElement) {
@@ -201,7 +203,7 @@ public class Cluster extends Consumer {
     }
 
     public void load () {
-        LoadMessage loadMessage = new LoadMessage(getQueue(), "junk", this);
+        getClusterFile().sendLoad(getQueue(), this);
     }
 
     public void performHealthCheck () {

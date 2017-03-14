@@ -14,23 +14,34 @@ import com.ltsllc.miranda.test.TestCase;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
  * Created by Clark on 2/20/2017.
  */
 public class TestCluster extends TestCase {
-    private ClusterFile clusterFile;
     private Cluster cluster;
 
+    @Mock
+    private ClusterFile mockClusterFile;
 
-    public ClusterFile getClusterFile() {
-        return clusterFile;
+    @Mock
+    private Node mockNode;
+
+    public ClusterFile getMockClusterFile() {
+        return mockClusterFile;
+    }
+
+    public Node getMockNode() {
+        return mockNode;
     }
 
     public com.ltsllc.miranda.cluster.Cluster getCluster() {
@@ -52,8 +63,18 @@ public class TestCluster extends TestCase {
     };
 
 
+    public void reset () {
+        super.reset();
+
+        this.cluster = null;
+        this.mockClusterFile = null;
+        this.mockNode = null;
+    }
+
     @Before
     public void setup () {
+        reset();
+
         super.setup();
 
         setuplog4j();
@@ -69,9 +90,11 @@ public class TestCluster extends TestCase {
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initializeClass(filename, Writer.getInstance(), getMockNetwork());
+        this.mockClusterFile = mock(ClusterFile.class);
+        this.mockNode = mock(Node.class);
+
+        Cluster.initializeClass(filename, getMockWriter(), getMockNetwork());
         this.cluster = Cluster.getInstance();
-        this.clusterFile = ClusterFile.getInstance();
     }
 
     @After
@@ -97,44 +120,36 @@ public class TestCluster extends TestCase {
     }
 
 
-    @Test
-    public void testStart () {
-        putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        getCluster().load();
-
-        pause(50);
-
-        Cluster cluster = Cluster.getInstance();
-        Node node = cluster.getNodes().get(0);
-
-        pause(125);
-
-        getCluster().connect();
-
-        pause(125);
-
-        verify(getMockNetwork(), atLeastOnce()).sendConnect(eq(node.getQueue()), Matchers.any(), eq("foo.com"), eq(6789));
-    }
-
     /**
      * Ensure that we create a load message.
      */
     @Test
     public void testLoad () {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        getCluster().replaceClusterFileQueue(queue);
+        getCluster().setClusterFile(getMockClusterFile());
 
-        putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        // TODO: getCluster().load(CLUSTER_FILENAME);
+        getCluster().load();
 
-        pause(125);
-
-        assert (contains(Message.Subjects.Load, queue));
+        verify(getMockClusterFile(), atLeastOnce()).sendLoad(Matchers.any(BlockingQueue.class), Matchers.any());
     }
 
     @Test
     public void testContains ()
     {
-        // TODO : ssltest this
+        NodeElement shouldContain = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        Node node = new Node(shouldContain, getMockNetwork());
+        NodeElement shouldNotContain = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        List<Node> nodeList = new ArrayList<Node>(1);
+        nodeList.add(node);
+
+        getCluster().setNodes(nodeList);
+
+        assert (getCluster().contains(shouldContain));
+        assert (!getCluster().contains(shouldNotContain));
+    }
+
+    @Test
+    public void testConnect () {
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+
     }
 }
