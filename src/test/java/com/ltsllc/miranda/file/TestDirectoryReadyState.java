@@ -1,10 +1,7 @@
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +9,6 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.*;
 
