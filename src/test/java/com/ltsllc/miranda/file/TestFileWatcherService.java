@@ -42,7 +42,9 @@ public class TestFileWatcherService extends TestCase {
     public void reset () {
         super.reset();
 
-        Miranda.getInstance().reset();
+        if (null != Miranda.getInstance())
+            Miranda.getInstance().reset();
+
         fileWatcherService = null;
         queue = null;
     }
