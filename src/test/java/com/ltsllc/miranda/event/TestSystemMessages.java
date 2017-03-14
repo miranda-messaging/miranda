@@ -23,6 +23,7 @@ public class TestSystemMessages extends TestCase {
 
         super.setup();
 
+        setuplog4j();
         setupWriter();
         setupMirandaProperties();
 
