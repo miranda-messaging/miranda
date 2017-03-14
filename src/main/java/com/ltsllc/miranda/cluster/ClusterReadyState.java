@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.cluster;
 
+import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.messages.*;
@@ -47,15 +48,15 @@ public class ClusterReadyState extends State {
                 break;
             }
 
-            case Connect: {
-                ConnectMessage connectMessage = (ConnectMessage) m;
-                nextState = processConnectMessage(connectMessage);
+            case LoadResponse: {
+                LoadResponseMessage loadResponseMessage = (LoadResponseMessage) m;
+                nextState = processLoadResponseMessage (loadResponseMessage);
                 break;
             }
 
-            case NodesLoaded: {
-                NodesLoadedMessage nodesLoaded = (NodesLoadedMessage) m;
-                nextState = processNodesLoaded(nodesLoaded);
+            case Connect: {
+                ConnectMessage connectMessage = (ConnectMessage) m;
+                nextState = processConnectMessage(connectMessage);
                 break;
             }
 
@@ -137,14 +138,7 @@ public class ClusterReadyState extends State {
      * @return
      */
     private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) {
-        for (NodeElement nodeElement : clusterFileChangedMessage.getFile()) {
-            if (!getCluster().contains(nodeElement)) {
-                Node node = new Node (nodeElement, getCluster().getNetwork());
-                node.start();
-                node.connect();
-                getCluster().getNodes().add(node);
-            }
-        }
+        getCluster().merge(clusterFileChangedMessage.getFile());
 
         return this;
     }
@@ -195,6 +189,12 @@ public class ClusterReadyState extends State {
 
     private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
         getCluster().getNodes().add(newNodeMessage.getNode());
+
+        return this;
+    }
+
+    private State processLoadResponseMessage (LoadResponseMessage loadResponseMessage) {
+        getCluster().merge(loadResponseMessage.getData());
 
         return this;
     }

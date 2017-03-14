@@ -24,8 +24,7 @@ public class ClusterStartingState extends State {
     }
 
     public State start () {
-        String filename = Miranda.properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-        LoadMessage loadMessage = new LoadMessage(getCluster().getQueue(), filename, this);
+        LoadMessage loadMessage = new LoadMessage(getCluster().getQueue(), this);
         send(getCluster().getClusterFileQueue(), loadMessage);
 
         return this;

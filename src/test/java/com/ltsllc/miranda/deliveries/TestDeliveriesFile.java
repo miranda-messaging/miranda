@@ -58,4 +58,9 @@ public class TestDeliveriesFile extends TestCase {
 
         assert (local.equals(theirs));
     }
+
+    @Test
+    public void testEquals () {
+        assert (getDeliveriesFile().equals(getDeliveriesFile()));
+    }
 }

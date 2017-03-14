@@ -116,7 +116,7 @@ public class TestClusterFile extends TestCase {
 
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS2);
 
-        LoadMessage loadMessage = new LoadMessage(null, CLUSTER_FILENAME, this);
+        LoadMessage loadMessage = new LoadMessage(null, this);
         Consumer.staticSend(loadMessage, com.ltsllc.miranda.cluster.ClusterFile.getInstance().getQueue());
 
         pause(125);

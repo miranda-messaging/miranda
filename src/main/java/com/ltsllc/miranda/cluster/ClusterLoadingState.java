@@ -41,7 +41,7 @@ public class ClusterLoadingState extends State {
 
     @Override
     public State start() {
-        LoadMessage loadMessage = new LoadMessage(getCluster().getQueue(), "whatever", this);
+        LoadMessage loadMessage = new LoadMessage(getCluster().getQueue(), this);
         send(getCluster().getClusterFileQueue(), loadMessage);
 
         return this;

@@ -83,7 +83,6 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         String json = ourGson.toJson(getData());
         Version version = new Version(json);
         setVersion(version);
-
         setLastLoaded(System.currentTimeMillis());
     }
 
@@ -154,7 +153,7 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
     }
 
     public void sendLoad (BlockingQueue<Message> senderQueue, Object sender) {
-        LoadMessage loadMessage = new LoadMessage(senderQueue, "ignore me", sender);
+        LoadMessage loadMessage = new LoadMessage(senderQueue, sender);
         sendToMe(loadMessage);
     }
 }

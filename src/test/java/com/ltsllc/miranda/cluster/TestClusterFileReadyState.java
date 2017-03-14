@@ -107,7 +107,7 @@ public class TestClusterFileReadyState extends TestCase {
     @Test
     public void testProcessLoadMessage () {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        LoadMessage loadMessage = new LoadMessage (queue, "whatever", this);
+        LoadMessage loadMessage = new LoadMessage (queue, this);
 
         getClusterFileReadyState().processMessage(loadMessage);
 

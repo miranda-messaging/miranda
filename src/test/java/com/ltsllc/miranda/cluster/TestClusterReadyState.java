@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.cluster;
 
+import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.*;
@@ -8,6 +9,9 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.servlet.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.GetStatusMessage;
+import com.ltsllc.miranda.servlet.NodeStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,24 +33,24 @@ import static org.mockito.Mockito.*;
 public class TestClusterReadyState extends TestCase {
     private static final String PROPERTIES_FILENAME = "junk.properties";
 
+
     @Mock
-    private Cluster mockCluster;
+    private Node mockNode;
 
     private ClusterReadyState clusterReadyState;
-
-    @Override
-    public Cluster getMockCluster() {
-        return mockCluster;
-    }
 
     public ClusterReadyState getClusterReadyState() {
         return clusterReadyState;
     }
 
+    public Node getMockNode() {
+        return mockNode;
+    }
+
     public void reset() {
         super.reset();
 
-        this.mockCluster = null;
+        this.mockNode = null;
 
         deleteFile(PROPERTIES_FILENAME);
     }
@@ -61,7 +65,7 @@ public class TestClusterReadyState extends TestCase {
         setupKeyStore();
         setupTrustStore();
 
-        this.mockCluster = mock(Cluster.class);
+        this.mockNode = mock(Node.class);
         this.clusterReadyState = new ClusterReadyState(getMockCluster());
     }
 
@@ -71,9 +75,9 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessMessageLoad() {
+    public void testProcessLoad() {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        LoadMessage message = new LoadMessage(queue, "whatever", this);
+        LoadMessage message = new LoadMessage(queue, this);
 
         getClusterReadyState().processMessage(message);
 
@@ -91,23 +95,6 @@ public class TestClusterReadyState extends TestCase {
         getClusterReadyState().processMessage(message);
 
         verify(getMockCluster(), atLeastOnce()).connect();
-    }
-
-    /**
-     * This gets sent when the cluster file reloads.  Make sure connects are issued
-     * for the new node(s).  In this ssltest we add a new node.
-     */
-    @Test
-    public void testProcessMessageNodesLoaded() {
-        List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a naode");
-        nodeElementList.add(nodeElement);
-        NodesLoadedMessage message = new NodesLoadedMessage(nodeElementList, null, this);
-
-
-        getClusterReadyState().processMessage(message);
-
-        verify(getMockCluster(), atLeastOnce()).merge(Matchers.anyList());
     }
 
 
@@ -143,98 +130,100 @@ public class TestClusterReadyState extends TestCase {
         verify(getMockCluster(), atLeastOnce()).performHealthCheck();
     }
 
-    /*
-
-        @Test
-    public void testProcessLoadMessage () {
-        LoadMessage loadMessage = new LoadMessage(null, "whatever", this);
-        getClusterReadyState().processMessage(loadMessage);
-
-        verify(getMockCluster(), atLeastOnce()).getClusterFileQueue();
-    }
-
     @Test
-    public void testProcessConnectMessage () {
-        ConnectMessage connectMessage = new ConnectMessage(null, this, "foo.com", 6789);
+    public void testProcessConnect () {
+        List<Node> nodeList = new ArrayList<Node>();
+        nodeList.add(getMockNode());
+        ConnectMessage connectMessage = new ConnectMessage(null, this);
+
+        getClusterReadyState().processMessage(connectMessage);
 
         verify(getMockCluster(), atLeastOnce()).connect();
     }
 
     @Test
-    public void testProcessNodesLoaded () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
-        List<NodeElement> nodeList = new ArrayList<NodeElement>();
-        nodeList.add (nodeElement);
-        NodesLoadedMessage nodesLoadedMessage = new NodesLoadedMessage(nodeList, null, this);
+    public void testProcessLoadResponseMessage () {
+        List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        nodeElementList.add(nodeElement);
+        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(null, this, nodeElementList);
 
-        verify(getMockCluster(), atLeastOnce()).contains(eq(nodeElement));
+        getClusterReadyState().processMessage(loadResponseMessage);
+
+        verify(getMockCluster(), atLeastOnce()).merge(Matchers.anyList());
     }
 
     @Test
-    public void testProcessMessageGetVersion() {
-        GetVersionsMessage getVersionsMessage = new GetVersionsMessage(null, this, null);
-        getClusterReadyState().processMessage(getVersionsMessage);
+    public void testProcessGetVersionMessage () {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
+        GetVersionMessage getVersionMessage = new GetVersionMessage(queue, this, queue);
+
+        when(getMockCluster().getClusterFileQueue()).thenReturn(queue);
+        when(getMockCluster().getQueue()).thenReturn(queue);
+
+        getClusterReadyState().processMessage(getVersionMessage);
+
+        verify(getMockCluster(), atLeastOnce()).getQueue();
         verify(getMockCluster(), atLeastOnce()).getClusterFileQueue();
     }
 
     @Test
-    public void testProcessMessageNewNode() {
-        NewNodeMessage newNodeMessage = new NewNodeMessage(null, this, getMockNode());
-        getClusterReadyState().processMessage(newNodeMessage);
-    }
+    public void testClusterFileChangedMessage () {
+        List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        nodeElementList.add(nodeElement);
+        Version version = new Version();
 
+        ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(null, this, nodeElementList, version);
 
-    @Test
-    public void testProcessMessageNodeUpdated() {
-        NodeElement oldNode = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
-        NodeElement newNode = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
-        NodeUpdatedMessage message = new NodeUpdatedMessage(null, this, oldNode, newNode);
+        getClusterReadyState().processMessage(clusterFileChangedMessage);
 
-        getClusterReadyState().processMessage(message);
-
-        pause(500);
-
+        verify(getMockCluster(), atLeastOnce()).merge(Matchers.anyList());
     }
 
     @Test
-    public void testProcessClusterFileChanged () {
-        List<NodeElement> nodeList = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
-        nodeList.add(nodeElement);
+    public void testProcessDropNodeMessage () {
+        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        DropNodeMessage dropNodeMessage = new DropNodeMessage(null, this, nodeElement);
+        List<Node> nodeList = new ArrayList<Node>();
 
-        Gson gson = new Gson();
+        when(getMockCluster().matchingNode(nodeElement)).thenReturn(null);
 
-        String json = gson.toJson(nodeList);
-        Version version = new Version(json);
+        getClusterReadyState().processMessage(dropNodeMessage);
 
-        ClusterFileChangedMessage message = new ClusterFileChangedMessage(null, this, nodeList, version);
+        verify(getMockCluster(), atLeastOnce()).matchingNode(Matchers.any(NodeElement.class));
 
-        getClusterReadyState().processMessage(message);
+        when(getMockCluster().matchingNode(nodeElement)).thenReturn(getMockNode());
+        when(getMockNode().isConnected()).thenReturn(false);
+        when(getMockCluster().getNodes()).thenReturn(nodeList);
 
-        verify(getMockCluster(), atLeastOnce()).contains(eq(nodeElement));
+        getClusterReadyState().processMessage(dropNodeMessage);
+
+        verify(getMockCluster(), atLeastOnce()).matchingNode(Matchers.any(NodeElement.class));
+        verify(getMockNode(), atLeastOnce()).isConnected();
+        verify(getMockCluster(), atLeastOnce()).getNodes();
+
+        when(getMockCluster().matchingNode(nodeElement)).thenReturn(getMockNode());
+        when(getMockNode().isConnected()).thenReturn(true);
+
+        getClusterReadyState().processMessage(dropNodeMessage);
+
+        verify(getMockCluster(), atLeastOnce()).matchingNode(Matchers.any(NodeElement.class));
+        verify(getMockNode(), atLeastOnce()).isConnected();
     }
 
     @Test
-    public void testProcessHealthCheckMessage() {
-        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(null, this);
+    public void testProcessGetStatusMessage () {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        List<NodeStatus> nodeStatusList = new ArrayList<NodeStatus>();
+        GetStatusMessage getStatusMessage = new GetStatusMessage(queue, this);
+        ClusterStatusObject clusterStatusObject = new ClusterStatusObject(nodeStatusList);
 
-        getClusterReadyState().processMessage(healthCheckMessage);
+        when(getMockCluster().getStatus()).thenReturn(clusterStatusObject);
 
-        verify(getMockCluster(), atLeastOnce()).performHealthCheck();
+        getClusterReadyState().processMessage(getStatusMessage);
+
+        verify(getMockCluster(), atLeastOnce()).getStatus();
     }
-
-
-    @Test
-    public void testProcessNewNodeMessage () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
-        Node node = new Node (nodeElement, getMockNetwork());
-        NewNodeMessage newNodeMessage = new NewNodeMessage(null, this, node);
-
-        getClusterReadyState()
-
-    }
-    */
-
-
 }
