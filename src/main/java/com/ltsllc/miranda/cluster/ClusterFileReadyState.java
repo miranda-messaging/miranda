@@ -29,20 +29,14 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     private static Logger logger = Logger.getLogger(ClusterFileReadyState.class);
 
     private ClusterFile clusterFile;
-    private BlockingQueue<Message> clusterQueue;
 
-    public ClusterFileReadyState(ClusterFile clusterFile, BlockingQueue<Message> clusterQueue) {
+    public ClusterFileReadyState(ClusterFile clusterFile) {
         super(clusterFile);
         this.clusterFile = clusterFile;
-        this.clusterQueue = clusterQueue;
     }
 
     public ClusterFile getClusterFile() {
         return clusterFile;
-    }
-
-    public BlockingQueue<Message> getClusterQueue() {
-        return clusterQueue;
     }
 
     public static void setLogger(Logger logger) {
@@ -177,7 +171,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
             for (NodeElement droppedNode : drops) {
                 DropNodeMessage message = new DropNodeMessage(getClusterFile().getQueue(), this, droppedNode);
-                send(getClusterQueue(), message);
+                send(getClusterFile().getCluster(), message);
             }
         }
 
@@ -274,8 +268,8 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         MirandaProperties properties = Miranda.properties;
 
         long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
-        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(getClusterQueue(), this);
-        Miranda.timer.schedulePeriodic(healthCheckPeriod, getClusterQueue(), healthCheckMessage);
+        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(getClusterFile().getCluster(), this);
+        Miranda.timer.schedulePeriodic(healthCheckPeriod, getClusterFile().getCluster(), healthCheckMessage);
 
         return nextState;
     }
@@ -283,7 +277,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     private State processLoadMessage (LoadMessage loadMessage) {
         getClusterFile().load();
 
-        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getClusterQueue(), this, getClusterFile().getData());
+        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getClusterFile().getCluster(), this, getClusterFile().getData());
         loadMessage.reply(loadResponseMessage);
 
         return this;

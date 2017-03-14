@@ -48,7 +48,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
         this.cluster = cluster;
 
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this, getCluster());
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
         setCurrentState(clusterFileReadyState);
     }
 

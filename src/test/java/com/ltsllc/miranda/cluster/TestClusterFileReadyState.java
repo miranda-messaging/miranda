@@ -49,7 +49,6 @@ public class TestClusterFileReadyState extends TestCase {
     private static Gson ourGson = new Gson();
 
     private ClusterFileReadyState clusterFileReadyState;
-    private BlockingQueue<Message> clusterQueue;
 
     @Mock
     private ClusterFile mockClusterfile = mock(ClusterFile.class);
@@ -61,10 +60,6 @@ public class TestClusterFileReadyState extends TestCase {
         return clusterFileReadyState;
     }
 
-    public BlockingQueue<Message> getClusterQueue() {
-        return clusterQueue;
-    }
-
     public ClusterFile getMockClusterfile() {
         return mockClusterfile;
     }
@@ -73,7 +68,6 @@ public class TestClusterFileReadyState extends TestCase {
         super.reset();
 
         ClusterFile.reset();
-        this.clusterQueue = new LinkedBlockingQueue<Message>();
         this.mockClusterfile = mock(ClusterFile.class);
         this.mockLogger = mock(Logger.class);
     }
@@ -101,8 +95,7 @@ public class TestClusterFileReadyState extends TestCase {
         deleteFile(CLUSTER_FILENAME);
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
 
-        this.clusterQueue = new LinkedBlockingQueue<Message>();
-        this.clusterFileReadyState = new ClusterFileReadyState(getMockClusterfile(), clusterQueue);
+        this.clusterFileReadyState = new ClusterFileReadyState(getMockClusterfile());
     }
 
     @After
@@ -146,7 +139,6 @@ public class TestClusterFileReadyState extends TestCase {
         getClusterFileReadyState().processMessage(message);
 
         assert(getWriter().size() == 0);
-        assert(getClusterQueue().size() == 0);
     }
 
     /**
