@@ -16,11 +16,12 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.net.Socket;
-import java.nio.channels.Channel;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
-import static ssltest.Util.getKeyStore;
 
 /**
  * Created by Clark on 2/3/2017.

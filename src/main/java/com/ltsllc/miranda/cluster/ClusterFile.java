@@ -65,13 +65,18 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
 
     public void addNode (NodeElement nodeElement) {
+        boolean dirty = false;
+
         if (!containsElement(nodeElement)) {
             getData().add(nodeElement);
 
             byte[] buffer = getBytes();
-            WriteMessage writeMessage = new WriteMessage(getFilename(), buffer, getQueue(), this);
-            send(writeMessage, getWriterQueue());
+
+            dirty = true;
         }
+
+        if (dirty)
+            write();
     }
 
 

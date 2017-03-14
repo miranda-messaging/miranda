@@ -82,13 +82,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
     public void write(String filename, byte[] array) {
-        Message m = new WriteMessage(filename, array, null, null);
-        try {
-            getWriterQueue().put(m);
-        } catch (InterruptedException e) {
-            logger.fatal("Exception while trying to sendToMe message to writer", e);
-            System.exit(1);
-        }
+        getWriter().sendWrite(getQueue(), this, filename, array);
     }
 
     public void write() {

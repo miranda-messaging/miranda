@@ -46,10 +46,7 @@ public class TestClusterReadyState extends TestCase {
     public void reset() {
         super.reset();
 
-        setupKeyStore();
-        setupTrustStore();
-
-        this.mockCluster = mock(Cluster.class);
+        this.mockCluster = null;
 
         deleteFile(PROPERTIES_FILENAME);
     }
@@ -61,6 +58,9 @@ public class TestClusterReadyState extends TestCase {
         super.setup();
 
         setuplog4j();
+        setupKeyStore();
+        setupTrustStore();
+
         this.mockCluster = mock(Cluster.class);
         this.clusterReadyState = new ClusterReadyState(getMockCluster());
     }

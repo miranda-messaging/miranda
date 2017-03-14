@@ -76,6 +76,7 @@ public class TestCluster extends TestCase {
 
     @After
     public void cleanup () {
+        cleanupTrustStore();
         deleteFile(CLUSTER_FILENAME);
     }
 

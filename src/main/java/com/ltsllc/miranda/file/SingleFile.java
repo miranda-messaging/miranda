@@ -113,8 +113,7 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         updateVersion();
 
         if (write) {
-            WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
-            send(writeMessage, getWriterQueue());
+            getWriter().sendWrite(getQueue(), this, getFilename(), getBytes());
         }
     }
 

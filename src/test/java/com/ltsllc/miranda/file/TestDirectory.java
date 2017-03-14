@@ -7,6 +7,7 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,6 +46,11 @@ public class TestDirectory extends TestCase {
         MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
         this.directory = new SystemMessages(directory, Writer.getInstance());
+    }
+
+    @After
+    public void cleanup () {
+        deleteDirectory("testdir");
     }
 
     @Test
@@ -132,23 +138,19 @@ public class TestDirectory extends TestCase {
             MirandaProperties properties = Miranda.properties;
             properties.setProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY, "testdir");
 
-            pause (125);
+            pause (250);
 
             this.directory = new SystemMessages("testdir", Writer.getInstance());
-            SystemMessages temp = new SystemMessages("testdir", Writer.getInstance());
-            createEventHiearchicy("testdir", LOAD_SPEC);
+            assert (createEventHiearchicy("testdir", LOAD_SPEC));
 
-            pause (500);
+            pause (250);
 
             getDirectory().load();
-            temp.load();
 
-            pause( 125);
+            pause( 250);
 
             int directorySize = getDirectory().getFiles().size();
             getLogger().info ("directory size = " + directorySize);
-            getLogger().info ("temp size = " + temp.getFiles().size());
-            assert (temp.getFiles().size() == directorySize);
             assert (directorySize == 3);
         } finally {
             File root = new File("testdir");

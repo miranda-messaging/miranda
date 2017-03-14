@@ -12,10 +12,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
+import org.mockito.Matchers;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Clark on 2/20/2017.
@@ -62,7 +66,6 @@ public class TestClusterFile extends TestCase {
     }
 
     public void setupClusterFile() {
-        setupWriter();
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
@@ -70,7 +73,7 @@ public class TestClusterFile extends TestCase {
 
         putFile(filename, CLUSTER_FILE_CONTENTS);
 
-        ClusterFile.initialize(filename, Writer.getInstance(), getCluster());
+        ClusterFile.initialize(filename, getMockWriter(), getCluster());
         this.clusterFile = ClusterFile.getInstance();
     }
 
@@ -90,6 +93,7 @@ public class TestClusterFile extends TestCase {
 
         setuplog4j();
         setupWriter();
+        setupTimer();
         setupMirandaProperties();
         setupClusterFile();
     }
@@ -141,9 +145,6 @@ public class TestClusterFile extends TestCase {
         NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         getClusterFile().addNode(nodeElement);
 
-        pause(125);
-
-        assert (getClusterFile().contains(nodeElement));
-        assert (contains(Message.Subjects.Write, getWriter()));
+        verify(getMockWriter(), atLeastOnce()).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.anyString(), Matchers.any(byte[].class));
     }
 }

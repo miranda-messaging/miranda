@@ -11,6 +11,12 @@ import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+
+import java.util.concurrent.BlockingQueue;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Clark on 2/25/2017.
@@ -53,7 +59,7 @@ public class TestMirandaFile extends TestCase {
 
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
-        eventsFile = new EventsFile("testdir/new/20170220-001.msg", Writer.getInstance());
+        eventsFile = new EventsFile("testdir/new/20170220-001.msg", getMockWriter());
         eventsFile.start();
         eventsFile.load();
     }
@@ -67,7 +73,7 @@ public class TestMirandaFile extends TestCase {
     public void testWrite() {
         getEventsFile().write();
 
-        assert (contains(Message.Subjects.Write, getWriter()));
+        verify(getMockWriter(), atLeastOnce()).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.anyString(), Matchers.any(byte[].class));
     }
 
     @Test
@@ -78,6 +84,8 @@ public class TestMirandaFile extends TestCase {
         createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
 
         getEventsFile().fileChanged();
+
+        pause(125);
 
         Version newVersion = getEventsFile().getVersion();
 
