@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.file.MirandaFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.writer.Writer;
@@ -38,9 +39,7 @@ public class TestDeliveriesFile extends TestCase {
 
     @Test
     public void testConstructor () {
-        DeliveriesFileReadyState readyState = new DeliveriesFileReadyState(getDeliveriesFile());
-
-        assert (getDeliveriesFile().getCurrentState().equals(readyState));
+        assert (getDeliveriesFile().getCurrentState() instanceof MirandaFileReadyState);
     }
 
     @Test
