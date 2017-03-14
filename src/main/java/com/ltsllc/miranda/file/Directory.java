@@ -36,10 +36,20 @@ abstract public class Directory extends MirandaFile {
         return files;
     }
 
+    public void setFiles(List<MirandaFile> files) {
+        this.files = files;
+    }
+
     public List<String> traverse () {
         List<String> mathces = new ArrayList<String>();
         traverse(getFilename(), mathces);
         return mathces;
+    }
+
+    public List<String> traverse (String root) {
+        List<String> matches = new ArrayList<String>();
+        traverse(root, matches);
+        return matches;
     }
 
     public void traverse (String directory, List<String> matches) {
@@ -59,12 +69,6 @@ abstract public class Directory extends MirandaFile {
                 }
             }
         }
-    }
-
-    public List<String> traverse (String root) {
-        List<String> matches = new ArrayList<String>();
-        traverse(root, matches);
-        return matches;
     }
 
     @Override

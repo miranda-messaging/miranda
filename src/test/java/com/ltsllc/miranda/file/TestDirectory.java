@@ -10,10 +10,16 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.io.File;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Clark on 2/22/2017.
@@ -23,14 +29,22 @@ public class TestDirectory extends TestCase {
 
     private Directory directory;
 
+    @Mock
+    private MirandaFile mockMirandaFile;
+
     public Directory getDirectory() {
         return directory;
+    }
+
+    public MirandaFile getMockMirandaFile() {
+        return mockMirandaFile;
     }
 
     public void reset () {
         super.reset();
 
         directory = null;
+        mockMirandaFile = null;
     }
 
     @Before
@@ -45,7 +59,13 @@ public class TestDirectory extends TestCase {
 
         MirandaProperties properties = Miranda.properties;
         String directory = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
-        this.directory = new SystemMessages(directory, Writer.getInstance());
+        this.directory = new SystemMessages(directory, getMockWriter());
+
+        this.mockMirandaFile = mock(MirandaFile.class);
+
+        List<MirandaFile> fileList = new ArrayList<MirandaFile>();
+        fileList.add(getMockMirandaFile());
+        this.directory.setFiles(fileList);
     }
 
     @After
@@ -90,6 +110,15 @@ public class TestDirectory extends TestCase {
         return true;
     }
 
+    private static final String TEST_DIR = "testdir";
+
+    public void setupFileSystem () {
+        File file = new File(TEST_DIR);
+
+        assert (file.mkdirs());
+        assert (createHierarchy(file, TRAVERSE_TEST));
+    }
+
     /**
      * Travese is used to identify files in the chosen directory.  Test to
      * see if it works and that it doesn't flag other files.
@@ -98,13 +127,11 @@ public class TestDirectory extends TestCase {
      */
     @Test
     public void testTraverse () throws Exception {
-        File file = new File("testdir");
+        File file = new File(TEST_DIR);
 
         try {
-            assert (file.mkdirs());
-            assert (createHierarchy(file, TRAVERSE_TEST));
-
-            List<String> list = getDirectory().traverse(file.getName());
+            setupFileSystem();
+            List<String> list = getDirectory().traverse(TEST_DIR);
             assert (list.size() == 3);
             assert (contains("testdir\\20170220-003.msg", list));
             assert (contains("testdir\\new\\20170122-001.msg", list));
@@ -115,7 +142,6 @@ public class TestDirectory extends TestCase {
             deleteDirectory(file);
         }
     }
-
 
     private static final String[][] LOAD_SPEC = {
             {"whatever", "random file"},
@@ -185,6 +211,12 @@ public class TestDirectory extends TestCase {
         } finally {
             deleteDirectory(root);
         }
+    }
 
+    @Test
+    public void testWrite () {
+        getDirectory().write();
+
+        verify(getMockMirandaFile(), atLeastOnce()).write();
     }
 }
