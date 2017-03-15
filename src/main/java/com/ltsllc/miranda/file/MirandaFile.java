@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.file;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
@@ -23,7 +24,8 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     abstract public void load();
     abstract public byte[] getBytes();
 
-    private Logger logger = Logger.getLogger(MirandaFile.class);
+    private static Logger logger = Logger.getLogger(MirandaFile.class);
+    private static Gson ourGson = new Gson();
 
     private String filename;
     private Writer writer;
@@ -102,14 +104,14 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
     public void updateVersion() {
-        StringWriter stringWriter = new StringWriter();
+        String json = asJson();
 
-        for (Perishable perishable : getElements()) {
-            stringWriter.write(perishable.toJson());
-        }
-
-        Version version = new Version(stringWriter.toString());
+        Version version = new Version(json);
         setVersion(version);
+    }
+
+    public String asJson () {
+        return ourGson.toJson(getElements());
     }
 
 

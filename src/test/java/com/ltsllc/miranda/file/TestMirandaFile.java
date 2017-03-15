@@ -92,6 +92,7 @@ public class TestMirandaFile extends TestCase {
         assert (!oldVersion.equals(newVersion));
     }
 
+
     @Test
     public void testFileChanged() {
         Event oldEvent = getEventsFile().getData().get(0);
@@ -164,7 +165,6 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testEquals () {
-        setupWriter();
         getEventsFile().load();
         EventsFile other = new EventsFile(FILENAME, Writer.getInstance());
         other.load();
