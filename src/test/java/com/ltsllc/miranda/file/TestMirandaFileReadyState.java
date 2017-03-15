@@ -70,6 +70,7 @@ public class TestMirandaFileReadyState extends TestCase {
     public void cleanup () {
         deleteDirectory(ROOT);
     }
+
     @Test
     public void testProcessFileChangedMessage () {
         File file = new File(FILENAME);
