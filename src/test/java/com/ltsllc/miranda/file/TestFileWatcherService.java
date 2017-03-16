@@ -60,7 +60,7 @@ public class TestFileWatcherService extends TestCase {
         setupMirandaProperties();
         setupFileWatcher(100);
 
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
         this.fileWatcherService = Miranda.fileWatcher;
         this.queue = new LinkedBlockingQueue<Message>();

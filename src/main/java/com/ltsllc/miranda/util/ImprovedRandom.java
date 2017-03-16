@@ -35,4 +35,24 @@ public class ImprovedRandom {
     public void nextBytes(byte[] array) {
         random.nextBytes(array);
     }
+
+    public int nextInt (int atLeastAndIncluding, int upToAndIncluding)
+    {
+        int interval = upToAndIncluding - atLeastAndIncluding + 1;
+        if (interval < 0) {
+            throw new IllegalArgumentException("negative interval");
+        }
+
+        return atLeastAndIncluding + random.nextInt(interval);
+    }
+
+    public byte nextByte () {
+        byte[] buffer = new byte[1];
+        random.nextBytes(buffer);
+        return buffer[0];
+    }
+
+    public int nextInt (int lessThan) {
+        return random.nextInt(lessThan);
+    }
 }

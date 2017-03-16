@@ -50,7 +50,7 @@ public class TestFileWatcher extends TestCase {
 
         setupMirandaProperties();
 
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
         queue = new LinkedBlockingQueue<Message>();
         File file = new File("testdir/new/20170220-001.msg");

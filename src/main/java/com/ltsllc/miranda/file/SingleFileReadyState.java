@@ -91,10 +91,10 @@ abstract public class SingleFileReadyState extends State {
         GetFileResponseMessage getFileResponseMessage = null;
 
         if (null == getFile().getData()) {
-            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(),this, getFileMessage.getFile());
+            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(),this, getFileMessage.getFilename());
         }
         else {
-            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getFileMessage.getFile(), getFile().getBytes());
+            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getFileMessage.getFilename(), getFile().getBytes());
         }
 
         send (getFileMessage.getSender(), getFileResponseMessage);
@@ -104,7 +104,7 @@ abstract public class SingleFileReadyState extends State {
 
 
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        getFile().setLastCollection(System.currentTimeMillis());
+        getFile().performGarbageCollection();
         return this;
     }
 

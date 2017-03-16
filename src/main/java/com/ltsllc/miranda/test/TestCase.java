@@ -8,6 +8,7 @@ import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.util.ImprovedRandom;
@@ -387,13 +388,20 @@ public class TestCase {
         return false;
     }
 
-    public boolean createEventHiearchicy (String rootFilename, String[][] spec) {
+    public static final String DIRECTORY = "directory";
+    public static final String EVENT_FILE = "event file";
+    public static final String FILE = "file";
+    public static final String RANDOM_FILE = "random file";
+    public static final String NODE_ELEMENT_FILE = "nodeElement file";
+
+    public boolean createFileSystem (String rootFilename, String[][] spec) {
         ImprovedRandom random = new ImprovedRandom();
         File root = new File(rootFilename);
         FileCreator randomFileCreator = new RandomFileCreator(1024, random);
         MirandaProperties properties = Miranda.properties;
         int maxNumberOfEvents = 1 + properties.getIntegerProperty(MirandaProperties.PROPERTY_MESSAGE_FILE_SIZE);
         FileCreator eventFileCreator = new EventFileCreator(random, maxNumberOfEvents,1024);
+        FileCreator nodeElementCreator = new NodeElementFileCreator(random, 16);
 
         if (!root.isDirectory()) {
             if (root.exists())
@@ -407,13 +415,17 @@ public class TestCase {
                 File file = new File(fullName);
 
 
-                if ("directory".equalsIgnoreCase(record[1])) {
+                if (DIRECTORY.equalsIgnoreCase(record[1])) {
                     if (!file.isDirectory() && !file.mkdirs())
                         return false;
-                } else if ("file".equalsIgnoreCase(record[1]) || "random file".equalsIgnoreCase(record[1])) {
+                } else if (FILE.equalsIgnoreCase(record[1]) || RANDOM_FILE.equalsIgnoreCase(record[1])) {
                     randomFileCreator.createFile(file);
-                } else if ("event file".equalsIgnoreCase(record[1])) {
+                } else if (EVENT_FILE.equalsIgnoreCase(record[1])) {
                     eventFileCreator.createFile(file);
+                } else if (NODE_ELEMENT_FILE.equalsIgnoreCase(record[1])) {
+                    nodeElementCreator.createFile(file);
+                } else {
+                    System.err.println("Unrecognized entry: " + record[1]);
                 }
             }
         }
@@ -455,5 +467,19 @@ public class TestCase {
 
         this.writer = new LinkedBlockingQueue<Message>();
         writer.setQueue(this.writer);
+    }
+
+    public static void makeFile (String filename, byte[] data) {
+        FileOutputStream fileOutputStream = null;
+
+        try {
+            fileOutputStream = new FileOutputStream(filename);
+            fileOutputStream.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } finally {
+            Utils.closeIgnoreExceptions(fileOutputStream);
+        }
     }
 }

@@ -167,7 +167,7 @@ public class TestDirectory extends TestCase {
             pause (250);
 
             this.directory = new SystemMessages("testdir", Writer.getInstance());
-            assert (createEventHiearchicy("testdir", LOAD_SPEC));
+            assert (createFileSystem("testdir", LOAD_SPEC));
 
             pause (250);
 
@@ -200,7 +200,7 @@ public class TestDirectory extends TestCase {
 
             this.directory = new SystemMessages("testdir", Writer.getInstance());
 
-            createEventHiearchicy("testdir", LOAD_SPEC);
+            createFileSystem("testdir", LOAD_SPEC);
 
             getDirectory().load();
             getDirectory().updateVersion();

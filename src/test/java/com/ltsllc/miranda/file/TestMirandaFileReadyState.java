@@ -59,7 +59,7 @@ public class TestMirandaFileReadyState extends TestCase {
         setupWriter();
         setupMirandaProperties();
 
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
         setupFileWatcher(100);
 
         this.mockEventsFile = mock(EventsFile.class);

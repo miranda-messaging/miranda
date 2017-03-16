@@ -57,7 +57,7 @@ public class TestMirandaFile extends TestCase {
         setupMirandaProperties();
         setupWriter();
 
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
         eventsFile = new EventsFile("testdir/new/20170220-001.msg", getMockWriter());
         eventsFile.start();
@@ -81,7 +81,7 @@ public class TestMirandaFile extends TestCase {
         Version oldVersion = getEventsFile().getVersion();
 
         deleteDirectory(ROOT);
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
         getEventsFile().fileChanged();
 
@@ -98,7 +98,7 @@ public class TestMirandaFile extends TestCase {
         Event oldEvent = getEventsFile().getData().get(0);
 
         deleteDirectory(ROOT);
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
         getEventsFile().fileChanged();
         Event newEvent = getEventsFile().getData().get(0);

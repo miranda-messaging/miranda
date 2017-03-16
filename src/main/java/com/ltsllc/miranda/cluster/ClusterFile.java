@@ -43,13 +43,24 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return cluster;
     }
 
-    private ClusterFile (String filename, Writer writer, BlockingQueue<Message> cluster) {
+    public ClusterFile (String filename, Writer writer, BlockingQueue<Message> cluster) {
         super(filename, writer);
 
         this.cluster = cluster;
 
         ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
         setCurrentState(clusterFileReadyState);
+    }
+
+    public ClusterFile (String filename, Writer writer, BlockingQueue<Message> queue, List<NodeElement> nodeElementList) {
+        super(filename, writer);
+
+        this.cluster = queue;
+
+        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
+        setCurrentState(clusterFileReadyState);
+
+        setData(nodeElementList);
     }
 
     public void addNode(Node node) {

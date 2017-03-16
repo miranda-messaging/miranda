@@ -220,7 +220,7 @@ public class NewNodeState extends NodeState {
 
 
     private State processGetFileMessage (GetFileMessage getFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(getFileMessage.getFile());
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(getFileMessage.getFilename());
         sendOnWire(getFileWireMessage);
 
         return this;

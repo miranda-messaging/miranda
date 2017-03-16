@@ -55,7 +55,7 @@ public class TestFileWatcherReadyState extends TestCase {
 
         setupFileWatcher(100);
 
-        createEventHiearchicy(ROOT, FILE_SYSTEM_SPEC);
+        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
         this.queue = new LinkedBlockingQueue<Message>();
         this.fileWatcherService = Miranda.fileWatcher;

@@ -8,15 +8,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/11/2017.
  */
 public class GetFileMessage extends Message {
-    private String file;
+    private String filename;
 
-    public GetFileMessage (BlockingQueue<Message> senderQueue, Object sender, String file) {
+    public GetFileMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
         super(Subjects.GetFile, senderQueue, sender);
 
-        this.file = file;
+        this.filename = filename;
     }
 
-    public String getFile() {
-        return file;
+    public String getFilename () {
+        return filename;
     }
 }

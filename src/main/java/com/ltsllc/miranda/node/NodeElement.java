@@ -2,6 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.util.ImprovedRandom;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -117,5 +118,78 @@ public class NodeElement implements Perishable {
         stringBuilder.append("}");
 
         return stringBuilder.toString();
+    }
+
+    private static final String[] FISRT_DOMAINS = {
+            "foo",
+            "bar",
+            "whatever",
+            "nerts",
+            "liwipi",
+            "fred",
+            "node",
+            "junk",
+            "curley",
+            "amy"
+    };
+
+    private static final String[] MIDDLE_DOMIANS = {
+            "krabnebula",
+            "ever",
+            "intermediate",
+            "google",
+            "amazon",
+            "bell",
+            "uswaste",
+            "meetup",
+            "experts",
+            "beginners"
+    };
+
+    private static final String[] LAST_DOMAINS = {
+            "com",
+            "net",
+            "org"
+    };
+
+    public static String randomDnsName (ImprovedRandom random) {
+        int numberOfDomains = random.nextInt(2, 6);
+        StringBuffer sb = new StringBuffer();
+        sb.append (FISRT_DOMAINS[random.nextIndex(FISRT_DOMAINS)]);
+
+        int i = 1;
+        while (i < (numberOfDomains - 1)) {
+            sb.append(".");
+            sb.append(MIDDLE_DOMIANS[random.nextIndex(MIDDLE_DOMIANS)]);
+            i++;
+        }
+
+        sb.append(".");
+        sb.append(LAST_DOMAINS[random.nextIndex(LAST_DOMAINS)]);
+
+        return sb.toString();
+    }
+
+    public static String randomIp (ImprovedRandom random) {
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < 4; i++) {
+            if (i > 0 && i < 4) {
+                sb.append(".");
+            }
+
+            byte b = random.nextByte();
+            sb.append(Byte.toUnsignedInt(b));
+        }
+
+        return sb.toString();
+    }
+
+    public static NodeElement random (ImprovedRandom random) {
+        String dns = randomDnsName(random);
+        String ip = randomIp (random);
+        int port = 1 + random.nextInt(65535);
+
+        return new NodeElement(dns, ip, port, "a node");
     }
 }
