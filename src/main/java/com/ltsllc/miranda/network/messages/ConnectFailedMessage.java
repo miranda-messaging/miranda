@@ -11,7 +11,7 @@ public class ConnectFailedMessage extends Message {
     private Throwable cause;
 
     public ConnectFailedMessage(BlockingQueue<Message> sender, Object senderObject, Throwable cause) {
-        super(Subjects.ConnectionError, sender, senderObject);
+        super(Subjects.ConnectFailed, sender, senderObject);
         this.cause = cause;
     }
 
