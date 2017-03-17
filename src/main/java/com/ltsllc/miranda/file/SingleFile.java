@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -155,5 +156,18 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
     public void sendLoad (BlockingQueue<Message> senderQueue, Object sender) {
         LoadMessage loadMessage = new LoadMessage(senderQueue, sender);
         sendToMe(loadMessage);
+    }
+
+    public void merge (List<E> list) {
+        List<E> newItems = new ArrayList<E>();
+
+        for (E e : list) {
+            if (!contains(e))
+                newItems.add(e);
+        }
+
+        if (newItems.size() > 0) {
+            getData().addAll(newItems);
+        }
     }
 }

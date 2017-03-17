@@ -54,26 +54,17 @@ abstract public class SingleFileSyncingState extends State {
 
 
     public State processGetFileResponse (GetFileResponseMessage getFileResponseMessage) {
-        merge(getFileResponseMessage.getContents());
+        List list = ourGson.fromJson(getFileResponseMessage.getContents(), getListType());
+        getFile().merge(list);
 
-        return getReadyState();
+        return this;
     }
-
-    public void merge (String hexString) {
-        byte[] buffer = Utils.hexStringToBytes(hexString);
-        String json = new String(buffer);
-        List list = ourGson.fromJson(json, getListType());
-        for (Object o1 : list) {
-            if (!contains(o1))
-                getData().add(o1);
-        }
-    }
-
 
     private State processGetFileMessage (GetFileMessage getFileMessage) {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getName(),
                 getFile().getBytes());
-        send(getFileMessage.getSender(), getFileResponseMessage);
+
+        getFileMessage.reply(getFileResponseMessage);
 
         return this;
     }

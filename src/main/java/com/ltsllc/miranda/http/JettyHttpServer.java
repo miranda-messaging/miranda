@@ -45,20 +45,9 @@ public class JettyHttpServer extends HttpServer {
     }
 
 
-    public void addServletsOld(List<ServletMapping> servlets) {
-        ServletHandler servletHandler = new ServletHandler();
-
-        for (ServletMapping mapping : servlets) {
-            servletHandler.addServletWithMapping(mapping.getServletClass(), mapping.getPath());
-        }
-
-        getHandlerCollection().addHandler(servletHandler);
-    }
-
     @Override
     public void addServlets(List<ServletMapping> servlets) {
         ServletHandler servletHandler = new ServletHandler();
-
 
         for (ServletMapping mapping : servlets) {
             servletHandler.addServletWithMapping(mapping.getServletClass(), mapping.getPath());
