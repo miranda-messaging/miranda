@@ -24,6 +24,10 @@ public class MinaHandler extends IoHandlerAdapter {
         return session;
     }
 
+    public void setSession(IoSession session) {
+        this.session = session;
+    }
+
     public MinaHandle getMinaHandle() {
         return minaHandle;
     }
