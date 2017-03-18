@@ -9,6 +9,8 @@ import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.util.ImprovedRandom;
@@ -348,6 +350,18 @@ public class TestCase {
         for (Message m : queue) {
             if (subject.equals(m.getSubject())) {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean containsNetworkMessage (WireMessage wireMessage, BlockingQueue<Message> queue) {
+        for (Message m : queue) {
+            if (m.getSubject() == Message.Subjects.NetworkMessage) {
+                NetworkMessage networkMessage = (NetworkMessage) m;
+                if (networkMessage.getWireMessage().equals(wireMessage))
+                    return true;
             }
         }
 

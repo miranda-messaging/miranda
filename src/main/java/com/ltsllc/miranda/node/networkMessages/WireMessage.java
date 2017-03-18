@@ -45,4 +45,13 @@ public class WireMessage {
     public String getJson () {
         return ourGson.toJson(this);
     }
+
+    public boolean equals (Object o) {
+        if (o == null || !(o instanceof WireMessage))
+            return false;
+
+        WireMessage other = (WireMessage) o;
+        return getWireSubject().equals(other.getWireSubject())
+                && getClassName().equals(other.getClassName());
+    }
 }

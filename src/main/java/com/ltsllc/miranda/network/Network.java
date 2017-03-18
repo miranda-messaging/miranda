@@ -61,6 +61,10 @@ abstract public class Network extends Consumer {
         integerToHandle.put(handle, theHandle);
     }
 
+    public int getHandleCount() {
+        return handleCount;
+    }
+
     public void clearHandle (int handle)
     {
         integerToHandle.put(handle, null);

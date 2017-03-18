@@ -144,4 +144,15 @@ public class Message implements Perishable {
             System.exit(1);
         }
     }
+
+    public boolean equals (Object o) {
+        if (null == o || !(o instanceof Message))
+            return false;
+
+        Message other = (Message) o;
+
+        return getSubject().equals(other.getSubject())
+                && getSender() == other.getSender()
+                && getSenderObject() == other.getSenderObject();
+    }
 }

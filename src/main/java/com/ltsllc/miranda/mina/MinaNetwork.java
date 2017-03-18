@@ -107,7 +107,7 @@ public class MinaNetwork extends Network {
 
     public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException
     {
-        Handle handle = null;
+        MinaHandle handle = null;
         MirandaProperties properties = Miranda.properties;
 
         NioSocketConnector connector = new NioSocketConnector();
@@ -130,6 +130,7 @@ public class MinaNetwork extends Network {
         ConnectFuture connectFuture = connector.connect(address);
 
         handle = new MinaHandle(minaHandler, connectToMessage.getSender());
+        minaHandler.setMinaHandle(handle);
 
         FutureListener futureListener = new FutureListener(connectToMessage.getSender(), nextHandle(), this, handle);
         connectFuture.addListener(futureListener);

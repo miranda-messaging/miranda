@@ -44,4 +44,16 @@ public class JoinWireMessage extends WireMessage {
     public String getDescription() {
         return description;
     }
+
+    public boolean equals (Object o) {
+        if (!super.equals(o) || !(o instanceof JoinWireMessage))
+            return false;
+
+        JoinWireMessage other = (JoinWireMessage) o;
+
+        return getDns().equals(other.getDns())
+                && getIp().equals(other.getIp())
+                && getPort() == other.getPort()
+                && getDescription() == other.getDescription() || getDescription().equals(other.getDescription());
+    }
 }

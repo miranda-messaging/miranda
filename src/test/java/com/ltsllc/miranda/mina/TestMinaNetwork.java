@@ -7,6 +7,9 @@ import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.NetworkReadyState;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.messages.NetworkErrorMessage;
+import com.ltsllc.miranda.network.messages.SendNetworkMessage;
+import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
@@ -172,8 +175,10 @@ public class TestMinaNetwork extends TestCase {
 
         ConnectToMessage connectToMessage = new ConnectToMessage("localhost", 6789, queue, this);
 
+        Handle handle = null;
+
         try {
-            getMinaNetwork().basicConnectTo(connectToMessage);
+            handle = getMinaNetwork().basicConnectTo(connectToMessage);
         } catch (NetworkException e) {
             e.printStackTrace();
         }
@@ -184,6 +189,21 @@ public class TestMinaNetwork extends TestCase {
         pause(250);
 
         assert (contains(Message.Subjects.ConnectSucceeded, queue));
+
+        int theHandle = getMinaNetwork().getHandleCount();
+        WireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
+        SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(queue, this, joinWireMessage, theHandle);
+
+        try {
+            if (null != handle)
+                handle.send(sendNetworkMessage);
+        } catch (NetworkException e) {
+            e.printStackTrace();
+        }
+
+        pause(250);
+
+        assert (containsNetworkMessage(joinWireMessage, queue));
     }
 
     @Test
