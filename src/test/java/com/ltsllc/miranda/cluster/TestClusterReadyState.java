@@ -62,6 +62,7 @@ public class TestClusterReadyState extends TestCase {
         super.setup();
 
         setuplog4j();
+        setupMirandaProperties();
         setupKeyStore();
         setupTrustStore();
 

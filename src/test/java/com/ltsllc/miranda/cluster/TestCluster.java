@@ -82,6 +82,7 @@ public class TestCluster extends TestCase {
         setupMirandaProperties();
         setupMiranda();
         setupTimer();
+        setupMirandaProperties();
         setupTrustStore();
 
         deleteFile(CLUSTER_FILENAME);

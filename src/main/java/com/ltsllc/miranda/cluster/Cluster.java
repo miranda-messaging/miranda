@@ -55,6 +55,11 @@ public class Cluster extends Consumer {
         return ourInstance;
     }
 
+    // for testing
+    public static void setInstance (Cluster cluster) {
+        ourInstance = cluster;
+    }
+
     public static synchronized void reset() {
         ourInstance = null;
     }
