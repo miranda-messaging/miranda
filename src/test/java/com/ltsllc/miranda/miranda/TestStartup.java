@@ -84,11 +84,6 @@ public class TestStartup extends TestCase {
 
     @Test
     public void testStart () {
-        //
-        // Wait 2 minutes for the sockets to close
-        //
-        pause (120000);
-
         long then = System.currentTimeMillis();
         getMiranda().start();
 

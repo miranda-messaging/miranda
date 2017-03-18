@@ -133,7 +133,6 @@ public class ReadyState extends State {
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
         GarbageCollectionMessage garbageCollectionMessage2 = new GarbageCollectionMessage(getMiranda().getQueue(), this);
 
-        send(getMiranda().getCluster().getQueue(), garbageCollectionMessage2);
         send(getMiranda().getSubscriptions().getQueue(), garbageCollectionMessage2);
         send(getMiranda().getTopics().getQueue(), garbageCollectionMessage2);
         send(getMiranda().getUsers().getQueue(), garbageCollectionMessage2);
