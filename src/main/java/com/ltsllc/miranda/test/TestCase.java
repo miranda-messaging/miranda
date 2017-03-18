@@ -2,6 +2,7 @@ package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaFactory;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.FileWatcherService;
@@ -510,5 +511,11 @@ public class TestCase {
 
     public void setupMockCluster () {
         Cluster.setInstance(getMockCluster());
+    }
+
+    public void setupMirandaFactory () {
+        setupMirandaProperties();
+
+        Miranda.factory = new MirandaFactory(Miranda.properties);
     }
 }

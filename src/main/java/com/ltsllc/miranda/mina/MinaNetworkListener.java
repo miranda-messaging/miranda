@@ -9,6 +9,7 @@ import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
+import jdk.nashorn.internal.ir.LexicalContextNode;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
@@ -27,12 +28,52 @@ import java.util.concurrent.BlockingQueue;
 public class MinaNetworkListener extends NetworkListener {
     private boolean useEncryption = true;
 
+    private boolean testMode = true; // for testing
+    private IoAcceptor acceptor; // for testing
+    private String testMessage; // for testing
+    private MinaTestHandler minaTestHandler; // for testing
+
+    public MinaTestHandler getMinaTestHandler() {
+        return minaTestHandler;
+    }
+
+    public void setMinaTestHandler(MinaTestHandler minaTestHandler) {
+        this.minaTestHandler = minaTestHandler;
+    }
+
+    public String getTestMessage() {
+        return testMessage;
+    }
+
+    public void setTestMessage(String testMessage) {
+        this.testMessage = testMessage;
+
+        if (null != testMessage && testMessage.length() > 0)
+            setTestMode(true);
+    }
+
+    public boolean isTestMode() {
+        return testMode;
+    }
+
+    public void setTestMode(boolean testMode) {
+        this.testMode = testMode;
+    }
+
     public boolean getUseEncryption() {
         return useEncryption;
     }
 
     public void setUseEncryption(boolean useEncryption) {
         this.useEncryption = useEncryption;
+    }
+
+    public IoAcceptor getAcceptor() {
+        return acceptor;
+    }
+
+    public void setAcceptor(IoAcceptor acceptor) {
+        this.acceptor = acceptor;
     }
 
     public MinaNetworkListener (int port) {
@@ -49,6 +90,7 @@ public class MinaNetworkListener extends NetworkListener {
         MirandaFactory factory = Miranda.factory;
 
         IoAcceptor acceptor = new NioSocketAcceptor();
+        setAcceptor(acceptor);
 
         SSLContext sslContext = factory.buildServerSSLContext();
 
@@ -61,8 +103,14 @@ public class MinaNetworkListener extends NetworkListener {
         ProtocolCodecFilter protocolCodecFilter = new ProtocolCodecFilter(textLineCodecFactory);
         acceptor.getFilterChain().addLast("lines", protocolCodecFilter);
 
-        MinaIncomingHandler handler = new MinaIncomingHandler(queue);
-        acceptor.setHandler (handler);
+        if (isTestMode()) {
+            MinaTestHandler minaTestHandler = new MinaTestHandler(getTestMessage());
+            setMinaTestHandler(minaTestHandler);
+            acceptor.setHandler(minaTestHandler);
+        } else {
+            MinaIncomingHandler handler = new MinaIncomingHandler(queue);
+            acceptor.setHandler(handler);
+        }
 
         InetSocketAddress address = new InetSocketAddress(getPort());
 
