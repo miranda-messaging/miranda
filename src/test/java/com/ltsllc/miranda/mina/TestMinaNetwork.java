@@ -18,6 +18,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -128,6 +129,12 @@ public class TestMinaNetwork extends TestCase {
         minaNetwork = new MinaNetwork();
     }
 
+    @After
+    public void cleanup () {
+        cleanupTrustStore();
+        cleanupKeyStore();
+    }
+
     @Test
     public void testConstructor() {
         assert (getMinaNetwork().getCurrentState() instanceof NetworkReadyState);
@@ -153,6 +160,9 @@ public class TestMinaNetwork extends TestCase {
 
     @Test
     public void testBasicConnectTo() {
+        setupMirandaProperties();
+        setupTrustStore();
+        setupKeyStore();
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
         setupMirandaProperties();
