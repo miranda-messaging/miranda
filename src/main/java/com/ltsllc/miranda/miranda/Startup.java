@@ -277,7 +277,7 @@ public class Startup extends State {
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
         Cluster.initializeClass(filename, Writer.getInstance(), network);
-        miranda.setCluster(Cluster.getInstance().getQueue());
+        miranda.setCluster(Cluster.getInstance());
 
         Cluster.getInstance().sendConnect (null, this);
     }
@@ -308,19 +308,19 @@ public class Startup extends State {
 
             String clusterFile = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
             ClusterFile.initialize(clusterFile, getWriter(), Cluster.getInstance().getQueue());
-            miranda.setCluster(ClusterFile.getInstance().getQueue());
+            miranda.setCluster(Cluster.getInstance());
 
             String filename = properties.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
             UsersFile.initialize(filename, getWriter());
-            miranda.setUsers(UsersFile.getInstance().getQueue());
+            miranda.setUsers(UsersFile.getInstance());
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
             TopicsFile.initialize(filename, getWriter());
-            miranda.setTopics(TopicsFile.getInstance().getQueue());
+            miranda.setTopics(TopicsFile.getInstance());
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
             SubscriptionsFile.initialize(filename, getWriter());
-            miranda.setSubscriptions(SubscriptionsFile.getInstance().getQueue());
+            miranda.setSubscriptions(SubscriptionsFile.getInstance());
 
             String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);

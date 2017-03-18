@@ -2,6 +2,7 @@ package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.StopMessage;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -231,5 +232,10 @@ public class Consumer extends Subsystem implements Comparer {
 
     public void setCurrentStateWithoutStart(State state) {
         currentState = state;
+    }
+
+    public void sendStop (BlockingQueue<Message> senderQueue, Object sender) {
+        StopMessage stopMessage = new StopMessage(senderQueue, sender);
+        sendToMe(stopMessage);
     }
 }

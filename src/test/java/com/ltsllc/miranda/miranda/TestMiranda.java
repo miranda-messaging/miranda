@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.miranda;
 
+import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,5 +39,12 @@ public class TestMiranda extends TestCase {
         assert (Miranda.properties == null);
         assert (Miranda.fileWatcher == null);
         assert (Miranda.timer == null);
+    }
+
+    @Test
+    public void testStop () {
+        getMiranda().stop();
+
+        assert (getMiranda().getCurrentState() instanceof StopState);
     }
 }

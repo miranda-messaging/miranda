@@ -1,13 +1,17 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.servlet.StatusObject;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
+import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.user.UsersFile;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -34,10 +38,10 @@ public class Miranda extends Consumer {
     private BlockingQueue<Message> httpServer;
     private BlockingQueue<Message> events;
     private BlockingQueue<Message> deliveries;
-    private BlockingQueue<Message> users;
-    private BlockingQueue<Message> topics;
-    private BlockingQueue<Message> subscriptions;
-    private BlockingQueue<Message> cluster;
+    private UsersFile users;
+    private TopicsFile topics;
+    private SubscriptionsFile subscriptions;
+    private Cluster cluster;
     private PanicPolicy panicPolicy;
 
     public PanicPolicy getPanicPolicy() {
@@ -72,36 +76,36 @@ public class Miranda extends Consumer {
         this.deliveries = deliveries;
     }
 
-    public BlockingQueue<Message> getTopics() {
-        return topics;
-    }
-
-    public void setTopics(BlockingQueue<Message> topics) {
-        this.topics = topics;
-    }
-
-    public BlockingQueue<Message> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(BlockingQueue<Message> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
-    public BlockingQueue<Message> getCluster() {
+    public Cluster getCluster() {
         return cluster;
     }
 
-    public void setCluster(BlockingQueue<Message> cluster) {
+    public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
 
-    public BlockingQueue<Message> getUsers() {
+    public UsersFile getUsers() {
         return users;
     }
 
-    public void setUsers(BlockingQueue<Message> users) {
+    public void setUsers(UsersFile users) {
         this.users = users;
+    }
+
+    public TopicsFile getTopics() {
+        return topics;
+    }
+
+    public void setTopics(TopicsFile topics) {
+        this.topics = topics;
+    }
+
+    public SubscriptionsFile getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(SubscriptionsFile subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public void setEvents(BlockingQueue<Message> events) {
@@ -178,11 +182,21 @@ public class Miranda extends Consumer {
         sendIfNotNull(message, properties);
         sendIfNotNull(message, timer);
 
-        sendIfNotNull (message, getUsers());
-        sendIfNotNull (message, getTopics());
-        sendIfNotNull (message, getSubscriptions());
-        sendIfNotNull (message, getEvents());
-        sendIfNotNull (message, getDeliveries());
+        if (null != getCluster()) {
+            getCluster().sendStop(getQueue(), this);
+        }
+
+        if (null != getUsers()) {
+            getUsers().sendStop(getQueue(), this);
+        }
+
+        if (null != getTopics()) {
+            getTopics().sendStop(getQueue(), this);
+        }
+
+        if (null != getSubscriptions()) {
+            getSubscriptions().sendStop(getQueue(), this);
+        }
     }
 
     public void getStatus (BlockingQueue<Message> respondTo) {

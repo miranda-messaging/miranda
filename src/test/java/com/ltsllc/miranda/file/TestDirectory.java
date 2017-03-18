@@ -184,8 +184,8 @@ public class TestDirectory extends TestCase {
         }
     }
 
-    public static final String SHA1 = "25D89D8946AEA804D9838DAE6EA2F24769C804C9";
-
+    public static final String oldSHA1 = "25D89D8946AEA804D9838DAE6EA2F24769C804C9";
+    public static final String SHA1 = "7D67BC89777031D1853A3BDF417886A195B06836";
     /**
      * {@link Directory#updateVersion()} should be a sha1 of the sha1s of all
      * the message files.
