@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;

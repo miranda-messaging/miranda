@@ -1,8 +1,9 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.cluster.TestClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
