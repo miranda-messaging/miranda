@@ -59,11 +59,8 @@ public class ClusterStartingState extends State {
     }
 
     private State processConnectMessage (ConnectMessage connectMessage) {
-        State nextState = this;
-
         getCluster().connect();
 
-        ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
-        return clusterReadyState;
+        return new ClusterReadyState(getCluster());
     }
 }
