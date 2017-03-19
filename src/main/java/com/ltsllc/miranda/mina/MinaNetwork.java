@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.NewNodeMessage;
+import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.*;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
@@ -13,7 +13,6 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
-import org.eclipse.jetty.server.Connector;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;

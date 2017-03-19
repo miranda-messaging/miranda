@@ -2,8 +2,8 @@ package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
+import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;

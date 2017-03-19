@@ -1,46 +1,26 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
+import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 
 /**
- * Created by Clark on 3/12/2017.
+ * Created by Clark on 3/10/2017.
  */
-public class ClusterLoadingState extends State {
-    private boolean deferredConnect;
-    private boolean seenLoad;
-
-    public boolean getDeferredConnect () {
-        return deferredConnect;
-    }
-
-    public void setDeferredConnect (boolean deferredConnect) {
-        this.deferredConnect = deferredConnect;
-    }
-
-    public boolean getSeenLoad () {
-        return seenLoad;
-    }
-
-    public void setSeenLoad (boolean seenLoad) {
-        this.seenLoad = seenLoad;
+public class ClusterStartingState extends State {
+    public ClusterStartingState (Cluster cluster) {
+        super(cluster);
     }
 
     public Cluster getCluster () {
         return (Cluster) getContainer();
     }
 
-    public ClusterLoadingState (Cluster cluster) {
-        super (cluster);
-        this.deferredConnect = false;
-        this.seenLoad = false;
-    }
-
-    @Override
-    public State start() {
+    public State start () {
         LoadMessage loadMessage = new LoadMessage(getCluster().getQueue(), this);
         send(getCluster().getClusterFileQueue(), loadMessage);
 
@@ -54,7 +34,7 @@ public class ClusterLoadingState extends State {
         switch (message.getSubject()) {
             case LoadResponse: {
                 LoadResponseMessage loadResponseMessage = (LoadResponseMessage) message;
-                nextState = processLoadResonseMessage(loadResponseMessage);
+                nextState = processLoadResponseMessage(loadResponseMessage);
                 break;
             }
 
@@ -69,38 +49,21 @@ public class ClusterLoadingState extends State {
                 break;
             }
         }
-
         return nextState;
     }
 
-
-    private State processLoadResonseMessage (LoadResponseMessage loadResponseMessage) {
-        State nextState = this;
-
-        setSeenLoad(true);
-
+    private State processLoadResponseMessage (LoadResponseMessage loadResponseMessage) {
         getCluster().replaceNodes(loadResponseMessage.getData());
 
-        if (getDeferredConnect()) {
-            getCluster().connect();
-            nextState = new ClusterReadyState(getCluster());
-        }
-
-        return nextState;
+        return this;
     }
 
     private State processConnectMessage (ConnectMessage connectMessage) {
         State nextState = this;
 
-        if (getSeenLoad()) {
-            getCluster().connect();
-            nextState = new ClusterReadyState(getCluster());
-        } else {
-            setDeferredConnect(true);
-        }
+        getCluster().connect();
 
-        return nextState;
+        ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
+        return clusterReadyState;
     }
-
-
 }

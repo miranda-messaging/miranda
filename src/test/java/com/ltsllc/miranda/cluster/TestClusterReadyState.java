@@ -4,8 +4,7 @@ import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.*;
-import com.ltsllc.miranda.miranda.GetVersionsMessage;
-import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.ltsllc.miranda.miranda.Miranda.properties;
 import static org.mockito.Mockito.*;
 
 /**

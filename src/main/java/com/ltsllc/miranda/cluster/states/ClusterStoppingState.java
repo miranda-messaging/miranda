@@ -1,10 +1,10 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
-import com.ltsllc.miranda.mina.MinaTestHandler;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.NodeStoppedMessage;

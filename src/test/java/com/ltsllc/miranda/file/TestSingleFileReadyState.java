@@ -3,7 +3,7 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.cluster.ClusterFileReadyState;
+import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.NodeElement;

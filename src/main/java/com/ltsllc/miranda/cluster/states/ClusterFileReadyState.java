@@ -1,12 +1,12 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
-import com.ltsllc.miranda.node.messages.NodeUpdatedMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.file.Perishable;
@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/6/2017.

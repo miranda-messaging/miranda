@@ -1,10 +1,11 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.*;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -12,9 +13,6 @@ import com.ltsllc.miranda.servlet.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.GetStatusMessage;
 import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
 import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Clark on 1/3/2017.

@@ -1,7 +1,8 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;

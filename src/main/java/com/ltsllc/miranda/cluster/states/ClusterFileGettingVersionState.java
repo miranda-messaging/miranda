@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.cluster;
+package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
