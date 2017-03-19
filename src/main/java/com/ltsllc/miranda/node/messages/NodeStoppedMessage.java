@@ -17,5 +17,7 @@ public class NodeStoppedMessage extends Message {
 
     public NodeStoppedMessage (BlockingQueue<Message> senderQueue, Object sender, Node node) {
         super (Subjects.NodeStopped,senderQueue, sender);
+
+        this.node = node;
     }
 }

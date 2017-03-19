@@ -6,8 +6,11 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.mina.MinaTestHandler;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.NodeStoppedMessage;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 /**
  * Wait for all nodes to stop.
@@ -55,12 +58,13 @@ public class ClusterStoppingState extends State {
     public State processNodeStoppedMessage (NodeStoppedMessage nodeStoppedMessage) {
         logger.info ("Node stopped " + nodeStoppedMessage.getNode());
 
-        if (!getCluster().getNodes().remove(nodeStoppedMessage.getNode())) {
+        List<Node> list = getCluster().getNodes();
+        if (!list.remove(nodeStoppedMessage.getNode())) {
             Panic panic = new Panic("Unrecognized node " + nodeStoppedMessage.getNode(), Panic.Reasons.UnrecognizedNode);
             Miranda.getInstance().panic(panic);
         }
 
-        if (getCluster().getNodes().size() <= 0) {
+        if (list.size() <= 0) {
             logger.info ("All nodes stopped, cluster stopping.");
             return StopState.getInstance();
         }
