@@ -23,7 +23,6 @@ public class ClusterConnectingState extends State {
         return cluster;
     }
 
-
     @Override
     public State processMessage(Message message) {
         State nextState = this;
