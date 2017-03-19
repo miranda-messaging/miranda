@@ -46,7 +46,7 @@ public class ClusterConnectingState extends State {
     private State processClusterFileMessage (ClusterFileMessage clusterFileMessage) {
         for (NodeElement nodeElement : clusterFileMessage.getFile()) {
             if (!getCluster().contains(nodeElement)) {
-                Node node = new Node(nodeElement, getCluster().getNetwork());
+                Node node = new Node(nodeElement, getCluster().getNetwork(), getCluster());
                 node.start();
                 node.connect();
             }

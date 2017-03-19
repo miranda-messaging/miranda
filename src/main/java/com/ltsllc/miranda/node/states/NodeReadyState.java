@@ -6,16 +6,14 @@ import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.file.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
+import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
-import com.ltsllc.miranda.node.networkMessages.GetFileWireMessage;
-import com.ltsllc.miranda.node.networkMessages.GetVersionsWireMessage;
-import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
-import com.ltsllc.miranda.node.networkMessages.VersionsWireMessage;
+import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -222,5 +220,12 @@ public class NodeReadyState extends NodeState {
         sendOnWire(getFileResponseWireMessage);
 
         return this;
+    }
+
+    public State processStopMessage (StopMessage stopMessage) {
+        StopWireMessage stopWireMessage = new StopWireMessage();
+        getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), stopWireMessage);
+
+        return new NodeStoppingState(getNode());
     }
 }

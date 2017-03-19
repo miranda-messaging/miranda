@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
+import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.netty.NettyNetworkListener;
 import com.ltsllc.miranda.network.Network;
@@ -125,7 +126,7 @@ public class Cluster extends Consumer {
         List<Node> nodeList = new ArrayList<Node>();
 
         for (NodeElement nodeElement : newNodes) {
-            Node node = new Node(nodeElement, getNetwork());
+            Node node = new Node(nodeElement, getNetwork(), this);
             node.start();
             nodeList.add(node);
         }
@@ -169,7 +170,7 @@ public class Cluster extends Consumer {
 
         if (update) {
             for (NodeElement element : reallyNewNodes) {
-                Node node = new Node(element, getNetwork());
+                Node node = new Node(element, getNetwork(), this);
                 node.start();
                 node.connect();
                 getNodes().add(node);
@@ -249,5 +250,16 @@ public class Cluster extends Consumer {
     public void sendGetStatus (BlockingQueue<Message> senderQueue, Object sender) {
         GetStatusMessage getStatusMessage = new GetStatusMessage(senderQueue, sender);
         sendToMe(getStatusMessage);
+    }
+
+    public void stop () {
+        for (Node node : getNodes()) {
+            node.sendStop(getQueue(), this);
+        }
+    }
+
+    public void sendNodeStopped (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+        NodeStoppedMessage nodeStoppedMessage = new NodeStoppedMessage(senderQueue, sender, node);
+        sendToMe(nodeStoppedMessage);
     }
 }

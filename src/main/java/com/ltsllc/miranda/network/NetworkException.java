@@ -11,7 +11,8 @@ public class NetworkException extends Exception {
         ExceptionConnecting,
         ExceptionCreating,
         ExceptionReceiving,
-        InterruptedSending
+        InterruptedSending,
+        UnrecognizedHandle
     }
 
     private Errors error;

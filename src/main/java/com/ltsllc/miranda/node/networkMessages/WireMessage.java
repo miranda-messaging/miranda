@@ -22,6 +22,9 @@ public class WireMessage {
         GetVersions,
         Join,
         JoinResponse,
+        Stop,
+        Stopping,
+        StopResponse,
         Versions,
         Version
     }

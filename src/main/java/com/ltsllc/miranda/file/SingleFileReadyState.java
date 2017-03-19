@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
@@ -57,6 +58,17 @@ abstract public class SingleFileReadyState extends State {
             case GarbageCollection: {
                 GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
                 nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                break;
+            }
+
+            case WriteSucceeded: {
+                getFile().setDirty(false);
+                break;
+            }
+
+            case Stop: {
+                StopMessage stopMessage = (StopMessage) message;
+                nextState = processStopMessage(stopMessage);
                 break;
             }
 
@@ -114,5 +126,13 @@ abstract public class SingleFileReadyState extends State {
         loadMessage.reply(loadResponseMessage);
 
         return this;
+    }
+
+    public State processStopMessage (StopMessage stopMessage) {
+        if (getFile().isDirty())
+            getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(), getFile().getBytes());
+
+        SingleFileStoppingState singleFileStoppingState = new SingleFileStoppingState(getFile());
+        return singleFileStoppingState;
     }
 }

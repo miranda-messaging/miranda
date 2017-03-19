@@ -169,6 +169,15 @@ abstract public class Network extends Consumer {
         return handleId;
     }
 
+    public void sendOnNetwork (SendNetworkMessage sendNetworkMessage) throws NetworkException {
+        Handle handle = integerToHandle.get(sendNetworkMessage.getHandle());
+
+        if (handle == null) {
+            throw new NetworkException("Unrecognized handle: " + sendNetworkMessage.getHandle(), NetworkException.Errors.UnrecognizedHandle);
+        }
+
+        handle.send(sendNetworkMessage);
+    }
 
     /**
      * Tell the network to close a connection.
@@ -204,33 +213,11 @@ abstract public class Network extends Consumer {
         integerToHandle.put(handleID, handle);
     }
 
-    public void sendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
-        Handle handle = integerToHandle.get(sendNetworkMessage.getHandle());
-
-        if (handle == null) {
-            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(
-                    getQueue(),
-                    this,
-                    sendNetworkMessage.getHandle()
-            );
-            sendNetworkMessage.reply(unknownHandleMessage);
-        } else {
-            try {
-                handle.send(sendNetworkMessage);
-            } catch (NetworkException e) {
-                handle.close();
-                unMapHandle(sendNetworkMessage.getHandle());
-                NetworkErrorMessage networkErrorMessage = new NetworkErrorMessage (getQueue(), this, e);
-                sendNetworkMessage.reply(networkErrorMessage);
-            }
-        }
-    }
-
     public void unMapHandle (int handle) {
         integerToHandle.put(handle, null);
     }
 
-    public void sendSendNetworkMessage(BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
+    public void sendNetworkMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, handle);
         sendToMe(sendNetworkMessage);
     }

@@ -5,6 +5,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.servlet.ClusterStatusObject;
@@ -200,4 +201,9 @@ public class ClusterReadyState extends State {
         return this;
     }
 
+    public State processStopMessage (StopMessage stopMessage) {
+        getCluster().stop();
+
+        return new ClusterStoppingState(getCluster());
+    }
 }

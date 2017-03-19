@@ -30,8 +30,20 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
             .setPrettyPrinting()
             .create();
 
+    private boolean dirty;
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
     public SingleFile (String filename, com.ltsllc.miranda.writer.Writer writer) {
         super(filename, writer);
+
+        setDirty(false);
     }
 
     private List<E> data = buildEmptyList();

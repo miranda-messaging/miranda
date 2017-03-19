@@ -5,6 +5,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
+import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.*;
 import com.ltsllc.miranda.servlet.NodeStatus;
@@ -18,12 +19,13 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Node extends Consumer
 {
-    public Node(NodeElement element, Network network) {
+    public Node(NodeElement element, Network network, Cluster cluster) {
         super("node");
         dns = element.getDns();
         ip = element.getIp();
         port = element.getPort();
         this.network = network;
+        this.cluster = cluster;
 
         ConnectingState connectingState = new ConnectingState(this, network);
         setCurrentState(connectingState);
@@ -38,6 +40,7 @@ public class Node extends Consumer
         super("node");
 
         this.handle = handle;
+        this.cluster = cluster;
 
         State nodeIncomingState = new NodeIncomingStartState(this, network, cluster);
         setCurrentState(nodeIncomingState);
@@ -52,6 +55,7 @@ public class Node extends Consumer
     private int port;
     private Network network;
     private int handle = -1;
+    private Cluster cluster;
 
 
     public String getDns() {
@@ -78,6 +82,9 @@ public class Node extends Consumer
         this.description = description;
     }
 
+    public Cluster getCluster() {
+        return cluster;
+    }
 
     public int getPort() {
         return port;
@@ -160,5 +167,10 @@ public class Node extends Consumer
         NodeStatus.NodeStatuses status = isConnected() ? NodeStatus.NodeStatuses.Online : NodeStatus.NodeStatuses.Offline;
         NodeStatus nodeStatus = new NodeStatus(getDns(), getIp(), getPort(), getDescription(), status);
         return nodeStatus;
+    }
+
+    public void stop () {
+        StopWireMessage stopWireMessage = new StopWireMessage();
+        getNetwork().sendNetworkMessage(getQueue(), this, getHandle(), stopWireMessage);
     }
 }

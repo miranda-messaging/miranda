@@ -93,6 +93,7 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_PROPERTIES_FILE = PACKAGE_NAME + "PropertiesFile";
     public static final String PROPERTY_MIRANDA_MODE = PACKAGE_NAME + "MirandaMode";
     public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
+    public static final String PROPERTY_MAX_WRITE_FAILURES = PACKAGE_NAME + "MaxWriteFailures";
 
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
 
@@ -143,6 +144,7 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
     public static final String DEFAULT_MIRANDA_MODE = MirandaModes.Normal.toString();
     public static final String DEFAULT_NETWORK = Networks.Mina.toString();
+    public static final String DEFAULT_MAX_WRITE_FAILURES = "5";
 
     public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // one day
@@ -180,6 +182,7 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILENAME},
             {PROPERTY_MIRANDA_MODE, DEFAULT_MIRANDA_MODE},
             {PROPERTY_NETWORK, DEFAULT_NETWORK},
+            {PROPERTY_MAX_WRITE_FAILURES, DEFAULT_MAX_WRITE_FAILURES},
 
             {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPION_MODE},
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},

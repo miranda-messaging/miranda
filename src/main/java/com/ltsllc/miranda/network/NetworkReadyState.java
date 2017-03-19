@@ -2,10 +2,7 @@ package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.network.messages.CloseMessage;
-import com.ltsllc.miranda.network.messages.ConnectToMessage;
-import com.ltsllc.miranda.network.messages.SendMessageMessage;
-import com.ltsllc.miranda.network.messages.SendNetworkMessage;
+import com.ltsllc.miranda.network.messages.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -77,7 +74,17 @@ public class NetworkReadyState extends State {
     }
 
     private State processSendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
-        getNetwork().sendNetworkMessage(sendNetworkMessage);
+        try {
+            getNetwork().sendOnNetwork(sendNetworkMessage);
+        } catch (NetworkException e) {
+            if (e.getError() == NetworkException.Errors.UnrecognizedHandle) {
+                UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(getNetwork().getQueue(), this, sendNetworkMessage.getHandle());
+                sendNetworkMessage.reply(unknownHandleMessage);
+            } else {
+                NetworkErrorMessage networkErrorMessage = new NetworkErrorMessage(getNetwork().getQueue(), this, e);
+                sendNetworkMessage.reply(networkErrorMessage);
+            }
+        }
 
         return this;
     }

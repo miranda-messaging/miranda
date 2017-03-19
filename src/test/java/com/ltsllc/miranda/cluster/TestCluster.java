@@ -137,7 +137,7 @@ public class TestCluster extends TestCase {
     public void testContains ()
     {
         NodeElement shouldContain = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
-        Node node = new Node(shouldContain, getMockNetwork());
+        Node node = new Node(shouldContain, getMockNetwork(), getMockCluster());
         NodeElement shouldNotContain = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
         List<Node> nodeList = new ArrayList<Node>(1);
         nodeList.add(node);

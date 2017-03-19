@@ -1,6 +1,7 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.StopMessage;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
@@ -58,16 +59,25 @@ public abstract class State {
      */
     public State processMessage (Message m)
     {
-        IllegalStateException e = new IllegalStateException();
-        logger.error(this + " does not understand " + m, e);
-        logger.error ("message created at", m.getWhere());
+        State nextState = getContainer().getCurrentState();
 
-        Panic panic = new Panic(this + " does not understand " + m, e, Panic.Reasons.DoesNotUnderstand);
-        if (Miranda.getInstance().panic(panic)) {
-            return StopState.getInstance();
-        } else {
-            return this;
+        switch (m.getSubject()) {
+            case Stop: {
+                StopMessage stopMessage = (StopMessage) m;
+                nextState = processStopMessage (stopMessage);
+                break;
+            }
+
+            default : {
+                String message = getContainer() + " in state " + getContainer().getCurrentState() + " does not understand " + m;
+                logger.error(message);
+                logger.error("Message created at", m.getWhere());
+                Panic panic = new Panic(message, null, Panic.Reasons.DoesNotUnderstand);
+                Miranda.getInstance().panic(panic);
+            }
         }
+
+        return nextState;
     }
 
 
@@ -100,5 +110,12 @@ public abstract class State {
 
         State other = (State) o;
         return getContainer().compare(map, other.getContainer());
+    }
+
+    public State processStopMessage(StopMessage stopMessage) {
+        getContainer().stop();
+
+        StopState stopState = StopState.getInstance();
+        return stopState;
     }
 }

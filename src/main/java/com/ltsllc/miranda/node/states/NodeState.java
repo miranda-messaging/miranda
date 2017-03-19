@@ -31,7 +31,7 @@ public class NodeState extends State {
     }
 
     public void sendOnWire (WireMessage wireMessage) {
-        getNetwork().sendSendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
+        getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
     }
 
     public State processNetworkMessage (NetworkMessage networkMessage) {

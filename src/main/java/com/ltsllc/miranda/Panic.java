@@ -25,7 +25,8 @@ public class Panic extends Exception {
         Network, // We cannot communicate with anyone
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
-        UncheckedException // an unchecked exception was thrown
+        UncheckedException, // an unchecked exception was thrown
+        UnrecognizedNode // a node shut down that we don't have a record of
     }
 
     private Reasons reason;
@@ -42,6 +43,12 @@ public class Panic extends Exception {
 
     public Panic (Throwable cause, Reasons reason) {
         super(cause);
+
+        this.reason = reason;
+    }
+
+    public Panic (String message, Reasons reason) {
+        super (message);
 
         this.reason = reason;
     }

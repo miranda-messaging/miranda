@@ -238,4 +238,8 @@ public class Consumer extends Subsystem implements Comparer {
         StopMessage stopMessage = new StopMessage(senderQueue, sender);
         sendToMe(stopMessage);
     }
+
+    public void stop () {
+        logger.info(this + " stopping.");
+    }
 }
