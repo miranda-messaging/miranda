@@ -36,7 +36,7 @@ abstract public class Network extends Consumer {
         return ourInstance;
     }
 
-    protected static synchronized void setInstance (Network network) {
+    public static synchronized void setInstance (Network network) {
         if (null == ourInstance) {
             ourInstance = network;
         }

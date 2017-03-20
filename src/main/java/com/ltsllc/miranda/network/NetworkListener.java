@@ -22,6 +22,12 @@ abstract public class NetworkListener extends Consumer {
 
     private int port;
     private boolean keepGoing = true;
+    private int connectionCount;
+    private BlockingQueue<Handle> handleQueue;
+
+    public BlockingQueue<Handle> getHandleQueue() {
+        return handleQueue;
+    }
 
     public int getPort() {
         return port;
@@ -35,20 +41,28 @@ abstract public class NetworkListener extends Consumer {
         this.keepGoing = keepGoing;
     }
 
+    public int getConnectionCount() {
+        return connectionCount;
+    }
+
+    public void incrementConnectionCount () {
+        connectionCount++;
+    }
+
     public NetworkListener (int port) {
         super("network listener");
 
         this.port = port;
+        this.connectionCount = 0;
+        this.handleQueue = new LinkedBlockingQueue<Handle>();
 
         NetworkListenerReadyState readyState = new NetworkListenerReadyState(this);
         setCurrentState(readyState);
     }
 
-    public void getConnections () {
-        LinkedBlockingQueue<Handle> queue = new LinkedBlockingQueue<Handle>();
-
+    public void performStartup (BlockingQueue<Handle> handleQueue) {
         try {
-            startup(queue);
+            startup(handleQueue);
         } catch (NetworkException e) {
             StartupPanic startupPanic = new StartupPanic ("Exception in the NetworkListener during setup", e, StartupPanic.StartupReasons.NetworkListener);
             boolean continuePanic = Miranda.getInstance().panic(startupPanic);
@@ -56,12 +70,14 @@ abstract public class NetworkListener extends Consumer {
                 shutdown();
             }
         }
+    }
 
+    public void newConnectionLoop (BlockingQueue<Handle> handleQueue) {
         while (keepGoing()) {
             Handle newConnection = null;
 
             try {
-                newConnection = queue.take();
+                newConnection = handleQueue.take();
             } catch (InterruptedException e) {
                 Panic panic = new Panic("Exception getting new connection", e, Panic.Reasons.ExceptionWaitingForNextConnection);
                 if (Miranda.getInstance().panic(panic))
@@ -74,13 +90,22 @@ abstract public class NetworkListener extends Consumer {
                 Node node = new Node(handleID, Network.getInstance(), Cluster.getInstance());
                 newConnection.setQueue(node.getQueue());
                 node.start();
+
+                incrementConnectionCount();
             }
         }
+    }
+
+    public void getConnections () {
+        performStartup(getHandleQueue());
+
+        newConnectionLoop(getHandleQueue());
 
         setCurrentState(StopState.getInstance());
     }
 
     public void shutdown () {
         setKeepGoing(false);
+        setCurrentState(StopState.getInstance());
     }
 }

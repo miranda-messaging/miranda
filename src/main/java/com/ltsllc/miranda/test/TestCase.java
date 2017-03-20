@@ -20,6 +20,7 @@ import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.mockito.Mock;
+import sun.nio.ch.Net;
 
 import java.io.*;
 import java.util.List;
@@ -41,20 +42,23 @@ public class TestCase {
     private BlockingQueue<Message> writer = new LinkedBlockingQueue<Message>();
 
     @Mock
-    private Network mockNetwork = mock(Network.class);
+    private Network mockNetwork;
 
     @Mock
-    private Cluster mockCluster = mock(Cluster.class);
+    private Cluster mockCluster;
 
     @Mock
-    private Writer mockWriter = mock(Writer.class);
+    private Writer mockWriter;
+
+    @Mock
+    private Miranda mockMiranda;
+
+    public Miranda getMockMiranda() {
+        return mockMiranda;
+    }
 
     public Writer getMockWriter() {
         return mockWriter;
-    }
-
-    public TestCase () {
-
     }
 
     public Cluster getMockCluster() {
@@ -146,20 +150,29 @@ public class TestCase {
     }
 
     public void reset () {
-        network = new LinkedBlockingQueue<Message>();
-        writer = new LinkedBlockingQueue<Message>();
+        network = null;
+        writer = null;
 
+        this.mockMiranda = null;
         this.mockCluster = null;
         this.mockNetwork = null;
         this.mockWriter = null;
     }
 
     public void setup () {
+        network = new LinkedBlockingQueue<Message>();
+        writer = new LinkedBlockingQueue<Message>();
+
+        this.mockMiranda = mock(Miranda.class);
         this.mockWriter = mock(Writer.class);
         this.mockNetwork = mock(Network.class);
         this.mockCluster = mock(Cluster.class);
     }
 
+    public void setupMockNetwork () {
+        this.mockNetwork = mock(Network.class);
+        Network.setInstance(this.mockNetwork);
+    }
 
     private static final String LOG4J_CONFIG_FILENAME = "log4j.xml";
 
@@ -531,5 +544,10 @@ public class TestCase {
         setupMirandaProperties();
 
         Miranda.factory = new MirandaFactory(Miranda.properties);
+    }
+
+    public void setupMockMiranda () {
+        this.mockMiranda = mock(Miranda.class);
+        Miranda.setInstance(mockMiranda);
     }
 }
