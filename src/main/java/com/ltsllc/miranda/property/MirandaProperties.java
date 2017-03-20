@@ -218,6 +218,9 @@ public class MirandaProperties extends SingleFile<String> {
 
         properties = new Properties();
         load();
+
+        MirandaPropertiesReadyState mirandaPropertiesReadyState = new MirandaPropertiesReadyState(this);
+        setCurrentState(mirandaPropertiesReadyState);
     }
 
     /**

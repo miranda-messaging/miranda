@@ -125,8 +125,12 @@ public class Miranda extends Consumer {
         setQueue(queue);
     }
 
-    public synchronized static Miranda getInstance() {
+    public static Miranda getInstance() {
         return ourInstance;
+    }
+
+    public synchronized static void setInstance (Miranda miranda) {
+        ourInstance = miranda;
     }
 
     /**
