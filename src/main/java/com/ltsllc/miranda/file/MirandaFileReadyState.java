@@ -21,7 +21,8 @@ public class MirandaFileReadyState extends State {
 
         switch (message.getSubject()) {
             case FileChanged: {
-                getMirandaFile().load();
+                FileChangedMessage fileChangedMessage = (FileChangedMessage) message;
+                nextState = processFileChangedMessage(fileChangedMessage);
                 break;
             }
 
@@ -32,5 +33,11 @@ public class MirandaFileReadyState extends State {
         }
 
         return nextState;
+    }
+
+    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
+        getMirandaFile().load();
+
+        return this;
     }
 }

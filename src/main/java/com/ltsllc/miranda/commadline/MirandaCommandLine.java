@@ -80,10 +80,17 @@ public class MirandaCommandLine extends CommandLine {
     public Properties asProperties () {
         Properties properties = super.asProperties();
 
-        properties.setProperty(MirandaProperties.PROPERTY_LOG4J_FILE, getLog4jFilename());
-        properties.setProperty(MirandaProperties.PROPERTY_LOGGING_LEVEL, getLoggingLevel());
-        properties.setProperty(MirandaProperties.PROPERTY_PROPERTIES_FILE, getPropertiesFilename());
-        properties.setProperty(MirandaProperties.PROPERTY_MIRANDA_MODE, getMirandaMode());
+        if (null != getLog4jFilename())
+            properties.setProperty(MirandaProperties.PROPERTY_LOG4J_FILE, getLog4jFilename());
+
+        if (null != getLoggingLevel())
+            properties.setProperty(MirandaProperties.PROPERTY_LOGGING_LEVEL, getLoggingLevel());
+
+        if (null != getPropertiesFilename())
+            properties.setProperty(MirandaProperties.PROPERTY_PROPERTIES_FILE, getPropertiesFilename());
+
+        if (null != getMirandaMode())
+            properties.setProperty(MirandaProperties.PROPERTY_MIRANDA_MODE, getMirandaMode());
 
         return properties;
     }
@@ -117,10 +124,12 @@ public class MirandaCommandLine extends CommandLine {
                 advance();
 
                 if (!hasMoreArgs()) {
-                    throw new IllegalStateException ("Must suuply a parameter to -log4j");
+                    throw new IllegalStateException ("Must supply a parameter to -log4j");
                 }
 
                 setLog4jFilename(getArgAndAdvance());
+            } else {
+                System.err.println ("Unrecognized option: " + getArgAndAdvance());
             }
         }
     }

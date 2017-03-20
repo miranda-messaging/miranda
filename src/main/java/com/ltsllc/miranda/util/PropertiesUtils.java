@@ -1,13 +1,12 @@
 package com.ltsllc.miranda.util;
 
+import com.ltsllc.miranda.servlet.Property;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A collection of routines that are useful in processing MirandaProperties objects
@@ -181,5 +180,43 @@ public class PropertiesUtils {
         }
 
         return copy;
+    }
+
+    /**
+     * Return a new {@link Properties} object that contains those properties
+     * that are unique to p1.
+     */
+    public static Properties difference (Properties p1, Properties p2) {
+        Properties result = copy(p1);
+        for (Object o : p2.keySet()) {
+            if (result.keySet().contains(o))
+                result.remove(o);
+        }
+
+        return result;
+    }
+
+    public static List<Property> buildPropertyList (String[][] spec) {
+        List<Property> list = new ArrayList<Property>();
+        for (String[] line : spec) {
+            String name = line.length > 0 ? line[0] : "unknown";
+            String value = line.length > 1 ? line[1] : "unknown";
+            Property property = new Property(name, value);
+            list.add(property);
+        }
+
+        return list;
+    }
+
+    public static List<Property> toPropertyList (Properties properties) {
+        List<Property> list = new ArrayList<Property>(properties.size());
+        for (String name : properties.stringPropertyNames())
+        {
+            String value = properties.getProperty(name);
+            Property property = new Property(name, value);
+            list.add(property);
+        }
+
+        return list;
     }
 }

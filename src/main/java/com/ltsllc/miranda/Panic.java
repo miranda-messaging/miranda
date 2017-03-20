@@ -10,8 +10,8 @@ package com.ltsllc.miranda;
  */
 public class Panic extends Exception {
     public enum Reasons {
+        CouldNotWrite, // A subsystem received a WriteFailed message
         DoesNotUnderstand, // A state received a message it does not know how to process
-
         ExceptionCreatingSslContext,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,

@@ -19,4 +19,13 @@ public class Property {
         this.name = name;
         this.value = value;
     }
+
+    public boolean equals (Object o) {
+        if (null == o || !(o instanceof Property))
+            return false;
+
+        Property other = (Property) o;
+
+        return getName().equals(other.getName()) && getValue().equals(other.getValue());
+    }
 }

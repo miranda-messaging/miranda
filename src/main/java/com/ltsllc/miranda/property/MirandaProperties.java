@@ -9,14 +9,12 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.servlet.Property;
 import com.ltsllc.miranda.util.PropertiesUtils;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -311,7 +309,9 @@ public class MirandaProperties extends SingleFile<String> {
 
         EncryptionModes mode = EncryptionModes.Unknown;
 
-        if (value.equalsIgnoreCase("none") || value.equalsIgnoreCase("off") || value.equalsIgnoreCase("nossl")) {
+        if (null == value) {
+            mode = EncryptionModes.Unknown;
+        } else if (value.equalsIgnoreCase("none") || value.equalsIgnoreCase("off") || value.equalsIgnoreCase("nossl")) {
             mode = EncryptionModes.None;
         } else if (value.equalsIgnoreCase("local") || value.equalsIgnoreCase("localCA") || value.equalsIgnoreCase("default")) {
             mode = EncryptionModes.LocalCA;
@@ -374,28 +374,10 @@ public class MirandaProperties extends SingleFile<String> {
     }
 
     public void load () {
-        FileInputStream fileInputStream = null;
+        String[] argv = new String[0];
+        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
 
-        try {
-            Properties defaults = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
-
-            Properties fromFile = new Properties();
-            fileInputStream = new FileInputStream(getFilename());
-            fromFile.load(fileInputStream);
-
-            Properties properties = PropertiesUtils.overwrite(defaults, fromFile);
-
-            if (null != Miranda.commandLine) {
-                Properties fromCommandLine = Miranda.commandLine.asProperties();
-
-                properties = PropertiesUtils.overwrite(properties, fromCommandLine);
-            }
-            
-            setProperties(properties);
-        } catch (IOException e) {
-            Panic panic = new Panic("Exception loading properties", e, Panic.Reasons.ExceptionLoadingProperties);
-            Miranda.getInstance().panic(panic);
-        }
+        load(commandLine);
     }
 
     public void setProperties (Properties properties) {
@@ -415,18 +397,24 @@ public class MirandaProperties extends SingleFile<String> {
     }
 
     public void write () {
+        OutputStreamWriter outputStreamWriter = null;
+
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
+            outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
 
             getProperties().store(outputStreamWriter, null);
+
             outputStreamWriter.close();
             byteArrayOutputStream.close();
 
-
+            byte[] data = byteArrayOutputStream.toByteArray();
+            getWriter().sendWrite(getQueue(), this, getFilename(), data);
         } catch (IOException e) {
             Panic panic = new Panic("Exception trying to write properties file", e, Panic.Reasons.ExceptionWritingFile);
             Miranda.getInstance().panic(panic);
+        } finally {
+            Utils.closeIgnoreExceptions(outputStreamWriter);
         }
     }
 }

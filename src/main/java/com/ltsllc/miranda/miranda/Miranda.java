@@ -6,6 +6,7 @@ import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.servlet.StatusObject;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -218,5 +219,10 @@ public class Miranda extends Consumer {
         StatusObject statusObject = new StatusObject(local, list, null);
 
         return statusObject;
+    }
+
+    public void sendNewProperties (BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
+        NewPropertiesMessage newPropertiesMessage = new NewPropertiesMessage(senderQueue, sender, mirandaProperties);
+        sendToMe(newPropertiesMessage);
     }
 }

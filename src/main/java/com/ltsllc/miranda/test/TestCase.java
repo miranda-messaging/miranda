@@ -108,6 +108,15 @@ public class TestCase {
     }
 
     public static long touch(File file, long time) {
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+
         if (!file.setLastModified(time)) {
             Exception e = new Exception("could not set the time of last modification of " + file);
             e.printStackTrace();
@@ -323,8 +332,13 @@ public class TestCase {
     public static void deleteFile (String filename) {
         File f = new File(filename);
         if (f.exists()) {
-            boolean result = f.delete();
-            assert(result);
+            boolean failed = !f.delete();
+
+            if (failed) {
+                Exception e = new Exception();
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 
