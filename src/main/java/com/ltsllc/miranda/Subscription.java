@@ -16,6 +16,11 @@ public class Subscription extends StatusObject implements Perishable {
         super(Status.New);
     }
 
+    public Subscription (String name) {
+        this();
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
