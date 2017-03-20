@@ -24,12 +24,9 @@ abstract public class Network extends Consumer {
 
     private Map<Integer, Handle> integerToHandle = new HashMap<Integer, Handle>();
     private int handleCount = 0;
-    private long lastPanic;
 
     public Network () {
         super("network");
-
-        this.lastPanic = -1;
 
         NetworkReadyState networkReadyState = new NetworkReadyState(this);
         setCurrentState(networkReadyState);
@@ -74,9 +71,15 @@ abstract public class Network extends Consumer {
         try {
             Handle handle = basicConnectTo(connectToMessage);
 
-            if (null != handle) {
-                int handleValue = nextHandle();
-                setHandle(handleValue, handle);
+            if (null == handle) {
+                ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(getQueue(), this, null);
+                connectToMessage.reply(connectFailedMessage);
+            } else {
+                int handleId = nextHandle();
+                setHandle(handleId, handle);
+
+                ConnectSucceededMessage connectSucceededMessage = new ConnectSucceededMessage(getQueue(), this, handleId);
+                connectToMessage.reply(connectSucceededMessage);
             }
         } catch (NetworkException e) {
             ConnectFailedMessage message = new ConnectFailedMessage(getQueue(), this, e.getCause());
@@ -85,20 +88,20 @@ abstract public class Network extends Consumer {
     }
 
 
-    public void disconnect (CloseMessage disconnectMessage) {
-        Handle handle = getHandle(disconnectMessage.getHandle());
+    public void disconnect (CloseMessage closeMessage) {
+        Handle handle = getHandle(closeMessage.getHandle());
 
         if (null == handle) {
-            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(getQueue(), this, disconnectMessage.getHandle());
-            disconnectMessage.reply(unknownHandleMessage);
+            UnknownHandleMessage unknownHandleMessage = new UnknownHandleMessage(getQueue(), this, closeMessage.getHandle());
+            closeMessage.reply(unknownHandleMessage);
+        } else {
+            handle.close();
+
+            setHandle(closeMessage.getHandle(), null);
+
+            DisconnectedMessage disconnectedMessage = new DisconnectedMessage(getQueue(), this);
+            closeMessage.reply(disconnectedMessage);
         }
-
-        handle.close();
-
-        setHandle(disconnectMessage.getHandle(), null);
-
-        DisconnectedMessage disconectedMessage = new DisconnectedMessage(getQueue(), this);
-        disconnectMessage.reply(disconectedMessage);
     }
 
     /**
@@ -211,10 +214,6 @@ abstract public class Network extends Consumer {
      */
     public void mapHandle (int handleID, Handle handle) {
         integerToHandle.put(handleID, handle);
-    }
-
-    public void unMapHandle (int handle) {
-        integerToHandle.put(handle, null);
     }
 
     public void sendNetworkMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {

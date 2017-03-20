@@ -12,6 +12,7 @@ public class NetworkException extends Exception {
         ExceptionCreating,
         ExceptionReceiving,
         InterruptedSending,
+        Test,
         UnrecognizedHandle
     }
 
