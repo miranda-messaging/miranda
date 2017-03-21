@@ -32,6 +32,7 @@ public class TestNodeState extends TesterNodeState {
 
         super.setup();
 
+        setuplog4j();
         nodeState = new NodeState(getMockNode(), getMockNetwork());
     }
 
