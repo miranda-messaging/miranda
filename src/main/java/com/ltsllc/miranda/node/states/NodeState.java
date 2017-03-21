@@ -2,6 +2,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.Node;
@@ -40,9 +41,9 @@ public class NodeState extends State {
         logger.error (message);
         logger.error ("message created at", networkMessage.getWhere());
         Panic panic = new Panic(message, Panic.Reasons.DoesNotUnderstandNetworkMessage);
-        System.exit(1);
+        Miranda.getInstance().panic(panic);
 
-        return this;
+        return getNode().getCurrentState();
     }
 
     public void sendOnNetwork (WireMessage wireMessage) {

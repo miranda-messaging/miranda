@@ -329,7 +329,7 @@ public class Startup extends State {
             messages.start();
             messages.load();
             messages.updateVersion();
-            miranda.setEvents(messages.getQueue());
+            miranda.setEvents(messages);
 
             directoryName = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
             f = new File(directoryName);
@@ -338,7 +338,7 @@ public class Startup extends State {
             deliveriesFile.start();
             deliveriesFile.load();
             deliveriesFile.updateVersion();
-            miranda.setDeliveries(deliveriesFile.getQueue());
+            miranda.setDeliveries(deliveriesFile);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

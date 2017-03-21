@@ -4,6 +4,7 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveriesFile;
+import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.node.NodeElement;
@@ -42,8 +43,8 @@ public class Miranda extends Consumer {
     private UsersFile users;
     private TopicsFile topics;
     private SubscriptionsFile subscriptions;
-    private SystemMessages systemMessages;
-    private DeliveriesFile deliveries;
+    private SystemMessages events;
+    private SystemDeliveriesFile deliveries;
     private Cluster cluster;
     private PanicPolicy panicPolicy;
 
@@ -67,20 +68,20 @@ public class Miranda extends Consumer {
         this.httpServer = httpServer;
     }
 
-    public DeliveriesFile getDeliveries () {
+    public SystemDeliveriesFile getDeliveries () {
         return deliveries;
     }
 
-    public void setDeliveries(DeliveriesFile deliveries) {
+    public void setDeliveries(SystemDeliveriesFile deliveries) {
         this.deliveries = deliveries;
     }
 
-    public SystemMessages getSystemMessages() {
-        return systemMessages;
+    public SystemMessages getEvents () {
+        return events;
     }
 
-    public void setSystemMessages(SystemMessages systemMessages) {
-        this.systemMessages = systemMessages;
+    public void setEvents(SystemMessages events) {
+        this.events = events;
     }
 
     public Cluster getCluster() {
@@ -165,7 +166,7 @@ public class Miranda extends Consumer {
         users = null;
         topics = null;
         subscriptions = null;
-        systemMessages = null;
+        events = null;
         deliveries = null;
         panicPolicy = null;
     }
@@ -245,8 +246,8 @@ public class Miranda extends Consumer {
         if (null != getSubscriptions())
             getSubscriptions().sendShutdown(getQueue(), this);
 
-        if (null != getSystemMessages())
-            getSystemMessages().sendShutdown(getQueue(), this);
+        if (null != getEvents())
+            getEvents().sendShutdown(getQueue(), this);
 
         if (null != getDeliveries())
             getDeliveries().sendShutdown(getQueue(), this);
