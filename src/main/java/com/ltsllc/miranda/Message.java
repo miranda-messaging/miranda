@@ -77,6 +77,8 @@ public class Message implements Perishable {
         SendError,
         SendMessage,
         SendNetworkMessage,
+        Shutdown,
+        ShutdownResponse,
         SetupServlets,
         StartHttpServer,
         Starting,

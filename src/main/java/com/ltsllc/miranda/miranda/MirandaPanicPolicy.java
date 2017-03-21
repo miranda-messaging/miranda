@@ -59,6 +59,11 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
 
     private static final long ONE_HOUR = 60 * 60 * 1000;
 
+    public void start () {
+        DecrementPanicCountMessage decrementMessage = new DecrementPanicCountMessage(getQueue(), this);
+        Miranda.timer.schedulePeriodic(ONE_HOUR, getQueue(), decrementMessage);
+    }
+
     public boolean panic (Panic panic) {
         String fatalMessage = "The system is terminating due to a panic";
         boolean continuePanic = false;
@@ -73,14 +78,9 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
                 panic.getReason() == Panic.Reasons.CouldNotWrite
         )
         {
-            incrementPanicCount();
-            if (beyondMaxCount()) {
-                fatalMessage = "Too many panics: " + getPanicCount();
-                continuePanic = true;
-            }
-
-            DecrementPanicCountMessage decrementMessage = new DecrementPanicCountMessage(getQueue(), this);
-            Miranda.timer.schedulePeriodic(ONE_HOUR, getQueue(), decrementMessage);
+            handleCountablePanic(panic);
+        } else if (panic.getReason() == Panic.Reasons.DoesNotUnderstandNetworkMessage) {
+            handleIgnoreablePanic(panic);
         }
 
         if (continuePanic) {
@@ -89,5 +89,30 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
         }
 
         return continuePanic;
+    }
+
+    public void handleCountablePanic (Panic panic) {
+        String message = "A panic occurred.";
+        logger.error (message, panic.getCause());
+
+        incrementPanicCount();
+        if (beyondMaxCount()) {
+            String shutDownMessage = getPanicCount() + " panics in " + getTimeout() + "ms.  "
+                    + "The system will shut down,";
+
+            logger.error(shutDownMessage);
+            getMiranda().shutdown();
+        } else {
+            String continueMessage = "The system will attempt to continue.";
+            logger.error(continueMessage);
+        }
+
+        logger.error("A panic happend.  The system will attempt to continue", panic.getCause());
+    }
+
+    public void handleIgnoreablePanic (Panic panic) {
+        String message = "Received network message the receiver does not know how to process.  "
+                + "Will ignore and attempt to continue.";
+        logger.error(message, panic.getCause());
     }
 }

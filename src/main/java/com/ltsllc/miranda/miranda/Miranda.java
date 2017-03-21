@@ -3,6 +3,8 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
+import com.ltsllc.miranda.deliveries.DeliveriesFile;
+import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -37,11 +39,11 @@ public class Miranda extends Consumer {
     public static boolean panicking = false;
 
     private BlockingQueue<Message> httpServer;
-    private BlockingQueue<Message> events;
-    private BlockingQueue<Message> deliveries;
     private UsersFile users;
     private TopicsFile topics;
     private SubscriptionsFile subscriptions;
+    private SystemMessages systemMessages;
+    private DeliveriesFile deliveries;
     private Cluster cluster;
     private PanicPolicy panicPolicy;
 
@@ -65,16 +67,20 @@ public class Miranda extends Consumer {
         this.httpServer = httpServer;
     }
 
-    public BlockingQueue<Message> getEvents() {
-        return events;
-    }
-
-    public BlockingQueue<Message> getDeliveries() {
+    public DeliveriesFile getDeliveries () {
         return deliveries;
     }
 
-    public void setDeliveries(BlockingQueue<Message> deliveries) {
+    public void setDeliveries(DeliveriesFile deliveries) {
         this.deliveries = deliveries;
+    }
+
+    public SystemMessages getSystemMessages() {
+        return systemMessages;
+    }
+
+    public void setSystemMessages(SystemMessages systemMessages) {
+        this.systemMessages = systemMessages;
     }
 
     public Cluster getCluster() {
@@ -107,10 +113,6 @@ public class Miranda extends Consumer {
 
     public void setSubscriptions(SubscriptionsFile subscriptions) {
         this.subscriptions = subscriptions;
-    }
-
-    public void setEvents(BlockingQueue<Message> events) {
-        this.events = events;
     }
 
     public Miranda (String[] argv) {
@@ -163,7 +165,7 @@ public class Miranda extends Consumer {
         users = null;
         topics = null;
         subscriptions = null;
-        events = null;
+        systemMessages = null;
         deliveries = null;
         panicPolicy = null;
     }
@@ -228,5 +230,36 @@ public class Miranda extends Consumer {
     public void sendNewProperties (BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
         NewPropertiesMessage newPropertiesMessage = new NewPropertiesMessage(senderQueue, sender, mirandaProperties);
         sendToMe(newPropertiesMessage);
+    }
+
+    public void shutdown () {
+        if (null != getCluster())
+            getCluster().sendShutdown(getQueue(), this);
+
+        if (null != getUsers())
+            getUsers().sendShutdown(getQueue(), this);
+
+        if (null != getTopics())
+            getTopics().sendShutdown(getQueue(), this);
+
+        if (null != getSubscriptions())
+            getSubscriptions().sendShutdown(getQueue(), this);
+
+        if (null != getSystemMessages())
+            getSystemMessages().sendShutdown(getQueue(), this);
+
+        if (null != getDeliveries())
+            getDeliveries().sendShutdown(getQueue(), this);
+
+        if (null != fileWatcher)
+            fileWatcher.sendShutdown(getQueue(), this);
+
+        if (null != timer)
+            timer.sendShutdown(getQueue(), this);
+
+        if (null != properties)
+            properties.sendShutdown(getQueue(), this);
+
+        setCurrentState(new ShuttingDownState(this));
     }
 }

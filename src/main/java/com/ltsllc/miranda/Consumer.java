@@ -241,5 +241,16 @@ public class Consumer extends Subsystem implements Comparer {
 
     public void stop () {
         logger.info(this + " stopping.");
+        setCurrentState(StopState.getInstance());
+    }
+
+    public void sendShutdown (BlockingQueue<Message> senderQueue, Object sender) {
+        ShutdownMessage shutdownMessage = new ShutdownMessage(senderQueue, sender);
+        sendToMe(shutdownMessage);
+    }
+
+    public void shutdown () {
+        logger.info(this + " shutting down.");
+        setCurrentState(StopState.getInstance());
     }
 }

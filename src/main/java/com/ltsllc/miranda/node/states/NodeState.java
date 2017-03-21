@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.node.states;
 
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
@@ -35,8 +36,10 @@ public class NodeState extends State {
     }
 
     public State processNetworkMessage (NetworkMessage networkMessage) {
-        logger.fatal (this + " does not understand network message " + networkMessage.getWireMessage().getWireSubject());
-        logger.fatal ("message created at", networkMessage.getWhere());
+        String message = this + " does but understand network message " + networkMessage.getWireMessage().getWireSubject();
+        logger.error (message);
+        logger.error ("message created at", networkMessage.getWhere());
+        Panic panic = new Panic(message, Panic.Reasons.DoesNotUnderstandNetworkMessage);
         System.exit(1);
 
         return this;
