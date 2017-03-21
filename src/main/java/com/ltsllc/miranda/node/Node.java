@@ -24,6 +24,7 @@ public class Node extends Consumer
         dns = element.getDns();
         ip = element.getIp();
         port = element.getPort();
+        description = element.getDescription();
         this.network = network;
         this.cluster = cluster;
 
@@ -41,6 +42,7 @@ public class Node extends Consumer
 
         this.handle = handle;
         this.cluster = cluster;
+        this.network = network;
 
         State nodeIncomingState = new NodeIncomingStartState(this, network, cluster);
         setCurrentState(nodeIncomingState);

@@ -32,12 +32,24 @@ public class NodeElement implements Perishable {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getDns() {
         return dns;
     }
 
+    public void setDns(String dns) {
+        this.dns = dns;
+    }
+
     public String getIp() {
         return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public int getPort() {
@@ -53,6 +65,8 @@ public class NodeElement implements Perishable {
         this.dns = node.getDns();
         this.ip = node.getIp();
         this.port = node.getPort();
+        this.description = node.getDescription();
+        this.lastConnected = -1;
     }
 
     public NodeElement (String dns, String ip, int port, String description) {
@@ -60,6 +74,7 @@ public class NodeElement implements Perishable {
         this.ip = ip;
         this.port = port;
         this.description = description;
+        this.lastConnected = -1;
     }
 
     public boolean equals(NodeElement element) {

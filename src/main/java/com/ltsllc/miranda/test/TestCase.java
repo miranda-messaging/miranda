@@ -170,7 +170,9 @@ public class TestCase {
     }
 
     public void setupMockNetwork () {
-        this.mockNetwork = mock(Network.class);
+        if (null == this.mockNetwork)
+            this.mockNetwork = mock(Network.class);
+        
         Network.setInstance(this.mockNetwork);
     }
 
