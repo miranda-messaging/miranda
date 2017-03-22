@@ -5,6 +5,8 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaFactory;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
+import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -14,7 +16,10 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
+import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
@@ -56,6 +61,44 @@ public class TestCase {
 
     @Mock
     private MirandaPanicPolicy mockPanicPolicy;
+
+    @Mock
+    private UsersFile mockUsersFile;
+
+    @Mock
+    private TopicsFile mockTopicsFile;
+
+    @Mock
+    private SubscriptionsFile mockSubscriptionsFile;
+
+    @Mock
+    private SystemMessages mockSystemMessages;
+
+    @Mock
+    private SystemDeliveriesFile mockSystemDeliveriesFile;
+
+    public SystemDeliveriesFile getMockSystemDeliveriesFile() {
+        return mockSystemDeliveriesFile;
+    }
+
+    public SystemMessages getMockSystemMessages() {
+
+        return mockSystemMessages;
+    }
+
+    public SubscriptionsFile getMockSubscriptionsFile() {
+
+        return mockSubscriptionsFile;
+    }
+
+    public TopicsFile getMockTopicsFile() {
+
+        return mockTopicsFile;
+    }
+
+    public UsersFile getMockUsersFile() {
+        return mockUsersFile;
+    }
 
     public Miranda getMockMiranda() {
         return mockMiranda;
@@ -166,6 +209,11 @@ public class TestCase {
         this.mockNetwork = null;
         this.mockWriter = null;
         this.mockPanicPolicy = null;
+        this.mockUsersFile = null;
+        this.mockTopicsFile = null;
+        this.mockSubscriptionsFile = null;
+        this.mockSystemMessages = null;
+        this.mockSystemDeliveriesFile = null;
     }
 
     public void setup () {
@@ -177,6 +225,11 @@ public class TestCase {
         this.mockNetwork = mock(Network.class);
         this.mockCluster = mock(Cluster.class);
         this.mockPanicPolicy = mock(MirandaPanicPolicy.class);
+        this.mockUsersFile = mock(UsersFile.class);
+        this.mockTopicsFile = mock(TopicsFile.class);
+        this.mockSubscriptionsFile = mock(SubscriptionsFile.class);
+        this.mockSystemMessages = mock(SystemMessages.class);
+        this.mockSystemDeliveriesFile = mock(SystemDeliveriesFile.class);
     }
 
     public void setupMockNetwork () {
@@ -549,6 +602,9 @@ public class TestCase {
     }
 
     public void setupMockCluster () {
+        if (null == getMockCluster())
+            this.mockCluster = mock(Cluster.class);
+
         Cluster.setInstance(getMockCluster());
     }
 
@@ -565,5 +621,25 @@ public class TestCase {
 
     public void setupMockPanicPolicy () {
         Miranda.getInstance().setPanicPolicy(mockPanicPolicy);
+    }
+
+    public void setupMockUsersFile () {
+        UsersFile.setInstance(getMockUsersFile());
+    }
+
+    public void setupMockTopicsFile () {
+        TopicsFile.setInstance(getMockTopicsFile());
+    }
+
+    public void setupMockSubscriptionsFile () {
+        SubscriptionsFile.setInstance(getMockSubscriptionsFile());
+    }
+
+    public void setupMockSystemMessages () {
+        SystemMessages.setInstance(getMockSystemMessages());
+    }
+
+    public void setupMockSystemDeliveries () {
+        SystemDeliveriesFile.setInstance(getMockSystemDeliveriesFile());
     }
 }

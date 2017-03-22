@@ -13,6 +13,8 @@ import java.util.List;
  * Created by Clark on 1/5/2017.
  */
 public class TopicsFile extends SingleFile<Topic> {
+    public static final String FILE_NAME = "topics";
+
     private static TopicsFile ourInstance;
 
     public static TopicsFile getInstance() {
@@ -25,6 +27,10 @@ public class TopicsFile extends SingleFile<Topic> {
             ourInstance.start();
             ourInstance.load();
         }
+    }
+
+    public static void setInstance (TopicsFile topicsFile) {
+        ourInstance = topicsFile;
     }
 
     private TopicsFile(String filename, Writer writer) {

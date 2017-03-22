@@ -15,11 +15,25 @@ import java.util.concurrent.BlockingQueue;
  * All the deliveries that the system knows about.
  */
 public class SystemDeliveriesFile extends Directory {
+    public static final String FILE_NAME = "deliveries";
+
     public SystemDeliveriesFile (String filename, Writer writer) {
         super(filename, writer);
 
         SystemDeliveriesFileReadyState readyState = new SystemDeliveriesFileReadyState(this);
         setCurrentState(readyState);
+
+        setInstance(this);
+    }
+
+    private static SystemDeliveriesFile ourInstance;
+
+    public static SystemDeliveriesFile getInstance () {
+        return ourInstance;
+    }
+
+    public static void setInstance (SystemDeliveriesFile systemDeliveriesFile) {
+        ourInstance = systemDeliveriesFile;
     }
 
     @Override

@@ -12,11 +12,16 @@ import java.util.List;
  * Created by Clark on 1/5/2017.
  */
 public class UsersFile extends SingleFile<User> {
-    private static UsersFile ourInstance;
+    public static final String FILE_NAME = "users";
 
+    private static UsersFile ourInstance;
 
     public static UsersFile getInstance() {
         return ourInstance;
+    }
+
+    public static void setInstance (UsersFile usersFile) {
+        ourInstance = usersFile;
     }
 
     public UsersFile (Writer writer, String filename) {
@@ -24,6 +29,8 @@ public class UsersFile extends SingleFile<User> {
 
         UsersFileReadyState usersFileReadyState = new UsersFileReadyState(this, this);
         setCurrentState(usersFileReadyState);
+
+        setInstance(this);
     }
 
 

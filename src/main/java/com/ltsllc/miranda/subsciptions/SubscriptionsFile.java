@@ -12,6 +12,8 @@ import java.util.List;
  * Created by Clark on 1/5/2017.
  */
 public class SubscriptionsFile extends SingleFile<Subscription> {
+    public static final String FILE_NAME = "subscriptions";
+
     private static SubscriptionsFile ourInstance;
 
     public static SubscriptionsFile getInstance () {
@@ -24,6 +26,10 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
             ourInstance.start();
             ourInstance.load();
         }
+    }
+
+    public static void setInstance (SubscriptionsFile subscriptionsFile) {
+        ourInstance = subscriptionsFile;
     }
 
     private SubscriptionsFile (Writer writer, String filename) {

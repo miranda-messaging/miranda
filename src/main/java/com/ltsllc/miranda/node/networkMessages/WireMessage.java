@@ -16,6 +16,8 @@ public class WireMessage {
         GetClusterFile,
         GetFile,
         GetFileResponse,
+        GetMessages,
+        GetDeliveries,
         GetSubscriptionsFile,
         GetTopicsFile,
         GetUsersFile,
