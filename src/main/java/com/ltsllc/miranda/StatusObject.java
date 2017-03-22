@@ -8,7 +8,7 @@ package com.ltsllc.miranda;
  * Objects like users and topics are not deleted. Instead, they are marked as deleted and garbage collected.
  */
 public class StatusObject {
-    enum Status {
+    public enum Status {
         New,
         Deleted
     }

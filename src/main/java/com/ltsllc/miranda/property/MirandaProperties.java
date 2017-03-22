@@ -1,16 +1,13 @@
 package com.ltsllc.miranda.property;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.servlet.Property;
+import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.util.Utils;
-import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -19,7 +16,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * The Miranda system's properties.

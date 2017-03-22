@@ -10,9 +10,9 @@ import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.servlet.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.GetStatusMessage;
-import com.ltsllc.miranda.servlet.NodeStatus;
+import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -33,6 +33,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 12/31/2016.
  */
 public class Cluster extends Consumer {
+    public static final String FILE_NAME = "cluster";
+
     private Logger logger = Logger.getLogger(Cluster.class);
 
     private static Cluster ourInstance;

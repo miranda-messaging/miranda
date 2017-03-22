@@ -1,9 +1,7 @@
 package com.ltsllc.miranda.user;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileSyncingState;
 

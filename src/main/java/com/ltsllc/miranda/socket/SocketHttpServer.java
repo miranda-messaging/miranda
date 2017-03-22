@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.socket;
 
 import com.ltsllc.miranda.http.HttpServer;
-import com.ltsllc.miranda.servlet.ServletMapping;
+import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import org.eclipse.jetty.server.Server;
 
 import java.util.List;

@@ -1,6 +1,7 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.topics;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Perishable;
 
 /**

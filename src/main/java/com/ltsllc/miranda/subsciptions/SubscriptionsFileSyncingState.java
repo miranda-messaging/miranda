@@ -2,7 +2,6 @@ package com.ltsllc.miranda.subsciptions;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Subscription;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileSyncingState;
 

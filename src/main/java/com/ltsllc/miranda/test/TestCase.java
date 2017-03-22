@@ -8,6 +8,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
@@ -52,6 +53,9 @@ public class TestCase {
 
     @Mock
     private Miranda mockMiranda;
+
+    @Mock
+    private MirandaPanicPolicy mockPanicPolicy;
 
     public Miranda getMockMiranda() {
         return mockMiranda;
@@ -149,6 +153,10 @@ public class TestCase {
         return writer;
     }
 
+    public MirandaPanicPolicy getMockPanicPolicy() {
+        return mockPanicPolicy;
+    }
+
     public void reset () {
         network = null;
         writer = null;
@@ -157,6 +165,7 @@ public class TestCase {
         this.mockCluster = null;
         this.mockNetwork = null;
         this.mockWriter = null;
+        this.mockPanicPolicy = null;
     }
 
     public void setup () {
@@ -167,6 +176,7 @@ public class TestCase {
         this.mockWriter = mock(Writer.class);
         this.mockNetwork = mock(Network.class);
         this.mockCluster = mock(Cluster.class);
+        this.mockPanicPolicy = mock(MirandaPanicPolicy.class);
     }
 
     public void setupMockNetwork () {
@@ -551,5 +561,9 @@ public class TestCase {
     public void setupMockMiranda () {
         this.mockMiranda = mock(Miranda.class);
         Miranda.setInstance(mockMiranda);
+    }
+
+    public void setupMockPanicPolicy () {
+        Miranda.getInstance().setPanicPolicy(mockPanicPolicy);
     }
 }

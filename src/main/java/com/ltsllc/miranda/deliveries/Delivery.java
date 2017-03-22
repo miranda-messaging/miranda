@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Subscription;
+import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.file.Perishable;
 

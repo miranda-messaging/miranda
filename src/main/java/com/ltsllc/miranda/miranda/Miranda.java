@@ -3,7 +3,6 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
-import com.ltsllc.miranda.deliveries.DeliveriesFile;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
@@ -11,7 +10,8 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.servlet.*;
-import com.ltsllc.miranda.servlet.StatusObject;
+import com.ltsllc.miranda.servlet.objects.Property;
+import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicsFile;
@@ -212,7 +212,7 @@ public class Miranda extends Consumer {
         send(getStatusMessage, getQueue());
     }
 
-    public com.ltsllc.miranda.servlet.StatusObject getStatusImpl () {
+    public StatusObject getStatusImpl () {
         MirandaProperties properties = Miranda.properties;
 
         String localDns = properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);

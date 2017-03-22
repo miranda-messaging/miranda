@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
+import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.NameVersion;
@@ -45,22 +46,9 @@ public class JoiningState extends NodeState {
                 break;
             }
 
-
-            case GetVersion: {
-                GetVersionMessage getVersionMessage = (GetVersionMessage) m;
-                nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-
-            case Version: {
-                VersionMessage versionMessage = (VersionMessage) m;
-                nextState = processVersionMessage(versionMessage);
-                break;
-            }
-
-            case ClusterFile: {
-                ClusterFileMessage clusterFileMessage = (ClusterFileMessage) m;
-                nextState = processClusterFileMessage (clusterFileMessage);
+            case GetVersions: {
+                GetVersionsMessage getVersionsMessage = (GetVersionsMessage) m;
+                nextState = processGetVersionsMessage(getVersionsMessage);
                 break;
             }
 
@@ -100,14 +88,14 @@ public class JoiningState extends NodeState {
 
 
     private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage("cluster");
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.FILE_NAME);
         sendOnWire(getFileWireMessage);
 
         return this;
     }
 
 
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+    private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) {
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         sendOnWire(getVersionsWireMessage);
 
@@ -116,27 +104,8 @@ public class JoiningState extends NodeState {
 
 
     private State processGetVersionsWireMessage (GetVersionsWireMessage getVersionsWireMessage) {
-        GetVersionMessage getVersionMessage = new GetVersionMessage(getNode().getQueue(), this, getNode().getQueue());
-        send (Miranda.getInstance().getQueue(), getVersionMessage);
-
-        return this;
-    }
-
-
-    private State processVersionMessage (VersionMessage versionMessage) {
-        List<NameVersion> versions = new ArrayList<NameVersion>();
-
-        versions.add(versionMessage.getNameVersion());
-
-        VersionsWireMessage versionsWireMessage = new VersionsWireMessage(versions);
-        sendOnWire(versionsWireMessage);
-
-        return this;
-    }
-
-    private State processClusterFileMessage (ClusterFileMessage clusterFileMessage) {
-        ClusterFileWireMessage clusterFileWireMessage = new ClusterFileWireMessage(clusterFileMessage.getFile(), clusterFileMessage.getVersion());
-        sendOnWire(clusterFileWireMessage);
+        GetVersionsMessage getVersionsMessage = new GetVersionsMessage(getNode().getQueue(), this);
+        send (Miranda.getInstance().getQueue(), getVersionsMessage);
 
         return this;
     }

@@ -1,8 +1,7 @@
 package com.ltsllc.miranda.property;
 
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.Property;
+import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.junit.After;
@@ -64,6 +63,7 @@ public class TestMirandaProperties extends TestCase {
 
     @Before
     public void setup () {
+        setuplog4j();
         saveSystemProperties();
         properties = new MirandaProperties(TEST_FILENAME, getMockWriter());
     }

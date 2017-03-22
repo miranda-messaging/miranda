@@ -3,15 +3,11 @@ package com.ltsllc.miranda.http;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.ServletMapping;
-import org.eclipse.jetty.server.Handler;
+import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
-import javax.servlet.http.HttpServlet;
 import java.util.List;
 
 /**

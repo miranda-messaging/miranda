@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.User;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.topics.TopicsFile;

@@ -2,7 +2,7 @@ package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.servlet.ServletMapping;
+import com.ltsllc.miranda.servlet.objects.ServletMapping;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

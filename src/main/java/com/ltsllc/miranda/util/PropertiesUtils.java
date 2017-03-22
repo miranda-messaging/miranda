@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.util;
 
-import com.ltsllc.miranda.servlet.Property;
+import com.ltsllc.miranda.servlet.objects.Property;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -66,19 +66,6 @@ public class PropertiesUtils {
         }
 
         return p1;
-    }
-
-    public static Integer parseIntOrDie(String name, String s) {
-        Integer value = null;
-
-        try {
-            value = Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            logger.fatal("error parsing " + name + " (" + s + ")", e);
-            System.exit(1);
-        }
-
-        return value;
     }
 
     public static void log(Properties p) {

@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.objects;
 
 /**
  * Created by Clark on 3/4/2017.

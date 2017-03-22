@@ -3,7 +3,6 @@ package com.ltsllc.miranda.topics;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Topic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;

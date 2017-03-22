@@ -4,7 +4,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.states.ClusterStatusReadyState;
 import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
 

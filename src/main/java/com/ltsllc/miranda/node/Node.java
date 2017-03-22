@@ -2,17 +2,14 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.*;
-import com.ltsllc.miranda.servlet.NodeStatus;
+import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 12/31/2016.

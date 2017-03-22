@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.objects;
 
 import java.util.ArrayList;
 import java.util.List;

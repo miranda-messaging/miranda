@@ -8,7 +8,7 @@ import com.ltsllc.miranda.cluster.messages.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.servlet.GetStatusMessage;
 import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.StatusObject;
+import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;

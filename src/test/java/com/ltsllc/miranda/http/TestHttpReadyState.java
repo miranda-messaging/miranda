@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.http;
 
-import com.ltsllc.miranda.servlet.ServletMapping;
+import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

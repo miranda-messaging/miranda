@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.User;
 
 import java.util.concurrent.BlockingQueue;
 

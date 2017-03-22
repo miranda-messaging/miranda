@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Topic;
+import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.TopicsFile;
 
 import java.lang.reflect.Type;

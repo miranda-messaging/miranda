@@ -8,7 +8,7 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.http.HttpPostMessage;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.HttpServerHandler;
-import com.ltsllc.miranda.servlet.ServletMapping;
+import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;

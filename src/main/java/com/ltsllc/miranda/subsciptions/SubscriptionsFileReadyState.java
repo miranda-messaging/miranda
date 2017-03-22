@@ -10,6 +10,7 @@ import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 

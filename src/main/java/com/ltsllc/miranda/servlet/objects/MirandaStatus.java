@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.miranda.Miranda;

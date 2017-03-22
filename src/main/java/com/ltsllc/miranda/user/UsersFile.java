@@ -1,15 +1,12 @@
 package com.ltsllc.miranda.user;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/5/2017.

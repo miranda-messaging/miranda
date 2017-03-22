@@ -58,6 +58,8 @@ public class TestMirandaPropertiesReadyState extends TestCase {
 
         super.setup();
 
+        setuplog4j();
+
         mockMiranda = mock(Miranda.class);
         Miranda.setInstance(mockMiranda);
 

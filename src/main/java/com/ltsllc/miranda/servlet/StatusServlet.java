@@ -1,19 +1,13 @@
 package com.ltsllc.miranda.servlet;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.servlet.objects.MirandaStatus;
+import com.ltsllc.miranda.servlet.objects.StatusObject;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Clark on 3/4/2017.

@@ -142,6 +142,9 @@ public class TestMinaNetworkListener extends TestCase {
      */
     @Test
     public void testStartup() {
+        setuplog4j();
+        setupMockMiranda();
+        setupMockPanicPolicy();
         BlockingQueue<Handle> handleQueue = new LinkedBlockingQueue<Handle>();
 
         getMinaNetworkListener().setTestMessage(TEST_MESSAGE);

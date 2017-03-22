@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Subscription;
+import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.http.HttpPostMessage;
 import com.ltsllc.miranda.subsciptions.NewSubscriptionHandler;
 import com.ltsllc.miranda.subsciptions.NewSubscriptionHandlerReadyState;

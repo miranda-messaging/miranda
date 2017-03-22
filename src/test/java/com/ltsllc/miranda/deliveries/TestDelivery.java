@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.deliveries;
 
-import com.ltsllc.miranda.Subscription;
+import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.event.Event;
 import org.junit.Before;
 import com.ltsllc.miranda.test.TestCase;

@@ -2,14 +2,13 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.ConnectingState;
-import com.ltsllc.miranda.servlet.NodeStatus;
+import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.regex.Matcher;
 
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
