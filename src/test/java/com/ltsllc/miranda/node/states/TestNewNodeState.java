@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.GetFileResponseMessage;
@@ -240,5 +241,18 @@ public class TestNewNodeState extends TesterNodeState {
     @Test
     public void testProcessGetSystemDeliveriesMessage () {
         testProcessGetFileMessage(SystemDeliveriesFile.FILE_NAME);
+    }
+
+    @Test
+    public void testProcessConnectMessage () {
+        NewNodeState.setLogger(getMockLogger());
+        ConnectMessage connectMessage = new ConnectMessage(null, this);
+
+        when(getMockNode().getCurrentState()).thenReturn(getNewNodeState());
+
+        State nextState = getNewNodeState().processMessage(connectMessage);
+
+        assert (nextState == getNewNodeState());
+        verify (getMockLogger(), atLeastOnce()).warn(Matchers.anyString(), Matchers.any(Throwable.class));
     }
 }

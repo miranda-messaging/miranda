@@ -77,6 +77,9 @@ public class TestCase {
     @Mock
     private SystemDeliveriesFile mockSystemDeliveriesFile;
 
+    @Mock
+    private Logger mockLogger;
+
     public SystemDeliveriesFile getMockSystemDeliveriesFile() {
         return mockSystemDeliveriesFile;
     }
@@ -200,6 +203,10 @@ public class TestCase {
         return mockPanicPolicy;
     }
 
+    public Logger getMockLogger() {
+        return mockLogger;
+    }
+
     public void reset () {
         network = null;
         writer = null;
@@ -214,6 +221,7 @@ public class TestCase {
         this.mockSubscriptionsFile = null;
         this.mockSystemMessages = null;
         this.mockSystemDeliveriesFile = null;
+        this.mockLogger = null;
     }
 
     public void setup () {
@@ -230,6 +238,7 @@ public class TestCase {
         this.mockSubscriptionsFile = mock(SubscriptionsFile.class);
         this.mockSystemMessages = mock(SystemMessages.class);
         this.mockSystemDeliveriesFile = mock(SystemDeliveriesFile.class);
+        this.mockLogger = mock(Logger.class);
     }
 
     public void setupMockNetwork () {

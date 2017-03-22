@@ -22,13 +22,14 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
-
-import java.util.Stack;
+import org.apache.log4j.Logger;
 
 /**
  * When a node is added via a connect it enters this state, waiting for a join message.
  */
 public class NewNodeState extends NodeState {
+    private static Logger logger = Logger.getLogger(NewNodeState.class);
+
     private Cluster cluster;
 
     public NewNodeState (Node node, Network network, Cluster cluster) {
@@ -39,6 +40,10 @@ public class NewNodeState extends NodeState {
 
     public Cluster getCluster() {
         return cluster;
+    }
+
+    public static void setLogger (Logger logger) {
+        NewNodeState.logger = logger;
     }
 
     public State processNetworkMessage(NetworkMessage networkMessage) {
@@ -184,10 +189,12 @@ public class NewNodeState extends NodeState {
     }
 
     private State processConnectMessage (ConnectMessage connectMessage) {
-        getNetwork().sendConnect(getNode().getQueue(), this, getNode().getDns(), getNode().getPort());
+        String message = getNode() +  " in state " + this + " was told to connect when it already has a connection!  "
+                + " ignoring message.";
 
-        ConnectingState connectingState = new ConnectingState(getNode(), getNetwork());
-        return connectingState;
+        logger.warn(message, connectMessage.getWhere());
+
+        return getNode().getCurrentState();
     }
 
 
