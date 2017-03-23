@@ -31,11 +31,15 @@ public class RetryingState extends NodeState {
         this.retryCount++;
     }
 
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
+    }
+
     public RetryingState (Node node, Network network) {
         super(node, network);
     }
 
-    private static final long INITIAL_DELAY = 1000; // one second
+    public static final long INITIAL_DELAY = 1000; // one second
 
     public State start () {
         retryCount = 0;
@@ -83,15 +87,16 @@ public class RetryingState extends NodeState {
         return this;
     }
 
-    private static final long MAX_TIME = 60000; // one minute
-    private static final int MAX_RETRY_COUNT = 10;
+    public static final long MAX_TIME = 60000; // one minute
+    public static final int MAX_RETRY_COUNT = 10;
 
     private State processConnectFailedMessage (ConnectFailedMessage connectFailedMessage) {
-        int retryCount = getRetryCount();
+        incrementRetries();
+        int retryCount = getRetryCount() - 1;
         if (retryCount > MAX_RETRY_COUNT)
             retryCount = MAX_RETRY_COUNT;
 
-        long delay = INITIAL_DELAY >> retryCount;
+        long delay = INITIAL_DELAY << retryCount;
         if (delay > MAX_TIME)
             delay = MAX_TIME;
 

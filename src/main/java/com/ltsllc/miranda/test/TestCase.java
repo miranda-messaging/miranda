@@ -80,6 +80,13 @@ public class TestCase {
     @Mock
     private Logger mockLogger;
 
+    @Mock
+    private MirandaTimer mockTimer;
+
+    public MirandaTimer getMockTimer() {
+        return mockTimer;
+    }
+
     public SystemDeliveriesFile getMockSystemDeliveriesFile() {
         return mockSystemDeliveriesFile;
     }
@@ -222,6 +229,7 @@ public class TestCase {
         this.mockSystemMessages = null;
         this.mockSystemDeliveriesFile = null;
         this.mockLogger = null;
+        this.mockTimer = null;
     }
 
     public void setup () {
@@ -239,6 +247,7 @@ public class TestCase {
         this.mockSystemMessages = mock(SystemMessages.class);
         this.mockSystemDeliveriesFile = mock(SystemDeliveriesFile.class);
         this.mockLogger = mock(Logger.class);
+        this.mockTimer = mock(MirandaTimer.class);
     }
 
     public void setupMockNetwork () {
@@ -650,5 +659,9 @@ public class TestCase {
 
     public void setupMockSystemDeliveries () {
         SystemDeliveriesFile.setInstance(getMockSystemDeliveriesFile());
+    }
+
+    public void setupMockTimer () {
+        Miranda.timer = getMockTimer();
     }
 }
