@@ -4,6 +4,8 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
+import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.miranda.StopMessage;
@@ -12,6 +14,7 @@ import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.node.messages.GetSystemMessagesMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -63,6 +66,18 @@ public class NodeReadyState extends NodeState {
             case GetFile: {
                 GetFileWireMessage getFileWireMessage = (GetFileWireMessage) networkMessage.getWireMessage();
                 nextState = processGetFileWireMessage(getFileWireMessage);
+                break;
+            }
+
+            case GetMessages: {
+                GetMessagesWireMessage getMessagesWireMessage = (GetMessagesWireMessage) networkMessage.getWireMessage();
+                nextState = processGetMessageWireMessage(getMessagesWireMessage);
+                break;
+            }
+
+            case GetDeliveries: {
+                GetDeliveriesWireMessage getDeliveriesWireMessage = (GetDeliveriesWireMessage) networkMessage.getWireMessage();
+                nextState = processGetDeliveriesWireMessage(getDeliveriesWireMessage);
                 break;
             }
 
@@ -134,9 +149,8 @@ public class NodeReadyState extends NodeState {
     private State processVersionMessage (VersionMessage versionMessage) {
         getVersions().put(versionMessage.getNameVersion().getName(), versionMessage.getNameVersion().getVersion());
 
-
         if (versions.size() >= 1) {
-            VersionsWireMessage versionsWireMessage = new VersionsWireMessage(versionsToList());
+            VersionsWireMessage versionsWireMessage = new VersionsWireMessage(versionsToList(versionMessage.getNameVersion()));
             sendOnWire(versionsWireMessage);
         }
 
@@ -152,10 +166,9 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private List<NameVersion> versionsToList () {
+    private List<NameVersion> versionsToList (NameVersion nameVersion) {
         List<NameVersion> list = new ArrayList<NameVersion>();
 
-        NameVersion nameVersion = new NameVersion("cluster", versions.get("cluster"));
         list.add(nameVersion);
 
         return list;
@@ -181,13 +194,13 @@ public class NodeReadyState extends NodeState {
     private State processGetFileWireMessage (GetFileWireMessage getFileWireMessage) {
         GetFileMessage getFileMessage = new GetFileMessage(getNode().getQueue(), this, getFileWireMessage.getFile());
 
-        if (getFileWireMessage.getFile().equalsIgnoreCase("cluster")) {
-            send(ClusterFile.getInstance().getQueue(), getFileMessage);
-        } else if (getFileWireMessage.getFile().equalsIgnoreCase("users")) {
+        if (getFileWireMessage.getFile().equalsIgnoreCase(Cluster.FILE_NAME)) {
+            send(Cluster.getInstance().getQueue(), getFileMessage);
+        } else if (getFileWireMessage.getFile().equalsIgnoreCase(UsersFile.FILE_NAME)) {
             send(UsersFile.getInstance().getQueue(), getFileMessage);
-        } else if (getFileWireMessage.getFile().equalsIgnoreCase("topics")) {
+        } else if (getFileWireMessage.getFile().equalsIgnoreCase(TopicsFile.FILE_NAME)) {
             send(TopicsFile.getInstance().getQueue(), getFileMessage);
-        } else if (getFileWireMessage.getFile().equalsIgnoreCase("subscriptions")) {
+        } else if (getFileWireMessage.getFile().equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
             send(SubscriptionsFile.getInstance().getQueue(), getFileMessage);
         } else {
             logger.error ("Unknown file " + getFileWireMessage.getFile());
@@ -227,5 +240,17 @@ public class NodeReadyState extends NodeState {
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), stopWireMessage);
 
         return new NodeStoppingState(getNode());
+    }
+
+    public State processGetMessageWireMessage (GetMessagesWireMessage getMessagesWireMessage) {
+        SystemMessages.getInstance().sendGetSystemMessages(getNode().getQueue(), this, getMessagesWireMessage.getFilename());
+
+        return this;
+    }
+
+    public State processGetDeliveriesWireMessage (GetDeliveriesWireMessage getDeliveriesWireMessage) {
+        SystemDeliveriesFile.getInstance().sendGetSystemDeliveries(getNode().getQueue(), this, getDeliveriesWireMessage.getFilename());
+
+        return this;
     }
 }

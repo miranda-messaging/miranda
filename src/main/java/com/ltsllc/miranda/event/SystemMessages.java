@@ -2,6 +2,7 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.*;
+import com.ltsllc.miranda.node.messages.GetSystemMessagesMessage;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.util.ArrayList;
@@ -48,5 +49,10 @@ public class SystemMessages extends Directory {
     @Override
     public MirandaFile createMirandaFile(String filename) {
         return new EventsFile(filename, getWriter());
+    }
+
+    public void sendGetSystemMessages (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+        GetSystemMessagesMessage getSystemMessagesMessage = new GetSystemMessagesMessage(senderQueue, sender, filename);
+        sendToMe(getSystemMessagesMessage);
     }
 }

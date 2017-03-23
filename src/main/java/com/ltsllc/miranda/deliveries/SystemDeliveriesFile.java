@@ -46,4 +46,9 @@ public class SystemDeliveriesFile extends Directory {
     public MirandaFile createMirandaFile(String filename) {
         return new DeliveriesFile(filename, getWriter());
     }
+
+    public void sendGetSystemDeliveries (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+        GetSystemDeliveriesMessage getSystemDeliveriesMessage = new GetSystemDeliveriesMessage(senderQueue, sender, filename);
+        sendToMe(getSystemDeliveriesMessage);
+    }
 }
