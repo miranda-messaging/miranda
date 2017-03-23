@@ -8,7 +8,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 3/1/2017.
  */
 public class DisconnectedMessage extends Message {
-    public DisconnectedMessage(BlockingQueue<Message> senderQueue, Object sender) {
+    private int handle;
+
+    public int getHandle() {
+        return handle;
+    }
+
+    public DisconnectedMessage(BlockingQueue<Message> senderQueue, Object sender, int handle) {
         super (Subjects.Disconnected, senderQueue, sender);
+
+        this.handle = handle;
     }
 }

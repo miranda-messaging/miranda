@@ -60,7 +60,7 @@ public class NodeStoppingState extends State {
     }
 
     public State discardMessage (Message message) {
-        logger.warn (getNode() + " is discarding a message " + message);
+        logger.warn (getNode() + " is shutting down, discarding a message " + message);
 
         return this;
     }

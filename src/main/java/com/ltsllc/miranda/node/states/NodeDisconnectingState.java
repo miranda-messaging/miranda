@@ -76,6 +76,8 @@ public class NodeDisconnectingState extends State {
     public State processStopResponseWireMessage (StopResponseWireMessage stopResponseWireMessage) {
         logger.info (getNode() + " got stop response.");
 
+        getNode().getNetwork().sendCloseMessage(getNode().getQueue(), this, getNode().getHandle());
+
         return new NodeStoppingState(getNode());
     }
 

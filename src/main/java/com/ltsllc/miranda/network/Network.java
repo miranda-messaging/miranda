@@ -99,7 +99,7 @@ abstract public class Network extends Consumer {
 
             setHandle(closeMessage.getHandle(), null);
 
-            DisconnectedMessage disconnectedMessage = new DisconnectedMessage(getQueue(), this);
+            DisconnectedMessage disconnectedMessage = new DisconnectedMessage(getQueue(), this, closeMessage.getHandle());
             closeMessage.reply(disconnectedMessage);
         }
     }
@@ -219,5 +219,10 @@ abstract public class Network extends Consumer {
     public void sendNetworkMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, handle);
         sendToMe(sendNetworkMessage);
+    }
+
+    public void sendCloseMessage (BlockingQueue<Message> senderQueue, Object sender, int handle) {
+        CloseMessage closeMessage = new CloseMessage(senderQueue, sender, handle);
+        sendToMe(closeMessage);
     }
 }
