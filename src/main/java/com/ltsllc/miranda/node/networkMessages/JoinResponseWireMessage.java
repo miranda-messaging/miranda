@@ -21,4 +21,16 @@ public class JoinResponseWireMessage extends WireMessage {
         this.result = result;
     }
 
+    public boolean equals (Object o) {
+        if (null == o || !(o instanceof JoinResponseWireMessage))
+            return false;
+
+        JoinResponseWireMessage other = (JoinResponseWireMessage) o;
+        return getResult().equals(other.getResult());
+    }
+
+    public String toString () {
+        String s = "joinResponse{" + getResult() + "}";
+        return s;
+    }
 }

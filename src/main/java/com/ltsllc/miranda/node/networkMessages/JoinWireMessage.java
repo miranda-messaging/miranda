@@ -11,7 +11,7 @@ public class JoinWireMessage extends WireMessage {
     private int port;
     private String description;
 
-    public JoinWireMessage (String dns, String ip, int port, String desciption) {
+    public JoinWireMessage (String dns, String ip, int port, String description) {
         super(WireSubjects.Join);
 
         this.dns = dns;
