@@ -261,6 +261,5 @@ public class TestMirandaProperties extends TestCase {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);
-
     }
 }

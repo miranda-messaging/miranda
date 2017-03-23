@@ -276,7 +276,7 @@ public class MirandaProperties extends SingleFile<String> {
 
     public void updateSystemProperties()
     {
-        PropertiesUtils.overwrite(System.getProperties(), properties);
+        PropertiesUtils.overwrite(System.getProperties(), asProperties());
     }
 
 
