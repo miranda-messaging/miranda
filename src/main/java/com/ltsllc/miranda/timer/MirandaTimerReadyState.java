@@ -75,7 +75,7 @@ public class MirandaTimerReadyState extends State {
 
     private State processScheduleOnceMessage (ScheduleOnceMessage scheduleOnceMessage) {
         Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getSender(), getTimer().getQueue());
+        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getReceiver(), getTimer().getQueue());
         timer.schedule(localTimerTask, scheduleOnceMessage.getDelay());
 
         return this;
