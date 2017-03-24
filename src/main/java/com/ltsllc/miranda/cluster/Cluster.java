@@ -11,7 +11,7 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.GetStatusMessage;
+import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;

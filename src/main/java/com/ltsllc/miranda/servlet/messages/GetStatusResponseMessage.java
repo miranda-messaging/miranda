@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.messages;
 
 import com.ltsllc.miranda.Message;
 

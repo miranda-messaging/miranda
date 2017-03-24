@@ -10,8 +10,8 @@ import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.GetStatusMessage;
-import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
+import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
+import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import org.apache.log4j.Logger;
 
 /**

@@ -6,7 +6,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.states.ClusterStatusReadyState;
-import com.ltsllc.miranda.servlet.GetStatusResponseMessage;
+import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 
 /**
  * Created by Clark on 3/10/2017.
@@ -35,7 +35,7 @@ public class ClusterStatus extends Consumer {
         this.clusterStatusObject = clusterStatusObject;
     }
 
-    private ClusterStatus () {
+    public ClusterStatus () {
         super("cluster status");
 
         ClusterStatusReadyState clusterStatusReadyState = new ClusterStatusReadyState(this);

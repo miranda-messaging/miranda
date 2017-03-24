@@ -24,6 +24,5 @@ public class ObjectFile<T> {
 
     public void add (T t) {
         getData().add(t);
-
     }
 }
