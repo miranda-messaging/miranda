@@ -100,7 +100,7 @@ public class PropertiesUtils {
                 try {
                     properties.load(fileInputStream);
                 } finally {
-                    IOUtils.closeNoExceptions(fileInputStream);
+                    Utils.closeIgnoreExceptions(fileInputStream);
                 }
             }
         } catch (IOException e) {

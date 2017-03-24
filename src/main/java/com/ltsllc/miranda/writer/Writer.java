@@ -2,7 +2,7 @@ package com.ltsllc.miranda.writer;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.util.IOUtils;
+
 import com.ltsllc.miranda.util.Utils;
 
 import java.io.File;
@@ -48,7 +48,7 @@ public class Writer extends Consumer {
             fos = new FileOutputStream(filename);
             fos.write(data);
         } finally {
-            IOUtils.closeNoExceptions(fos);
+            Utils.closeIgnoreExceptions(fos);
         }
     }
 

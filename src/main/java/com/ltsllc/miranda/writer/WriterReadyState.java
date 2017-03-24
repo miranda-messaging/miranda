@@ -1,13 +1,9 @@
 package com.ltsllc.miranda.writer;
 
-import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.util.IOUtils;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/3/2017.

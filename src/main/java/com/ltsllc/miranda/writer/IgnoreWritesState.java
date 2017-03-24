@@ -3,11 +3,7 @@ package com.ltsllc.miranda.writer;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.util.IOUtils;
 import org.apache.log4j.Logger;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by Clark on 2/8/2017.

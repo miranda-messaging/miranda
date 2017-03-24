@@ -6,11 +6,12 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
-import com.ltsllc.miranda.util.IOUtils;
-import com.ltsllc.miranda.writer.*;
+import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,7 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
             } catch (FileNotFoundException e) {
                 logger.info(getFilename() + " not found");
             } finally {
-                IOUtils.closeNoExceptions(fr);
+                Utils.closeIgnoreExceptions(fr);
             }
 
             setData(temp);

@@ -151,6 +151,15 @@ public class Utils {
         }
     }
 
+    public static void closeIgnoreExceptions(Reader r) {
+        if (null != r)
+            try {
+                r.close();
+            } catch (IOException e) {
+
+            }
+    }
+
     public static void closeLogExceptions(InputStream inputStream, Logger logger) {
         if (null != inputStream) {
             try {
