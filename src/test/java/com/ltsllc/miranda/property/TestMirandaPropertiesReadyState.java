@@ -16,9 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/19/2017.
@@ -80,8 +78,11 @@ public class TestMirandaPropertiesReadyState extends TestCase {
     public void testProcessWriteFailed () {
         WriteFailedMessage writeFailedMessage = new WriteFailedMessage(null, "whatever", new IOException(),this);
 
-        getReadyState().processMessage(writeFailedMessage);
+        when(getMockProperties().getCurrentState()).thenReturn(getReadyState());
 
+        State nextState = getReadyState().processMessage(writeFailedMessage);
+
+        assert (nextState instanceof MirandaPropertiesReadyState);
         verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
     }
 
@@ -90,8 +91,11 @@ public class TestMirandaPropertiesReadyState extends TestCase {
         File file = new File(MirandaProperties.DEFAULT_PROPERTIES_FILENAME);
         FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
 
-        getReadyState().processMessage(fileChangedMessage);
+        when(getMockProperties().getCurrentState()).thenReturn(getReadyState());
 
+        State nextState = getReadyState().processMessage(fileChangedMessage);
+
+        assert (nextState instanceof MirandaPropertiesReadyState);
         verify(getMockMiranda(), atLeastOnce()).sendNewProperties(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.any(MirandaProperties.class));
     }
 }

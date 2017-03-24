@@ -38,6 +38,6 @@ public class MirandaFileReadyState extends State {
     public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
         getMirandaFile().load();
 
-        return this;
+        return getMirandaFile().getCurrentState();
     }
 }
