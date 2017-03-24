@@ -4,7 +4,6 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.timer.SchedulePeriodicMessage;
 import org.apache.log4j.Logger;
 
 public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
@@ -61,7 +60,7 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
 
     public void start () {
         DecrementPanicCountMessage decrementMessage = new DecrementPanicCountMessage(getQueue(), this);
-        Miranda.timer.schedulePeriodic(ONE_HOUR, getQueue(), decrementMessage);
+        Miranda.timer.sendSchedulePeriodic(ONE_HOUR, getQueue(), decrementMessage);
     }
 
     public boolean panic (Panic panic) {

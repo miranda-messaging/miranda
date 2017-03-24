@@ -356,7 +356,7 @@ public class Startup extends State {
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);
-        Miranda.timer.schedulePeriodic(garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
+        Miranda.timer.sendSchedulePeriodic(garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
     }
 
     /**

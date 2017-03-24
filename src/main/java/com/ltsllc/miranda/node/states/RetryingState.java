@@ -2,7 +2,6 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.messages.ConnectFailedMessage;
 import com.ltsllc.miranda.network.Network;
@@ -45,7 +44,7 @@ public class RetryingState extends NodeState {
         retryCount = 0;
 
         RetryMessage retryMessage = new RetryMessage(getNode().getQueue(), this);
-        Miranda.timer.scheduleOnce(INITIAL_DELAY, getNode().getQueue(), retryMessage);
+        Miranda.timer.sendScheduleOnce(INITIAL_DELAY, getNode().getQueue(), retryMessage);
 
         return this;
     }
@@ -101,7 +100,7 @@ public class RetryingState extends NodeState {
             delay = MAX_TIME;
 
         RetryMessage retryMessage = new RetryMessage(getNode().getQueue(), this);
-        Miranda.timer.scheduleOnce(delay, getNode().getQueue(), retryMessage);
+        Miranda.timer.sendScheduleOnce(delay, getNode().getQueue(), retryMessage);
 
         String message = "Failed to connect to " + getNode().getDns() + ":" + getNode().getPort() + ".  Will "
             + "try agian in " + delay + "msec.";

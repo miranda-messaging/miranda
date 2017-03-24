@@ -23,14 +23,14 @@ public class MirandaTimer extends Consumer {
         return timer;
     }
 
-    public void scheduleOnce (long delay, BlockingQueue<Message> receiver, Message message) {
+    public void sendScheduleOnce(long delay, BlockingQueue<Message> receiver, Message message) {
         ScheduleOnceMessage scheduleOnceMessage = new ScheduleOnceMessage(null, this, delay,
                 message, receiver);
 
         sendToMe(scheduleOnceMessage);
     }
 
-    public void schedulePeriodic (long period, BlockingQueue<Message> receiver, Message message) {
+    public void sendSchedulePeriodic(long period, BlockingQueue<Message> receiver, Message message) {
         SchedulePeriodicMessage periodicMessage = new SchedulePeriodicMessage(null, this, period,
                 message, receiver);
 
