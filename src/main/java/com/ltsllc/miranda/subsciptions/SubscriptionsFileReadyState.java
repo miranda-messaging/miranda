@@ -71,10 +71,6 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     }
 
 
-    public State getSyncingState () {
-        return new SubscriptionsFileSyncingState(getSubscriptionsFile());
-    }
-
     @Override
     public Version getVersion() {
         return getSubscriptionsFile().getVersion();
