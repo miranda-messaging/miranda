@@ -59,7 +59,7 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
         NameVersion nameVersion = new NameVersion("topics", getTopicsFile().getVersion());
         VersionMessage versionMessage = new VersionMessage(getTopicsFile().getQueue(), this, nameVersion);
-        send(getVersionMessage.getSender(), versionMessage);
+        send(getVersionMessage.getRequester(), versionMessage);
 
         return this;
     }
