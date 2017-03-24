@@ -32,7 +32,7 @@ public class UsersFileSyncingState extends SingleFileSyncingState {
 
     public State getReadyState ()
     {
-        return new UsersFileReadyState(getContainer(), getUsersFile());
+        return new UsersFileReadyState(getUsersFile());
     }
 
 

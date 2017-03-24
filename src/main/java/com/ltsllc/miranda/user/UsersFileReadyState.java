@@ -25,16 +25,12 @@ import java.util.List;
 public class UsersFileReadyState extends SingleFileReadyState {
     private static Logger logger = Logger.getLogger(UsersFileReadyState.class);
 
-    private UsersFile usersFile;
-
-    public UsersFileReadyState (Consumer consumer, UsersFile usersFile) {
-        super(consumer);
-
-        this.usersFile = usersFile;
+    public UsersFileReadyState (UsersFile usersFile) {
+        super(usersFile);
     }
 
     public UsersFile getUsersFile() {
-        return usersFile;
+        return (UsersFile) getContainer();
     }
 
 
@@ -60,11 +56,13 @@ public class UsersFileReadyState extends SingleFileReadyState {
                 break;
             }
 
+            /*
             case GetFileResponse: {
                 GetFileResponseMessage getFileResponseMessage =(GetFileResponseMessage) message;
                 nextState = processGetFileResponseMessage (getFileResponseMessage);
                 break;
             }
+            */
 
             default:
                 super.processMessage(message);
@@ -84,7 +82,7 @@ public class UsersFileReadyState extends SingleFileReadyState {
     private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
         NameVersion nameVersion = new NameVersion("users", getUsersFile().getVersion());
         VersionMessage versionMessage = new VersionMessage(getUsersFile().getQueue(), this, nameVersion);
-        send(Miranda.getInstance().getQueue(), versionMessage);
+        send(getVersionMessage.getRequester(), versionMessage);
 
         return this;
     }

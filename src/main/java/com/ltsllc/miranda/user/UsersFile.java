@@ -27,7 +27,7 @@ public class UsersFile extends SingleFile<User> {
     public UsersFile (Writer writer, String filename) {
         super(filename, writer);
 
-        UsersFileReadyState usersFileReadyState = new UsersFileReadyState(this, this);
+        UsersFileReadyState usersFileReadyState = new UsersFileReadyState(this);
         setCurrentState(usersFileReadyState);
 
         setInstance(this);
