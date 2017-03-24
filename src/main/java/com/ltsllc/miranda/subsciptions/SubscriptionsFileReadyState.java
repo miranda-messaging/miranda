@@ -65,7 +65,7 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
         NameVersion nameVersion = new NameVersion("subscriptions", getSubscriptionsFile().getVersion());
         VersionMessage versionMessage = new VersionMessage(getSubscriptionsFile().getQueue(), getSubscriptionsFile(), nameVersion);
-        send (getVersionMessage.getSender(), versionMessage);
+        send (getVersionMessage.getRequester(), versionMessage);
 
         return this;
     }
@@ -81,8 +81,9 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     }
 
     private State processGetFileMessage (GetFileMessage getFileMessage) {
-        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getSubscriptionsFile().getQueue(), this, "subscriptions", getSubscriptionsFile().getBytes());
-        send(getFileMessage.getSender(), getFileResponseMessage);
+        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getSubscriptionsFile().getQueue(),
+                this, "subscriptions", getSubscriptionsFile().getBytes());
+        getFileMessage.reply(getFileResponseMessage);
 
         return this;
     }
