@@ -22,29 +22,18 @@ public class ClusterStatusReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case GetStatus: {
-                GetStatusResponseMessage getStatusResponseMessage = (GetStatusResponseMessage) message;
-                nextState = processGetStatusMessage(getStatusResponseMessage);
-                break;
-            }
-
             case GetStatusResponse: {
                 GetStatusResponseMessage getStatusResponseMessage = (GetStatusResponseMessage) message;
                 nextState = processGetStatusResponseMessage (getStatusResponseMessage);
                 break;
             }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
             }
         }
         return nextState;
-    }
-
-    private State processGetStatusMessage (GetStatusResponseMessage message) {
-        getClusterStatus().receivedClusterStatus(message);
-
-        return this;
     }
 
     private State processGetStatusResponseMessage (GetStatusResponseMessage getStatusResponseMessage) {
