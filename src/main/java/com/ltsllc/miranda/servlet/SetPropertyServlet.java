@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class SetPropertyServlet extends HttpServlet {
     private static Logger logger = Logger.getLogger(SetPropertyServlet.class);
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HashMap<String, String> newValues = new HashMap<String, String>();
 
         Enumeration<String> enumeration = request.getParameterNames();
