@@ -34,7 +34,7 @@ public class PropertiesServlet extends HttpServlet {
         }
 
         Gson gson = new Gson();
-        response.setContentType("text/jason");
+        response.setContentType("text/json");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(gson.toJson(properties));
     }

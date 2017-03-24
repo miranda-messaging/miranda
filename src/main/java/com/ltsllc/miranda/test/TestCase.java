@@ -83,6 +83,9 @@ public class TestCase {
     @Mock
     private MirandaTimer mockTimer;
 
+    @Mock
+    private MirandaProperties mockProperties;
+
     public MirandaTimer getMockTimer() {
         return mockTimer;
     }
@@ -120,6 +123,10 @@ public class TestCase {
 
     public Cluster getMockCluster() {
         return mockCluster;
+    }
+
+    public MirandaProperties getMockProperties() {
+        return mockProperties;
     }
 
     public static boolean deleteFile (File file) {
@@ -230,6 +237,7 @@ public class TestCase {
         this.mockSystemDeliveriesFile = null;
         this.mockLogger = null;
         this.mockTimer = null;
+        this.mockProperties = null;
     }
 
     public void setup () {
@@ -248,6 +256,7 @@ public class TestCase {
         this.mockSystemDeliveriesFile = mock(SystemDeliveriesFile.class);
         this.mockLogger = mock(Logger.class);
         this.mockTimer = mock(MirandaTimer.class);
+        this.mockProperties = mock(MirandaProperties.class);
     }
 
     public void setupMockNetwork () {
@@ -663,5 +672,9 @@ public class TestCase {
 
     public void setupMockTimer () {
         Miranda.timer = getMockTimer();
+    }
+
+    public void setupMockProperties () {
+        Miranda.properties = getMockProperties();
     }
 }
