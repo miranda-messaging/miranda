@@ -16,20 +16,8 @@ import java.util.*;
 public class PropertiesUtils {
     private static Logger logger = Logger.getLogger(PropertiesUtils.class);
 
-    /**
-     * Add the properties of p2 to p1.
-     * <p>
-     * If a property is defined in both objects, use the version in p2.
-     *
-     * @param p1 The properties to augment.
-     * @param p2 The properties to use to augment p1.
-     */
-    public static Properties augment(Properties p1, java.util.Properties p2) {
-        for (String name : p2.stringPropertyNames()) {
-            p1.setProperty(name, p2.getProperty(name));
-        }
-
-        return p1;
+    public static void setLogger (Logger logger) {
+        PropertiesUtils.logger = logger;
     }
 
     /**
@@ -56,18 +44,17 @@ public class PropertiesUtils {
         return p;
     }
 
-    public static Properties setIfNull(Properties p1, Properties p2) {
-        Set<String> names = p2.stringPropertyNames();
-
-        for (String name : names) {
-            if (p1.getProperty(name) == null) {
-                p1.setProperty(name, p2.getProperty(name));
-            }
-        }
-
-        return p1;
-    }
-
+    /**
+     * Log the names and values of a properties object to the system log.
+     *
+     * <p>
+     *     This method lists the property names and values of the properties
+     *     object passed to this method to the system log.  The properties
+     *     are sorted by name before printing.
+     * </p>
+     *
+     * @param p The properties object to log.
+     */
     public static void log(Properties p) {
         Object[] names = p.stringPropertyNames().toArray();
         Arrays.sort(names);
@@ -78,7 +65,6 @@ public class PropertiesUtils {
             logger.info(name + " = " + value);
         }
     }
-
 
     /**
      * Load a properties file, if it exits.
@@ -113,15 +99,23 @@ public class PropertiesUtils {
         return properties;
     }
 
-    public static int getIntProperty(Properties properties, String name) {
-        String value = properties.getProperty(name);
-        return Integer.parseInt(value);
-    }
-
-    public static int getIntProperty(String name) {
-        return getIntProperty(System.getProperties(), name);
-    }
-
+    /**
+     * Merge one set of properties with another set and return the merged set.
+     *
+     * <p>
+     *     This method modifies the first set passed to it and returns it.
+     * </p>
+     *
+     * <p>
+     *     For each property in p2, there are two possibilities: it is not
+     *     defined in p1 or it is.  In the case where it is not defined, the
+     *     property is added. When it is defined, use the one defined by p1.
+     * </p>
+     *
+     * @param p1 The first set of properties.
+     * @param p2 The second set of properties.
+     * @return p1 modified as outlined in the description.
+     */
     public static Properties merge(Properties p1, Properties p2) {
         for (String name : p2.stringPropertyNames()) {
             if (null == p1.getProperty(name))
@@ -134,7 +128,7 @@ public class PropertiesUtils {
     /**
      * Replace the properties in the first argument, with the second.
      * <p>
-     * Thatis, if a property exists only in p1, then take p1's version.  If a
+     * That is, if a property exists only in p1, then take p1's version.  If a
      * property only exists in p2, then take p2's version.  If a property
      * exists in both, then take p2's version.
      * </p>
@@ -171,30 +165,27 @@ public class PropertiesUtils {
 
     /**
      * Return a new {@link Properties} object that contains those properties
-     * that are unique to p1.
+     * that are unique to p1 or p2.
      */
     public static Properties difference (Properties p1, Properties p2) {
         Properties result = copy(p1);
         for (Object o : p2.keySet()) {
             if (result.keySet().contains(o))
                 result.remove(o);
+            else
+                result.put(o, p2.get(o));
         }
 
         return result;
     }
 
-    public static List<Property> buildPropertyList (String[][] spec) {
-        List<Property> list = new ArrayList<Property>();
-        for (String[] line : spec) {
-            String name = line.length > 0 ? line[0] : "unknown";
-            String value = line.length > 1 ? line[1] : "unknown";
-            Property property = new Property(name, value);
-            list.add(property);
-        }
-
-        return list;
-    }
-
+    /**
+     * Return a list of Property objects that are the properties passed to
+     * this method.
+     *
+     * @param properties The properties to convert.
+     * @return See above.
+     */
     public static List<Property> toPropertyList (Properties properties) {
         List<Property> list = new ArrayList<Property>(properties.size());
         for (String name : properties.stringPropertyNames())
