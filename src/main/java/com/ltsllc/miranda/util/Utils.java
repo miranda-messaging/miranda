@@ -395,4 +395,9 @@ public class Utils {
         SSLContext sslContext = SSLContext.getDefault();
         return sslContext;
     }
+
+    public static String hexStringToString (String hexString) {
+        byte[] bytes = hexStringToBytes(hexString);
+        return new String(bytes);
+    }
 }
