@@ -12,6 +12,7 @@ import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -90,7 +91,7 @@ abstract public class Directory extends MirandaFile {
         return new byte[0];
     }
 
-    public void updateVersion () {
+    public void updateVersion () throws NoSuchAlgorithmException {
         List<Version> list = new ArrayList<Version>();
 
         for (MirandaFile file : getFiles()) {

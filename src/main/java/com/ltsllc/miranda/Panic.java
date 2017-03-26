@@ -20,6 +20,7 @@ public class Panic extends Exception {
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
         ExceptionReceivingMessage,
         ExceptionSendingMessage,
+        ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
         ExceptionWritingFile,
         NetworkThreadCrashed, // one of our network connections died

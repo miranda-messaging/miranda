@@ -2,15 +2,18 @@ package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -146,7 +149,13 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
         if (adds.size() > 0) {
             getData().addAll(adds);
-            updateVersion();
+
+            try {
+                updateVersion();
+            } catch (NoSuchAlgorithmException e) {
+                Panic panic = new Panic ("Exception trying to calculate version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+                Miranda.getInstance().panic(panic);
+            }
 
             WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
             send(writeMessage, getWriterQueue());
@@ -191,7 +200,13 @@ public class ClusterFile extends SingleFile<NodeElement> {
         NodeElement current = matchingNode(oldValue);
         current.update(newValue);
 
-        updateVersion();
+        try {
+            updateVersion();
+        } catch (NoSuchAlgorithmException e) {
+            Panic panic = new Panic("Exception calculating new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+            Miranda.getInstance().panic(panic);
+        }
+
         write();
     }
 }

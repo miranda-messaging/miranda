@@ -48,7 +48,7 @@ public class SocketNetworkListener extends NetworkListener {
         return handleQueue;
     }
 
-    private SSLContext createSslContext () throws GeneralSecurityException {
+    private SSLContext createSslContext () throws GeneralSecurityException, IOException {
         MirandaProperties properties = Miranda.getInstance().properties;
         MirandaProperties.EncryptionModes encryptionMode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SSLContext sslContext = null;

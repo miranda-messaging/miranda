@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -208,6 +209,8 @@ public class TestDirectory extends TestCase {
             Version version = Version.createWithSha1(SHA1);
 
             assert (version.equals(getDirectory().getVersion()));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         } finally {
             deleteDirectory(root);
         }

@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -156,7 +157,12 @@ public class TestMirandaFile extends TestCase {
 
         Event event = getEventsFile().getData().get(0);
         changeEvent (event);
-        getEventsFile().updateVersion();
+
+        try {
+            getEventsFile().updateVersion();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         Version newVersion = getEventsFile().getVersion();
 
@@ -173,7 +179,12 @@ public class TestMirandaFile extends TestCase {
 
         Event event = other.getData().get(0);
         changeEvent(event);
-        other.updateVersion();
+
+        try {
+            other.updateVersion();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         assert (!other.equals(getEventsFile()));
     }

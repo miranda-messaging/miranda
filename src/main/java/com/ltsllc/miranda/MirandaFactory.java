@@ -353,7 +353,7 @@ public class MirandaFactory {
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | IOException e) {
             Panic panic = new Panic ("Exception while trying to create SSL context", e,
                     Panic.Reasons.ExceptionCreatingSslContext);
 
@@ -381,7 +381,7 @@ public class MirandaFactory {
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | IOException e) {
             Panic panic = new Panic ("Exception while trying to create SSL context", e,
                     Panic.Reasons.ExceptionCreatingSslContext);
 

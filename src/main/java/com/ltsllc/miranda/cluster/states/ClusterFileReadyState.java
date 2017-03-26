@@ -18,6 +18,7 @@ import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,7 +166,14 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         if (drops.size() > 0) {
             logger.info("dropping nodes that have timed out: " + drops);
             getClusterFile().getData().removeAll(drops);
-            getClusterFile().updateVersion();
+
+            try {
+                getClusterFile().updateVersion();
+            } catch (NoSuchAlgorithmException e) {
+                Panic panic = new Panic ("Exception trying to calculate version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+                Miranda.getInstance().panic(panic);
+            }
+
             getClusterFile().write();
 
             for (NodeElement droppedNode : drops) {
@@ -178,11 +186,18 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         // if we changed anything, update the version and write out the file
         //
         if (nodesUpdated || drops.size() > 0) {
-            getClusterFile().updateVersion();
+            try {
+                getClusterFile().updateVersion();
+            } catch (NoSuchAlgorithmException e) {
+                Panic panic = new Panic("Exception while caculating version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+                Miranda.getInstance().panic(panic);
+            }
+
             getClusterFile().write();
         }
 
         return this;
+
     }
 
     /**

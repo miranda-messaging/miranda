@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * This represents a version of a file.  It is used to determine if something
@@ -28,7 +30,7 @@ public class Version  {
 
     public Version () {}
 
-    public Version (String content) {
+    public Version (String content) throws NoSuchAlgorithmException {
         this.sha1 = Utils.calculateSha1(content);
     }
 
@@ -43,7 +45,7 @@ public class Version  {
      * When we are getting the version of an existing file.
      * @param singleFile
      */
-    public Version (SingleFile singleFile) {
+    public Version (SingleFile singleFile) throws NoSuchAlgorithmException, IOException {
         FileInputStream fileInputStream = null;
 
         try {
@@ -52,9 +54,6 @@ public class Version  {
             byte[] sha1Bytes = Utils.calculateSha1(fileInputStream);
 
             this.sha1 = Utils.bytesToString(sha1Bytes);
-        } catch (FileNotFoundException e) {
-            logger.fatal ("Exception trying to determine version", e);
-            System.exit(1);
         } finally {
             Utils.closeIgnoreExceptions(fileInputStream);
         }

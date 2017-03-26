@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +104,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         send(message, Miranda.fileWatcher.getQueue());
     }
 
-    public void updateVersion() {
+    public void updateVersion() throws NoSuchAlgorithmException {
         String json = asJson();
 
         Version version = new Version(json);

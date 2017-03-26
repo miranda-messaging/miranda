@@ -16,6 +16,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
@@ -96,7 +97,7 @@ public class MinaNetwork extends Network {
             sslFilter = new SslFilter(sslContext);
 
             sslFilter.setUseClientMode(true);
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new NetworkException("Exception trying to create SslFilter", e, NetworkException.Errors.ExceptionConnecting);
         }
 

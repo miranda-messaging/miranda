@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import sun.nio.ch.Net;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -518,7 +519,7 @@ public class TestCase {
     }
 
 
-    public static Version createVersion (Object o) {
+    public static Version createVersion (Object o) throws NoSuchAlgorithmException {
         String json = toJson(o);
         return new Version (json);
     }

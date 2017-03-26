@@ -44,7 +44,8 @@ public class Utils {
     }
 
 
-    public static X509Certificate loadCertificate(String filename, String passwordString, String alias) {
+    public static X509Certificate loadCertificate(String filename, String passwordString, String alias)
+            throws GeneralSecurityException, IOException {
         X509Certificate certificate = null;
         FileInputStream fileInputStream = null;
 
@@ -53,9 +54,6 @@ public class Utils {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(fileInputStream, passwordString.toCharArray());
             certificate = (X509Certificate) keyStore.getCertificate(alias);
-        } catch (Exception e) {
-            logger.fatal("Exception trying to load certificate", e);
-            System.exit(1);
         } finally {
             closeIgnoreExceptions(fileInputStream);
         }
@@ -79,7 +77,8 @@ public class Utils {
     }
 
 
-    public static KeyStore loadKeyStore(String filename, String passwordString) {
+    public static KeyStore loadKeyStore(String filename, String passwordString)
+            throws GeneralSecurityException, IOException {
         KeyStore keyStore = null;
         FileInputStream fileInputStream = null;
 
@@ -88,10 +87,6 @@ public class Utils {
             keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 
             keyStore.load(fileInputStream, passwordString.toCharArray());
-
-        } catch (Exception e) {
-            logger.fatal("Exception trying to load key store", e);
-            System.exit(1);
         } finally {
             closeIgnoreExceptions(fileInputStream);
         }
@@ -114,7 +109,6 @@ public class Utils {
             try {
                 writer.close();
             } catch (IOException e) {
-
             }
         }
     }
@@ -186,24 +180,18 @@ public class Utils {
 
     private static final int BUFFER_SIZE = 8192;
 
-    public static byte[] calculateSha1(FileInputStream fileInputStream) {
-        MessageDigest messageDigest = null;
+    public static byte[] calculateSha1(FileInputStream fileInputStream)
+            throws NoSuchAlgorithmException, IOException
+    {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-256");
+        byte buffer[] = new byte[BUFFER_SIZE];
+        int bytesRead;
 
-            byte buffer[] = new byte[BUFFER_SIZE];
-            int bytesRead;
-
-            do {
-                bytesRead = fileInputStream.read(buffer);
-                messageDigest.update(buffer);
-            } while (BUFFER_SIZE == bytesRead);
-
-        } catch (Exception e) {
-            logger.fatal("Exception trying to calculate sha1", e);
-            System.exit(1);
-        }
+        do {
+            bytesRead = fileInputStream.read(buffer);
+            messageDigest.update(buffer);
+        } while (BUFFER_SIZE == bytesRead);
 
         return messageDigest.digest();
     }
@@ -282,23 +270,18 @@ public class Utils {
     }
 
 
-    public static String calculateSha1(byte[] buffer) {
+    public static String calculateSha1(byte[] buffer) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = null;
 
-        try {
-            messageDigest = MessageDigest.getInstance("SHA");
-            messageDigest.update(buffer);
-        } catch (NoSuchAlgorithmException e) {
-            logger.fatal("Exception trying to calculate sha1", e);
-            System.exit(1);
-        }
+        messageDigest = MessageDigest.getInstance("SHA");
+        messageDigest.update(buffer);
 
         String digest = bytesToString(messageDigest.digest());
         return digest;
     }
 
 
-    public static String calculateSha1(String s) {
+    public static String calculateSha1(String s) throws NoSuchAlgorithmException {
         byte[] buffer = s.getBytes();
         return calculateSha1(buffer);
     }
@@ -390,7 +373,7 @@ public class Utils {
         return sslContext;
     }
 
-    public static String hexStringToString (String hexString) {
+    public static String hexStringToString(String hexString) {
         byte[] bytes = hexStringToBytes(hexString);
         return new String(bytes);
     }

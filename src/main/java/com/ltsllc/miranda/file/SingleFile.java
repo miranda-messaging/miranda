@@ -3,9 +3,11 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +98,16 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         }
 
         String json = ourGson.toJson(getData());
-        Version version = new Version(json);
+
+        Version version = null;
+        try {
+            version = new Version(json);
+        } catch (NoSuchAlgorithmException e) {
+            Panic panic = new Panic ("Error trying to calculate new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+            Miranda.getInstance().panic(panic);
+        }
         setVersion(version);
+
         setLastLoaded(System.currentTimeMillis());
     }
 
@@ -124,7 +135,13 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
 
     public void add(E e, boolean write) {
         getData().add(e);
-        updateVersion();
+
+        try {
+            updateVersion();
+        } catch (NoSuchAlgorithmException x) {
+            Panic panic = new Panic ("Exception trying to calculate new version", x, Panic.Reasons.ExceptionTryingToCalculateVersion);
+            Miranda.getInstance().panic(panic);
+        }
 
         if (write) {
             getWriter().sendWrite(getQueue(), this, getFilename(), getBytes());
