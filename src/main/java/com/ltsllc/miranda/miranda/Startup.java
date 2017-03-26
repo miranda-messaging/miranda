@@ -243,7 +243,7 @@ public class Startup extends State {
      * Load the system properties; using the defaults if nothing else is available.
      * <p>
      * The method will use the first argument passed to it, if supplied,
-     * otherwise it will use {@link MirandaProperties#PROPERTY_SYSTEM_PROPERTIES if that is defined.
+     * otherwise it will use {@link MirandaProperties#PROPERTY_PROPERTIES_FILE if that is defined.
      * If neither is defined then it
      * will look for {@link MirandaProperties#DEFAULT_PROPERTIES_FILENAME} in the current directory.
      * <p>

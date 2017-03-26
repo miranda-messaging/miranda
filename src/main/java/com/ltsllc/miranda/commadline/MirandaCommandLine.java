@@ -83,14 +83,8 @@ public class MirandaCommandLine extends CommandLine {
         if (null != getLog4jFilename())
             properties.setProperty(MirandaProperties.PROPERTY_LOG4J_FILE, getLog4jFilename());
 
-        if (null != getLoggingLevel())
-            properties.setProperty(MirandaProperties.PROPERTY_LOGGING_LEVEL, getLoggingLevel());
-
         if (null != getPropertiesFilename())
             properties.setProperty(MirandaProperties.PROPERTY_PROPERTIES_FILE, getPropertiesFilename());
-
-        if (null != getMirandaMode())
-            properties.setProperty(MirandaProperties.PROPERTY_MIRANDA_MODE, getMirandaMode());
 
         return properties;
     }

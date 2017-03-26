@@ -16,10 +16,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.net.Socket;
-import java.security.KeyStore;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.*;
 import java.security.cert.X509Certificate;
 
 
@@ -30,7 +27,7 @@ public class Utils {
     private static Logger logger = Logger.getLogger(Utils.class);
 
 
-    public static PrivateKey loadKey(String filename, String passwordString, String alias) {
+    public static PrivateKey loadKey(String filename, String passwordString, String alias) throws GeneralSecurityException, IOException {
         PrivateKey privateKey = null;
         FileInputStream fileInputStream = null;
 
@@ -39,9 +36,6 @@ public class Utils {
             fileInputStream = new FileInputStream(filename);
             keyStore.load(fileInputStream, passwordString.toCharArray());
             privateKey = (PrivateKey) keyStore.getKey(alias, passwordString.toCharArray());
-        } catch (Exception e) {
-            logger.fatal("Exception while trying to load key", e);
-            System.exit(1);
         } finally {
             closeIgnoreExceptions(fileInputStream);
         }
@@ -388,7 +382,7 @@ public class Utils {
 
     public static SSLContext createSocketServerSslContext(String serverFilename, String serverPassword, String serverAlias,
                                                           String trustStoreFilename, String trustStorePassword, String trustStoreAlias)
-            throws NoSuchAlgorithmException {
+            throws GeneralSecurityException, IOException {
         PrivateKey key = loadKey(serverFilename, serverPassword, serverAlias);
         X509Certificate certificate = loadCertificate(trustStoreFilename, trustStorePassword, trustStoreAlias);
 

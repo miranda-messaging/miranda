@@ -72,29 +72,32 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String CLUSTER_PACKAGE = PACKAGE_NAME + "cluster.";
 
-    public static final String PROPERTY_SYSTEM_PROPERTIES = "com.ltsllc.miranda.Properties";
-    public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
-    public static final String PROPERTY_TOPICS_FILE = "com.ltsllc.miranda.TopicsFile";
-    public static final String PROPERTY_SUBSCRIPTIONS_FILE = "com.ltsllc.miranda.SubscriptionsFile";
-    public static final String PROPERTY_MESSAGE_PORT = "com.ltsllc.miranda.MessagePort";
-    public static final String PROPERTY_MESSAGES_DIRECTORY = "com.ltsllc.miranda.MessageDirectory";
-    public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
-    public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
-    public static final String PROPERTY_LOGGING_LEVEL = PACKAGE_NAME + "LoggingLevel";
-    public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
-    public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
-    public static final String PROPERTY_PROPERTIES_FILE = PACKAGE_NAME + "PropertiesFile";
-    public static final String PROPERTY_MIRANDA_MODE = PACKAGE_NAME + "MirandaMode";
-    public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
-    public static final String PROPERTY_MAX_WRITE_FAILURES = PACKAGE_NAME + "MaxWriteFailures";
-
+    public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
+    public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
+    public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
+    public static final String PROPERTY_MAX_WRITE_FAILURES = PACKAGE_NAME + "MaxWriteFailures";
+    public static final String PROPERTY_MESSAGES_DIRECTORY = "com.ltsllc.miranda.MessageDirectory";
+    public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
+    public static final String PROPERTY_MESSAGE_PORT = "com.ltsllc.miranda.MessagePort";
+    public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
+    public static final String PROPERTY_PROPERTIES_FILE = PACKAGE_NAME + "PropertiesFile";
+    public static final String PROPERTY_SUBSCRIPTIONS_FILE = "com.ltsllc.miranda.SubscriptionsFile";
+    public static final String PROPERTY_TOPICS_FILE = "com.ltsllc.miranda.TopicsFile";
+    public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
 
     public static final String PROPERTY_CLUSTER_FILE = CLUSTER_PACKAGE + "File";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = CLUSTER_PACKAGE + "HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = CLUSTER_PACKAGE + "Timeout";
     public static final String PROPERTY_CLUSTER_PORT = CLUSTER_PACKAGE + "Port";
+
+    public static final String PROPERTY_KEYSTORE = ENCRYPTION_PACKAGE + "KeyStore";
+    public static final String PROPERTY_KEYSTORE_PASSWORD = ENCRYPTION_PACKAGE + "KeyStorePassword";
+    public static final String PROPERTY_KEYSTORE_ALIAS = ENCRYPTION_PACKAGE + "KeyStoreAlias";
+    public static final String PROPERTY_CERTIFICATE_PASSWORD = ENCRYPTION_PACKAGE + "CertificatePassword";
+    public static final String PROPERTY_CERTIFICATE_ALIAS = ENCRYPTION_PACKAGE + "CertificateAlias";
+    public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
 
     public static final String PROPERTY_PANIC_LIMIT = PANIC_PACKAGE + "Limit";
     public static final String PROPERTY_PANIC_TIMEOUT = PANIC_PACKAGE + "Timeout";
@@ -104,19 +107,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_HTTP_BASE = HTTP_PACKAGE_NAME + "Base";
     public static final String PROPERTY_HTTP_SERVER = HTTP_PACKAGE_NAME + "Server";
 
-    public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
-
     public static final String PROPERTY_TRUST_STORE = ENCRYPTION_PACKAGE + "Truststore";
     public static final String PROPERTY_TRUST_STORE_PASSWORD = ENCRYPTION_PACKAGE + "TruststorePassword";
     public static final String PROPERTY_TRUST_STORE_ALIAS = ENCRYPTION_PACKAGE + "TruststoreAlias";
-
-    public static final String PROPERTY_KEYSTORE = ENCRYPTION_PACKAGE + "KeyStore";
-    public static final String PROPERTY_KEYSTORE_PASSWORD = ENCRYPTION_PACKAGE + "KeyStorePassword";
-    public static final String PROPERTY_KEYSTORE_ALIAS = ENCRYPTION_PACKAGE + "KeyStoreAlias";
-
-    public static final String PROPERTY_CERTIFICATE_STORE = ENCRYPTION_PACKAGE + "CertificateStore";
-    public static final String PROPERTY_CERTIFICATE_PASSWORD = ENCRYPTION_PACKAGE + "CertificatePassword";
-    public static final String PROPERTY_CERTIFICATE_ALIAS = ENCRYPTION_PACKAGE + "CerticateAlias";
 
     public static final String PROPERTY_MY_DNS = MY_PACKAGE + "Dns";
     public static final String PROPERTY_MY_IP = MY_PACKAGE + "Ip";
@@ -132,11 +125,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_DELIVERY_DIRECTORY = "data/deliveries";
     public static final String DEFAULT_MESSAGES_DIRECTORY = "data/messages";
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
-    public static final String DEFAULT_LOGGING_LEVEL = LoggingLevel.Warning.toString();
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
-    public static final String DEFAULT_MIRANDA_MODE = MirandaModes.Normal.toString();
     public static final String DEFAULT_NETWORK = Networks.Mina.toString();
     public static final String DEFAULT_MAX_WRITE_FAILURES = "5";
 
@@ -153,7 +144,6 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_KEYSTORE = "serverkeystore";
     public static final String DEFAULT_KEYSTORE_ALIAS = "server";
-    public static final String DEFAULT_CERTIFICATE_STORE = "certifate";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "server";
 
     public static final String DEFAULT_HTTP_BASE = "html";
@@ -170,11 +160,9 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_MESSAGES_DIRECTORY, DEFAULT_MESSAGES_DIRECTORY},
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
-            {PROPERTY_LOGGING_LEVEL, DEFAULT_LOGGING_LEVEL},
             {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE},
             {PROPERTY_FILE_CHECK_PERIOD, DEFAULT_FILE_CHECK_PERIOD},
             {PROPERTY_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILENAME},
-            {PROPERTY_MIRANDA_MODE, DEFAULT_MIRANDA_MODE},
             {PROPERTY_NETWORK, DEFAULT_NETWORK},
             {PROPERTY_MAX_WRITE_FAILURES, DEFAULT_MAX_WRITE_FAILURES},
 
@@ -183,7 +171,6 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_KEYSTORE, DEFAULT_KEYSTORE},
             {PROPERTY_KEYSTORE_ALIAS, DEFAULT_KEYSTORE_ALIAS},
-            {PROPERTY_CERTIFICATE_STORE, DEFAULT_CERTIFICATE_STORE},
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
 
             {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},

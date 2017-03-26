@@ -27,6 +27,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
+import java.io.IOException;
 import java.security.*;
 import java.security.cert.X509Certificate;
 
@@ -181,8 +182,8 @@ public class MirandaFactory {
             String serverKeyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
             checkProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS, serverKeyStoreAlias);
 
-            String certificateKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_STORE);
-            checkProperty(MirandaProperties.PROPERTY_CERTIFICATE_STORE, certificateKeyStoreFilename);
+            String certificateKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            checkProperty(MirandaProperties.PROPERTY_TRUST_STORE, certificateKeyStoreFilename);
 
             String certificateKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_PASSWORD);
             checkProperty(MirandaProperties.PROPERTY_CERTIFICATE_PASSWORD, certificateKeyStorePassword);
@@ -196,7 +197,7 @@ public class MirandaFactory {
             return SslContextBuilder
                     .forServer(key, certificate)
                     .build();
-        } catch (SSLException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new MirandaException("Exception trying to create SSL context", e);
         }
 
@@ -314,7 +315,7 @@ public class MirandaFactory {
 
             sslContext = Utils.createSocketServerSslContext(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias,
                     trustStoreFilename, trustStorePassword, trustStoreAlias);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new MirandaException("Exception trying to get SSL context", e);
         }
 
