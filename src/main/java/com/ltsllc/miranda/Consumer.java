@@ -13,8 +13,11 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/1/2017.
  */
 public class Consumer extends Subsystem implements Comparer {
-
     private static Logger logger = Logger.getLogger(Consumer.class);
+
+    public static void setLogger(Logger logger) {
+        Consumer.logger = logger;
+    }
 
     private State currentState;
 
@@ -49,10 +52,35 @@ public class Consumer extends Subsystem implements Comparer {
     }
 
 
-    public void start(BlockingQueue<Message> queue) {
-        setQueue(queue);
-        register(getName(), getQueue());
-        start();
+    public State startCurrentState() {
+        State current = getCurrentState();
+
+        if (null == current) {
+            Panic panic = new StartupPanic("Null start state", null, StartupPanic.StartupReasons.NullStartState);
+            Miranda.getInstance().panic(panic);
+        } else {
+            try {
+                State nextState = current.start();
+                return nextState;
+            } catch (Throwable t) {
+                Panic panic = new StartupPanic("Unchececked exception in start", t, StartupPanic.StartupReasons.ExceptionInStart);
+                Miranda.getInstance().panic(panic);
+            }
+        }
+
+        return current;
+    }
+
+    public State processMessageInCurrentState(Message message) {
+        try {
+            State nextState = processMessage(message);
+            return nextState;
+        } catch (Throwable t) {
+            Panic panic = new Panic("Unchecked exception in processMessage", t, Panic.Reasons.ExceptionInProcessMessage);
+            Miranda.getInstance().panic(panic);
+        }
+
+        return getCurrentState();
     }
 
 
@@ -60,46 +88,30 @@ public class Consumer extends Subsystem implements Comparer {
      * run a Consumer.
      * <p>
      * <p>
-     * This method implents {@link Runnable#run()}.
-     * </P>
+     * This method implements {@link Runnable#run()}.
+     * </p>
      * <p>
      * This method simply takes the next message off the object's queue
-     * and processes it.  By defualt, the method sotps when the next
-     * Stat is an instance of {@link StopState}.
+     * and processes it.  By default, the method sotps when the next
+     * State is an instance of {@link StopState}.
+     * </p>
      */
     public void run() {
-        State nextState = null;
+        State nextState = startCurrentState();
         State stop = StopState.getInstance();
-
-        try {
-            nextState = getCurrentState().start();
-        } catch (Throwable throwable) {
-            Panic panic = new StartupPanic("Unchecked exception thrown in start by " + this, throwable, StartupPanic.StartupReasons.UncheckedException);
-            Miranda.getInstance().panic(panic);
-        }
-
         logger.info(this + " starting");
 
         while (nextState != stop && !Miranda.panicking && nextState != null) {
-            try {
-                State currentState = getCurrentState();
-                setCurrentState(nextState);
-                if (currentState != nextState) {
-                    setCurrentState(nextState.start());
-                }
+            State currentState = getCurrentState();
+            setCurrentState(nextState);
+            if (currentState != nextState) {
+                setCurrentState(nextState.start());
+            }
 
-                Message m = getNextMessage();
-                if (null != m) {
-                    logger.info(this + " in state " + getCurrentState() + " received " + m);
-                    nextState = processMessage(m);
-                }
-            } catch (Throwable throwable) {
-                String message = "Uncecked excepption";
-                logger.error(message, throwable);
-                Panic panic = new Panic(message, throwable, Panic.Reasons.UncheckedException);
-                if (Miranda.getInstance().panic(panic)) {
-                    nextState = stop;
-                }
+            Message m = getNextMessage();
+            if (null != m) {
+                logger.info(this + " in state " + getCurrentState() + " received " + m);
+                nextState = processMessageInCurrentState(m);
             }
         }
 
@@ -139,7 +151,22 @@ public class Consumer extends Subsystem implements Comparer {
      * @return The next state.
      */
     public State processMessage(Message m) {
-        return getCurrentState().processMessage(m);
+        State currentState = getCurrentState();
+
+        if (null == currentState) {
+            Panic panic = new Panic("Null current state", null, Panic.Reasons.NullCurrentState);
+            Miranda.getInstance().panic(panic);
+        } else {
+            try {
+                State nextState = currentState.processMessage(m);
+                return nextState;
+            } catch (Throwable t) {
+                Panic panic = new Panic("Unchecked exception in processMessage", t, Panic.Reasons.ExceptionInProcessMessage);
+                Miranda.getInstance().panic(panic);
+            }
+        }
+
+        return getCurrentState();
     }
 
 
@@ -168,22 +195,20 @@ public class Consumer extends Subsystem implements Comparer {
      * @param m
      * @param consumer
      */
-    public void sendIfNotNull (Message m, Consumer consumer) {
-        if (null != consumer)
-        {
+    public void sendIfNotNull(Message m, Consumer consumer) {
+        if (null != consumer) {
             consumer.sendToMe(m);
         }
     }
 
     /**
-     * Send a message if the queue id non-null
+     * Send a message if the queue is non-null
      *
      * @param m
      * @param queue
      */
-    public void sendIfNotNull (Message m, BlockingQueue<Message> queue) {
-        if (queue != null)
-        {
+    public void sendIfNotNull(Message m, BlockingQueue<Message> queue) {
+        if (queue != null) {
             send(m, queue);
         }
     }
@@ -198,6 +223,7 @@ public class Consumer extends Subsystem implements Comparer {
             Panic panic = new Panic("Exception trying to sendToMe message", e, Panic.Reasons.ExceptionSendingMessage);
         }
     }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -234,22 +260,22 @@ public class Consumer extends Subsystem implements Comparer {
         currentState = state;
     }
 
-    public void sendStop (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendStop(BlockingQueue<Message> senderQueue, Object sender) {
         StopMessage stopMessage = new StopMessage(senderQueue, sender);
         sendToMe(stopMessage);
     }
 
-    public void stop () {
+    public void stop() {
         logger.info(this + " stopping.");
         setCurrentState(StopState.getInstance());
     }
 
-    public void sendShutdown (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendShutdown(BlockingQueue<Message> senderQueue, Object sender) {
         ShutdownMessage shutdownMessage = new ShutdownMessage(senderQueue, sender);
         sendToMe(shutdownMessage);
     }
 
-    public void shutdown () {
+    public void shutdown() {
         logger.info(this + " shutting down.");
         setCurrentState(StopState.getInstance());
     }

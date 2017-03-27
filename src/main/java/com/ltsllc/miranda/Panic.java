@@ -17,6 +17,8 @@ public class Panic extends Exception {
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
+        ExceptionInProcessMessage, // an unchecked exception was thrown in processMessage
+        ExceptionInRun, // an unchecked exception was thrown in a Consumers run method
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
         ExceptionReceivingMessage,
         ExceptionSendingMessage,
@@ -25,6 +27,7 @@ public class Panic extends Exception {
         ExceptionWritingFile,
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone
+        NullCurrentState, // The currentState is null for a consumer
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
         UncheckedException, // an unchecked exception was thrown

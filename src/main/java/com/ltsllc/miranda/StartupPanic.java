@@ -8,9 +8,11 @@ public class StartupPanic extends Panic {
         CreatingSelector,
         CreatingSslContext, // we could not create an SSL context for the NetworkListener
         ExceptionCreatingHttpServer,
+        ExceptionInStart, // the start method of the current state threw an exception
         ExceptionStartingHttpServer,
         ExceptionListening,
         NetworkListener, // NetworkListener.startup threw an exception
+        NullStartState, // The currentState was null for a Consumer when starting
         SendingMessage, // An exception occurred while trying to sendToMe a message
         StartupFailed, // Some sort of error prevented the Startup class from completing
         UncheckedException, // an unchecked exception was thrown during startup

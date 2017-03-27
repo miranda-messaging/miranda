@@ -272,8 +272,6 @@ public class Startup extends State {
         MirandaFactory factory = new MirandaFactory(properties);
         Miranda miranda = Miranda.getInstance();
 
-        StartState.initialize();
-
         Network network = factory.buildNetwork();
         network.start();
 

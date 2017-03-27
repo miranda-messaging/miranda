@@ -84,6 +84,7 @@ public class TestStartup extends TestCase {
 
     @Test
     public void testStart () {
+        setuplog4j();
         long then = System.currentTimeMillis();
         getMiranda().start();
 
