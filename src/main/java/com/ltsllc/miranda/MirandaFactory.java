@@ -107,7 +107,7 @@ public class MirandaFactory {
         return network;
     }
 
-    public SslContext buildNettyClientSslContext () throws SSLException {
+    public SslContext buildNettyClientSslContext () throws IOException, GeneralSecurityException {
         String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
         String password = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
 

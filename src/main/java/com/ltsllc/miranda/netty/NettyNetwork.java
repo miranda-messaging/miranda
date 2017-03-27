@@ -14,6 +14,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.SSLException;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * Created by Clark on 3/3/2017.
@@ -43,7 +45,7 @@ public class NettyNetwork extends Network {
             SslContext sslContext = factory.buildNettyClientSslContext();
             NewConnectionInitializer newConnectionInitializer = new NewConnectionInitializer(sslContext);
             this.bootstrap = Utils.createClientBootstrap(newConnectionInitializer);
-        } catch (SSLException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new MirandaException("Exception trying to create SSL context", e);
         }
     }

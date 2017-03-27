@@ -309,7 +309,9 @@ public class Utils {
     }
 
 
-    public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString) {
+    public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString)
+            throws IOException, GeneralSecurityException
+    {
         FileInputStream fileInputStream = null;
         TrustManagerFactory trustManagerFactory = null;
 
@@ -320,9 +322,6 @@ public class Utils {
 
             trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
         } finally {
             closeIgnoreExceptions(fileInputStream);
         }
@@ -352,7 +351,9 @@ public class Utils {
         return bootstrap;
     }
 
-    public static SslContext createClientSslContext(String filename, String password) throws SSLException {
+    public static SslContext createClientSslContext(String filename, String password)
+            throws IOException, GeneralSecurityException
+    {
         TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, password);
 
         SslContext sslContext = SslContextBuilder

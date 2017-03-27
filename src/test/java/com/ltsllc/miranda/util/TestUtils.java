@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -412,5 +413,81 @@ public class TestUtils extends TestCase {
         b = (byte) i;
         s = Utils.byteToHexString(b);
         assert (s.equals("80"));
+    }
+
+    public static final byte[] TEST_DATA = { 1, 2, 3, 4};
+    public static final String TEST_HEX_STRING = "01020304";
+
+    public static boolean equivalent (byte[] b1, byte[] b2)
+    {
+        if (b1.length != b2.length)
+            return false;
+
+        for (int i = 0; i < b1.length; i++)
+        {
+            if (b1[i] != b2[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    @Test
+    public void testHexStringToBytes () {
+        byte[] buffer = Utils.hexStringToBytes(TEST_HEX_STRING);
+        assert (equivalent(buffer, TEST_DATA));
+    }
+
+    @Test
+    public void testToNibble () {
+        int value = Utils.toNibble('0');
+        assert (0 == value);
+
+        value = Utils.toNibble('1');
+        assert (1 == value);
+
+        value = Utils.toNibble('A');
+        assert (10 == value);
+
+        value = Utils.toNibble('F');
+        assert (15 == value);
+
+        value = Utils.toNibble('B');
+        assert (11 == value);
+    }
+
+    public static final String TEST_SHA1_2 = "9571A3EEEA934F95E451BB012EE5FCD3539CDD5B";
+
+    @Test
+    public void testCalculateSha1 () {
+        try {
+            String sha1 = Utils.calculateSha1(TEST_HEX_STRING);
+            assert (TEST_SHA1_2.equals(sha1));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCreateTrustManagerFactorySuccess () {
+        createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
+
+        TrustManagerFactory trustManagerFactory = null;
+        try {
+            trustManagerFactory = Utils.createTrustManagerFactory(TEST_FILE_NAME, TEST_PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testHexStringToString () {
+        String hexString = "01020304";
+        byte[] data = hexString.getBytes();
+
+        String hexStringBytes = Utils.bytesToString(data);
+        String s = Utils.hexStringToString(hexStringBytes);
+
+        assert (hexString.equals(s));
     }
 }
