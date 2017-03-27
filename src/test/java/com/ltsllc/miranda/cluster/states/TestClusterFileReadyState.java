@@ -137,7 +137,7 @@ public class TestClusterFileReadyState extends TestCase {
 
         getClusterFileReadyState().processMessage(message);
 
-        assert(getWriter().size() == 0);
+        assert(getWriterQueue().size() == 0);
     }
 
     /**

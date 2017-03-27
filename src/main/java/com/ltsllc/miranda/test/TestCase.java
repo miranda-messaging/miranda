@@ -12,7 +12,6 @@ import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -26,7 +25,6 @@ import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.mockito.Mock;
-import sun.nio.ch.Net;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +44,7 @@ public class TestCase {
     private static Logger logger;
 
     private BlockingQueue<Message> network = new LinkedBlockingQueue<Message>();
-    private BlockingQueue<Message> writer = new LinkedBlockingQueue<Message>();
+    private BlockingQueue<Message> writerQueue = new LinkedBlockingQueue<Message>();
 
     @Mock
     private Network mockNetwork;
@@ -210,8 +208,8 @@ public class TestCase {
         return network;
     }
 
-    public BlockingQueue<Message> getWriter() {
-        return writer;
+    public BlockingQueue<Message> getWriterQueue() {
+        return writerQueue;
     }
 
     public MirandaPanicPolicy getMockPanicPolicy() {
@@ -224,7 +222,7 @@ public class TestCase {
 
     public void reset () {
         network = null;
-        writer = null;
+        writerQueue = null;
 
         this.mockMiranda = null;
         this.mockCluster = null;
@@ -243,7 +241,7 @@ public class TestCase {
 
     public void setup () {
         network = new LinkedBlockingQueue<Message>();
-        writer = new LinkedBlockingQueue<Message>();
+        writerQueue = new LinkedBlockingQueue<Message>();
 
         this.mockMiranda = mock(Miranda.class);
         this.mockWriter = mock(Writer.class);
@@ -611,8 +609,8 @@ public class TestCase {
     public void setupWriter () {
         com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer();
 
-        this.writer = new LinkedBlockingQueue<Message>();
-        writer.setQueue(this.writer);
+        this.writerQueue = new LinkedBlockingQueue<Message>();
+        writer.setQueue(this.writerQueue);
     }
 
     public static void makeFile (String filename, byte[] data) {
