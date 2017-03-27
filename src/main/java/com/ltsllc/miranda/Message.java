@@ -2,6 +2,7 @@ package com.ltsllc.miranda;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
@@ -146,8 +147,8 @@ public class Message implements Perishable {
         try {
             getSender().put(message);
         } catch (InterruptedException e) {
-            logger.fatal ("Interrupted while trying to reply", e);
-            System.exit(1);
+            Panic panic = new Panic("Interrupted trying to send reply.", e, Panic.Reasons.ExceptionSendingMessage);
+            Miranda.getInstance().panic(panic);
         }
     }
 
@@ -160,5 +161,9 @@ public class Message implements Perishable {
         return getSubject().equals(other.getSubject())
                 && getSender() == other.getSender()
                 && getSenderObject() == other.getSenderObject();
+    }
+
+    public void setSender (BlockingQueue<Message> queue) {
+        this.sender = queue;
     }
 }
