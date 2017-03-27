@@ -9,7 +9,11 @@ import org.apache.log4j.Logger;
  * Created by Clark on 2/8/2017.
  */
 public class IgnoreWritesState extends State {
-    private Logger logger = Logger.getLogger(IgnoreWritesState.class);
+    private static Logger logger = Logger.getLogger(IgnoreWritesState.class);
+
+    public static void setLogger (Logger logger) {
+        IgnoreWritesState.logger = logger;
+    }
 
     public IgnoreWritesState (Consumer consumer) {
         super(consumer);
