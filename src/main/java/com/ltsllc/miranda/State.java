@@ -46,7 +46,8 @@ public abstract class State {
             logger.info (getContainer() + " in state " + this + " sending " + m);
             queue.put(m);
         } catch (InterruptedException e) {
-            logger.warn ("Interrupted while sending message", e);
+            Panic panic = new Panic("Interrupted while trying to send message", e, Panic.Reasons.ExceptionSendingMessage);
+            Miranda.getInstance().panic(panic);
         }
     }
 
