@@ -321,6 +321,19 @@ public class TestCase {
         }
     }
 
+    public static void createFile (String filename, byte[] contents) {
+        FileOutputStream fileOutputStream = null;
+
+        try {
+            fileOutputStream = new FileOutputStream(filename);
+            fileOutputStream.write(contents);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeIgnoreExceptions(fileOutputStream);
+        }
+    }
+
     public static void createFile (String filename, String contents) {
         FileOutputStream fileOutputStream = null;
 

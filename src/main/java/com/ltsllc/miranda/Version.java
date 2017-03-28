@@ -67,7 +67,11 @@ public class Version  {
         this.sha1 = sha1;
     }
 
-    public boolean equals (Version other) {
+    public boolean equals (Object o) {
+        if (null == o || !(o instanceof Version))
+            return false;
+
+        Version other = (Version) o;
 
         if ((other.sha1 == null && sha1 != null) || (null != other.getSha1() && null == sha1))
             return false;
