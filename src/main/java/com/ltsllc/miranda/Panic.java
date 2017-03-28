@@ -30,6 +30,7 @@ public class Panic extends Exception {
         NullCurrentState, // The currentState is null for a consumer
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
+        Test,
         UncheckedException, // an unchecked exception was thrown
         UnrecognizedNode // a node shut down that we don't have a record of
     }
