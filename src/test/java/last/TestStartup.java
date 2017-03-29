@@ -1,6 +1,9 @@
-package com.ltsllc.miranda.miranda;
+package last;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.ReadyState;
+import com.ltsllc.miranda.miranda.Startup;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.test.TestCase;

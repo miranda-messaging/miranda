@@ -1,11 +1,13 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * Created by Clark on 3/5/2017.
@@ -29,23 +31,17 @@ public class TestReadyState extends TestCase {
 
         setuplog4j();
 
-        String[] empty = new String[0];
-        Miranda miranda = new Miranda(empty);
-        miranda.start();
-
-        pause(1000);
-
-        this.readyState = (ReadyState) miranda.getCurrentState();
+        this.readyState = new ReadyState(getMockMiranda());
     }
 
     @Test
     public void testProcessNewConnectionMessage () {
         Node node = new Node(-1, getMockNetwork(), getMockCluster());
         NewConnectionMessage message = new NewConnectionMessage(null, this, node);
-        send(message, getReadyState().getMiranda().getQueue());
 
-        pause(250);
+        State nextState = getReadyState().processMessage(message);
 
+        assert (nextState instanceof ReadyState);
         assert (contains(Message.Subjects.GetVersion, node.getQueue()));
     }
 }

@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 abstract public class NetworkListener extends Consumer {
     abstract public void startup (BlockingQueue<Handle> queue) throws NetworkException;
+    abstract public void stopListening();
 
     private int port;
     private boolean keepGoing = true;

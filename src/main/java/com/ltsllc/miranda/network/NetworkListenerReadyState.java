@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.miranda.StopMessage;
 
 /**
  * Created by Clark on 3/10/2017.
@@ -18,5 +19,10 @@ public class NetworkListenerReadyState extends State {
         getNetworkListener().getConnections();
 
         return this;
+    }
+
+    public State processStopMessage (StopMessage stopMessage) {
+        getNetworkListener().stopListening();
+        return getNetworkListener().getCurrentState();
     }
 }

@@ -6,6 +6,7 @@ import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
@@ -47,6 +48,15 @@ public class Miranda extends Consumer {
     private SystemDeliveriesFile deliveries;
     private Cluster cluster;
     private PanicPolicy panicPolicy;
+    private NetworkListener networkListener;
+
+    public NetworkListener getNetworkListener() {
+        return networkListener;
+    }
+
+    public void setNetworkListener(NetworkListener networkListener) {
+        this.networkListener = networkListener;
+    }
 
     public PanicPolicy getPanicPolicy() {
         return panicPolicy;
@@ -204,6 +214,10 @@ public class Miranda extends Consumer {
 
         if (null != getSubscriptions()) {
             getSubscriptions().sendStop(getQueue(), this);
+        }
+
+        if (null != getNetworkListener()) {
+            getNetworkListener().sendStop(getQueue(), this);
         }
     }
 

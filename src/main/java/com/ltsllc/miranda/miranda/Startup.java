@@ -435,5 +435,7 @@ public class Startup extends State {
     public void startListening () {
         NetworkListener networkListener = getFactory().buildNetworkListener();
         networkListener.start();
+
+        getMiranda().setNetworkListener(networkListener);
     }
 }

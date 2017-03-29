@@ -34,6 +34,10 @@ public class NettyNetworkListener extends NetworkListener {
         // TODO: implement this
     }
 
+    public void stopListening () {
+        // TODO: implement this
+    }
+
     private static class LocalHandler extends ChannelInboundHandlerAdapter {
         private Logger logger = Logger.getLogger(LocalHandler.class);
         private BlockingQueue<Message> node;

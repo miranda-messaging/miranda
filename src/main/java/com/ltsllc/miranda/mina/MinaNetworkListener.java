@@ -11,6 +11,7 @@ import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import jdk.nashorn.internal.ir.LexicalContextNode;
 import org.apache.mina.core.service.IoAcceptor;
+import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.SslFilter;
@@ -29,7 +30,7 @@ public class MinaNetworkListener extends NetworkListener {
     private boolean useEncryption = true;
 
     private boolean testMode = true; // for testing
-    private IoAcceptor acceptor; // for testing
+    private NioSocketAcceptor acceptor; // for testing
     private String testMessage; // for testing
     private MinaTestHandler minaTestHandler; // for testing
 
@@ -68,11 +69,11 @@ public class MinaNetworkListener extends NetworkListener {
         this.useEncryption = useEncryption;
     }
 
-    public IoAcceptor getAcceptor() {
+    public NioSocketAcceptor getAcceptor() {
         return acceptor;
     }
 
-    public void setAcceptor(IoAcceptor acceptor) {
+    public void setAcceptor(NioSocketAcceptor acceptor) {
         this.acceptor = acceptor;
     }
 
@@ -89,7 +90,7 @@ public class MinaNetworkListener extends NetworkListener {
     public void startup (BlockingQueue<Handle> queue) {
         MirandaFactory factory = Miranda.factory;
 
-        IoAcceptor acceptor = new NioSocketAcceptor();
+        NioSocketAcceptor acceptor = new NioSocketAcceptor();
         setAcceptor(acceptor);
 
         SSLContext sslContext = factory.buildServerSSLContext();
@@ -112,6 +113,8 @@ public class MinaNetworkListener extends NetworkListener {
             acceptor.setHandler(handler);
         }
 
+        acceptor.setReuseAddress(true);
+
         InetSocketAddress address = new InetSocketAddress(getPort());
 
         try {
@@ -120,5 +123,18 @@ public class MinaNetworkListener extends NetworkListener {
             Panic panic = new StartupPanic("Exception trying to listen", e, StartupPanic.StartupReasons.ExceptionListening);
             Miranda.getInstance().panic(panic);
         }
+    }
+
+    public void stopListening () {
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(getPort());
+        getAcceptor().unbind(inetSocketAddress);
+
+        for(IoSession session: getAcceptor().getManagedSessions().values()){
+            if(session.isConnected() && !session.isClosing()){
+                session.close(true);
+            }
+        }
+
+        getAcceptor().dispose();
     }
 }

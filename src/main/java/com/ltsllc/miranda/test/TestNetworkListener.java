@@ -190,4 +190,8 @@ public class TestNetworkListener extends NetworkListener {
             System.exit(1);
         }
     }
+
+    public void stopListening () {
+        // TODO: implement this
+    }
 }
