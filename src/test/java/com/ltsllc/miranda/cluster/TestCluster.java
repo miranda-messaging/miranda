@@ -5,7 +5,9 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +37,13 @@ public class TestCluster extends TestCase {
 
     @Mock
     private Node mockNode;
+
+    @Mock
+    private Node mockNode2;
+
+    public Node getMockNode2() {
+        return mockNode2;
+    }
 
     public ClusterFile getMockClusterFile() {
         return mockClusterFile;
@@ -69,6 +78,7 @@ public class TestCluster extends TestCase {
         this.cluster = null;
         this.mockClusterFile = null;
         this.mockNode = null;
+        this.mockNode2 = null;
     }
 
     @Before
@@ -96,6 +106,8 @@ public class TestCluster extends TestCase {
 
         Cluster.initializeClass(filename, getMockWriter(), getMockNetwork());
         this.cluster = Cluster.getInstance();
+
+        this.mockNode2 = mock(Node.class);
     }
 
     @After
@@ -152,5 +164,20 @@ public class TestCluster extends TestCase {
     public void testConnect () {
         NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
 
+    }
+
+    @Test
+    public void testBroadcsat () {
+        getCluster().getNodes().clear();
+        getCluster().getNodes().add(getMockNode());
+        getCluster().getNodes().add(getMockNode2());
+
+        long now = System.currentTimeMillis();
+        Session session = new Session("whatever", now + 120000, 123);
+        NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(session);
+        getCluster().broadcast(newSessionWireMessage);
+
+        verify(getMockNode(), atLeastOnce()).sendSendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(newSessionWireMessage));
+        verify(getMockNode2(), atLeastOnce()).sendSendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(newSessionWireMessage));
     }
 }

@@ -9,9 +9,13 @@ import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
+import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
+import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import org.apache.log4j.Logger;
 
 /**
@@ -93,6 +97,18 @@ public class ClusterReadyState extends State {
             case NewNode: {
                 NewNodeMessage newNodeMessage = (NewNodeMessage) m;
                 nextState = processNewNodeMessage(newNodeMessage);
+                break;
+            }
+
+            case NewSession: {
+                NewSessionMessage newSessionMessage = (NewSessionMessage) m;
+                nextState = processNewSessionMessage (newSessionMessage);
+                break;
+            }
+
+            case SessionsExpired: {
+                SessionsExpiredMessage sessionsExpiredMessage = (SessionsExpiredMessage) m;
+                nextState = processSessionsExpiredMessage(sessionsExpiredMessage);
                 break;
             }
 
@@ -203,5 +219,19 @@ public class ClusterReadyState extends State {
         getCluster().stop();
 
         return new ClusterStoppingState(getCluster());
+    }
+
+    public State processNewSessionMessage (NewSessionMessage newSessionMessage) {
+        NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(newSessionMessage.getSession());
+        getCluster().broadcast (newSessionWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processSessionsExpiredMessage(SessionsExpiredMessage sessionsExpiredMessage) {
+        SessionsExpiredWireMessage sessionsExpiredWireMessage = new SessionsExpiredWireMessage(sessionsExpiredMessage.getExpiredSessions());
+        getCluster().broadcast(sessionsExpiredWireMessage);
+
+        return getCluster().getCurrentState();
     }
 }

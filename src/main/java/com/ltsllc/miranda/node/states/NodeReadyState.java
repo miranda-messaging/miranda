@@ -10,6 +10,7 @@ import com.ltsllc.miranda.file.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
@@ -81,6 +82,18 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+            case NewSession: {
+                NewSessionWireMessage newSessionWireMessage = (NewSessionWireMessage) networkMessage.getWireMessage();
+                nextState = processNewSessionWireMessage (newSessionWireMessage);
+                break;
+            }
+
+            case ExpiredSessions: {
+                SessionsExpiredWireMessage sessionsExpiredWireMessage = (SessionsExpiredWireMessage) networkMessage.getWireMessage();
+                nextState = processSessionsExpiredWireMessage(sessionsExpiredWireMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processNetworkMessage(networkMessage);
                 break;
@@ -134,6 +147,12 @@ public class NodeReadyState extends NodeState {
             case GetFileResponse: {
                 GetFileResponseMessage getFileResponseMessage = (GetFileResponseMessage) message;
                 nextState = processGetFileResponseMessage (getFileResponseMessage);
+                break;
+            }
+
+            case SendNetworkMessage: {
+                SendNetworkMessage sendNetworkMessage = (SendNetworkMessage) message;
+                nextState = processSendNetworkMessage(sendNetworkMessage);
                 break;
             }
 
@@ -252,5 +271,23 @@ public class NodeReadyState extends NodeState {
         SystemDeliveriesFile.getInstance().sendGetSystemDeliveries(getNode().getQueue(), this, getDeliveriesWireMessage.getFilename());
 
         return this;
+    }
+
+    public State processNewSessionWireMessage (NewSessionWireMessage newSessionWireMessage) {
+        Miranda.getInstance().sendNewSessionMessage(getNode().getQueue(), this, newSessionWireMessage.getSession());
+
+        return getNode().getCurrentState();
+    }
+
+    public State processSendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
+        getNode().sendOnWire(sendNetworkMessage.getWireMessage());
+
+        return getNode().getCurrentState();
+    }
+
+    public State processSessionsExpiredWireMessage (SessionsExpiredWireMessage sessionsExpiredWireMessage) {
+        Miranda.getInstance().sendSessionsExpiredMessage(getNode().getQueue(), this, sessionsExpiredWireMessage.getExpiredSessions());
+
+        return getNode().getCurrentState();
     }
 }

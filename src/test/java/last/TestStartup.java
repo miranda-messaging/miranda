@@ -105,6 +105,7 @@ public class TestStartup extends TestCase {
         assert (getMiranda().getTopics() != null);
         assert (getMiranda().getHttp() != null);
         assert (getMiranda().getSubscriptions() != null);
+        assert (getMiranda().getSessionManager() != null);
 
         //
         // test that static variables got set

@@ -15,6 +15,7 @@ import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.servlet.holder.ClusterStatus;
 import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
+import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -281,6 +282,9 @@ public class Startup extends State {
         miranda.setCluster(Cluster.getInstance());
 
         Cluster.getInstance().sendConnect (null, this);
+
+        SessionManager sessionManager = new SessionManager();
+        miranda.setSessionManager(sessionManager);
     }
 
     public void startWriter () {
@@ -350,7 +354,7 @@ public class Startup extends State {
     public void setupSchedule () {
         MirandaProperties properties = Miranda.properties;
 
-        long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD);
+        long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD, MirandaProperties.DEFAULT_GARBAGE_COLLECTION_PERIOD);
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);

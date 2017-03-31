@@ -1,6 +1,8 @@
 package com.ltsllc.miranda.property;
 
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.PropertiesUtils;
@@ -261,5 +263,65 @@ public class TestMirandaProperties extends TestCase {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);
+    }
+
+    @Test
+    public void testGetLongPropertySuccess () {
+        long value = 0;
+        try {
+            value = getProperties().getLongProperty(MirandaProperties.PROPERTY_SESSION_LENGTH);
+        } catch (MirandaException e) {
+            e.printStackTrace();
+        }
+
+        assert (3600000 == value);
+    }
+
+    @Test
+    public void testGetLongPropertyDoesNotExist () {
+        long value = 0;
+        MirandaException mirandaException = null;
+
+        try {
+            value = getProperties().getLongProperty("wrong");
+        } catch (MirandaException e) {
+            mirandaException = e;
+        }
+
+        assert (value == 0);
+        assert (mirandaException != null);
+        assert (mirandaException instanceof UndefinedPropertyException);
+    }
+
+    @Test
+    public void testGetLongPropertyNotLong () {
+        long value = 0;
+        MirandaException mirandaException = null;
+
+        try {
+            getProperties().getLongProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+        } catch (MirandaException e) {
+            mirandaException = e;
+        }
+
+        assert (0 == value);
+        assert (mirandaException != null);
+        assert (mirandaException instanceof InvalidPropertyException);
+    }
+
+    @Test
+    public void testGetLongPropertyWithDefault () {
+        getProperties().setProperty(MirandaProperties.PROPERTY_SESSION_LENGTH, "13");
+        long value = getProperties().getLongProperty(MirandaProperties.PROPERTY_SESSION_LENGTH, MirandaProperties.DEFAULT_SESSION_LENGTH);
+
+        assert (value == 13);
+
+        value = getProperties().getLongProperty("wrong", MirandaProperties.DEFAULT_SESSION_LENGTH);
+
+        assert (value == 3600000);
+
+        value = getProperties().getLongProperty("wrong", "wrong");
+
+        assert (value == -1);
     }
 }

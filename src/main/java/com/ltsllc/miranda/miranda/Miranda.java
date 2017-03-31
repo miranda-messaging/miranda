@@ -13,6 +13,10 @@ import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
+import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.session.SessionManager;
+import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicsFile;
@@ -49,6 +53,15 @@ public class Miranda extends Consumer {
     private Cluster cluster;
     private PanicPolicy panicPolicy;
     private NetworkListener networkListener;
+    private SessionManager sessionManager;
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
 
     public NetworkListener getNetworkListener() {
         return networkListener;
@@ -276,5 +289,15 @@ public class Miranda extends Consumer {
             properties.sendShutdown(getQueue(), this);
 
         setCurrentState(new ShuttingDownState(this));
+    }
+
+    public void sendNewSessionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session) {
+        NewSessionMessage newSessionMessage = new NewSessionMessage(senderQueue, sender, session);
+        sendToMe(newSessionMessage);
+    }
+
+    public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
+        SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(senderQueue, sender, expiredSessions);
+        sendToMe(sessionsExpiredMessage);
     }
 }

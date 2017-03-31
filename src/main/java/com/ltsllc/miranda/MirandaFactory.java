@@ -393,7 +393,7 @@ public class MirandaFactory {
 
     public PanicPolicy buildPanicPolicy () {
         int maxPanics = getProperties().getIntProperty(MirandaProperties.PROPERTY_PANIC_LIMIT);
-        long timeout = getProperties().getLongProperty(MirandaProperties.PROPERTY_PANIC_TIMEOUT);
+        long timeout = getProperties().getLongProperty(MirandaProperties.PROPERTY_PANIC_TIMEOUT, MirandaProperties.DEFAULT_PANIC_TIMEOUT);
 
         return new MirandaPanicPolicy(maxPanics, timeout, Miranda.getInstance(), Miranda.timer);
     }

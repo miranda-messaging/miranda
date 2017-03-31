@@ -10,9 +10,13 @@ import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -263,5 +267,21 @@ public class Cluster extends Consumer {
     public void sendNodeStopped (BlockingQueue<Message> senderQueue, Object sender, Node node) {
         NodeStoppedMessage nodeStoppedMessage = new NodeStoppedMessage(senderQueue, sender, node);
         sendToMe(nodeStoppedMessage);
+    }
+
+    public void sendNewSession (BlockingQueue<Message> senderQueue, Object sender, Session session) {
+        NewSessionMessage newSessionMessage = new NewSessionMessage(senderQueue, sender, session);
+        sendToMe(newSessionMessage);
+    }
+
+    public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
+        SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(senderQueue, sender, expiredSessions);
+        sendToMe(sessionsExpiredMessage);
+    }
+
+    public void broadcast (WireMessage wireMessage) {
+        for (Node node : getNodes()) {
+            node.sendSendNetworkMessage (getQueue(), this, wireMessage);
+        }
     }
 }

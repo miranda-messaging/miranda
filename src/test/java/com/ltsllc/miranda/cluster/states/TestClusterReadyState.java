@@ -2,15 +2,20 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.TestClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -224,5 +229,33 @@ public class TestClusterReadyState extends TestCase {
         getClusterReadyState().processMessage(getStatusMessage);
 
         verify(getMockCluster(), atLeastOnce()).getStatus();
+    }
+
+    @Test
+    public void testProcessNewSessionMessage () {
+        Session session = new Session ("whatever", 123, 456);
+        NewSessionMessage newSessionMessage = new NewSessionMessage(null, this, session);
+
+        when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
+
+        State nextState = getClusterReadyState().processMessage(newSessionMessage);
+
+        assert (nextState instanceof ClusterReadyState);
+        verify(getMockCluster(), atLeastOnce()).broadcast(Matchers.any(WireMessage.class));
+    }
+
+    @Test
+    public void testProcessSessionsExpired () {
+        Session session = new Session ("whatever",123,456);
+        List<Session> exipiredSessions = new ArrayList<Session>();
+        exipiredSessions.add(session);
+        SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(null,this, exipiredSessions);
+
+        when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
+
+        State nextState = getClusterReadyState().processMessage(sessionsExpiredMessage);
+
+        assert (nextState instanceof ClusterReadyState);
+        verify(getMockCluster(), atLeastOnce()).broadcast(Matchers.any(WireMessage.class));
     }
 }

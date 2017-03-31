@@ -13,6 +13,8 @@ import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
+import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.GetUsersFileMessage;
@@ -55,20 +57,6 @@ public class TestNodeReadyState extends TesterNodeState {
 
         readyState = new NodeReadyState(getMockNode(), getMockNetwork());
     }
-/*
-    @Test
-    public void testTestGetVersions () {
-        BlockingQueue<Message> queue = new LinkedBlockingDeque<Message>();
-        setupMockMiranda();
-        GetVersionsMessage getVersionsMessage = new GetVersionsMessage(null, this);
-        when(getMockMiranda().getQueue()).thenReturn(queue);
-
-        State nextState = getReadyState().processMessage(getVersionsMessage);
-
-        assert (contains(Message.Subjects.GetVersions, queue));
-        assert (nextState instanceof NodeReadyState);
-    }
-*/
 
     @Test
     public void testProcessVersionMessage () {
@@ -271,5 +259,37 @@ public class TestNodeReadyState extends TesterNodeState {
     @Test
     public void testProcessGetFileWireMessageSystemDeliveries () {
         testProcessGetFileWireMessage(SystemDeliveriesFile.FILE_NAME);
+    }
+
+    @Test
+    public void testProcessNewSessionWireMessage () {
+        setupMockMiranda();
+        Session session = new Session ("whatever", 123, 456);
+        NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(session);
+        NetworkMessage networkMessage = new NetworkMessage(null, this, newSessionWireMessage);
+
+        when(getMockNode().getCurrentState()).thenReturn(getReadyState());
+
+        State nextState = getReadyState().processMessage(networkMessage);
+
+        assert (nextState instanceof NodeReadyState);
+        verify (getMockMiranda(), atLeastOnce()).sendNewSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
+    }
+
+    @Test
+    public void testProcessSessinsExpiredWireMessage () {
+        setupMockMiranda();
+        Session session = new Session ("whatever", 123, 456);
+        List<Session> expiredSessions = new ArrayList<Session>();
+        expiredSessions.add(session);
+        SessionsExpiredWireMessage sessionsExpiredWireMessage = new SessionsExpiredWireMessage(expiredSessions);
+        NetworkMessage networkMessage = new NetworkMessage(null, this, sessionsExpiredWireMessage);
+
+        when(getMockNode().getCurrentState()).thenReturn(getReadyState());
+
+        State nextState = getReadyState().processMessage(networkMessage);
+
+        assert (nextState instanceof NodeReadyState);
+        verify (getMockMiranda(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(expiredSessions));
     }
 }

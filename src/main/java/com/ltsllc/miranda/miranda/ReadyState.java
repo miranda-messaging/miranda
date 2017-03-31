@@ -9,6 +9,9 @@ import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
+import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.SessionManager;
+import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -24,16 +27,12 @@ import org.apache.log4j.Logger;
 public class ReadyState extends State {
     private static Logger logger = Logger.getLogger(ReadyState.class);
 
-    private Miranda miranda;
-
     public ReadyState (Miranda miranda) {
         super(miranda);
-
-        this.miranda = miranda;
     }
 
     public Miranda getMiranda() {
-        return miranda;
+        return (Miranda) getContainer();
     }
 
     @Override
@@ -74,6 +73,18 @@ public class ReadyState extends State {
             case GetStatus: {
                 GetStatusMessage getStatusMessage = (GetStatusMessage) message;
                 nextState = processGetStatusMessage(getStatusMessage);
+                break;
+            }
+
+            case NewSession: {
+                NewSessionMessage newSessionMessage = (NewSessionMessage) message;
+                nextState = processNewSessionMessage (newSessionMessage);
+                break;
+            }
+
+            case SessionsExpired: {
+                SessionsExpiredMessage sessionsExpiredMessage = (SessionsExpiredMessage) message;
+                nextState = processSessionsExpiredMessage(sessionsExpiredMessage);
                 break;
             }
 
@@ -148,5 +159,17 @@ public class ReadyState extends State {
         getStatusMessage.reply(response);
 
         return this;
+    }
+
+    public State processNewSessionMessage (NewSessionMessage newSessionMessage) {
+        getMiranda().getSessionManager().sendNewSessionMessage(getMiranda().getQueue(), this, newSessionMessage.getSession());
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processSessionsExpiredMessage (SessionsExpiredMessage sessionsExpiredMessage) {
+        getMiranda().getSessionManager().sendSessionsExpiredMessage (getMiranda().getQueue(), this, sessionsExpiredMessage.getExpiredSessions());
+
+        return getMiranda().getCurrentState();
     }
 }

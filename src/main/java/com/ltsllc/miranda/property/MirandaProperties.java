@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.property;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.SingleFile;
@@ -72,6 +73,8 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String CLUSTER_PACKAGE = PACKAGE_NAME + "cluster.";
 
+    public static final String SESSION_PACKAGE = PACKAGE_NAME + "session.";
+
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
@@ -116,6 +119,9 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_MY_PORT = MY_PACKAGE + "Port";
     public static final String PROPERTY_MY_DESCIPTION = MY_PACKAGE + "Description";
 
+    public static final String PROPERTY_SESSION_LENGTH = SESSION_PACKAGE + "Length";
+    public static final String PROPERTY_SESSION_GC_PERIOD = SESSION_PACKAGE + "GCPeriod";
+
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -151,6 +157,8 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_HTTP_PORT = "80";
     public static final String DEFAULT_HTTP_SERVER = "jetty";
 
+    public static final String DEFAULT_SESSION_LENGTH = "3600000"; // one hour
+    public static final String DEFAULT_SESSION_GC_PERIOD = "300000"; // 5 minutes
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
@@ -188,6 +196,9 @@ public class MirandaProperties extends SingleFile<String> {
 
             {PROPERTY_PANIC_LIMIT, DEFAULT_PANIC_LIMIT},
             {PROPERTY_PANIC_TIMEOUT, DEFAULT_PANIC_TIMEOUT},
+
+            {PROPERTY_SESSION_LENGTH, DEFAULT_SESSION_LENGTH},
+            {PROPERTY_SESSION_GC_PERIOD, DEFAULT_SESSION_GC_PERIOD},
     };
 
     private Properties properties;
@@ -279,15 +290,6 @@ public class MirandaProperties extends SingleFile<String> {
 
     public int getIntProperty (String name) {
         return getIntegerProperty(name);
-    }
-
-    public long getLongProperty (String name) {
-        String value = getProperty(name);
-
-        if (null == value)
-            return 0;
-        else
-            return Long.parseLong(value);
     }
 
     public EncryptionModes getEncryptionModeProperty (String name) {
@@ -402,5 +404,36 @@ public class MirandaProperties extends SingleFile<String> {
         } finally {
             Utils.closeIgnoreExceptions(outputStreamWriter);
         }
+    }
+
+    public long getLongProperty (String name) throws MirandaException {
+        String value = null;
+
+        try {
+            value = getProperty(name);
+
+            if (null == value)
+                throw new UndefinedPropertyException(name);
+
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new InvalidPropertyException(e, name, value);
+        }
+    }
+
+    public long getLongProperty (String name, String defaultValue)
+    {
+        String value = getProperties().getProperty(name);
+        if (null == value)
+            value = defaultValue;
+
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            if (value != defaultValue)
+                return Long.parseLong(defaultValue);
+        }
+
+        return -1;
     }
 }

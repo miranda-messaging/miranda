@@ -13,6 +13,7 @@ import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.SingleFileReadyState;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.session.NewSessionMessage;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -28,15 +29,12 @@ import java.util.List;
 public class ClusterFileReadyState extends SingleFileReadyState {
     private static Logger logger = Logger.getLogger(ClusterFileReadyState.class);
 
-    private ClusterFile clusterFile;
-
     public ClusterFileReadyState(ClusterFile clusterFile) {
         super(clusterFile);
-        this.clusterFile = clusterFile;
     }
 
     public ClusterFile getClusterFile() {
-        return clusterFile;
+        return (ClusterFile) getContainer();
     }
 
     public static void setLogger(Logger logger) {
@@ -147,11 +145,10 @@ public class ClusterFileReadyState extends SingleFileReadyState {
             }
         }
 
-
         //
         // check to see if we should drop any nodes
         //
-        long timeout = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT);
+        long timeout = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT, MirandaProperties.DEFAULT_CLUSTER_TIMEOUT);
         long now = System.currentTimeMillis();
         List<NodeElement> drops = new ArrayList<NodeElement>();
         for (NodeElement nodeElement : getClusterFile().getData()) {
@@ -281,7 +278,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
         MirandaProperties properties = Miranda.properties;
 
-        long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD);
+        long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, MirandaProperties.DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD);
         HealthCheckMessage healthCheckMessage = new HealthCheckMessage(getClusterFile().getCluster(), this);
         Miranda.timer.sendSchedulePeriodic(healthCheckPeriod, getClusterFile().getCluster(), healthCheckMessage);
 
