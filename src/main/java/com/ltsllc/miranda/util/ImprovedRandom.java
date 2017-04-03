@@ -7,7 +7,20 @@ import java.util.Random;
  * Created by Clark on 2/24/2017.
  */
 public class ImprovedRandom {
+    private boolean wasNegative;
     private Random random;
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public boolean getWasNegative () {
+        return wasNegative;
+    }
+
+    public void setWasNegative(boolean wasNegative) {
+        this.wasNegative = wasNegative;
+    }
 
     public ImprovedRandom () {
         this.random = new SecureRandom();
@@ -54,5 +67,17 @@ public class ImprovedRandom {
 
     public int nextInt (int lessThan) {
         return random.nextInt(lessThan);
+    }
+
+    public long nextNonNegativeLong () {
+        setWasNegative(false);
+        long value = getRandom().nextLong();
+
+        if (value < 0) {
+            value = -1 * value;
+            setWasNegative(true);
+        }
+
+        return value;
     }
 }

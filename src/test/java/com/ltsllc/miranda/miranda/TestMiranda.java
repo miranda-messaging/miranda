@@ -62,9 +62,9 @@ public class TestMiranda extends TestCase {
 
         getMiranda().setQueue(queue);
 
-        getMiranda().sendNewSessionMessage(null, this, session);
+        getMiranda().sendAddSessionMessage(null, this, session);
 
-        assert (contains(Message.Subjects.NewSession, queue));
+        assert (contains(Message.Subjects.AddSession, queue));
     }
 
     @Test

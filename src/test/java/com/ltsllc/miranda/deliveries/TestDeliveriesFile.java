@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.file.MirandaFileReadyState;
+import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.writer.Writer;

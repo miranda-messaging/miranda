@@ -9,8 +9,7 @@ import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
-import com.ltsllc.miranda.session.NewSessionMessage;
-import com.ltsllc.miranda.session.SessionManager;
+import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
@@ -76,9 +75,9 @@ public class ReadyState extends State {
                 break;
             }
 
-            case NewSession: {
-                NewSessionMessage newSessionMessage = (NewSessionMessage) message;
-                nextState = processNewSessionMessage (newSessionMessage);
+            case AddSession: {
+                AddSessionMessage addSessionMessage = (AddSessionMessage) message;
+                nextState = processAddSessionMessage(addSessionMessage);
                 break;
             }
 
@@ -147,7 +146,7 @@ public class ReadyState extends State {
 
         send(getMiranda().getSubscriptions().getQueue(), garbageCollectionMessage2);
         send(getMiranda().getTopics().getQueue(), garbageCollectionMessage2);
-        send(getMiranda().getUsers().getQueue(), garbageCollectionMessage2);
+        send(getMiranda().getUserManager().getQueue(), garbageCollectionMessage2);
 
         return this;
     }
@@ -161,8 +160,8 @@ public class ReadyState extends State {
         return this;
     }
 
-    public State processNewSessionMessage (NewSessionMessage newSessionMessage) {
-        getMiranda().getSessionManager().sendNewSessionMessage(getMiranda().getQueue(), this, newSessionMessage.getSession());
+    public State processAddSessionMessage(AddSessionMessage addSessionMessage) {
+        getMiranda().getSessionManager().sendAddSessionMessage(getMiranda().getQueue(), this, addSessionMessage.getSession());
 
         return getMiranda().getCurrentState();
     }

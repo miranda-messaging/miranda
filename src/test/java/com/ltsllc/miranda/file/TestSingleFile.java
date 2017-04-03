@@ -3,6 +3,7 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -21,6 +22,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Clark on 3/14/2017.
@@ -179,5 +181,34 @@ public class TestSingleFile extends TestCase {
 
         assert (getSingleFile().equals(getSingleFile()));
         assert (!getSingleFile().equals(nodeElementList2));
+    }
+
+    public boolean contains (List<Subscriber> subscribers, BlockingQueue<Message> queue, Notification notification) {
+        for (Subscriber subscriber : subscribers) {
+            if (subscriber.getQueue() == queue && subscriber.getNotification() == notification)
+                return true;
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testAddSubscriber () {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        Notification notification = new Notification(null, this);
+
+        getSingleFile().addSubscriber(queue, notification);
+
+        assert (contains(getSingleFile().getSubscribers(), queue, notification));
+    }
+
+    @Test
+    public void testRemoveSubscriber () {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        Notification notification = new Notification(null, this);
+
+        getSingleFile().removeSubscriber(queue);
+
+        assert (!contains(getSingleFile().getSubscribers(), queue, notification));
     }
 }

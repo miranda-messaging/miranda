@@ -13,7 +13,7 @@ import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.GetUsersFileMessage;
+import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import org.junit.Before;
 import org.junit.Test;

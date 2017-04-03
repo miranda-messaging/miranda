@@ -2,6 +2,7 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.states.FileWatcherReadyState;
 import org.apache.log4j.Logger;
 
 import java.io.File;

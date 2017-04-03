@@ -27,7 +27,8 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.mockito.Mock;
 
 import java.io.*;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -688,5 +689,54 @@ public class TestCase {
 
     public void setupMockProperties () {
         Miranda.properties = getMockProperties();
+    }
+
+    public void setupMockWriter () {
+        Writer.setInstance(getMockWriter());
+    }
+
+    public String loadPublicKey (String filename, String password, String alias) {
+        String hexString = null;
+        ByteArrayOutputStream byteArrayOutputStream = null;
+
+        try {
+            KeyStore keyStore = Utils.loadKeyStore(filename, password);
+            X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
+            PublicKey publicKey = (PublicKey) certificate.getPublicKey();
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(publicKey);
+            objectOutputStream.close();
+            byteArrayOutputStream.close();
+            byte[] data = byteArrayOutputStream.toByteArray();
+            return Utils.bytesToString(data);
+        } catch (IOException | GeneralSecurityException e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeIgnoreExceptions(byteArrayOutputStream);
+        }
+
+        return null;
+    }
+
+    public String loadPrivateKey (String filename, String password, String alias) {
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        try {
+            KeyStore keyStore = Utils.loadKeyStore(filename, password);
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(privateKey);
+            objectOutputStream.close();
+            byteArrayOutputStream.close();
+            byte[] data = byteArrayOutputStream.toByteArray();
+            return Utils.bytesToString(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeIgnoreExceptions(byteArrayOutputStream);
+        }
+
+        return null;
     }
 }

@@ -121,6 +121,7 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String PROPERTY_SESSION_LENGTH = SESSION_PACKAGE + "Length";
     public static final String PROPERTY_SESSION_GC_PERIOD = SESSION_PACKAGE + "GCPeriod";
+    public static final String PROPERTY_SESSION_LOGIN_TIMEOUT = SESSION_PACKAGE + "LoginTimeout";
 
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
@@ -159,6 +160,7 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String DEFAULT_SESSION_LENGTH = "3600000"; // one hour
     public static final String DEFAULT_SESSION_GC_PERIOD = "300000"; // 5 minutes
+    public static final String DEFAULT_SESSION_LOGIN_TIMEOUT = "1000";
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
@@ -199,6 +201,7 @@ public class MirandaProperties extends SingleFile<String> {
 
             {PROPERTY_SESSION_LENGTH, DEFAULT_SESSION_LENGTH},
             {PROPERTY_SESSION_GC_PERIOD, DEFAULT_SESSION_GC_PERIOD},
+            {PROPERTY_SESSION_LOGIN_TIMEOUT, DEFAULT_SESSION_LOGIN_TIMEOUT},
     };
 
     private Properties properties;

@@ -1,8 +1,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.file.MirandaFileReadyState;
+import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.writer.Writer;
 
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/19/2017.

@@ -23,6 +23,7 @@ public class Panic extends Exception {
         ExceptionReceivingMessage,
         ExceptionSendingMessage,
         ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.
+        ExceptionTryingToRectify,
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
         ExceptionWritingFile,
         NetworkThreadCrashed, // one of our network connections died

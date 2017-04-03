@@ -23,9 +23,12 @@ public class StatusObject {
         this.status = status;
     }
 
-
     public boolean expired() {
         return this.status == Status.Deleted;
+    }
+
+    public boolean expired(long time) {
+        return expired();
     }
 
 }

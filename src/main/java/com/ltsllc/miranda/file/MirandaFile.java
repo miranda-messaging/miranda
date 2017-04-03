@@ -5,13 +5,13 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.file.messages.WatchMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;

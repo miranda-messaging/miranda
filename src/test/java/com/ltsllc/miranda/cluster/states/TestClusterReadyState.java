@@ -13,7 +13,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
-import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import org.junit.After;
@@ -234,11 +234,11 @@ public class TestClusterReadyState extends TestCase {
     @Test
     public void testProcessNewSessionMessage () {
         Session session = new Session ("whatever", 123, 456);
-        NewSessionMessage newSessionMessage = new NewSessionMessage(null, this, session);
+        AddSessionMessage addSessionMessage = new AddSessionMessage(null, this, session);
 
         when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
 
-        State nextState = getClusterReadyState().processMessage(newSessionMessage);
+        State nextState = getClusterReadyState().processMessage(addSessionMessage);
 
         assert (nextState instanceof ClusterReadyState);
         verify(getMockCluster(), atLeastOnce()).broadcast(Matchers.any(WireMessage.class));

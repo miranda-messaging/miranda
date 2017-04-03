@@ -286,6 +286,17 @@ public class Utils {
         return calculateSha1(buffer);
     }
 
+    public static String calculateSha1LogExceptions (String s) {
+        try {
+            byte[] buffer = s.getBytes();
+            return calculateSha1(buffer);
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Exception calculating sha1", e);
+        }
+
+        return null;
+    }
+
 
     public static SslContext createServerSslContext(String serverFilename, String serverPassword, String serverAlias,
                                                     String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {

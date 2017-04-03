@@ -38,15 +38,21 @@ public class SessionManagerReadyState extends State {
                 break;
             }
 
-            case NewSession: {
-                NewSessionMessage newSessionMessage = (NewSessionMessage) message;
-                nextState = processNewSessionMessage(newSessionMessage);
+            case AddSession: {
+                AddSessionMessage addSessionMessage = (AddSessionMessage) message;
+                nextState = processAddSessionMessage(addSessionMessage);
                 break;
             }
 
             case SessionsExpired: {
                 SessionsExpiredMessage sessionsExpiredMessage = (SessionsExpiredMessage) message;
                 nextState = processSessionsExpiredMessage(sessionsExpiredMessage);
+                break;
+            }
+
+            case CreateSession: {
+                CreateSessionMessage createSessionMessage = (CreateSessionMessage) message;
+                nextState = processCreateSessionMessage(createSessionMessage);
                 break;
             }
 
@@ -65,14 +71,22 @@ public class SessionManagerReadyState extends State {
         return getSessionManager().getCurrentState();
     }
 
-    public State processNewSessionMessage (NewSessionMessage newSessionMessage) {
-        getSessionManager().addSession(newSessionMessage.getSession());
+    public State processAddSessionMessage(AddSessionMessage addSessionMessage) {
+        getSessionManager().createSession(addSessionMessage.getSession().getUser());
 
         return getSessionManager().getCurrentState();
     }
 
     public State processSessionsExpiredMessage (SessionsExpiredMessage sessionsExpiredMessage) {
         getSessionManager().expireSessions (sessionsExpiredMessage.getExpiredSessions());
+
+        return getSessionManager().getCurrentState();
+    }
+
+    public State processCreateSessionMessage (CreateSessionMessage createSessionMessage) {
+        Session session = getSessionManager().createSession(createSessionMessage.getUser());
+        CreateSessionResponseMessage response = new CreateSessionResponseMessage(getSessionManager().getQueue(), this, session.getId());
+        createSessionMessage.reply(response);
 
         return getSessionManager().getCurrentState();
     }

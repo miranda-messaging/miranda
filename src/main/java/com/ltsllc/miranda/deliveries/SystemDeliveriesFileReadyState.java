@@ -2,8 +2,7 @@ package com.ltsllc.miranda.deliveries;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.DirectoryReadyState;
-import com.ltsllc.miranda.file.FileReadyState;
+import com.ltsllc.miranda.file.states.DirectoryReadyState;
 
 /**
  * Created by Clark on 2/19/2017.

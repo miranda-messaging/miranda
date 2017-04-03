@@ -13,14 +13,16 @@ import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
-import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.UsersFile;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class Miranda extends Consumer {
     public static boolean panicking = false;
 
     private BlockingQueue<Message> httpServer;
-    private UsersFile users;
+    private UserManager userManager;
     private TopicsFile topics;
     private SubscriptionsFile subscriptions;
     private SystemMessages events;
@@ -54,6 +56,15 @@ public class Miranda extends Consumer {
     private PanicPolicy panicPolicy;
     private NetworkListener networkListener;
     private SessionManager sessionManager;
+    private Writer writer;
+
+    public Writer getWriter() {
+        return writer;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
 
     public SessionManager getSessionManager() {
         return sessionManager;
@@ -115,12 +126,12 @@ public class Miranda extends Consumer {
         this.cluster = cluster;
     }
 
-    public UsersFile getUsers() {
-        return users;
+    public UserManager getUserManager() {
+        return userManager;
     }
 
-    public void setUsers(UsersFile users) {
-        this.users = users;
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
     }
 
     public TopicsFile getTopics() {
@@ -186,7 +197,7 @@ public class Miranda extends Consumer {
         logger = null;
 
         httpServer = null;
-        users = null;
+        userManager = null;
         topics = null;
         subscriptions = null;
         events = null;
@@ -217,8 +228,8 @@ public class Miranda extends Consumer {
             getCluster().sendStop(getQueue(), this);
         }
 
-        if (null != getUsers()) {
-            getUsers().sendStop(getQueue(), this);
+        if (null != getUserManager()) {
+            getUserManager().sendStop(getQueue(), this);
         }
 
         if (null != getTopics()) {
@@ -264,8 +275,8 @@ public class Miranda extends Consumer {
         if (null != getCluster())
             getCluster().sendShutdown(getQueue(), this);
 
-        if (null != getUsers())
-            getUsers().sendShutdown(getQueue(), this);
+        if (null != getUserManager())
+            getUserManager().sendShutdown(getQueue(), this);
 
         if (null != getTopics())
             getTopics().sendShutdown(getQueue(), this);
@@ -291,9 +302,9 @@ public class Miranda extends Consumer {
         setCurrentState(new ShuttingDownState(this));
     }
 
-    public void sendNewSessionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session) {
-        NewSessionMessage newSessionMessage = new NewSessionMessage(senderQueue, sender, session);
-        sendToMe(newSessionMessage);
+    public void sendAddSessionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session) {
+        AddSessionMessage addSessionMessage = new AddSessionMessage(senderQueue, sender, session);
+        sendToMe(addSessionMessage);
     }
 
     public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {

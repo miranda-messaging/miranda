@@ -490,4 +490,12 @@ public class TestUtils extends TestCase {
 
         assert (hexString.equals(s));
     }
+
+    public static final String TEST_SHA1_3 = "D869DB7FE62FB07C25A0403ECAEA55031744B5FB";
+
+    @Test
+    public void testSha1LogExceptions () {
+        String s = Utils.calculateSha1LogExceptions("whatever");
+        assert (s.equals(TEST_SHA1_3));
+    }
 }

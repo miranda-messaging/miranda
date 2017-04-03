@@ -54,4 +54,15 @@ public class TestImprovedRandom extends TestCase {
 
         assert (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE);
     }
+
+    @Test
+    public void testNextNonNegativeLong () {
+        long value = 0;
+
+        while (!getImprovedRandom().getWasNegative()) {
+            value = getImprovedRandom().nextNonNegativeLong();
+        }
+
+        assert (value > 0);
+    }
 }

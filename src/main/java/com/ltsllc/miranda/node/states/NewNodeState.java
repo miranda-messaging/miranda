@@ -11,7 +11,7 @@ import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.file.GetFileResponseMessage;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
@@ -20,7 +20,7 @@ import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.GetUsersFileMessage;
+import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import org.apache.log4j.Logger;
 

@@ -6,16 +6,14 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.file.states.DirectoryReadyState;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * A directory containing file the system should keep an eye one

@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.server.NewObjectPostHandler;
+import com.ltsllc.miranda.user.states.NewUserHandlerReadyState;
 
 /**
  * Created by Clark on 2/10/2017.

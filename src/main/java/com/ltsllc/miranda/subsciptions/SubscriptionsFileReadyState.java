@@ -2,10 +2,10 @@ package com.ltsllc.miranda.subsciptions;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.file.GetFileResponseMessage;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
-import com.ltsllc.miranda.file.SingleFileReadyState;
+import com.ltsllc.miranda.file.states.SingleFileReadyState;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;

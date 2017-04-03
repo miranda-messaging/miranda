@@ -2,7 +2,7 @@ package com.ltsllc.miranda.property;
 
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.FileChangedMessage;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.writer.WriteFailedMessage;

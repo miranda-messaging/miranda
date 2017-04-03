@@ -14,7 +14,7 @@ import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
-import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import org.apache.log4j.Logger;
 
@@ -100,9 +100,9 @@ public class ClusterReadyState extends State {
                 break;
             }
 
-            case NewSession: {
-                NewSessionMessage newSessionMessage = (NewSessionMessage) m;
-                nextState = processNewSessionMessage (newSessionMessage);
+            case AddSession: {
+                AddSessionMessage addSessionMessage = (AddSessionMessage) m;
+                nextState = processAddSessionMessage (addSessionMessage);
                 break;
             }
 
@@ -221,8 +221,8 @@ public class ClusterReadyState extends State {
         return new ClusterStoppingState(getCluster());
     }
 
-    public State processNewSessionMessage (NewSessionMessage newSessionMessage) {
-        NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(newSessionMessage.getSession());
+    public State processAddSessionMessage (AddSessionMessage addSessionMessage) {
+        NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(addSessionMessage.getSession());
         getCluster().broadcast (newSessionWireMessage);
 
         return getCluster().getCurrentState();

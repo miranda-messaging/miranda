@@ -14,7 +14,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
-import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.writer.Writer;
@@ -270,8 +270,8 @@ public class Cluster extends Consumer {
     }
 
     public void sendNewSession (BlockingQueue<Message> senderQueue, Object sender, Session session) {
-        NewSessionMessage newSessionMessage = new NewSessionMessage(senderQueue, sender, session);
-        sendToMe(newSessionMessage);
+        AddSessionMessage addSessionMessage = new AddSessionMessage(senderQueue, sender, session);
+        sendToMe(addSessionMessage);
     }
 
     public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {

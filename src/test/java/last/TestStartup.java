@@ -98,7 +98,7 @@ public class TestStartup extends TestCase {
         //
         assert (getMiranda().getCurrentState() instanceof ReadyState);
         assert (getMiranda().getCluster() != null);
-        assert (getMiranda().getUsers() != null);
+        assert (getMiranda().getUserManager() != null);
         assert (getMiranda().getPanicPolicy() != null);
         assert (getMiranda().getEvents() != null);
         assert (getMiranda().getDeliveries() != null);
@@ -106,6 +106,7 @@ public class TestStartup extends TestCase {
         assert (getMiranda().getHttp() != null);
         assert (getMiranda().getSubscriptions() != null);
         assert (getMiranda().getSessionManager() != null);
+        assert (getMiranda().getWriter() != null);
 
         //
         // test that static variables got set

@@ -73,6 +73,7 @@ public class MirandaPanicPolicy extends Consumer implements PanicPolicy {
                 panic.getReason() == Panic.Reasons.DoesNotUnderstand ||
                 panic.getReason() == Panic.Reasons.ExceptionGettingNextMessage ||
                 panic.getReason() == Panic.Reasons.ExceptionDuringNetworkSend ||
+                panic.getReason() == Panic.Reasons.ExceptionTryingToRectify ||
                 panic.getReason() == Panic.Reasons.ExceptionWritingFile ||
                 panic.getReason() == Panic.Reasons.CouldNotWrite
         )

@@ -1,8 +1,6 @@
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.file.FileReadyState;
-import com.ltsllc.miranda.file.MirandaFileReadyState;
+import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 
 /**
  * Created by Clark on 2/19/2017.

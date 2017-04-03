@@ -7,17 +7,15 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.file.GetFileResponseMessage;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
-import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
-import com.ltsllc.miranda.session.NewSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.GetUsersFileMessage;
+import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import org.junit.Before;
 import org.junit.Test;
@@ -273,7 +271,7 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
-        verify (getMockMiranda(), atLeastOnce()).sendNewSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
+        verify (getMockMiranda(), atLeastOnce()).sendAddSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
     }
 
     @Test

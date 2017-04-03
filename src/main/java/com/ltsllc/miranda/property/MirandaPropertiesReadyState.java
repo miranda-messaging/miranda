@@ -3,14 +3,11 @@ package com.ltsllc.miranda.property;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.FileChangedMessage;
-import com.ltsllc.miranda.file.MirandaFileReadyState;
-import com.ltsllc.miranda.file.SingleFileReadyState;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
 import org.apache.log4j.Logger;
-
-import java.lang.reflect.Type;
 
 /**
  * Created by Clark on 3/19/2017.

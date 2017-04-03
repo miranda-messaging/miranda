@@ -1,7 +1,11 @@
 package com.ltsllc.miranda.user;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.user.states.UsersFileReadyState;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.lang.reflect.Type;
@@ -63,4 +67,40 @@ public class UsersFile extends SingleFile<User> {
         return new TypeToken<ArrayList<User>>(){}.getType();
     }
 
+    public void removeUsers (List<User> users) {
+        boolean modified = false;
+
+        List<User> usersToRemove = new ArrayList<User>();
+
+        for (User user : getData()) {
+            for (User user2 : users) {
+                if (user.equals(user2)) {
+                    usersToRemove.add(user);
+                    modified = true;
+                }
+            }
+        }
+
+        getData().removeAll(usersToRemove);
+
+        if (modified)
+            write();
+    }
+
+    public void rectify () throws MirandaException {
+        for (User user : getData()) {
+            user.rectify();
+        }
+    }
+
+    public void load () {
+        super.load();
+
+        try {
+            rectify();
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception while trying to rectify users", e, Panic.Reasons.ExceptionTryingToRectify);
+            Miranda.getInstance().panic(panic);
+        }
+    }
 }

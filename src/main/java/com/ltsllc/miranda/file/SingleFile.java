@@ -7,6 +7,9 @@ import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
+import com.ltsllc.miranda.file.messages.AddSubscriberMessage;
+import com.ltsllc.miranda.file.messages.Notification;
+import com.ltsllc.miranda.file.messages.RemoveSubscriberMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
@@ -35,6 +38,11 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
             .create();
 
     private boolean dirty;
+    private List<Subscriber> subscribers;
+
+    public List<Subscriber> getSubscribers() {
+        return subscribers;
+    }
 
     public boolean isDirty() {
         return dirty;
@@ -48,6 +56,7 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         super(filename, writer);
 
         setDirty(false);
+        subscribers = new ArrayList<Subscriber>();
     }
 
     private List<E> data = buildEmptyList();
@@ -62,11 +71,9 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
 
     private boolean execptionOnLoadIsFatal = false;
 
-
     public boolean exceptionOnLoadIsFatal() {
         return execptionOnLoadIsFatal;
     }
-
 
     public static <T> List<T> mapFromJsonArray(String respInArray, Type listType) {
         List<T> ret = new Gson().fromJson(respInArray, listType);
@@ -109,6 +116,7 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         setVersion(version);
 
         setLastLoaded(System.currentTimeMillis());
+        fireFileLoaded();
     }
 
 
@@ -199,5 +207,38 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         if (newItems.size() > 0) {
             getData().addAll(newItems);
         }
+    }
+
+    public void sendAddSubscriberMessage (BlockingQueue<Message> senderQueue, Object sender, Notification notification) {
+        AddSubscriberMessage addSubscriberMessage = new AddSubscriberMessage(senderQueue, sender, notification);
+        sendToMe(addSubscriberMessage);
+    }
+
+    public void sendRemoveSubscriberMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        RemoveSubscriberMessage removeSubscriberMessage = new RemoveSubscriberMessage(senderQueue, sender);
+    }
+
+    public void addSubscriber (BlockingQueue<Message> subscriberQueue, Notification notification) {
+        Subscriber subscriber = new Subscriber(subscriberQueue, notification);
+        getSubscribers().add(subscriber);
+    }
+
+    public void removeSubscriber (BlockingQueue<Message> queue) {
+        for (Subscriber subscriber : getSubscribers()) {
+            if (queue == subscriber.getQueue())
+                getSubscribers().remove(subscriber);
+        }
+    }
+
+    public void fireFileLoaded () {
+        for (Subscriber subscriber : getSubscribers()) {
+            subscriber.notifySubscriber(getData());
+        }
+    }
+
+    public void start () {
+        super.start();
+
+        load();
     }
 }

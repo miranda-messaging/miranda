@@ -2,11 +2,10 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.file.GetFileResponseMessage;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.network.Network;
@@ -15,14 +14,13 @@ import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
-import com.ltsllc.miranda.node.messages.GetSystemMessagesMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.GetUsersFileMessage;
+import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import org.apache.log4j.Logger;
 
@@ -274,7 +272,7 @@ public class NodeReadyState extends NodeState {
     }
 
     public State processNewSessionWireMessage (NewSessionWireMessage newSessionWireMessage) {
-        Miranda.getInstance().sendNewSessionMessage(getNode().getQueue(), this, newSessionWireMessage.getSession());
+        Miranda.getInstance().sendAddSessionMessage(getNode().getQueue(), this, newSessionWireMessage.getSession());
 
         return getNode().getCurrentState();
     }

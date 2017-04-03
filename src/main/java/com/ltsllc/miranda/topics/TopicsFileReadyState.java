@@ -6,7 +6,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
-import com.ltsllc.miranda.file.SingleFileReadyState;
+import com.ltsllc.miranda.file.states.SingleFileReadyState;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.VersionMessage;

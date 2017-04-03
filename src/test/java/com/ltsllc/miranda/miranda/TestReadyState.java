@@ -4,7 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.session.NewSessionMessage;
+import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
@@ -66,17 +66,17 @@ public class TestReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessNewSessionMessage () {
+    public void testProcessAddSessionMessage () {
         Session session = new Session("whatever", 123, 456);
-        NewSessionMessage newSessionMessage = new NewSessionMessage(null, this, session);
+        AddSessionMessage addSessionMessage = new AddSessionMessage(null, this, session);
 
         when(getMockMiranda().getCurrentState()).thenReturn(getReadyState());
         when(getMockMiranda().getSessionManager()).thenReturn(getMockSessionManager());
 
-        State nextState = getReadyState().processMessage(newSessionMessage);
+        State nextState = getReadyState().processMessage(addSessionMessage);
 
         assert (nextState instanceof ReadyState);
-        verify(getMockSessionManager(), atLeastOnce()).sendNewSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
+        verify(getMockSessionManager(), atLeastOnce()).sendAddSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
     }
 
     @Test

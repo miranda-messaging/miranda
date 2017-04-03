@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;

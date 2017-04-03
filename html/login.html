@@ -1,0 +1,40 @@
+Please enter your crendentials
+
+<br/>
+Name: <input id="name" type="text"/><br/>
+Password: <input id="password" type="password" /><br/>
+
+<button onclick="performLogin()">Login</button>
+
+<script src="js/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+
+<script>
+    function performLogin () {
+        var name = document.getElementById("name").value;
+        var password = document.getElementById("password").value;
+        var obj = { "name" : name, "password" : password };
+        var url = "/servlets/login";
+        var json = JSON.stringify(obj);
+        var result = null;
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: json,
+            dataType: 'json',
+            success: function (result) {
+                showResult(result);
+            },
+            complete: function (data) {
+                alert("complete called");
+            }
+        });
+    }
+
+    function showResult (result) {
+        alert (result.result);
+    }
+
+
+</script>

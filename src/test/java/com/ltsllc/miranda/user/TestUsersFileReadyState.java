@@ -2,15 +2,14 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.GetFileResponseMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
-import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.user.messages.NewUserMessage;
+import com.ltsllc.miranda.user.states.UsersFileReadyState;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
-import org.mockito.Mock;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
