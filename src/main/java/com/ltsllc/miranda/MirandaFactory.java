@@ -164,8 +164,12 @@ public class MirandaFactory {
         String trustStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
         checkProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS, trustStoreAlias);
 
-        return Utils.createServerSslContext(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias,
-                trustStoreFilename, trustStorePassword, trustStoreAlias);
+        try {
+            return Utils.createServerSslContext(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias,
+                    trustStoreFilename, trustStorePassword, trustStoreAlias);
+        } catch (IOException | GeneralSecurityException e) {
+            throw new MirandaException("Exception trying to create server SSL context", e);
+        }
     }
 
 
@@ -191,7 +195,7 @@ public class MirandaFactory {
             String certificateKeyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
             checkProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS, certificateKeyStoreAlias);
 
-            PrivateKey key = Utils.loadKey(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias);
+            java.security.PrivateKey key = Utils.loadKey(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias);
             X509Certificate certificate = Utils.loadCertificate(certificateKeyStoreFilename, certificateKeyStorePassword, certificateKeyStoreAlias);
 
             return SslContextBuilder

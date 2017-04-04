@@ -433,7 +433,7 @@ public class TestUtils extends TestCase {
     }
 
     @Test
-    public void testHexStringToBytes () {
+    public void testHexStringToBytes () throws IOException {
         byte[] buffer = Utils.hexStringToBytes(TEST_HEX_STRING);
         assert (equivalent(buffer, TEST_DATA));
     }
@@ -481,7 +481,7 @@ public class TestUtils extends TestCase {
     }
 
     @Test
-    public void testHexStringToString () {
+    public void testHexStringToString () throws IOException {
         String hexString = "01020304";
         byte[] data = hexString.getBytes();
 

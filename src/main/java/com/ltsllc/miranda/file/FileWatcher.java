@@ -1,6 +1,8 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
@@ -31,8 +33,8 @@ public class FileWatcher {
         try {
             getQueue().put(getMessage());
         } catch (InterruptedException e) {
-            logger.fatal("Interrupted while trying to sendToMe message", e);
-            System.exit(1);
+            Panic panic = new Panic("Exception while trying to send meaasge", e, Panic.Reasons.ExceptionSendingMessage);
+            Miranda.getInstance().panic(panic);
         }
     }
 }

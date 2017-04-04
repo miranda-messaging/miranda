@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -85,7 +86,7 @@ public class TestMirandaProperties extends TestCase {
     };
 
     @Test
-    public void testLoadTheDefaults () {
+    public void testLoadTheDefaults () throws IOException {
         //
         // just the defaults
         //
@@ -99,7 +100,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testLoadWithSystemProperties () {
+    public void testLoadWithSystemProperties () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
 
@@ -112,7 +113,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testLoadWithPropertiesFile () {
+    public void testLoadWithPropertiesFile () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         createFile(TEST_FILENAME, TEST_CONTENTS);
@@ -124,7 +125,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testLoadWithSomethingInThePropertiesFile () {
+    public void testLoadWithSomethingInThePropertiesFile () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
 
@@ -145,7 +146,7 @@ public class TestMirandaProperties extends TestCase {
     public static String TEST_LOG4J = "test_log4j";
 
     @Test
-    public void testLoadWithValueOnCommandLine () {
+    public void testLoadWithValueOnCommandLine () throws IOException {
         createFile(TEST_FILENAME, OTHER_CONTENTS);
 
         String[] argv = { TEST_FILENAME, "-log4j", TEST_LOG4J };
@@ -157,7 +158,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testGetIntProperty () {
+    public void testGetIntProperty () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);
@@ -173,7 +174,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testGetEncryptionMode () {
+    public void testGetEncryptionMode () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);
@@ -188,7 +189,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testGetNetworkProperty () {
+    public void testGetNetworkProperty () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);
@@ -244,7 +245,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testAsPropertyList () {
+    public void testAsPropertyList () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);
@@ -259,7 +260,7 @@ public class TestMirandaProperties extends TestCase {
     }
 
     @Test
-    public void testWrite () {
+    public void testWrite () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
         getProperties().load(commandLine);

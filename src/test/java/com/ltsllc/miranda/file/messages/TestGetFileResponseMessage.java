@@ -5,6 +5,8 @@ import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 2/25/2017.
  */
@@ -51,7 +53,7 @@ public class TestGetFileResponseMessage extends TestCase {
 
 
     @Test
-    public void testConstructors () {
+    public void testConstructors () throws IOException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "me");
         assert (getFileResponseMessage.getRequester().equals("me"));
 

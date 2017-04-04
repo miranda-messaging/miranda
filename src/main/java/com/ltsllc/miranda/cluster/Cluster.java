@@ -71,7 +71,7 @@ public class Cluster extends Consumer {
         ourInstance = null;
     }
 
-    private Cluster(Network network, ClusterFile clusterFile) {
+    public Cluster(Network network, ClusterFile clusterFile) {
         super("cluster");
 
         this.clusterFile = clusterFile;

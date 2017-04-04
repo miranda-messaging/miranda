@@ -46,9 +46,8 @@ public class FileWatcherService extends Consumer {
         setCurrentState(readyState);
     }
 
-    public synchronized void checkFiles () {
-        for (String canonicalName : watchedFiles.keySet())
-        {
+    public synchronized void checkFiles() {
+        for (String canonicalName : watchedFiles.keySet()) {
             File file = new File(canonicalName);
             long lastModified = new Long(file.lastModified());
             Long lastRecordChange = watchedFiles.get(canonicalName);
@@ -58,29 +57,16 @@ public class FileWatcherService extends Consumer {
         }
     }
 
-    public void fireChanged (String canonicalName) {
+    public void fireChanged(String canonicalName) {
         List<FileWatcher> list = watchers.get(canonicalName);
         for (FileWatcher fileWatcher : list) {
             fileWatcher.sendMessage();
         }
     }
 
-    private String getCanonicalName (File file) {
-        String name = null;
-
-        try {
-            name = file.getCanonicalPath();
-        } catch (IOException e) {
-            logger.fatal ("Exception while trying to get canonical name", e);
-            System.exit(1);
-        }
-
-        return name;
-    }
-
-    public void watch(File file, BlockingQueue<Message> queue, Message message) {
+    public void watch(File file, BlockingQueue<Message> queue, Message message) throws IOException {
         FileWatcher fileWatcher = new FileWatcher(queue, message);
-        String canonicalName = getCanonicalName(file);
+        String canonicalName = file.getCanonicalPath();
         List<FileWatcher> list = watchers.get(canonicalName);
 
         if (null == list) {
@@ -100,18 +86,17 @@ public class FileWatcherService extends Consumer {
      * when a file is modified.  The method also does not check for the case
      * of no more watchers.
      *
-     * @param file The file to watch.
+     * @param file  The file to watch.
      * @param queue The queue to sendToMe messages on.
      * @return true if this file was being watched.  False otherwise.
      */
-    public synchronized boolean stopWatching (File file, BlockingQueue<Message> queue) {
-        String canonicalName = getCanonicalName(file);
-        List<FileWatcher> list = watchers.get (canonicalName);
+    public synchronized boolean stopWatching(File file, BlockingQueue<Message> queue) throws IOException{
+        String canonicalName = file.getCanonicalPath();
+        List<FileWatcher> list = watchers.get(canonicalName);
 
         FileWatcher match = null;
 
-        if (null != list)
-        {
+        if (null != list) {
             for (FileWatcher fileWatcher : list) {
                 if (fileWatcher.getQueue() == queue) {
                     match = fileWatcher;

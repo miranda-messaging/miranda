@@ -3,6 +3,7 @@ package com.ltsllc.miranda.file.messages;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.util.Utils;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -39,7 +40,7 @@ public class GetFileResponseMessage extends Message {
         return contents;
     }
 
-    public byte[] getContentAsBytes () {
+    public byte[] getContentAsBytes () throws IOException {
         return Utils.hexStringToBytes(contents);
     }
 

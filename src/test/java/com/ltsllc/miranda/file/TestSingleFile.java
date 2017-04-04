@@ -111,7 +111,7 @@ public class TestSingleFile extends TestCase {
     private static final String TEST_FILENAME2 = TEST_DIRECTORY + "/test2";
 
     @Test
-    public void testLoad () {
+    public void testLoad () throws IOException {
         NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
@@ -132,7 +132,7 @@ public class TestSingleFile extends TestCase {
     }
 
     @Test
-    public void testGetBytes () {
+    public void testGetBytes () throws IOException {
         NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);

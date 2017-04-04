@@ -54,8 +54,19 @@ public class User extends StatusObject implements Perishable, Serializable {
         this.description = description;
     }
 
-    public User (String name, String description, String hexString) throws MirandaException {
-        this(name, description, Utils.hexStringToBytes(hexString));
+    public User (String name, String description, String hexString) throws MirandaException  {
+        super(Status.New);
+
+        byte[] data = null;
+        try {
+            data = Utils.hexStringToBytes(hexString);
+        } catch (IOException e) {
+            throw new MirandaException("Exception trying to decode string", e);
+        }
+
+        this.name = name;
+        this.description = description;
+        this.publicKey = toPublicKey(data);
     }
 
     public User (String name, String description, byte[] bytes) throws MirandaException {
@@ -106,7 +117,12 @@ public class User extends StatusObject implements Perishable, Serializable {
 
     public void rectify () throws MirandaException {
         if (null != getPublicKeyString()) {
-            byte[] bytes = Utils.hexStringToBytes(getPublicKeyString());
+            byte[] bytes = null;
+            try {
+                bytes = Utils.hexStringToBytes(getPublicKeyString());
+            } catch (IOException e) {
+                throw new MirandaException("Excepetion trying to decode string", e);
+            }
             PublicKey publicKey = toPublicKey(bytes);
             setPublicKey(publicKey);
             setPublicKeyString(null);

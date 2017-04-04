@@ -3,6 +3,7 @@ package com.ltsllc.miranda.netty;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.network.*;
 import com.ltsllc.miranda.network.messages.ConnectionClosedMessage;
@@ -21,7 +22,9 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -195,7 +198,13 @@ public class NettyNetworkListener extends NetworkListener {
             String certificatePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
             String certificateAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
 
-            sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias, certificateFilename, certificatePassword, certificateAlias);
+            try {
+                sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias,
+                        certificateFilename, certificatePassword, certificateAlias);
+            } catch (IOException | GeneralSecurityException e) {
+                Panic panic = new StartupPanic("Exception trying to start netty NeworkListener", e, StartupPanic.StartupReasons.ExceptionStartingNetworkListener);
+                Miranda.getInstance().panic(panic);
+            }
         }
 
         LocalInitializer localInitializer = new LocalInitializer(sslContext);

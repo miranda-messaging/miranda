@@ -181,8 +181,7 @@ public class Utils {
     private static final int BUFFER_SIZE = 8192;
 
     public static byte[] calculateSha1(FileInputStream fileInputStream)
-            throws NoSuchAlgorithmException, IOException
-    {
+            throws NoSuchAlgorithmException, IOException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
         byte buffer[] = new byte[BUFFER_SIZE];
@@ -224,25 +223,20 @@ public class Utils {
     }
 
 
-    public static byte[] hexStringToBytes(String hexString) {
+    public static byte[] hexStringToBytes(String hexString) throws IOException {
         StringReader reader = null;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        try {
-            reader = new StringReader(hexString);
+        reader = new StringReader(hexString);
 
-            char[] buffer = new char[2];
+        char[] buffer = new char[2];
 
-            int bytesRead = reader.read(buffer);
+        int bytesRead = reader.read(buffer);
 
-            while (-1 != bytesRead) {
-                byte b = toByte(buffer);
-                byteArrayOutputStream.write(b);
-                bytesRead = reader.read(buffer);
-            }
-        } catch (IOException e) {
-            logger.fatal("Exception trying to convert string to bytes", e);
-            System.exit(1);
+        while (-1 != bytesRead) {
+            byte b = toByte(buffer);
+            byteArrayOutputStream.write(b);
+            bytesRead = reader.read(buffer);
         }
 
         return byteArrayOutputStream.toByteArray();
@@ -286,7 +280,7 @@ public class Utils {
         return calculateSha1(buffer);
     }
 
-    public static String calculateSha1LogExceptions (String s) {
+    public static String calculateSha1LogExceptions(String s) {
         try {
             byte[] buffer = s.getBytes();
             return calculateSha1(buffer);
@@ -299,30 +293,25 @@ public class Utils {
 
 
     public static SslContext createServerSslContext(String serverFilename, String serverPassword, String serverAlias,
-                                                    String trustStoreFilename, String trustStorePassword, String trustStoreAlias) {
+                                                    String trustStoreFilename, String trustStorePassword, String trustStoreAlias)
+            throws IOException, GeneralSecurityException {
         SslContext sslContext = null;
 
-        try {
-            PrivateKey privateKey = loadKey(serverFilename, serverPassword, serverAlias);
-            X509Certificate certificate = loadCertificate(serverFilename, serverPassword, trustStoreAlias);
-            TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword);
+        PrivateKey privateKey = loadKey(serverFilename, serverPassword, serverAlias);
+        X509Certificate certificate = loadCertificate(serverFilename, serverPassword, trustStoreAlias);
+        TrustManagerFactory trustManagerFactory = createTrustManagerFactory(trustStoreFilename, trustStorePassword);
 
-            sslContext = SslContextBuilder
-                    .forServer(privateKey, certificate)
-                    .trustManager(trustManagerFactory)
-                    .build();
-        } catch (Exception e) {
-            logger.fatal("Exception while trying to create SslContext", e);
-            System.exit(1);
-        }
+        sslContext = SslContextBuilder
+                .forServer(privateKey, certificate)
+                .trustManager(trustManagerFactory)
+                .build();
 
         return sslContext;
     }
 
 
     public static TrustManagerFactory createTrustManagerFactory(String filename, String passwordString)
-            throws IOException, GeneralSecurityException
-    {
+            throws IOException, GeneralSecurityException {
         FileInputStream fileInputStream = null;
         TrustManagerFactory trustManagerFactory = null;
 
@@ -340,17 +329,13 @@ public class Utils {
         return trustManagerFactory;
     }
 
-    public static KeyManagerFactory createKeyManagerFactoy(String filename, String password) {
+    public static KeyManagerFactory createKeyManagerFactoy(String filename, String password)
+            throws IOException, GeneralSecurityException {
         KeyManagerFactory keyManagerFactory = null;
 
-        try {
-            KeyStore keyStore = loadKeyStore(filename, password);
-            keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, password.toCharArray());
-        } catch (Exception e) {
-            logger.fatal("Exception while trying to get key manager factory", e);
-            System.exit(1);
-        }
+        KeyStore keyStore = loadKeyStore(filename, password);
+        keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, password.toCharArray());
 
         return keyManagerFactory;
     }
@@ -363,8 +348,7 @@ public class Utils {
     }
 
     public static SslContext createClientSslContext(String filename, String password)
-            throws IOException, GeneralSecurityException
-    {
+            throws IOException, GeneralSecurityException {
         TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, password);
 
         SslContext sslContext = SslContextBuilder
@@ -385,7 +369,7 @@ public class Utils {
         return sslContext;
     }
 
-    public static String hexStringToString(String hexString) {
+    public static String hexStringToString(String hexString) throws IOException {
         byte[] bytes = hexStringToBytes(hexString);
         return new String(bytes);
     }

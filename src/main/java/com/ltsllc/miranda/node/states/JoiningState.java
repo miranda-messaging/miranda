@@ -78,9 +78,10 @@ public class JoiningState extends NodeState {
                 break;
             }
 
-            default:
-                logger.fatal(this + " does not understand network message " + networkMessage.getWireMessage().getWireSubject());
-                System.exit(1);
+            default: {
+                nextState = super.processNetworkMessage(networkMessage);
+                break;
+            }
         }
 
         return nextState;

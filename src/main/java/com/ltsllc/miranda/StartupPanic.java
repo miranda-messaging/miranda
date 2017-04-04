@@ -10,7 +10,9 @@ public class StartupPanic extends Panic {
         ExceptionCreatingHttpServer,
         ExceptionInStart, // the start method of the current state threw an exception
         ExceptionStartingHttpServer,
+        ExceptionStartingNetworkListener,
         ExceptionListening,
+        ExceptionLoadingProperties,
         NetworkListener, // NetworkListener.startup threw an exception
         NullStartState, // The currentState was null for a Consumer when starting
         SendingMessage, // An exception occurred while trying to sendToMe a message

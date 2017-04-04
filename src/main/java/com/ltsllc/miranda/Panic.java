@@ -19,7 +19,9 @@ public class Panic extends Exception {
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionInProcessMessage, // an unchecked exception was thrown in processMessage
         ExceptionInRun, // an unchecked exception was thrown in a Consumers run method
+        ExceptionLoadingFile,
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
+        ExceptionPaesingJson,
         ExceptionReceivingMessage,
         ExceptionSendingMessage,
         ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.

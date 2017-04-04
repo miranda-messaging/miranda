@@ -10,11 +10,13 @@ import com.ltsllc.miranda.file.messages.AddSubscriberMessage;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.messages.RemoveSubscriberMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,13 +108,19 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
 
     public State processGetFileResponseMessage (GetFileResponseMessage getFileResponseMessage) {
         String hexString = getFileResponseMessage.getContents();
-        byte[] buffer = Utils.hexStringToBytes(hexString);
-        String json = new String(buffer);
-        List list = ourGson.fromJson(json, getListType());
-        merge(list);
-        write();
 
-        return this;
+        try {
+            byte[] buffer = Utils.hexStringToBytes(hexString);
+            String json = new String(buffer);
+            List list = ourGson.fromJson(json, getListType());
+            merge(list);
+            write();
+        } catch (IOException e) {
+            Panic panic = new Panic("Excepion loading file", e, Panic.Reasons.ExceptionLoadingFile);
+            Miranda.getInstance().panic(panic);
+        }
+
+        return getFile().getCurrentState();
     }
 
     public void merge (List list) {

@@ -348,8 +348,8 @@ public class Startup extends State {
             deliveriesFile.updateVersion();
             miranda.setDeliveries(deliveriesFile);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            Panic panic = new StartupPanic("Unchecked exception during startup", e, StartupPanic.StartupReasons.UncheckedException);
+            Miranda.getInstance().panic(panic);
         }
     }
 

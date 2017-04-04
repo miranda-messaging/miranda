@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
@@ -88,24 +89,20 @@ public class TestCluster extends TestCase {
         super.setup();
 
         setuplog4j();
-        setupWriter();
-        setupMirandaProperties();
-        setupMiranda();
-        setupTimer();
-        setupMirandaProperties();
+        setupMockWriter();
+        setupMockProperties();
+        setupMockMiranda();
+        setupMockTimer();
+
         setupTrustStore();
 
         deleteFile(CLUSTER_FILENAME);
         Cluster.reset();
 
-        MirandaProperties properties = Miranda.properties;
-        String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-
         this.mockClusterFile = mock(ClusterFile.class);
         this.mockNode = mock(Node.class);
 
-        Cluster.initializeClass(filename, getMockWriter(), getMockNetwork());
-        this.cluster = Cluster.getInstance();
+        this.cluster = new Cluster(getMockNetwork(), mockClusterFile);
 
         this.mockNode2 = mock(Node.class);
     }
@@ -114,6 +111,12 @@ public class TestCluster extends TestCase {
     public void cleanup () {
         cleanupTrustStore();
         deleteFile(CLUSTER_FILENAME);
+    }
+
+    @Test
+    public void testConstructor () {
+        assert (null != getCluster().getClusterFile());
+        assert (getCluster().getCurrentState() instanceof ClusterLoadingState);
     }
 
     /**
@@ -167,7 +170,7 @@ public class TestCluster extends TestCase {
     }
 
     @Test
-    public void testBroadcsat () {
+    public void testBroadcast () {
         getCluster().getNodes().clear();
         getCluster().getNodes().add(getMockNode());
         getCluster().getNodes().add(getMockNode2());

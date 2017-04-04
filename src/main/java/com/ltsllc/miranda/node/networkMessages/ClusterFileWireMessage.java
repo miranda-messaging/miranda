@@ -5,6 +5,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.Version;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class ClusterFileWireMessage extends WireMessage {
         this.version = version;
     }
 
-    public byte[] getContentAsBytes() {
+    public byte[] getContentAsBytes() throws IOException {
         return Utils.hexStringToBytes(content);
     }
 }

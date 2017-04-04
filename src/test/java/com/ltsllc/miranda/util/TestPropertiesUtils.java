@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -68,7 +69,7 @@ public class TestPropertiesUtils extends TestCase{
     };
 
     @Test
-    public void testLoad () {
+    public void testLoad () throws IOException {
         createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
         Properties properties = getPropertiesUtils().load(TEST_FILE_NAME);
 

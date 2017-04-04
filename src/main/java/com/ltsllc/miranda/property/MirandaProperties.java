@@ -3,6 +3,7 @@ package com.ltsllc.miranda.property;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -247,7 +248,7 @@ public class MirandaProperties extends SingleFile<String> {
         this.properties = PropertiesUtils.copy(properties);
     }
 
-    public void load (MirandaCommandLine mirandaCommandLine) {
+    public void load (MirandaCommandLine mirandaCommandLine) throws IOException {
         //
         // start with the defaults
         //
@@ -368,7 +369,12 @@ public class MirandaProperties extends SingleFile<String> {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
 
-        load(commandLine);
+        try {
+            load(commandLine);
+        } catch (IOException e) {
+            Panic panic = new StartupPanic("Exception loding Properties", e, StartupPanic.StartupReasons.ExceptionLoadingProperties);
+            Miranda.getInstance().panic(panic);
+        }
     }
 
     public void setProperties (Properties properties) {

@@ -73,7 +73,7 @@ public class PropertiesUtils {
      * @return The properties object.  If the file exists, this will be the
      * properties contained in the file.  Otherwise, this will be empty.
      */
-    public static Properties load(String filename) {
+    public static Properties load(String filename) throws IOException {
         Properties properties = new Properties();
         FileInputStream fileInputStream = null;
 
@@ -89,9 +89,6 @@ public class PropertiesUtils {
                     Utils.closeIgnoreExceptions(fileInputStream);
                 }
             }
-        } catch (IOException e) {
-            logger.fatal("Exception while trying to load properties from : " + filename, e);
-            System.exit(1);
         } finally {
             Utils.closeIgnoreExceptions(fileInputStream);
         }
