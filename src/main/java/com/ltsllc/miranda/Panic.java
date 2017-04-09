@@ -23,6 +23,7 @@ public class Panic extends Exception {
         ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
         ExceptionPaesingJson,
         ExceptionReceivingMessage,
+        ExceptionReadingFile,
         ExceptionSendingMessage,
         ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.
         ExceptionTryingToRectify,

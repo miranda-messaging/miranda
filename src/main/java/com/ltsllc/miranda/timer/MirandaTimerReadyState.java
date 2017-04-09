@@ -19,18 +19,23 @@ public class MirandaTimerReadyState extends State {
     private static class LocalTimerTask extends TimerTask {
         private  static Logger logger = Logger.getLogger(LocalTimerTask.class);
 
+        private Message message;
         private BlockingQueue<Message> queue;
         private BlockingQueue<Message> timer;
 
-        public LocalTimerTask (BlockingQueue<Message> queue, BlockingQueue<Message> timer) {
+        public Message getMessage() {
+            return message;
+        }
+
+        public LocalTimerTask (BlockingQueue<Message> queue, BlockingQueue<Message> timer, Message message) {
             this.queue = queue;
             this.timer = timer;
+            this.message = message;
         }
 
         public void run () {
             try {
-                TimeoutMessage m = new TimeoutMessage(timer, this);
-                queue.put(m);
+                queue.put(getMessage());
             } catch (InterruptedException e) {
                 logger.error ("Interrupted while sending message", e);
             }
@@ -75,7 +80,8 @@ public class MirandaTimerReadyState extends State {
 
     private State processScheduleOnceMessage (ScheduleOnceMessage scheduleOnceMessage) {
         Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getReceiver(), getTimer().getQueue());
+        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getReceiver(), getTimer().getQueue(),
+                scheduleOnceMessage.getMessage());
         timer.schedule(localTimerTask, scheduleOnceMessage.getDelay());
 
         return this;
@@ -84,7 +90,7 @@ public class MirandaTimerReadyState extends State {
 
     private State processSchedulePeriodicMessage (SchedulePeriodicMessage message) {
         Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(message.getReceiver(), getTimer().getQueue());
+        LocalTimerTask localTimerTask = new LocalTimerTask(message.getReceiver(), getTimer().getQueue(), message.getMessage());
         timer.scheduleAtFixedRate(localTimerTask, message.getPeriod(), message.getPeriod());
 
         return this;

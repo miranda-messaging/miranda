@@ -76,6 +76,8 @@ public class MirandaProperties extends SingleFile<String> {
 
     public static final String SESSION_PACKAGE = PACKAGE_NAME + "session.";
 
+    public static final String SERVLET_PACKAGE = PACKAGE_NAME + "servlet.";
+
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
@@ -124,6 +126,8 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String PROPERTY_SESSION_GC_PERIOD = SESSION_PACKAGE + "GCPeriod";
     public static final String PROPERTY_SESSION_LOGIN_TIMEOUT = SESSION_PACKAGE + "LoginTimeout";
 
+    public static final String PROPERTY_SERVLET_TIMEOUT = SERVLET_PACKAGE + "Timeout";
+
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -162,6 +166,8 @@ public class MirandaProperties extends SingleFile<String> {
     public static final String DEFAULT_SESSION_LENGTH = "3600000"; // one hour
     public static final String DEFAULT_SESSION_GC_PERIOD = "300000"; // 5 minutes
     public static final String DEFAULT_SESSION_LOGIN_TIMEOUT = "1000";
+
+    public static final String DEFAULT_SERVLET_TIMEOUT = "1000";
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
@@ -203,6 +209,8 @@ public class MirandaProperties extends SingleFile<String> {
             {PROPERTY_SESSION_LENGTH, DEFAULT_SESSION_LENGTH},
             {PROPERTY_SESSION_GC_PERIOD, DEFAULT_SESSION_GC_PERIOD},
             {PROPERTY_SESSION_LOGIN_TIMEOUT, DEFAULT_SESSION_LOGIN_TIMEOUT},
+
+            {PROPERTY_SERVLET_TIMEOUT, DEFAULT_SERVLET_TIMEOUT},
     };
 
     private Properties properties;

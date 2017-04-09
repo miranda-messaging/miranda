@@ -2,6 +2,7 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -14,6 +15,7 @@ import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,6 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+
 
 /**
  * Created by Clark on 3/14/2017.
@@ -210,5 +216,31 @@ public class TestSingleFile extends TestCase {
         getSingleFile().removeSubscriber(queue);
 
         assert (!contains(getSingleFile().getSubscribers(), queue, notification));
+    }
+
+    public static final String TEST_FILENAME3 = "testfile";
+
+    public static final String[] TEST_FILE_CONTENTS3 = {
+            "hello, world!"
+    };
+
+
+    @Test
+    public void testReadFileSuccess () {
+        createFile(TEST_FILENAME3, TEST_FILE_CONTENTS3);
+
+        String contents = SingleFile.readFile(TEST_FILENAME3);
+
+        assert (contents.equals("hello, world!\r\n"));
+    }
+
+    @Test
+    public void testReadFileIOException () {
+        setupMockMiranda();
+
+        String contents = SingleFile.readFile("wrong");
+
+        assert (null == contents);
+        verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
     }
 }

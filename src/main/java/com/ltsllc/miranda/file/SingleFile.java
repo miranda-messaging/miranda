@@ -14,9 +14,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -80,43 +78,68 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         return ret;
     }
 
-    public void load ()
-    {
-        logger.info("loading " + getFilename());
+    public static String readFile (String filename) {
+        FileReader fileReader = null;
 
-        File f = new File(getFilename());
-        if (!f.exists()) {
-            List list = buildEmptyList();
-            setData(list);
-        } else {
-            Gson gson = new Gson();
-            FileReader fr = null;
-            List<E> temp = null;
-            try {
-                fr = new FileReader(getFilename());
-                temp = ourGson.fromJson(fr, listType());
-            } catch (FileNotFoundException e) {
-                logger.info(getFilename() + " not found");
-            } finally {
-                Utils.closeIgnoreExceptions(fr);
+        try {
+            fileReader = new FileReader(filename);
+            StringWriter stringWriter = new StringWriter();
+            for (int c = fileReader.read(); c != -1; c = fileReader.read()) {
+                stringWriter.append((char) c);
             }
 
-            setData(temp);
-        }
-
-        String json = ourGson.toJson(getData());
-
-        Version version = null;
-        try {
-            version = new Version(json);
-        } catch (NoSuchAlgorithmException e) {
-            Panic panic = new Panic ("Error trying to calculate new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+            return stringWriter.toString();
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception reading file", e, Panic.Reasons.ExceptionReadingFile);
             Miranda.getInstance().panic(panic);
+        } finally {
+            Utils.closeIgnoreExceptions(fileReader);
         }
-        setVersion(version);
 
-        setLastLoaded(System.currentTimeMillis());
-        fireFileLoaded();
+        return null;
+    }
+
+    public void load ()
+    {
+        try {
+            logger.info("loading " + getFilename());
+
+            File f = new File(getFilename());
+            if (!f.exists()) {
+                List list = buildEmptyList();
+                setData(list);
+            } else {
+                Gson gson = new Gson();
+                FileReader fr = null;
+                List<E> temp = null;
+                try {
+                    fr = new FileReader(getFilename());
+                    temp = ourGson.fromJson(fr, listType());
+                } catch (FileNotFoundException e) {
+                    logger.info(getFilename() + " not found");
+                } finally {
+                    Utils.closeIgnoreExceptions(fr);
+                }
+
+                setData(temp);
+            }
+
+            String json = ourGson.toJson(getData());
+
+            Version version = null;
+            try {
+                version = new Version(json);
+            } catch (NoSuchAlgorithmException e) {
+                Panic panic = new Panic("Error trying to calculate new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+                Miranda.getInstance().panic(panic);
+            }
+            setVersion(version);
+
+            setLastLoaded(System.currentTimeMillis());
+            fireFileLoaded();
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Exception trying to load " + getFilename(), e);
+        }
     }
 
 

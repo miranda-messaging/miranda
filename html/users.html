@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Miranda Users</title>
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Static navbar -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">Miranda</a>
+        </div>
+
+        <ul class="nav navbar-nav">
+            <li><a href="index.html">Home</a></li>
+            <li class="active"><a href="users.html">Users</a></li>
+            <li><a href="topics.html">Topics</a></li>
+            <li><a href="subscriptions.html">Subscriptions</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="deliveries.html">Deliveries</a></li>
+        </ul>
+
+    </div><!--/.container-fluid -->
+</nav>
+
+<button type="button" class="btn btn-default" onclick="showDialog()">Create a New User</button>
+<table id="usersTable" class="table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody id="tableBody">
+    </tbody>
+</table>
+
+<div id="newUserDialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">New User</h4>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-group">
+                <p>Name: <input id="userName" type="text"/></p>
+                <p>Desciption <input id="userDescription" type="text"/></p>
+                <p>Public key: <button type="button" onclick="createKeyPair()">Create</button> </p>
+                <textarea id="userPublicKey" rows="5" cols="80">
+                </textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="createUser()">Create</button>
+        </div>
+    </div> <!-- modal-dialog -->
+</div> <!-- newUserDialog -->
+
+<div id="keyPairDialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">New Key Pair</h4>
+        </div>
+    </div>
+
+    <div class="modal-body">
+        <div class="form-group">
+            <p>Public Key</p>
+            <textarea id="keyPairPublic" rows="5" cols="80">
+            </textarea>
+            <p>Private Key</p>
+            <textarea id="keyPairPrivate" rows="5" cols="80">
+            </textarea>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>
+
+<script src="/js/jquery.js"></script>
+<script src="/bootstrap/js/bootstrap.js"></script>
+<script>
+    function fillTable () {
+        $.get("/servlets/users", gotUsers);
+    }
+
+    function showDialog () {
+        $('#userName').value = "";
+        $('#userDescription').value = "";
+        $('#userPublicKey').value = "";
+
+        $('#newUserDialog').modal('show');
+    }
+
+
+    function gotUsers (data,status) {
+        var users = JSON.parse(data);
+        var html = "";
+        $('#tableBody').empty();
+
+        users.forEach(function(element) {
+            html = html + "<tr>";
+            html = html + "<td>" + element.name + "</td>";
+            html = html + "<td>" + element.status + "</td>";
+            html = html + "<td>edit, delete</td>";
+            html = html + "</tr>";
+        });
+
+        $('#tableBody').append(html);
+    }
+
+
+    function createUser () {
+
+        var user = new Object();
+
+        user.name = $('#userName').val();
+        user.description = $('#userDescription').val();
+        user.publicKey = $('#userPublicKey').val();
+
+        var data = JSON.stringify(user);
+
+        $.post("/servlets/createUser", data, createdUser);
+    }
+
+    function createKeyPair () {
+        $.get("/servlets/createKeyPair", gotKeyPair);
+    }
+
+    function gotKeyPair (data, status) {
+        var keyPair = JSON.parse(data);
+
+        $('#keyPairPublic').val(keyPair.publicKey);
+        $('#keyPairPrivate').val(keyPair.privateKey);
+
+        $('#userPublicKey').val(keyPair.publicKey);
+
+        $('#keyPairDialog').modal('show');
+    }
+
+    function createdUser (data, status) {
+        fillTable();
+        var result = JSON.parse(data);
+
+        if (result.result == "success") {
+            alert("user created");
+        } else {
+            alert(result.result);
+        }
+    }
+
+    fillTable();
+
+</script>
+</body>
+</html>

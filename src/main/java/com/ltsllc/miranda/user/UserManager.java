@@ -2,11 +2,14 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.objects.LoginObject;
 import com.ltsllc.miranda.user.messages.GetUserMessage;
-import com.ltsllc.miranda.user.messages.LoginMessage;
+import com.ltsllc.miranda.user.messages.GetUsersMessage;
+import com.ltsllc.miranda.user.messages.GetUsersResponseMessage;
+import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import org.apache.log4j.Logger;
 
@@ -38,6 +41,7 @@ public class UserManager extends Consumer {
         setCurrentState(userManagerReadyState);
 
         users = new ArrayList<User>();
+        setUsers(users);
 
         usersFile = new UsersFile(Miranda.getInstance().getWriter(), filename);
         FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
@@ -50,11 +54,6 @@ public class UserManager extends Consumer {
 
         FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
         getUsersFile().sendAddSubscriberMessage(getQueue(), this, fileLoadedMessage);
-    }
-
-    public void sendLoginMessage (BlockingQueue<Message> senderQueue, Object sender, LoginObject loginObject) {
-        LoginMessage loginMessage = new LoginMessage(senderQueue, sender, loginObject);
-        sendToMe(loginMessage);
     }
 
     public void garbageCollectUsers () {
@@ -84,10 +83,12 @@ public class UserManager extends Consumer {
         return false;
     }
 
-    public void addUser (User user) {
-        if (!contains(user)) {
+    public void addUser (User user) throws DuplicateUserException {
+        if (contains(user)) {
+            throw new DuplicateUserException("The system already contain this user");
+        } else {
             getUsers().add (user);
-            getUsersFile().addUser(user);
+            getUsersFile().sendNewUserMessage(getQueue(), this, user);
         }
     }
 
@@ -107,5 +108,16 @@ public class UserManager extends Consumer {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public void sendGetUsers (BlockingQueue<Message> senderQueue, Object sender) {
+        GetUsersMessage getUsersMessage = new GetUsersMessage(senderQueue, sender);
+        sendToMe(getUsersMessage);
+    }
+
+    public void sendNewUser (BlockingQueue<Message> senderQueue, Object sender, User user)
+    {
+        NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
+        sendToMe(newUserMessage);
     }
 }

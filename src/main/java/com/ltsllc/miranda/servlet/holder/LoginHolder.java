@@ -49,16 +49,16 @@ public class LoginHolder extends ServletHolder {
         return ourInstance;
     }
 
-    public static synchronized void initialize() {
+    public static synchronized void initialize(long timeout) {
         if (null == ourInstance) {
-            ourInstance = new LoginHolder();
+            ourInstance = new LoginHolder(timeout);
             long timeoutPeriod = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_SESSION_LOGIN_TIMEOUT, MirandaProperties.DEFAULT_SESSION_LOGIN_TIMEOUT);
             ourInstance.setTimeoutPeriod(timeoutPeriod);
         }
     }
 
-    public LoginHolder() {
-        super("login");
+    public LoginHolder (long timeout) {
+        super("login", timeout);
 
         LoginHolderReadyState readyState = new LoginHolderReadyState(this);
         setCurrentState(readyState);

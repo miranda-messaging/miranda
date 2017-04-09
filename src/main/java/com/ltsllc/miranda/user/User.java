@@ -5,31 +5,27 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.util.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 /**
  * Created by Clark on 1/5/2017.
  */
 public class User extends StatusObject implements Perishable, Serializable {
-    private Gson ourGson = new Gson();
+    private static Gson ourGson = new Gson();
 
     private String name;
     private String description;
     private PublicKey publicKey;
-    private String publicKeyString;
-
-    public String getPublicKeyString() {
-        return publicKeyString;
-    }
-
-    public void setPublicKeyString(String publicKeyString) {
-        this.publicKeyString = publicKeyString;
-    }
 
     public PublicKey getPublicKey() {
         return publicKey;
@@ -54,19 +50,23 @@ public class User extends StatusObject implements Perishable, Serializable {
         this.description = description;
     }
 
-    public User (String name, String description, String hexString) throws MirandaException  {
+    public User (String name, String description, String base64) throws MirandaException  {
         super(Status.New);
 
-        byte[] data = null;
+        byte[] data = Base64.getDecoder().decode(base64);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
+        java.security.PublicKey publicKey = null;
+
         try {
-            data = Utils.hexStringToBytes(hexString);
-        } catch (IOException e) {
-            throw new MirandaException("Exception trying to decode string", e);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            publicKey = keyFactory.generatePublic(spec);
+        } catch (GeneralSecurityException e) {
+            throw new MirandaException("Exception trying to create public key", e);
         }
 
         this.name = name;
         this.description = description;
-        this.publicKey = toPublicKey(data);
+        this.publicKey = new PublicKey(publicKey);
     }
 
     public User (String name, String description, byte[] bytes) throws MirandaException {
@@ -115,17 +115,19 @@ public class User extends StatusObject implements Perishable, Serializable {
         }
     }
 
+    public UserObject asUserObject () {
+        UserObject userObject = new UserObject();
+
+        userObject.setName(getName());
+        userObject.setDescription(getDescription());
+
+        byte[] data = Base64.getEncoder().encode(getPublicKey().getSecurityPublicKey().getEncoded());
+        String encoded = new String(data);
+        userObject.setPublicKey(encoded);
+
+        return userObject;
+    }
+
     public void rectify () throws MirandaException {
-        if (null != getPublicKeyString()) {
-            byte[] bytes = null;
-            try {
-                bytes = Utils.hexStringToBytes(getPublicKeyString());
-            } catch (IOException e) {
-                throw new MirandaException("Excepetion trying to decode string", e);
-            }
-            PublicKey publicKey = toPublicKey(bytes);
-            setPublicKey(publicKey);
-            setPublicKeyString(null);
-        }
     }
 }

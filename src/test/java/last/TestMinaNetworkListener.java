@@ -1,6 +1,7 @@
-package com.ltsllc.miranda.mina;
+package last;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.test.TestCase;

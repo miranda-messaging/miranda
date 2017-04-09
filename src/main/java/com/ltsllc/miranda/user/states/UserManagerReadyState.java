@@ -4,15 +4,12 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
-import com.ltsllc.miranda.servlet.objects.LoginObject;
-import com.ltsllc.miranda.session.LoginResponseMessage;
-import com.ltsllc.miranda.user.UnknownUserException;
+import com.ltsllc.miranda.user.DuplicateUserException;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
-import com.ltsllc.miranda.user.messages.GetUserMessage;
-import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
-import com.ltsllc.miranda.user.messages.LoginMessage;
+import com.ltsllc.miranda.user.messages.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,9 +40,21 @@ public class UserManagerReadyState extends State {
                 break;
             }
 
+            case GetUsers: {
+                GetUsersMessage getUsersMessage = (GetUsersMessage) message;
+                nextState = processGetUsersMessage(getUsersMessage);
+                break;
+            }
+
             case FileLoaded: {
                 FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
                 nextState = processFileLoadedMessage (fileLoadedMessage);
+                break;
+            }
+
+            case NewUser: {
+                NewUserMessage newUserMessage = (NewUserMessage) message;
+                nextState = processNewUserMessage (newUserMessage);
                 break;
             }
 
@@ -75,8 +84,33 @@ public class UserManagerReadyState extends State {
 
     public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
         List<User> users = (List<User>) fileLoadedMessage.getData();
-        getUserManager().setUsers(users);
+        List<User> newList = new ArrayList<User>(users);
+        getUserManager().setUsers(newList);
 
+        return getUserManager().getCurrentState();
+    }
+
+    public State processGetUsersMessage (GetUsersMessage getUsersMessage) {
+        List<User> users = getUserManager().getUsers();
+
+        GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(getUserManager().getQueue(),
+                this, users);
+
+        getUsersMessage.reply(getUsersResponseMessage);
+
+        return getUserManager().getCurrentState();
+    }
+
+    public State processNewUserMessage (NewUserMessage newUserMessage) {
+        Message reply = null;
+        try {
+            getUserManager().addUser(newUserMessage.getUser());
+            reply = new UserCreatedMessage(getUserManager().getQueue(), this);
+        } catch (DuplicateUserException e) {
+            reply = new DuplicateUserMessage(getUserManager().getQueue(), this);
+        }
+
+        newUserMessage.reply(reply);
         return getUserManager().getCurrentState();
     }
 }

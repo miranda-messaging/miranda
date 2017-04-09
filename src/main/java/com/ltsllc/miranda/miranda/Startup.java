@@ -13,7 +13,9 @@ import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.servlet.holder.ClusterStatus;
+import com.ltsllc.miranda.servlet.holder.CreateUserHolder;
 import com.ltsllc.miranda.servlet.holder.LoginHolder;
+import com.ltsllc.miranda.servlet.holder.UsersHolder;
 import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import com.ltsllc.miranda.session.SessionManager;
@@ -22,9 +24,7 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
-import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -142,7 +142,6 @@ public class Startup extends State {
             loadFiles();
             setupSchedule();
             setupHttpServices();
-            setupRootUser();
             setupServlets();
             startHttpServer();
             startListening();
@@ -159,20 +158,18 @@ public class Startup extends State {
         return StopState.getInstance();
     }
 
-    private void setupRootUser() {
-        User root = new User("root", "System admin");
-        getMiranda().getUserManager().addUser(root);
-    }
-
     public void setupServlets () {
         ServletMapping servletMapping1 = new ServletMapping("/servlets/status", StatusServlet.class);
         ServletMapping servletMapping2 = new ServletMapping("/servlets/properties", PropertiesServlet.class);
         ServletMapping servletMapping3 = new ServletMapping("/servlets/setProperty", SetPropertyServlet.class);
         ServletMapping servletMapping4 = new ServletMapping("/servlets/clusterStatus", ClusterStatusServlet.class);
         ServletMapping servletMapping5 = new ServletMapping("/servlets/login", LoginServlet.class);
+        ServletMapping servletMapping6 = new ServletMapping("/servlets/users", UsersServlet.class);
+        ServletMapping servletMapping7 = new ServletMapping("/servlets/createKeyPair", CreateKeyPairServlet.class);
+        ServletMapping servletMapping8 = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
 
-
-        ServletMapping[] mappings = { servletMapping1, servletMapping2, servletMapping3, servletMapping4, servletMapping5 };
+        ServletMapping[] mappings = { servletMapping1, servletMapping2, servletMapping3, servletMapping4,
+                servletMapping5, servletMapping6, servletMapping7, servletMapping8 };
 
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
@@ -180,8 +177,16 @@ public class Startup extends State {
         ClusterStatus.initialize();
         ClusterStatus.getInstance().start();
 
-        LoginHolder.initialize();
+        long timeoutPeriod = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_SERVLET_TIMEOUT, MirandaProperties.DEFAULT_SERVLET_TIMEOUT);
+
+        LoginHolder.initialize(timeoutPeriod);
         LoginHolder.getInstnace().start();
+
+        UsersHolder.initialize(timeoutPeriod);
+        UsersHolder.getInstance().start();
+
+        CreateUserHolder.initialize(timeoutPeriod);
+        CreateUserHolder.getInstance().start();
 
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this, mappings);
 

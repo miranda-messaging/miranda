@@ -21,19 +21,9 @@ import java.security.GeneralSecurityException;
 /**
  * Created by Clark on 3/31/2017.
  */
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends MirandaServlet {
     private static Logger logger = Logger.getLogger(LoginServlet.class);
     private static Gson gson = new Gson();
-
-    public String read(InputStream inputStream) throws IOException {
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        StringWriter stringWriter = new StringWriter();
-        for (int c = inputStreamReader.read(); c != -1; c = inputStreamReader.read()) {
-            stringWriter.append((char) c);
-        }
-
-        return stringWriter.toString();
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

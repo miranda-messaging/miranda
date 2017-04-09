@@ -80,6 +80,8 @@ public class TestStartup extends TestCase {
 
         super.setup();
 
+        setuplog4j();
+
         String[] empty = new String[0];
         this.miranda = new Miranda(empty);
         this.startup = new Startup(miranda, empty);
@@ -133,14 +135,5 @@ public class TestStartup extends TestCase {
         }
 
         return false;
-    }
-
-    @Test
-    public void testSetupRootUser () {
-        getMiranda().start();
-
-        pause(1000);
-
-        assert (containsRootUser(UsersFile.getInstance()));
     }
 }

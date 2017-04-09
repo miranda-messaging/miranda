@@ -86,6 +86,13 @@ public class TestCase {
     @Mock
     private MirandaProperties mockProperties;
 
+    @Mock
+    private InputStream mockInputStream;
+
+    public InputStream getMockInputStream() {
+        return mockInputStream;
+    }
+
     public MirandaTimer getMockTimer() {
         return mockTimer;
     }
@@ -238,6 +245,7 @@ public class TestCase {
         this.mockLogger = null;
         this.mockTimer = null;
         this.mockProperties = null;
+        this.mockInputStream = null;
     }
 
     public void setup () {
@@ -257,6 +265,7 @@ public class TestCase {
         this.mockLogger = mock(Logger.class);
         this.mockTimer = mock(MirandaTimer.class);
         this.mockProperties = mock(MirandaProperties.class);
+        this.mockInputStream = mock(InputStream.class);
     }
 
     public void setupMockNetwork () {

@@ -7,11 +7,12 @@ import com.ltsllc.miranda.servlet.states.ServletHolderReadyState;
 import org.apache.log4j.Logger;
 
 /**
- * A class that gives servlets the ability to send and receive messages
+ * A class that gives servlets the ability to receive messages
  */
 public class ServletHolder extends Consumer {
     private static Logger logger = Logger.getLogger(ServletHolder.class);
 
+    private long timeoutPeriod;
     private boolean awakened;
 
     public boolean getAwakened() {
@@ -22,8 +23,18 @@ public class ServletHolder extends Consumer {
         this.awakened = awakened;
     }
 
-    public ServletHolder (String name) {
+    public long getTimeoutPeriod() {
+        return timeoutPeriod;
+    }
+
+    public void setTimeoutPeriod(long timeoutPeriod) {
+        this.timeoutPeriod = timeoutPeriod;
+    }
+
+    public ServletHolder (String name, long timeoutPeriod) {
         super (name);
+
+        this.timeoutPeriod = timeoutPeriod;
 
         ServletHolderReadyState servletHolderReadyState = new ServletHolderReadyState(this);
         setCurrentState(servletHolderReadyState);
@@ -54,6 +65,10 @@ public class ServletHolder extends Consumer {
         }
 
         return getAwakened();
+    }
+
+    public boolean waitFor () {
+        return waitFor(getTimeoutPeriod());
     }
 
     public synchronized void wake () {
