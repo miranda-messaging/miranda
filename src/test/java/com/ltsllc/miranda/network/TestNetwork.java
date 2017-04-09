@@ -7,6 +7,7 @@ import com.ltsllc.miranda.network.messages.ConnectSucceededMessage;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import com.ltsllc.miranda.test.TestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -62,6 +63,11 @@ public class TestNetwork extends TestCase {
 
         mockHandle = mock(Handle.class);
         testNetwork = new com.ltsllc.miranda.test.TestNetwork();
+    }
+
+    @After
+    public void cleanup () {
+        deleteFile("data/cluste.json");
     }
 
     public void setHandleId (BlockingQueue<Message> queue) {
