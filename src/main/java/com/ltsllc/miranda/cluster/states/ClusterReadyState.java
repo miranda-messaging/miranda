@@ -6,16 +6,24 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.*;
+import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.user.messages.DeleteUserMessage;
+import com.ltsllc.miranda.user.messages.NewUserMessage;
+import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.apache.log4j.Logger;
 
 /**
@@ -109,6 +117,24 @@ public class ClusterReadyState extends State {
             case SessionsExpired: {
                 SessionsExpiredMessage sessionsExpiredMessage = (SessionsExpiredMessage) m;
                 nextState = processSessionsExpiredMessage(sessionsExpiredMessage);
+                break;
+            }
+
+            case NewUser: {
+                NewUserMessage newUserMessage = (NewUserMessage) m;
+                nextState = processNewUserMessage (newUserMessage);
+                break;
+            }
+
+            case UpdateUser: {
+                UpdateUserMessage updateUserMessage = (UpdateUserMessage) m;
+                nextState = processUpdateUserMessage(updateUserMessage);
+                break;
+            }
+
+            case DeleteUser: {
+                DeleteUserMessage deleteUserMessage = (DeleteUserMessage) m;
+                nextState = processDeleteUserMessage (deleteUserMessage);
                 break;
             }
 
@@ -231,6 +257,29 @@ public class ClusterReadyState extends State {
     public State processSessionsExpiredMessage(SessionsExpiredMessage sessionsExpiredMessage) {
         SessionsExpiredWireMessage sessionsExpiredWireMessage = new SessionsExpiredWireMessage(sessionsExpiredMessage.getExpiredSessions());
         getCluster().broadcast(sessionsExpiredWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processNewUserMessage (NewUserMessage newUserMessage) {
+        NewUserWireMessage newUserWireMessage = new NewUserWireMessage(newUserMessage.getUser().asUserObject());
+        getCluster().broadcast(newUserWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
+        UserObject userObject = updateUserMessage.getUser().asUserObject();
+
+        UpdateUserWireMessage updateUserWireMessage = new UpdateUserWireMessage(userObject);
+        getCluster().broadcast(updateUserWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) {
+        DeleteUserWireMessage deleteUserWireMessage = new DeleteUserWireMessage(deleteUserMessage.getName());
+        getCluster().broadcast(deleteUserWireMessage);
 
         return getCluster().getCurrentState();
     }

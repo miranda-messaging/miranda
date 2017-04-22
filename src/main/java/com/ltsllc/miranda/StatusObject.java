@@ -4,10 +4,13 @@ package com.ltsllc.miranda;
  * Created by Clark on 2/19/2017.
  */
 
+import com.ltsllc.miranda.file.Matchable;
+import com.ltsllc.miranda.file.Updateable;
+
 /**
  * Objects like users and topics are not deleted. Instead, they are marked as deleted and garbage collected.
  */
-public class StatusObject {
+public class StatusObject<E extends StatusObject> implements Matchable<E>, Updateable<E> {
     public enum Status {
         New,
         Deleted
@@ -35,4 +38,11 @@ public class StatusObject {
         return expired();
     }
 
+    public void updateFrom (StatusObject other) {
+        setStatus(other.getStatus());
+    }
+
+    public boolean matches (E other) {
+        return getStatus() == other.getStatus();
+    }
 }

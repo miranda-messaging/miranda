@@ -2,23 +2,23 @@ package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.file.messages.AddSubscriberMessage;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
-import com.ltsllc.miranda.file.messages.Notification;
-import com.ltsllc.miranda.file.messages.RemoveSubscriberMessage;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.util.ImprovedRandom;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -130,5 +130,64 @@ public class TestSingleFileReadyState extends TestCase {
 
         verify(getMockClusterFile(), atLeastOnce()).removeSubscriber(Matchers.eq(queue));
     }
-}
 
+    @Test
+    public void testProcessAddObjectsMessage () {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>();
+        NodeElement nodeElement = NodeElement.random(improvedRandom);
+        nodeElements.add(nodeElement);
+        nodeElement = NodeElement.random(improvedRandom);
+        nodeElements.add(nodeElement);
+        nodeElement = NodeElement.random(improvedRandom);
+        nodeElements.add(nodeElement);
+        AddObjectsMessage addObjectsMessage = new AddObjectsMessage(null, this, nodeElements);
+        when(getMockClusterFile().getCurrentState()).thenReturn(getClusterFileReadyState());
+
+        State nextState = getClusterFileReadyState().processMessage(addObjectsMessage);
+
+        assert (nextState == getClusterFileReadyState());
+        verify (getMockClusterFile(), atLeastOnce()).addObjects(Matchers.eq(nodeElements));
+    }
+
+    @Test
+    public void testProcessUpdateObjectsMessage () {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>();
+
+        for (int i = 0; i < 3; i++) {
+            NodeElement nodeElement = NodeElement.random(improvedRandom);
+            nodeElements.add(nodeElement);
+        }
+
+        UpdateObjectsMessage updateObjectsMessage = new UpdateObjectsMessage(null, this, nodeElements);
+        when(getMockClusterFile().getCurrentState()).thenReturn(getClusterFileReadyState());
+
+        State nextState = getClusterFileReadyState().processMessage(updateObjectsMessage);
+
+        assert (nextState == getClusterFileReadyState());
+        verify (getMockClusterFile(), atLeastOnce()).updateObjects(Matchers.eq(nodeElements));
+    }
+
+    @Test
+    public void testProcessDeleteObjectsMessage () {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>();
+
+        for (int i = 0; i < 3; i++) {
+            NodeElement nodeElement = NodeElement.random(improvedRandom);
+            nodeElements.add(nodeElement);
+        }
+
+        RemoveObjectsMessage removeObjectsMessage = new RemoveObjectsMessage(null, this, nodeElements);
+        when(getMockClusterFile().getCurrentState()).thenReturn(getClusterFileReadyState());
+
+        State nextState = getClusterFileReadyState().processMessage(removeObjectsMessage);
+
+        assert (nextState == getClusterFileReadyState());
+        verify (getMockClusterFile(), atLeastOnce()).removeObjects(Matchers.eq(nodeElements));
+    }
+}

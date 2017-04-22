@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
@@ -8,7 +9,10 @@ import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
@@ -170,17 +174,47 @@ public class TestCluster extends TestCase {
     }
 
     @Test
-    public void testBroadcast () {
+    public void testBroadcast () throws MirandaException {
         getCluster().getNodes().clear();
         getCluster().getNodes().add(getMockNode());
         getCluster().getNodes().add(getMockNode2());
 
         long now = System.currentTimeMillis();
-        Session session = new Session("whatever", now + 120000, 123);
+
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        Session session = new Session(user, now + 120000, 123);
         NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(session);
         getCluster().broadcast(newSessionWireMessage);
 
         verify(getMockNode(), atLeastOnce()).sendSendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(newSessionWireMessage));
         verify(getMockNode2(), atLeastOnce()).sendSendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(newSessionWireMessage));
+    }
+
+    public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
+
+    @Test
+    public void testSendNewUserMessage () throws MirandaException {
+        getCluster().stop();
+        UserObject userObject = new UserObject("test", "a test user", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        getCluster().sendNewUserMessage(null, this, user);
+
+        assert (contains(Message.Subjects.NewUser, getCluster().getQueue()));
+    }
+
+    @Test
+    public void testSendUpdateUserMessage () throws MirandaException {
+        getCluster().stop();
+        UserObject userObject = new UserObject("test", "a test user", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, user);
+
+        getCluster().sendUpdateUserMessage(null, this, user);
+
+        assert (contains(Message.Subjects.UpdateUser, getCluster().getQueue()));
     }
 }

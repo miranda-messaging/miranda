@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.session;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -8,28 +9,22 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/1/2017.
  */
 public class LoginResponseMessage extends Message {
-    private boolean loginSuccessful;
-    private String additionalInfo;
+    private Results result;
+    private Session session;
 
-    public boolean getLoginSuccessful() {
-        return loginSuccessful;
+    public Session getSession() {
+        return session;
     }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
+    public Results getResult() {
+
+        return result;
     }
 
-    public LoginResponseMessage (BlockingQueue<Message> senderQueue, Object sender, boolean loginSuccessful) {
+    public LoginResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, Session session) {
         super(Subjects.LoginResponse, senderQueue, sender);
 
-        this.loginSuccessful = loginSuccessful;
-        this.additionalInfo = null;
-    }
-
-    public LoginResponseMessage (BlockingQueue<Message> senderQueue, Object sender, boolean loginSuccessful, String additionalInfo) {
-        super(Subjects.LoginResponse, senderQueue, sender);
-
-        this.loginSuccessful = loginSuccessful;
-        this.additionalInfo = additionalInfo;
+        this.result = result;
+        this.session = session;
     }
 }

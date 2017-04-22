@@ -8,20 +8,24 @@ import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.messages.UserAddedMessage;
+import com.ltsllc.miranda.node.messages.UserDeletedMessage;
+import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
-import com.ltsllc.miranda.session.AddSessionMessage;
-import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.session.SessionManager;
-import com.ltsllc.miranda.session.SessionsExpiredMessage;
-import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
+import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.session.*;
+import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.topics.TopicManager;
+import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
-import com.ltsllc.miranda.user.UsersFile;
+import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -48,8 +52,8 @@ public class Miranda extends Consumer {
 
     private BlockingQueue<Message> httpServer;
     private UserManager userManager;
-    private TopicsFile topics;
-    private SubscriptionsFile subscriptions;
+    private TopicManager topicManager;
+    private SubscriptionManager subscriptionManager;
     private SystemMessages events;
     private SystemDeliveriesFile deliveries;
     private Cluster cluster;
@@ -134,20 +138,20 @@ public class Miranda extends Consumer {
         this.userManager = userManager;
     }
 
-    public TopicsFile getTopics() {
-        return topics;
+    public TopicManager getTopicManager() {
+        return topicManager;
     }
 
-    public void setTopics(TopicsFile topics) {
-        this.topics = topics;
+    public void setTopicManager(TopicManager topicManager) {
+        this.topicManager = topicManager;
     }
 
-    public SubscriptionsFile getSubscriptions() {
-        return subscriptions;
+    public SubscriptionManager getSubscriptionManager () {
+        return subscriptionManager;
     }
 
-    public void setSubscriptions(SubscriptionsFile subscriptions) {
-        this.subscriptions = subscriptions;
+    public void setSubscriptionManager (SubscriptionManager subscriptionManager) {
+        this.subscriptionManager = subscriptionManager;
     }
 
     public Miranda (String[] argv) {
@@ -198,8 +202,8 @@ public class Miranda extends Consumer {
 
         httpServer = null;
         userManager = null;
-        topics = null;
-        subscriptions = null;
+        topicManager = null;
+        subscriptionManager = null;
         events = null;
         deliveries = null;
         panicPolicy = null;
@@ -217,8 +221,8 @@ public class Miranda extends Consumer {
 
         StopMessage message = new StopMessage(getQueue(), this);
 
-        sendIfNotNull (message, getCluster());
-        sendIfNotNull (message, getHttp());
+        sendIfNotNull(message, getCluster());
+        sendIfNotNull(message, getHttp());
 
         sendIfNotNull(message, fileWatcher);
         sendIfNotNull(message, properties);
@@ -232,12 +236,12 @@ public class Miranda extends Consumer {
             getUserManager().sendStop(getQueue(), this);
         }
 
-        if (null != getTopics()) {
-            getTopics().sendStop(getQueue(), this);
+        if (null != getTopicManager()) {
+            getTopicManager().sendStop(getQueue(), this);
         }
 
-        if (null != getSubscriptions()) {
-            getSubscriptions().sendStop(getQueue(), this);
+        if (null != getSubscriptionManager()) {
+            getSubscriptionManager().sendStop(getQueue(), this);
         }
 
         if (null != getNetworkListener()) {
@@ -278,11 +282,11 @@ public class Miranda extends Consumer {
         if (null != getUserManager())
             getUserManager().sendShutdown(getQueue(), this);
 
-        if (null != getTopics())
-            getTopics().sendShutdown(getQueue(), this);
+        if (null != getTopicManager())
+            getTopicManager().sendShutdown(getQueue(), this);
 
-        if (null != getSubscriptions())
-            getSubscriptions().sendShutdown(getQueue(), this);
+        if (null != getSubscriptionManager())
+            getSubscriptionManager().sendShutdown(getQueue(), this);
 
         if (null != getEvents())
             getEvents().sendShutdown(getQueue(), this);
@@ -310,5 +314,44 @@ public class Miranda extends Consumer {
     public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
         SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(senderQueue, sender, expiredSessions);
         sendToMe(sessionsExpiredMessage);
+    }
+
+    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topic);
+        sendToMe(deleteTopicMessage);
+    }
+
+    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, name);
+        sendToMe(deleteUserMessage);
+    }
+
+    public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, user);
+        sendToMe(createUserMessage);
+    }
+
+    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, user);
+        sendToMe(updateUserMessage);
+    }
+
+    public void sendUserAddedMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UserAddedMessage userAddedMessage = new UserAddedMessage(senderQueue, sender, user);
+        sendToMe(userAddedMessage);
+    }
+
+    public void sendUserUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UserUpdatedMessage userUpdatedMessage = new UserUpdatedMessage(senderQueue, sender, user);
+        sendToMe(userUpdatedMessage);
+    }
+    public void sendUserDeletedMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        UserDeletedMessage userDeletedMessage = new UserDeletedMessage(senderQueue, sender, name);
+        sendToMe(userDeletedMessage);
+    }
+
+    public void sendLoginMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        LoginMessage loginMessage = new LoginMessage(senderQueue, sender, name);
+        sendToMe(loginMessage);
     }
 }

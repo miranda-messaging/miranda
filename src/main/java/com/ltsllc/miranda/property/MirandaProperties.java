@@ -27,7 +27,7 @@ import java.util.Properties;
  *     objects.
  * </P>
  */
-public class MirandaProperties extends SingleFile<String> {
+public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Property> {
     private static Logger logger = Logger.getLogger(MirandaProperties.class);
 
     public enum EncryptionModes {
@@ -453,4 +453,6 @@ public class MirandaProperties extends SingleFile<String> {
 
         return -1;
     }
+
+    public void checkForDuplicates () {}
 }

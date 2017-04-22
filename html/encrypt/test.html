@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Miranda Users</title>
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Static navbar -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">Miranda</a>
+        </div>
+
+        <ul class="nav navbar-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="cluster.html">Cluster</a></li>
+            <li class="active"><a href="users.html">Users</a></li>
+            <li><a href="topics.html">Topics</a></li>
+            <li><a href="subscriptions.html">Subscriptions</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="deliveries.html">Deliveries</a></li>
+        </ul>
+
+    </div><!--/.container-fluid -->
+</nav>
+<form id="aForm" action="/servlets/fileServlet" method="post" enctype="multipart/form-data">
+<input name="content" id="fileName" type="file" onchange="readFile()">
+<button type="submit">Submit</button>
+</form>
+<h4>Private Key</h4>
+<textarea id="privateKey" rows="5" style="min-width: 100%">
+
+</textarea>
+<h4>Encrpted</h4>
+<textarea id="encrypted" rows="5" style="min-width: 100%">
+
+</textarea>
+<h4>Decypted</h4>
+<textarea id="decrypted" rows="5" style="min-width: 100%">
+
+</textarea>
+<script>
+    function readFile () {
+        var file = document.getElementById('fileName').files[0];
+        var form = new FormData();
+        form.append("content",file);
+        $.ajax({
+               url : '/servlets/fileServlet',
+               type : 'POST',
+               data : form,
+               processData: false,  // tell jQuery not to process the data
+               contentType: false,  // tell jQuery not to set contentType
+               success : readFileResult
+               });
+    }
+
+    function readFileResult (data, status) {
+        var result = JSON.parse(data);
+        var textarea = $('#privateKey');
+        var text = String.fromCharCode.apply(String, result.content);
+        textarea.append(text);
+    }
+
+</script>
+<button type="button" class="btn btn-default" onclick="editNewUser()">Create a New User</button>
+
+<h3>Users</h3>
+<table id="usersTable" class="table-striped table-hover">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody id="tableBody">
+    </tbody>
+</table>
+
+<script src="/js/jquery.js"></script>
+<script src="/js/jsencrypt.js"></script>
+<script src="/bootstrap/js/bootstrap.js"></script>
+<script>
+    function fillTable () {
+        $.get("/servlets/getUsers", gotUsers);
+    }
+
+    function showDialog () {
+        $('#newUserDialog').modal('show');
+    }
+
+
+    function gotUsers (data,status) {
+        var result = JSON.parse(data);
+        if (result.result == "Success") {
+            var html = "";
+            $('#tableBody').empty();
+
+            result.userList.forEach(function(element) {
+                html = html + "<tr>";
+                html = html + "<td>" + element.name + "</td>";
+                html = html + "<td>" + element.status + "</td>";
+                html = html + "</tr>";
+            });
+
+            $('#tableBody').append(html);
+            setupHandler();
+        }
+    }
+
+    function setupHandler () {
+        $('#usersTable').find('tr').click(function() {
+            var user = getUser($(this).index());
+            login(user);
+        });
+    }
+
+    function login (user) {
+        var data = JSON.stringify(user);
+        $.post("/servlets/login", data, loginResult);
+    }
+
+    function loginResult (data, status) {
+        var result = JSON.parse(data);
+        var contents = $('#encrypted');
+        contents.val(result.session);
+
+        var whatever = $('#decrypted');
+        var jsencrypt = new JSEncrypt();
+        var privateKey = $('#privateKey').val();
+        jsencrypt.setPrivateKey(privateKey);
+        var plaintext = jsencrypt.decrypt(result.session);
+        whatever.val(plaintext);
+    }
+
+    function getUser (index) {
+        var table = $('#usersTable');
+        var anIndex = 1 + index;
+        var row = $(table).find("tr:nth-child(" + anIndex + ")");
+        var user = new Object();
+        user.name = $(row).find("td:nth-child(1)").text();
+
+        return user;
+    }
+
+    fillTable();
+
+</script>
+</body>
+</html>

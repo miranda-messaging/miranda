@@ -57,4 +57,6 @@ public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
         return super.compare(map, o);
     }
 
+    public void checkForDuplicates () {}
+
 }

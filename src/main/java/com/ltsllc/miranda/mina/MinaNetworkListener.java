@@ -131,7 +131,7 @@ public class MinaNetworkListener extends NetworkListener {
 
         for(IoSession session: getAcceptor().getManagedSessions().values()){
             if(session.isConnected() && !session.isClosing()){
-                session.close(true);
+                session.closeNow();
             }
         }
 

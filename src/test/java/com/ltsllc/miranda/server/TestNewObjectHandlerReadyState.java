@@ -94,6 +94,7 @@ public class TestNewObjectHandlerReadyState extends TestCase {
             + "\"name\" : \"whatever\" "
             + "}";
 
+    /*
     @Test
     public void testProcessHttpPostMessage () {
         Subscription subscription = new Subscription("whatever");
@@ -109,4 +110,5 @@ public class TestNewObjectHandlerReadyState extends TestCase {
         verify(getMockChannelHandlerContext(), atLeastOnce()).writeAndFlush(Matchers.any());
         verify(getMockChannelHandlerContext(), atLeastOnce()).close();
     }
+    */
 }

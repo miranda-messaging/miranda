@@ -6,9 +6,7 @@ import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Subscriber;
-import com.ltsllc.miranda.file.messages.AddSubscriberMessage;
-import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
-import com.ltsllc.miranda.file.messages.RemoveSubscriberMessage;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.StopMessage;
@@ -97,6 +95,24 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
                 break;
             }
 
+            case AddObjects: {
+                AddObjectsMessage addObjectsMessage = (AddObjectsMessage) message;
+                nextState = processAddObjectsMessage(addObjectsMessage);
+                break;
+            }
+
+            case UpdateObjects: {
+                UpdateObjectsMessage updateObjectsMessage = (UpdateObjectsMessage) message;
+                nextState = processUpdateObjectsMessage(updateObjectsMessage);
+                break;
+            }
+
+            case RemoveObjects: {
+                RemoveObjectsMessage removeObjectsMessage = (RemoveObjectsMessage) message;
+                nextState = processRemoveObjectsMessage(removeObjectsMessage);
+                break;
+            }
+
             default :
                 nextState = super.processMessage(message);
                 break;
@@ -175,6 +191,24 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
 
     public State processRemoveSubscriberMessage (RemoveSubscriberMessage removeSubscriberMessage) {
         getFile().removeSubscriber(removeSubscriberMessage.getSender());
+
+        return getFile().getCurrentState();
+    }
+
+    public State processAddObjectsMessage (AddObjectsMessage addObjectsMessage) {
+        getFile().addObjects(addObjectsMessage.getObjects());
+
+        return getFile().getCurrentState();
+    }
+
+    public State processUpdateObjectsMessage (UpdateObjectsMessage updateObjectsMessage) {
+        getFile().updateObjects(updateObjectsMessage.getUpdatedObjects());
+
+        return getFile().getCurrentState();
+    }
+
+    public State processRemoveObjectsMessage (RemoveObjectsMessage removeObjectsMessage) {
+        getFile().removeObjects(removeObjectsMessage.getObjects());
 
         return getFile().getCurrentState();
     }

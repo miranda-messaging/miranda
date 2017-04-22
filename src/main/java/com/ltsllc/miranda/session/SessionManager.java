@@ -6,6 +6,9 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.session.messages.CreateSessionMessage;
+import com.ltsllc.miranda.session.messages.GetSessionMessage;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import org.apache.log4j.Logger;
 
@@ -24,6 +27,7 @@ public class SessionManager extends Consumer {
 
     private ImprovedRandom random;
     private Map<Long, Session> sessions;
+    private Map<String, Session> userToSession;
     private long sessionLength;
 
     public ImprovedRandom getRandom() {
@@ -42,10 +46,16 @@ public class SessionManager extends Consumer {
         this.sessionLength = sessionLength;
     }
 
+    public Map<String, Session> getUserToSession() {
+        return userToSession;
+    }
+
     public SessionManager() throws MirandaException {
         super("session manager");
 
         sessions = new HashMap<Long, Session>();
+        userToSession = new HashMap<String, Session>();
+
         SecureRandom secureRandom = new SecureRandom();
         random = new ImprovedRandom(secureRandom);
 
@@ -55,7 +65,7 @@ public class SessionManager extends Consumer {
         setCurrentState(readyState);
     }
 
-    public Session createSession (String user) {
+    public Session createSession (User user) {
         Long session = null;
 
         while (null == session || getSessions().containsKey(session)) {
@@ -63,11 +73,11 @@ public class SessionManager extends Consumer {
         }
 
         long now = System.currentTimeMillis();
+
         Session newSession = new Session (user, now + getSessionLength(), session.longValue());
 
-        Miranda miranda = Miranda.getInstance();
-        Cluster cluster = miranda.getCluster();
-        cluster.sendNewSession(getQueue(), this, newSession);
+        getSessions().put(newSession.getId(), newSession);
+        getUserToSession().put(user.getName(), newSession);
 
         return newSession;
     }
@@ -108,6 +118,7 @@ public class SessionManager extends Consumer {
         if (expired.size() > 0) {
             for (Session session : expired) {
                 getSessions().put (session.getId(), null);
+                getUserToSession().put (session.getUser().getName(), null);
             }
 
             Miranda miranda = Miranda.getInstance();
@@ -147,8 +158,17 @@ public class SessionManager extends Consumer {
         }
     }
 
-    public void sendCreateSession (BlockingQueue<Message> senderQueue, Object sender, String user) {
+    public void sendCreateSession (BlockingQueue<Message> senderQueue, Object sender, User user) {
         CreateSessionMessage createSessionMessage = new CreateSessionMessage(senderQueue, sender, user);
         sendToMe(createSessionMessage);
+    }
+
+    public void sendGetSessionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        GetSessionMessage getSessionMessage = new GetSessionMessage (senderQueue, sender, name);
+        sendToMe(getSessionMessage);
+    }
+
+    public Session getSessionFor (String name) {
+        return getUserToSession().get(name);
     }
 }

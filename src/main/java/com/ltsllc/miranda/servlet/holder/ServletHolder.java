@@ -6,6 +6,8 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.states.ServletHolderReadyState;
 import org.apache.log4j.Logger;
 
+import java.util.concurrent.TimeoutException;
+
 /**
  * A class that gives servlets the ability to receive messages
  */
@@ -54,21 +56,26 @@ public class ServletHolder extends Consumer {
      * @param timeout The minimum amount of time to wait.
      * @return See above.
      */
-    public synchronized boolean waitFor (long timeout) {
+    public synchronized void waitFor (long timeout) throws TimeoutException {
         setAwakened(false);
 
         try  {
             wait(timeout);
         } catch (InterruptedException e) {
             logger.error ("Interrupted while waiting", e);
-            return false;
         }
 
-        return getAwakened();
+        if (!getAwakened()) {
+            throw new TimeoutException("A timeout occurred");
+        }
     }
 
-    public boolean waitFor () {
-        return waitFor(getTimeoutPeriod());
+    public void waitFor () throws TimeoutException {
+        waitFor(getTimeoutPeriod());
+    }
+
+    public void sleep () throws TimeoutException {
+        waitFor(getTimeoutPeriod());
     }
 
     public synchronized void wake () {

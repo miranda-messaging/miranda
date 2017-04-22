@@ -9,7 +9,6 @@ import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.GetUserMessage;
 import com.ltsllc.miranda.user.messages.GetUsersMessage;
-import com.ltsllc.miranda.user.messages.LoginMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import org.junit.Before;
 import org.junit.Test;

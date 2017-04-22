@@ -101,7 +101,7 @@ public class Consumer extends Subsystem implements Comparer {
         State stop = StopState.getInstance();
         logger.info(this + " starting");
 
-        while (nextState != stop && !Miranda.panicking && nextState != null) {
+        while (nextState != stop && !Miranda.panicking && nextState != null && !getStopped()) {
             State currentState = getCurrentState();
             setCurrentState(nextState);
             if (currentState != nextState) {

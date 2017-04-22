@@ -7,9 +7,7 @@ import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
-import com.ltsllc.miranda.file.messages.AddSubscriberMessage;
-import com.ltsllc.miranda.file.messages.Notification;
-import com.ltsllc.miranda.file.messages.RemoveSubscriberMessage;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
@@ -25,9 +23,11 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/10/2017.
  */
-abstract public class SingleFile<E> extends MirandaFile implements Comparer {
+abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
     abstract public Type listType();
+    abstract public void checkForDuplicates();
+
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
 
@@ -263,5 +263,103 @@ abstract public class SingleFile<E> extends MirandaFile implements Comparer {
         super.start();
 
         load();
+    }
+
+    public void sendRemoveObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
+        RemoveObjectsMessage removeObjectsMessage = new RemoveObjectsMessage(senderQueue, sender, objects);
+        sendToMe(removeObjectsMessage);
+    }
+
+    public void sendAddObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, E object) {
+        List<E> objects = new ArrayList<E>();
+        objects.add(object);
+        sendAddObjectsMessage(senderQueue, sender, objects);
+    }
+
+    public void sendAddObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
+        AddObjectsMessage addObjectsMessage = new AddObjectsMessage(senderQueue, sender, objects);
+        sendToMe(addObjectsMessage);
+    }
+
+    public void sendUpdateObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, E updatedObject) {
+        List<E> updatedObjects = new ArrayList<E>();
+        updatedObjects.add(updatedObject);
+
+        UpdateObjectsMessage updateObjectsMessage = new UpdateObjectsMessage(senderQueue, sender, updatedObjects);
+        sendToMe(updateObjectsMessage);
+    }
+
+    public void sendRemoveObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, E object) {
+        List<E> objects = new ArrayList<E>();
+        objects.add(object);
+        sendRemoveObjectsMessage(senderQueue, sender, objects);
+    }
+
+    public void addObjects (List list) {
+        List<E> newObjects = (List<E>) list;
+        for (E object : newObjects) {
+            if (!contains(object))
+                getData().add(object);
+        }
+
+        write();
+    }
+
+    public void updateObjects (List<E> updatedObjects) {
+        for (E updatedObject : updatedObjects) {
+            update(updatedObject);
+        }
+
+        checkForDuplicates();
+
+        write();
+    }
+
+    public void update (E updatedObject) {
+        E existingObject = find (updatedObject);
+
+        if (null == existingObject) {
+            logger.error("Could not find match for update");
+        } else {
+            existingObject.updateFrom (updatedObject);
+        }
+
+        write();
+    }
+
+    public E findMatch (E object) {
+        for (E candidate : getData()) {
+            if (object.matches(candidate))
+                return candidate;
+        }
+
+        return null;
+    }
+
+    public void removeObjects (List objects) {
+        List<E> oldObjects = (List<E>) objects;
+        List<E> existingObjects = new ArrayList<E>(objects.size());
+
+        for (E object : oldObjects) {
+            E match = findMatch(object);
+            if (null == match) {
+                logger.error("No match for " + object);
+            } else {
+                existingObjects.add(match);
+            }
+        }
+
+        getData().removeAll(existingObjects);
+
+        write();
+    }
+
+    public E find (E object) {
+        for (E candidate : getData()) {
+            if (candidate.matches(object))
+                return candidate;
+        }
+
+        return null;
     }
 }

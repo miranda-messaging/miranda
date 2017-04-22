@@ -3,6 +3,9 @@ package com.ltsllc.miranda.node.states;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
@@ -22,6 +25,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
+import com.ltsllc.miranda.user.messages.NewUserMessage;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -89,6 +93,24 @@ public class NodeReadyState extends NodeState {
             case ExpiredSessions: {
                 SessionsExpiredWireMessage sessionsExpiredWireMessage = (SessionsExpiredWireMessage) networkMessage.getWireMessage();
                 nextState = processSessionsExpiredWireMessage(sessionsExpiredWireMessage);
+                break;
+            }
+
+            case NewUser: {
+                NewUserWireMessage newUserWireMessage = (NewUserWireMessage) networkMessage.getWireMessage();
+                nextState = processNewUserWireMessage (newUserWireMessage);
+                break;
+            }
+
+            case UpdateUser: {
+                UpdateUserWireMessage updateUserWireMessage = (UpdateUserWireMessage) networkMessage.getWireMessage();
+                nextState = processUpdateUserWireMessage (updateUserWireMessage);
+                break;
+            }
+
+            case DeleteUser: {
+                DeleteUserWireMessage deleteUserWireMessage = (DeleteUserWireMessage) networkMessage.getWireMessage();
+                nextState = processDeleteUserWireMessage (deleteUserWireMessage);
                 break;
             }
 
@@ -285,6 +307,34 @@ public class NodeReadyState extends NodeState {
 
     public State processSessionsExpiredWireMessage (SessionsExpiredWireMessage sessionsExpiredWireMessage) {
         Miranda.getInstance().sendSessionsExpiredMessage(getNode().getQueue(), this, sessionsExpiredWireMessage.getExpiredSessions());
+
+        return getNode().getCurrentState();
+    }
+
+    public State processNewUserWireMessage (NewUserWireMessage newUserWireMessage) {
+        try {
+            Miranda.getInstance().sendUserAddedMessage(getNode().getQueue(), this, newUserWireMessage.getUserObject().asUser());
+        } catch (MirandaException e) {
+            logger.error("Exception trying to convert a UserObject to a User", e);
+        }
+
+        return getNode().getCurrentState();
+    }
+
+    public State processUpdateUserWireMessage (UpdateUserWireMessage updateUserWireMessage) {
+        try {
+            Miranda.getInstance().sendUserUpdatedMessage (getNode().getQueue(), this,
+                    updateUserWireMessage.getUserObject().asUser());
+        } catch (MirandaException e) {
+            logger.error("Exception trying to convert a UserObject to a User", e);
+        }
+
+        return getNode().getCurrentState();
+    }
+
+    public State processDeleteUserWireMessage (DeleteUserWireMessage deleteUserWireMessage) {
+        Miranda.getInstance().sendUserDeletedMessage (getNode().getQueue(), this,
+                deleteUserWireMessage.getName());
 
         return getNode().getCurrentState();
     }

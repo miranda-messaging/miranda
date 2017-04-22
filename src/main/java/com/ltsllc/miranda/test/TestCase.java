@@ -15,9 +15,12 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
+import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import com.ltsllc.miranda.util.Utils;
@@ -88,6 +91,27 @@ public class TestCase {
 
     @Mock
     private InputStream mockInputStream;
+
+    @Mock
+    private UserManager mockUserManager;
+
+    @Mock
+    private TopicManager mockTopicManager;
+
+    @Mock
+    private SessionManager mockSessionManager;
+
+    public SessionManager getMockSessionManager() {
+        return mockSessionManager;
+    }
+
+    public TopicManager getMockTopicManager() {
+        return mockTopicManager;
+    }
+
+    public UserManager getMockUserManager() {
+        return mockUserManager;
+    }
 
     public InputStream getMockInputStream() {
         return mockInputStream;
@@ -246,6 +270,9 @@ public class TestCase {
         this.mockTimer = null;
         this.mockProperties = null;
         this.mockInputStream = null;
+        this.mockUserManager = null;
+        this.mockTopicManager = null;
+        this.mockSessionManager = null;
     }
 
     public void setup () {
@@ -266,6 +293,9 @@ public class TestCase {
         this.mockTimer = mock(MirandaTimer.class);
         this.mockProperties = mock(MirandaProperties.class);
         this.mockInputStream = mock(InputStream.class);
+        this.mockUserManager = mock(UserManager.class);
+        this.mockTopicManager = mock(TopicManager.class);
+        this.mockSessionManager = mock(SessionManager.class);
     }
 
     public void setupMockNetwork () {
@@ -747,5 +777,13 @@ public class TestCase {
         }
 
         return null;
+    }
+
+    public void setupMockSessionManager () {
+        Miranda.getInstance().setSessionManager(getMockSessionManager());
+    }
+
+    public void setupMockUserManager () {
+        Miranda.getInstance().setUserManager(getMockUserManager());
     }
 }

@@ -1,7 +1,9 @@
 package com.ltsllc.miranda.node;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.util.ImprovedRandom;
 
 import java.text.SimpleDateFormat;
@@ -10,7 +12,7 @@ import java.util.Date;
 /**
  * Created by Clark on 1/21/2017.
  */
-public class NodeElement implements Perishable {
+public class NodeElement implements Perishable, Updateable<NodeElement>, Matchable<NodeElement> {
     private static Gson ourGson = new Gson();
     private static SimpleDateFormat ourSimpleDateFormat = new SimpleDateFormat("yyyy.MM.dd@HH:mm:ss.SSS");
 
@@ -206,5 +208,23 @@ public class NodeElement implements Perishable {
         int port = 1 + random.nextInt(65535);
 
         return new NodeElement(dns, ip, port, "a node");
+    }
+
+    public boolean equivalent (Object o) {
+        if (null == o || !(o instanceof NodeElement))
+            return false;
+
+        NodeElement other = (NodeElement) o;
+        return matches(other);
+    }
+
+    public void updateFrom (NodeElement other) {
+        setIp(other.getIp());
+        setLastConnected(other.getLastConnected());
+        setDescription(other.getDescription());
+    }
+
+    public boolean matches (NodeElement other) {
+        return getDns().equals(other.getDns()) && getPort() == other.getPort();
     }
 }

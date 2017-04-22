@@ -40,5 +40,29 @@ public class TestDelivery extends TestCase {
         assert (getDelivery().getMessageId().equals(event.getId()));
         assert (getDelivery().getDelivered() == timeDelivered);
     }
+
+    @Test
+    public void testUpdateFrom () {
+        Delivery delivery = Delivery.createRandomDelivery();
+        Delivery update = Delivery.createRandomDelivery();
+        IllegalStateException illegalStateException = null;
+
+        try {
+            delivery.updateFrom(update);
+        } catch (IllegalStateException e) {
+            illegalStateException = e;
+        }
+
+        assert (null != illegalStateException);
+    }
+
+    @Test
+    public void testMatch () {
+        Delivery delivery = Delivery.createRandomDelivery();
+        Delivery other = Delivery.createRandomDelivery();
+
+        assert (delivery.matches(delivery));
+        assert (!delivery.matches(other));
+    }
 }
 

@@ -13,6 +13,7 @@ public class WireMessage {
 
     public enum WireSubjects {
         ClusterFile,
+        DeleteUser,
         ExpiredSessions,
         GetClusterFile,
         GetFile,
@@ -26,9 +27,11 @@ public class WireMessage {
         Join,
         JoinResponse,
         NewSession,
+        NewUser,
         Stop,
         Stopping,
         StopResponse,
+        UpdateUser,
         Versions,
         Version
     }

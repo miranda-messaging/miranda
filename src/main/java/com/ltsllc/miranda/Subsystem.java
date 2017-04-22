@@ -47,7 +47,12 @@ public abstract class Subsystem implements Runnable,Comparer {
     private String name;
     private BlockingQueue<Message> queue;
     private Thread thread;
-    private boolean started = false;
+    private boolean started;
+    private boolean stopped;
+
+    public boolean getStopped() {
+        return stopped;
+    }
 
     public String getName () {
         return name;
@@ -78,6 +83,8 @@ public abstract class Subsystem implements Runnable,Comparer {
     }
 
     public Subsystem (String name, BlockingQueue<Message> queue) {
+        this.started = false;
+        this.stopped = false;
         this.name = name;
         this.queue = queue;
     }
@@ -94,7 +101,9 @@ public abstract class Subsystem implements Runnable,Comparer {
         setStarted(true);
     }
 
-
+    public void stop () {
+        this.stopped = true;
+    }
 
     public boolean equals (Object o) {
         if (this == o)

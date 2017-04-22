@@ -12,6 +12,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Message implements Perishable {
     public enum Subjects {
+        AddObjects,
         AddSubscriber,
         AddSession,
         Ballot,
@@ -28,7 +29,15 @@ public class Message implements Perishable {
         ConnectionClosed,
         CreateSession,
         CreateSessionResponse,
+        CreateTopic,
+        CreateTopicResponse,
+        CreateUser,
+        CreateUserResponse,
         DecrementPanicCount,
+        DeleteTopic,
+        DeleteTopicResponse,
+        DeleteUser,
+        DeleteUserResponse,
         Disconnect,
         Disconnected,
         DoneSynchronizing,
@@ -44,9 +53,15 @@ public class Message implements Perishable {
         GetSubscriptionsFile,
         GetClusterFile,
         GetFileResponse,
+        GetSession,
+        GetSessionResponse,
         GetStatus,
         GetStatusResponse,
         GetSystemMessages,
+        GetTopic,
+        GetTopicResponse,
+        GetTopics,
+        GetTopicsResponse,
         GetTopicsFile,
         GetUser,
         GetUsers,
@@ -69,6 +84,7 @@ public class Message implements Perishable {
         NewNode,
         NewUser,
         NewTopic,
+        NewTopicResponse,
         NewClusterFile,
         NewConnection,
         NetworkMessage,
@@ -84,7 +100,10 @@ public class Message implements Perishable {
         NodesUpdated,
         NodeUpdated,
         Notification,
+        OwnerQuery,
+        OwnerQueryResponse,
         Panic,
+        RemoveObjects,
         RemoveSubscriber,
         RemoteVersion,
         Retry,
@@ -105,7 +124,15 @@ public class Message implements Perishable {
         Timeout,
         UnknownHandle,
         UnwatchFile,
+        UpdateObjects,
+        UpdateTopic,
+        UpdateTopicResponse,
+        UpdateUser,
+        UpdateUserResponse,
         UserCreated,
+        UserAdded,
+        UserUpdated,
+        UserDeleted,
         Version,
         Versions,
         Watch,
@@ -181,5 +208,9 @@ public class Message implements Perishable {
 
     public void setSender (BlockingQueue<Message> queue) {
         this.sender = queue;
+    }
+
+    public void setSenderObject (Object object) {
+        this.senderObject = object;
     }
 }

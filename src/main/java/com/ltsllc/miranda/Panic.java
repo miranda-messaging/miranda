@@ -36,6 +36,7 @@ public class Panic extends Exception {
         ServletTimeout, // A servlet timed out waiting for a response from the system
         Test,
         UncheckedException, // an unchecked exception was thrown
+        UnknownUser, // we were told to update a user that doesn't exist
         UnrecognizedNode // a node shut down that we don't have a record of
     }
 

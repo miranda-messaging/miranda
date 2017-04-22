@@ -8,6 +8,7 @@ import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -208,5 +209,20 @@ public class ClusterFile extends SingleFile<NodeElement> {
         }
 
         write();
+    }
+
+    public void checkForDuplicates () {
+        List<NodeElement> nodeList = new ArrayList<NodeElement>(getData());
+        List<NodeElement> duplicates = new ArrayList<NodeElement>();
+
+        for (NodeElement current : getData()) {
+            for (NodeElement nodeElement : getData()) {
+                if (current.equivalent(nodeElement) && current != nodeElement) {
+                    duplicates.add(current);
+                }
+            }
+        }
+
+        getData().removeAll(duplicates);
     }
 }

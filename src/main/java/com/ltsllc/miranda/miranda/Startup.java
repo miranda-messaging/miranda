@@ -12,24 +12,32 @@ import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.http.SetupServletsMessage;
-import com.ltsllc.miranda.servlet.holder.ClusterStatus;
-import com.ltsllc.miranda.servlet.holder.CreateUserHolder;
-import com.ltsllc.miranda.servlet.holder.LoginHolder;
-import com.ltsllc.miranda.servlet.holder.UsersHolder;
+import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
+import com.ltsllc.miranda.servlet.file.FileServlet;
+import com.ltsllc.miranda.servlet.holder.*;
+import com.ltsllc.miranda.servlet.login.LoginHolder;
+import com.ltsllc.miranda.servlet.login.LoginServlet;
 import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
+import com.ltsllc.miranda.servlet.topic.CreateTopicServlet;
+import com.ltsllc.miranda.servlet.topic.GetTopicServlet;
+import com.ltsllc.miranda.servlet.topic.TopicsServlet;
+import com.ltsllc.miranda.servlet.topic.UpdateTopicServlet;
+import com.ltsllc.miranda.servlet.user.*;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
+import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -141,7 +149,7 @@ public class Startup extends State {
             startSubsystems();
             loadFiles();
             setupSchedule();
-            setupHttpServices();
+            setupHttpServer();
             setupServlets();
             startHttpServer();
             startListening();
@@ -150,26 +158,73 @@ public class Startup extends State {
         } catch (MirandaException e) {
             Panic panic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
             Miranda.getInstance().panic (panic);
-        } catch (Throwable throwable) {
-            Panic panic = new StartupPanic("Unchecked exception during startup", throwable, StartupPanic.StartupReasons.UncheckedException);
+        } catch (Exception e) {
+            Panic panic = new StartupPanic("Unchecked exception during startup", e, StartupPanic.StartupReasons.UncheckedException);
             Miranda.getInstance().panic (panic);
         }
 
         return StopState.getInstance();
     }
 
-    public void setupServlets () {
-        ServletMapping servletMapping1 = new ServletMapping("/servlets/status", StatusServlet.class);
-        ServletMapping servletMapping2 = new ServletMapping("/servlets/properties", PropertiesServlet.class);
-        ServletMapping servletMapping3 = new ServletMapping("/servlets/setProperty", SetPropertyServlet.class);
-        ServletMapping servletMapping4 = new ServletMapping("/servlets/clusterStatus", ClusterStatusServlet.class);
-        ServletMapping servletMapping5 = new ServletMapping("/servlets/login", LoginServlet.class);
-        ServletMapping servletMapping6 = new ServletMapping("/servlets/users", UsersServlet.class);
-        ServletMapping servletMapping7 = new ServletMapping("/servlets/createKeyPair", CreateKeyPairServlet.class);
-        ServletMapping servletMapping8 = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
+    public ServletMapping[] convertToArray (List<ServletMapping> mappings) {
+        ServletMapping[] mappingArray = new ServletMapping[mappings.size()];
+        for (int i = 0; i < mappingArray.length; i++) {
+            mappingArray[i] = mappings.get(i);
+        }
 
-        ServletMapping[] mappings = { servletMapping1, servletMapping2, servletMapping3, servletMapping4,
-                servletMapping5, servletMapping6, servletMapping7, servletMapping8 };
+        return mappingArray;
+    }
+
+    public void setupServlets () {
+        List<ServletMapping> mappings = new ArrayList<ServletMapping>();
+
+        ServletMapping servletMapping = new ServletMapping("/servlets/status", StatusServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/properties", PropertiesServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/setProperty", SetPropertyServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/clusterStatus", ClusterStatusServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/login", LoginServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getUsers", GetUsersServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getUser", GetUserServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/updateUser", UpdateUserServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/deleteUser", DeleteUserServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/createKeyPair", CreateKeyPairServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getTopics", TopicsServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getTopic", GetTopicServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/createTopic", CreateTopicServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping( "/servlets/updateTopic", UpdateTopicServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/fileServlet", FileServlet.class);
+        mappings.add (servletMapping);
 
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
@@ -180,15 +235,16 @@ public class Startup extends State {
         long timeoutPeriod = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_SERVLET_TIMEOUT, MirandaProperties.DEFAULT_SERVLET_TIMEOUT);
 
         LoginHolder.initialize(timeoutPeriod);
-        LoginHolder.getInstnace().start();
+        LoginHolder.getInstance().start();
 
-        UsersHolder.initialize(timeoutPeriod);
-        UsersHolder.getInstance().start();
+        UserHolder.initialize(timeoutPeriod);
+        UserHolder.getInstance().start();
 
-        CreateUserHolder.initialize(timeoutPeriod);
-        CreateUserHolder.getInstance().start();
+        TopicHolder.initialize(timeoutPeriod);
+        TopicHolder.getInstance().start();
 
-        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this, mappings);
+        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this,
+                convertToArray(mappings));
 
         send (getMiranda().getHttp(), setupServletsMessage);
     }
@@ -301,7 +357,7 @@ public class Startup extends State {
         getMiranda().setWriter(writer);
     }
 
-    private void setupHttpServices() {
+    private void setupHttpServer() {
         try {
             MirandaFactory factory = getMiranda().factory;
             HttpServer httpServer = factory.buildHttpServer();
@@ -328,12 +384,14 @@ public class Startup extends State {
             miranda.setUserManager(userManager);
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_TOPICS_FILE);
-            TopicsFile.initialize(filename, getWriter());
-            miranda.setTopics(TopicsFile.getInstance());
+            TopicManager topicManager = new TopicManager(filename);
+            topicManager.start();
+            miranda.setTopicManager(topicManager);
 
             filename = properties.getProperty(MirandaProperties.PROPERTY_SUBSCRIPTIONS_FILE);
-            SubscriptionsFile.initialize(filename, getWriter());
-            miranda.setSubscriptions(SubscriptionsFile.getInstance());
+            SubscriptionManager subscriptionManager = new SubscriptionManager(filename);
+            subscriptionManager.start();
+            miranda.setSubscriptionManager(subscriptionManager);
 
             String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);

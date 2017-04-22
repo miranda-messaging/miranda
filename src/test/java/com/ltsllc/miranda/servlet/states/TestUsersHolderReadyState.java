@@ -1,8 +1,7 @@
 package com.ltsllc.miranda.servlet.states;
 
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.servlet.holder.UsersHolder;
+import com.ltsllc.miranda.servlet.holder.UserHolder;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.GetUsersResponseMessage;
@@ -21,22 +20,22 @@ import static org.mockito.Mockito.*;
  */
 public class TestUsersHolderReadyState extends TestCase {
     @Mock
-    private UsersHolder mockUsersHolder;
+    private UserHolder mockUserHolder;
 
-    private UsersHolderReadyState usersHolderReadyState;
+    private UserHolderReadyState usersHolderReadyState;
 
-    public UsersHolder getMockUsersHolder() {
-        return mockUsersHolder;
+    public UserHolder getMockUserHolder() {
+        return mockUserHolder;
     }
 
-    public UsersHolderReadyState getUsersHolderReadyState() {
+    public UserHolderReadyState getUserHolderReadyState() {
         return usersHolderReadyState;
     }
 
     public void reset() {
         super.reset();
 
-        mockUsersHolder = null;
+        mockUserHolder = null;
         usersHolderReadyState = null;
     }
 
@@ -46,8 +45,8 @@ public class TestUsersHolderReadyState extends TestCase {
 
         super.setup();
 
-        mockUsersHolder = mock(UsersHolder.class);
-        usersHolderReadyState = new UsersHolderReadyState(mockUsersHolder);
+        mockUserHolder = mock(UserHolder.class);
+        usersHolderReadyState = new UserHolderReadyState(mockUserHolder);
     }
 
     @Test
@@ -57,11 +56,11 @@ public class TestUsersHolderReadyState extends TestCase {
         users.add(user);
         GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(null, this, users);
 
-        when(getMockUsersHolder().getCurrentState()).thenReturn(getUsersHolderReadyState());
+        when(getMockUserHolder().getCurrentState()).thenReturn(getUserHolderReadyState());
 
-        State nextState = getUsersHolderReadyState().processMessage(getUsersResponseMessage);
+        State nextState = getUserHolderReadyState().processMessage(getUsersResponseMessage);
 
-        assert (nextState == getUsersHolderReadyState());
-        verify(getMockUsersHolder(), atLeastOnce()).setUsersListAndAwaken(Matchers.eq(users));
+        assert (nextState == getUserHolderReadyState());
+        verify(getMockUserHolder(), atLeastOnce()).setUsersAndAwaken(Matchers.eq(users));
     }
 }

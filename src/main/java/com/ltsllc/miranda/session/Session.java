@@ -1,14 +1,16 @@
 package com.ltsllc.miranda.session;
 
+import com.ltsllc.miranda.user.User;
+
 /**
  * Created by Clark on 3/30/2017.
  */
 public class Session {
-    private String user;
+    private User user;
     private long expires;
     private long id;
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -28,7 +30,7 @@ public class Session {
         this.id = id;
     }
 
-    public Session (String user, long expires, long id) {
+    public Session (User user, long expires, long id) {
         this.user = user;
         this.expires = expires;
         this.id = id;

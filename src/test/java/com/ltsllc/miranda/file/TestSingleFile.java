@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.file.messages.AddObjectsMessage;
 import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.NodeElement;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -242,5 +244,77 @@ public class TestSingleFile extends TestCase {
 
         assert (null == contents);
         verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
+    }
+
+    @Test
+    public void testAddObjects () {
+        setupMockWriter();
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>();
+        for (int i = 0; i < 3; i++ ) {
+            NodeElement nodeElement = NodeElement.random(improvedRandom);
+            nodeElements.add(nodeElement);
+        }
+
+        getSingleFile().addObjects(nodeElements);
+
+        assert (getSingleFile().contains(nodeElements.get(0)));
+        assert (getSingleFile().contains(nodeElements.get(1)));
+        assert (getSingleFile().contains(nodeElements.get(2)));
+        verify (getMockWriter(), atLeastOnce()).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(),
+                Matchers.anyString(), Matchers.any(byte[].class));
+    }
+
+    @Test
+    public void testUpdateObjects () {
+        setupMockWriter();
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>();
+        for (int i = 0; i < 3; i++ ) {
+            NodeElement nodeElement = NodeElement.random(improvedRandom);
+            nodeElements.add(nodeElement);
+        }
+
+        getSingleFile().addObjects(nodeElements);
+        List<NodeElement> updates = new ArrayList<NodeElement>();
+
+        for (int i = 0; i < 3; i++) {
+            NodeElement nodeElement = nodeElements.get(i);
+            String dns = nodeElement.getDns();
+            int port = nodeElement.getPort();
+            nodeElement = NodeElement.random(improvedRandom);
+            nodeElement.setDns(dns);
+            nodeElement.setPort(port);
+            updates.add(nodeElement);
+        }
+
+        getSingleFile().updateObjects(updates);
+
+        assert (getSingleFile().contains(updates.get(0)));
+        assert (getSingleFile().contains(updates.get(1)));
+        assert (getSingleFile().contains(updates.get(2)));
+        verify (getMockWriter(), atLeast(2)).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(),
+                Matchers.anyString(), Matchers.any(byte[].class));
+    }
+
+    @Test
+    public void testRemoveObjects () {
+        setupMockWriter();
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        List<NodeElement> nodeElements = new ArrayList<NodeElement>();
+        for (int i = 0; i < 3; i++ ) {
+            NodeElement nodeElement = NodeElement.random(improvedRandom);
+            nodeElements.add(nodeElement);
+        }
+
+        getSingleFile().addObjects(nodeElements);
+        getSingleFile().removeObjects(nodeElements);
+
+        assert (getSingleFile().getData().size() < 1);
+        verify (getMockWriter(), atLeast(2)).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(),
+                Matchers.anyString(), Matchers.any(byte[].class));
     }
 }

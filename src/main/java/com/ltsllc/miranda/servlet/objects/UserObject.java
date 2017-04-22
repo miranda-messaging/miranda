@@ -41,13 +41,22 @@ public class UserObject extends com.ltsllc.miranda.StatusObject {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public UserObject () {
         super(New);
     }
 
-    public void setName(String name) {
+    public UserObject (String name, String description, String publicKey) {
+        super(Status.New);
+
         this.name = name;
+        this.description = description;
+        this.publicKey = publicKey;
     }
+
 
     public User asUser () throws MirandaException {
         try {

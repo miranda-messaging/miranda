@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.user.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.servlet.objects.LoginObject;
+import com.ltsllc.miranda.servlet.login.LoginObject;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -9,15 +9,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/1/2017.
  */
 public class LoginMessage extends Message {
-    private LoginObject loginObject;
+    private String name;
 
-    public LoginObject getLoginObject() {
-        return loginObject;
+    public String getName() {
+        return name;
     }
 
-    public LoginMessage (BlockingQueue<Message> senderQueue, Object sender, LoginObject loginObject) {
+    public LoginMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.Login, senderQueue, sender);
 
-        this.loginObject = loginObject;
+        this.name = name;
     }
 }

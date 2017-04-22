@@ -32,7 +32,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         ourInstance = subscriptionsFile;
     }
 
-    private SubscriptionsFile (Writer writer, String filename) {
+    public SubscriptionsFile (Writer writer, String filename) {
         super(filename, writer);
 
         SubscriptionsFileReadyState subscriptionsFileReadyState = new SubscriptionsFileReadyState(this);
@@ -51,4 +51,18 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         return new TypeToken<ArrayList<Subscription>>(){}.getType();
     }
 
+    public void checkForDuplicates () {
+        List<Subscription> subscriptionsList = new ArrayList<Subscription>(getData());
+        List<Subscription> duplicates = new ArrayList<Subscription>();
+
+        for (Subscription current : getData()) {
+            for (Subscription subscription : getData()) {
+                if (current.getName().equals(subscription.getName()) && current != subscription) {
+                    duplicates.add(current);
+                }
+            }
+        }
+
+        getData().removeAll(duplicates);
+    }
 }

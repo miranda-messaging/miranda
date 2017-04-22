@@ -1,9 +1,12 @@
 package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.util.ImprovedRandom;
 import com.ltsllc.miranda.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.security.SecureRandom;
 
 /**
  * Created by Clark on 2/19/2017.
@@ -41,5 +44,32 @@ public class TestEvent extends TestCase {
 
         String junkAsBinaryAsHex = Utils.bytesToString(junk.getBytes());
         assert (event.getContent().equals(junkAsBinaryAsHex));
+    }
+
+    @Test
+    public void testUpdateFrom () {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        Event event = Event.createRandom(improvedRandom, 1024);
+        IllegalStateException illegalStateException = null;
+
+        try {
+            event.updateFrom(event);
+        } catch (IllegalStateException e) {
+            illegalStateException = e;
+        }
+
+        assert (illegalStateException != null);
+    }
+
+    @Test
+    public void testMatch () {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        Event event = Event.createRandom(improvedRandom, 1024);
+        Event other = Event.createRandom(improvedRandom, 1024);
+
+        assert (event.matches(event));
+        assert (!event.matches(other));
     }
 }

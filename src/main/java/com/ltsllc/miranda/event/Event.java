@@ -1,10 +1,13 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.file.Matchable;
+import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.util.ImprovedRandom;
 
+import java.security.SecureRandom;
 import java.util.UUID;
 
 /**
@@ -14,8 +17,9 @@ import java.util.UUID;
 /**
  * A message that was sent to a topic.
  */
-public class Event implements Perishable {
+public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
     private static Gson ourGson = new Gson();
+    private static SecureRandom random = new SecureRandom();
 
     public enum Methods {
         GET,
@@ -46,6 +50,13 @@ public class Event implements Perishable {
 
         this.created = System.currentTimeMillis();
         this.id = UUID.randomUUID().toString();
+    }
+
+    public Event (String eventId, Methods method, String content, long time) {
+        this.id = eventId;
+        this.method = method;
+        this.content = content;
+        this.created = time;
     }
 
     private static Methods[] methods = {Methods.POST, Methods.GET, Methods.PUT, Methods.DELETE};
@@ -101,5 +112,13 @@ public class Event implements Perishable {
 
     public String toJson () {
         return ourGson.toJson(this);
+    }
+
+    public void updateFrom (Event other) {
+        throw new IllegalStateException("updateFrom is not applicable for Events");
+    }
+
+    public boolean matches (Event other) {
+        return getId().equals(other.getId());
     }
 }

@@ -2,14 +2,14 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.PublicKey;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.objects.LoginObject;
-import com.ltsllc.miranda.user.messages.GetUserMessage;
-import com.ltsllc.miranda.user.messages.GetUsersMessage;
-import com.ltsllc.miranda.user.messages.GetUsersResponseMessage;
-import com.ltsllc.miranda.user.messages.NewUserMessage;
+import com.ltsllc.miranda.node.messages.UserAddedMessage;
+import com.ltsllc.miranda.node.messages.UserDeletedMessage;
+import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
+import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import org.apache.log4j.Logger;
 
@@ -106,6 +106,14 @@ public class UserManager extends Consumer {
         return null;
     }
 
+    public void deleteUser (String name) {
+        User user = getUser(name);
+
+        if (user != null) {
+            getUsers().remove(user);
+        }
+    }
+
     public void setUsers(List<User> users) {
         this.users = users;
     }
@@ -119,5 +127,59 @@ public class UserManager extends Consumer {
     {
         NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
         sendToMe(newUserMessage);
+    }
+
+    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage (senderQueue, sender, user);
+        sendToMe(updateUserMessage);
+    }
+
+    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage (senderQueue, sender, name);
+        sendToMe(deleteUserMessage);
+    }
+
+    public void updateUser (UserObject userObject) throws MirandaException {
+        User existingUser = getUser(userObject.getName());
+
+        if (null == existingUser)
+            throw new UnknownUserException ("User " + userObject.getPublicKey() + " not found");
+
+        existingUser.updateFrom (userObject);
+    }
+
+    public void updateUser (User user) throws UnknownUserException {
+        User existingUser = getUser(user.getName());
+
+        if (null == existingUser) {
+            throw new UnknownUserException("User " + user.getName() + " was not found.");
+        } else {
+            existingUser.updateFrom(user);
+        }
+    }
+
+    public void sendGetUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        GetUserMessage getUserMessage = new GetUserMessage(senderQueue, sender, name);
+        sendToMe(getUserMessage);
+    }
+
+    public void sendUserAddedMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UserAddedMessage userAddedMessage = new UserAddedMessage(senderQueue, sender, user);
+        sendToMe(userAddedMessage);
+    }
+
+    public void sendUserUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UserUpdatedMessage userUpdatedMessage = new UserUpdatedMessage(senderQueue, sender, user);
+        sendToMe(userUpdatedMessage);
+    }
+
+    public void sendUserDeletedMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        UserDeletedMessage userDeletedMessage = new UserDeletedMessage(senderQueue, sender, name);
+        sendToMe(userDeletedMessage);
+    }
+
+    public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, user);
+        sendToMe(createUserMessage);
     }
 }

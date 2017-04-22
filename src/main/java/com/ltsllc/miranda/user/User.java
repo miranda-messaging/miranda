@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.StatusObject;
+import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.util.Utils;
 
@@ -12,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.rmi.MarshalException;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.spec.X509EncodedKeySpec;
@@ -20,7 +23,7 @@ import java.util.Base64;
 /**
  * Created by Clark on 1/5/2017.
  */
-public class User extends StatusObject implements Perishable, Serializable {
+public class User extends StatusObject<User> implements Perishable, Serializable {
     private static Gson ourGson = new Gson();
 
     private String name;
@@ -41,6 +44,10 @@ public class User extends StatusObject implements Perishable, Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public User (String name, String description) {
@@ -129,5 +136,36 @@ public class User extends StatusObject implements Perishable, Serializable {
     }
 
     public void rectify () throws MirandaException {
+    }
+
+    public void updateFrom (UserObject userObject) throws MirandaException {
+        PublicKey publicKey = null;
+
+        try {
+            byte[] data = Base64.getDecoder().decode(userObject.getPublicKey());
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            java.security.PublicKey securityPublicKey = keyFactory.generatePublic(spec);
+            publicKey = new PublicKey(securityPublicKey);
+        } catch (GeneralSecurityException e) {
+            throw new MirandaException("Exception trying to get public key", e);
+        }
+
+        setPublicKey(publicKey);
+        setDescription(userObject.getDescription());
+    }
+
+    public void updateFrom (User other) {
+        super.updateFrom(other);
+
+        setPublicKey(other.getPublicKey());
+        setDescription(other.getDescription());
+    }
+
+    public boolean matches (User other) {
+        if (!super.matches(other))
+            return false;
+
+        return getName().equals(other.getName());
     }
 }

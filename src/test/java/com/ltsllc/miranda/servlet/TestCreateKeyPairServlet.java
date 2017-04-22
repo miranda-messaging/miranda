@@ -1,17 +1,15 @@
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
 import com.ltsllc.miranda.test.TestServlet;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

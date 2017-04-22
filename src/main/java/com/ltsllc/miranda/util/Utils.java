@@ -16,6 +16,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.cert.X509Certificate;
 
@@ -372,5 +373,11 @@ public class Utils {
     public static String hexStringToString(String hexString) throws IOException {
         byte[] bytes = hexStringToBytes(hexString);
         return new String(bytes);
+    }
+
+    public static byte[] toBytes (long value) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES);
+        byteBuffer.putLong(value);
+        return byteBuffer.array();
     }
 }

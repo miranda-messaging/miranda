@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.ltsllc.miranda.MirandaException;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,5 +34,10 @@ public class MirandaServlet extends HttpServlet {
         } catch (IOException | JsonSyntaxException e) {
             throw new MirandaException("Exception trying to get object", e);
         }
+    }
+
+    public void respond (ServletOutputStream output, Object o) throws IOException {
+        String json = gson.toJson(o);
+        output.println(json);
     }
 }

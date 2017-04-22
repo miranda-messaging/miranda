@@ -14,9 +14,16 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.topics.messages.NewTopicMessage;
+import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.user.messages.DeleteUserMessage;
+import com.ltsllc.miranda.user.messages.NewUserMessage;
+import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -283,5 +290,25 @@ public class Cluster extends Consumer {
         for (Node node : getNodes()) {
             node.sendSendNetworkMessage (getQueue(), this, wireMessage);
         }
+    }
+
+    public void sendNewUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
+        sendToMe(newUserMessage);
+    }
+
+    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, user);
+        sendToMe(updateUserMessage);
+    }
+
+    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, name);
+        sendToMe(deleteUserMessage);
+    }
+
+    public void sendNewTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+        NewTopicMessage newTopicMessage = new NewTopicMessage(senderQueue, sender, topic);
+        sendToMe(newTopicMessage);
     }
 }

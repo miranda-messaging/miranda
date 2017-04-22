@@ -3,6 +3,7 @@ package com.ltsllc.miranda.event;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.lang.reflect.Type;
@@ -27,4 +28,7 @@ public class EventsFile extends SingleFile<Event> {
     public List buildEmptyList() {
         return new ArrayList<Event>();
     }
+
+    public void checkForDuplicates () {}
+
 }

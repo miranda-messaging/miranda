@@ -1,9 +1,13 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.user.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,8 +60,11 @@ public class TestMiranda extends TestCase {
     }
 
     @Test
-    public void testSendNewSessionMessage () {
-        Session session = new Session("whatever",123, 456);
+    public void testSendNewSessionMessage () throws MirandaException {
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        Session session = new Session(user,123, 456);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
         getMiranda().setQueue(queue);
@@ -68,8 +75,11 @@ public class TestMiranda extends TestCase {
     }
 
     @Test
-    public void testSendExpiredSessions () {
-        Session session = new Session("whatever",123, 456);
+    public void testSendExpiredSessions () throws MirandaException {
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        Session session = new Session(user,123, 456);
         List<Session> expiredSessions = new ArrayList<Session>();
         expiredSessions.add(session);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
@@ -79,5 +89,70 @@ public class TestMiranda extends TestCase {
         getMiranda().sendSessionsExpiredMessage(null, this, expiredSessions);
 
         assert (contains(Message.Subjects.SessionsExpired, queue));
+    }
+
+    @Test
+    public void testSendDeleteTopicMessage () {
+        Topic topic = new Topic("whatever");
+        getMiranda().stop();
+        getMiranda().sendDeleteTopicMessage(null, this, topic);
+        assert (contains(Message.Subjects.DeleteTopic, getMiranda().getQueue()));
+    }
+
+    public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
+
+    @Test
+    public void testSendDeleteUserMessage () {
+        getMiranda().stop();
+        getMiranda().sendDeleteUserMessage(null, this, "whatever");
+        assert (contains(Message.Subjects.DeleteUser, getMiranda().getQueue()));
+    }
+
+    @Test
+    public void testSendCreateUserMessage () throws MirandaException {
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        getMiranda().stop();
+        getMiranda().sendCreateUserMessage(null,this, user);
+
+        assert (contains(Message.Subjects.CreateUser, getMiranda().getQueue()));
+    }
+
+    @Test
+    public void testSendUpdateUserMessage () throws MirandaException {
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        getMiranda().stop();
+        getMiranda().sendUpdateUserMessage(null,this, user);
+
+        assert (contains(Message.Subjects.UpdateUser, getMiranda().getQueue()));
+    }
+
+    @Test
+    public void testSendUserAddedMessage () throws MirandaException {
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        getMiranda().stop();
+        getMiranda().sendUserAddedMessage(null, this, user);
+
+        assert (contains(Message.Subjects.UserAdded, getMiranda().getQueue()));
+    }
+
+    @Test
+    public void testSendUserUpdatedMessage () throws MirandaException {
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        getMiranda().stop();
+        getMiranda().sendUserUpdatedMessage(null, this, user);
+
+        assert (contains(Message.Subjects.UserUpdated, getMiranda().getQueue()));
+    }
+
+    @Test
+    public void testSendUserDeletedMessage () {
+        getMiranda().stop();
+        getMiranda().sendUserDeletedMessage(null, this, "whatever");
+
+        assert (contains(Message.Subjects.UserDeleted, getMiranda().getQueue()));
     }
 }

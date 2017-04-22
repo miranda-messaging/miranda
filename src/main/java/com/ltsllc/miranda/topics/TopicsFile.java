@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.writer.Writer;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.List;
  */
 public class TopicsFile extends SingleFile<Topic> {
     public static final String FILE_NAME = "topics";
+
+    private static Logger logger = Logger.getLogger(TopicsFile.class);
 
     private static TopicsFile ourInstance;
 
@@ -33,7 +36,7 @@ public class TopicsFile extends SingleFile<Topic> {
         ourInstance = topicsFile;
     }
 
-    private TopicsFile(String filename, Writer writer) {
+    public TopicsFile(String filename, Writer writer) {
         super(filename, writer);
         TopicsFileReadyState topicsFileReadyState = new TopicsFileReadyState(this);
         setCurrentState(topicsFileReadyState);
@@ -52,5 +55,30 @@ public class TopicsFile extends SingleFile<Topic> {
         return new TypeToken<ArrayList<Topic>>(){}.getType();
     }
 
+    public void checkForDuplicates () {
+        List<Topic> topicList = new ArrayList<Topic>(getData());
+        List<Topic> duplicates = new ArrayList<Topic>();
 
+        for (Topic current : topicList) {
+            for (Topic topic : getData())
+            {
+                if (current.getName().equals(topic.getName()) && current != topic)
+                {
+                    logger.info ("Removing duplicate topic named " + topic.getName());
+                    duplicates.add(current);
+                }
+            }
+        }
+
+        getData().removeAll(duplicates);
+    }
+
+    public Topic find (Topic topic) {
+        for (Topic candidate : getData()) {
+            if (candidate.getName().equals(topic.getName()))
+                return candidate;
+        }
+
+        return null;
+    }
 }

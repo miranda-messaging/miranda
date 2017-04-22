@@ -1,10 +1,14 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
@@ -12,9 +16,11 @@ import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import org.junit.Before;
@@ -260,9 +266,13 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessNewSessionWireMessage () {
+    public void testProcessNewSessionWireMessage () throws MirandaException {
         setupMockMiranda();
-        Session session = new Session ("whatever", 123, 456);
+
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        Session session = new Session (user, 123, 456);
         NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(session);
         NetworkMessage networkMessage = new NetworkMessage(null, this, newSessionWireMessage);
 
@@ -275,9 +285,13 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessSessinsExpiredWireMessage () {
+    public void testProcessSessinsExpiredWireMessage () throws MirandaException {
         setupMockMiranda();
-        Session session = new Session ("whatever", 123, 456);
+
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+
+        Session session = new Session (user, 123, 456);
         List<Session> expiredSessions = new ArrayList<Session>();
         expiredSessions.add(session);
         SessionsExpiredWireMessage sessionsExpiredWireMessage = new SessionsExpiredWireMessage(expiredSessions);
@@ -289,5 +303,62 @@ public class TestNodeReadyState extends TesterNodeState {
 
         assert (nextState instanceof NodeReadyState);
         verify (getMockMiranda(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(expiredSessions));
+    }
+
+
+    public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
+
+    @Test
+    public void testProcessNewUserWireMessage () throws MirandaException {
+        setupMockMiranda();
+
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        NewUserWireMessage newUserWireMessage = new NewUserWireMessage(userObject);
+        NetworkMessage networkMessage = new NetworkMessage(null, this, newUserWireMessage);
+
+        when (getMockNode().getCurrentState()).thenReturn(getReadyState());
+
+        State nextState = getReadyState().processMessage(networkMessage);
+
+        assert (nextState == getReadyState());
+        verify(getMockMiranda(), atLeastOnce()).sendUserAddedMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.eq(user));
+    }
+
+    @Test
+    public void testProcessUpdateUserWireMessage () throws MirandaException {
+        setupMockMiranda();
+
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        UpdateUserWireMessage updateUserWireMessage = new UpdateUserWireMessage(userObject);
+        NetworkMessage networkMessage = new NetworkMessage(null, this, updateUserWireMessage);
+
+        when (getMockNode().getCurrentState()).thenReturn(getReadyState());
+
+        State nextState = getReadyState().processMessage(networkMessage);
+
+        assert (nextState == getReadyState());
+        verify(getMockMiranda(), atLeastOnce()).sendUserUpdatedMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.eq(user));
+    }
+
+    @Test
+    public void testProcessDeleteUserWireMessage () throws MirandaException {
+        setupMockMiranda();
+
+        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        User user = userObject.asUser();
+        DeleteUserWireMessage deleteUserWireMessage = new DeleteUserWireMessage("whatever");
+        NetworkMessage networkMessage = new NetworkMessage(null, this, deleteUserWireMessage);
+
+        when (getMockNode().getCurrentState()).thenReturn(getReadyState());
+
+        State nextState = getReadyState().processMessage(networkMessage);
+
+        assert (nextState == getReadyState());
+        verify(getMockMiranda(), atLeastOnce()).sendUserDeletedMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.eq("whatever"));
     }
 }

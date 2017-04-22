@@ -35,6 +35,7 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends
         return file;
     }
 
+    /*
     public State processHttpPostMessage (HttpPostMessage httpPostMessage) {
         if (httpPostMessage.getChannelHandlerContext().isRemoved()) {
             logger.info("ChannelHandlerContext.isRemoved is returning true");
@@ -44,10 +45,10 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends
 
         Type basicType = getBasicType();
         String json = httpPostMessage.getContent();
-        E e = (E) getHandler().decodeContent(basicType, json);
+        E newObject = (E) getHandler().decodeContent(basicType, json);
         DefaultHttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CREATED);
-        if (!getFile().contains(e)) {
-            getFile().add(e);
+        if (!getFile().contains(newObject)) {
+            getFile().add(newObject);
         } else {
             response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONFLICT);
         }
@@ -57,6 +58,7 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends
 
         return nextState;
     }
+    */
 
     public W getHandler() {
         return handler;
@@ -67,11 +69,13 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends
         State nextState = getContainer().getCurrentState();
 
         switch (message.getSubject()) {
+            /*
             case HttpPost: {
                 HttpPostMessage httpPostMessage = (HttpPostMessage) message;
                 nextState = processHttpPostMessage(httpPostMessage);
                 break;
             }
+            */
 
             default:
                 nextState = super.processMessage(message);

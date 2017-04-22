@@ -8,7 +8,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 2/26/2017.
  */
-abstract public class PerishableFile<E extends Perishable> extends SingleFile<E> {
+abstract public class PerishableFile<E extends Perishable & Updateable<E> & Matchable<E>> extends SingleFile<E> {
     public PerishableFile (String filename, Writer writer) {
         super(filename, writer);
     }

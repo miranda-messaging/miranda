@@ -11,7 +11,6 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UsersFileReadyState;
-import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.*;
@@ -168,5 +167,29 @@ public class UsersFile extends SingleFile<User> {
         }
 
         fireFileLoaded();
+    }
+
+    public void checkForDuplicates () {
+        List<User> userList = new ArrayList<User>(getData());
+        List<User> duplicates = new ArrayList<User>();
+
+        for (User current : getData()) {
+            for (User user : getData()) {
+                if (current.getName().equals(user.getName()) && current != user) {
+                    duplicates.add(current);
+                }
+            }
+        }
+
+        getData().removeAll(duplicates);
+    }
+
+    public User find (User user) {
+        for (User candidate : getData()) {
+            if (candidate.getName().equals(user.getName()))
+                return candidate;
+        }
+
+        return null;
     }
 }
