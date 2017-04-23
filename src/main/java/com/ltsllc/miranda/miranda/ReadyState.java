@@ -1,13 +1,16 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.miranda.operations.login.LoginOperation;
+import com.ltsllc.miranda.miranda.operations.subscriptions.CreateSubscriptionOperation;
+import com.ltsllc.miranda.miranda.operations.subscriptions.DeleteSubscriptionOperation;
+import com.ltsllc.miranda.miranda.operations.subscriptions.UpdateSubscriptionOperation;
 import com.ltsllc.miranda.miranda.operations.topic.CreateTopicOperation;
 import com.ltsllc.miranda.miranda.operations.user.CreateUserOperation;
 import com.ltsllc.miranda.miranda.operations.user.DeleteUserOperation;
@@ -18,18 +21,18 @@ import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
-import com.ltsllc.miranda.subsciptions.OwnerQueryResponseMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.NameVersion;
+import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
-import com.ltsllc.miranda.topics.messages.UpdateTopicResponseMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.user.messages.*;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,6 +176,30 @@ public class ReadyState extends State {
             case Login: {
                 LoginMessage loginMessage = (LoginMessage) message;
                 nextState = processLoginMessage(loginMessage);
+                break;
+            }
+
+            case CreateSubscription: {
+                CreateSubscriptionMessage createSubscriptionMessage = (CreateSubscriptionMessage) message;
+                nextState = processCreateSubscriptionMessage (createSubscriptionMessage);
+                break;
+            }
+
+            case UpdateSubscription: {
+                UpdateSubscriptionMessage updateSubscriptionMessage = (UpdateSubscriptionMessage) message;
+                nextState = processUpdateSubscriptionMessage (updateSubscriptionMessage);
+                break;
+            }
+
+            case DeleteSubscription: {
+                DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) message;
+                nextState = processDeleteSubscriptionMessage (deleteSubscriptionMessage);
+                break;
+            }
+
+            case Auction: {
+                AuctionMessage auctionMessage = (AuctionMessage) message;
+                nextState = processAuctionMessage (auctionMessage);
                 break;
             }
 
@@ -321,6 +348,40 @@ public class ReadyState extends State {
                 createTopicMessage.getSender());
 
         createTopicOperation.start();
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) {
+        CreateSubscriptionOperation createSubscriptionOperation = new CreateSubscriptionOperation(createSubscriptionMessage.getSender(),
+                createSubscriptionMessage.getSubscription());
+
+        createSubscriptionOperation.start();
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processUpdateSubscriptionMessage (UpdateSubscriptionMessage updateSubscriptionMessage) {
+        UpdateSubscriptionOperation updateSubscriptionOperation = new UpdateSubscriptionOperation(updateSubscriptionMessage.getSender(),
+                updateSubscriptionMessage.getSubscription());
+
+        updateSubscriptionOperation.start();
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
+        DeleteSubscriptionOperation deleteSubscriptionOperation = new DeleteSubscriptionOperation(deleteSubscriptionMessage.getSender(),
+                deleteSubscriptionMessage.getName());
+
+        deleteSubscriptionOperation.start();
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processAuctionMessage (AuctionMessage auctionMessage) {
+        AuctionOperation auctionOperation = new AuctionOperation();
+        auctionOperation.start();
 
         return getMiranda().getCurrentState();
     }

@@ -18,6 +18,10 @@ import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.messages.NewTopicMessage;
 import com.ltsllc.miranda.user.User;
@@ -310,5 +314,20 @@ public class Cluster extends Consumer {
     public void sendNewTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
         NewTopicMessage newTopicMessage = new NewTopicMessage(senderQueue, sender, topic);
         sendToMe(newTopicMessage);
+    }
+
+    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
+        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, subscription);
+        sendToMe(createSubscriptionMessage);
+    }
+
+    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
+        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, subscription);
+        sendToMe(updateSubscriptionMessage);
+    }
+
+    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, name);
+        sendToMe(deleteSubscriptionMessage);
     }
 }

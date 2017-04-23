@@ -18,9 +18,9 @@ public class CreateUserOperation extends Operation {
     }
 
     public CreateUserOperation (BlockingQueue<Message> requester, User user) {
-        super("create user operation");
+        super("create user operation", requester);
 
-        CreateUserOperationReadyState readyState = new CreateUserOperationReadyState( this, requester);
+        CreateUserOperationReadyState readyState = new CreateUserOperationReadyState( this);
         setCurrentState(readyState);
 
         this.user = user;

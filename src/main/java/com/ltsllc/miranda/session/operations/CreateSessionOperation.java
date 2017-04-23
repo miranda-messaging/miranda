@@ -18,9 +18,9 @@ public class CreateSessionOperation extends Operation {
     }
 
     public CreateSessionOperation (BlockingQueue<Message> requester, String user) {
-        super("create session operation");
+        super("create session operation", requester);
 
-        CreateSessionOperationReadyState readyState = new CreateSessionOperationReadyState(this, requester);
+        CreateSessionOperationReadyState readyState = new CreateSessionOperationReadyState(this);
         setCurrentState(readyState);
 
         this.user = user;

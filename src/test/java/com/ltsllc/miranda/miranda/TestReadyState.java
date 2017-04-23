@@ -14,7 +14,7 @@ import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
-import com.ltsllc.miranda.subsciptions.OwnerQueryResponseMessage;
+import com.ltsllc.miranda.subsciptions.messages.OwnerQueryResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.*;

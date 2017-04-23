@@ -13,13 +13,13 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class CreateUserOperationReadyState extends OperationState {
+public class CreateUserOperationReadyState extends State {
     public CreateUserOperation getCreateUserOperation () {
         return (CreateUserOperation) getContainer();
     }
 
-    public CreateUserOperationReadyState (CreateUserOperation createUserOperation, BlockingQueue<Message> requester) {
-        super(createUserOperation, requester);
+    public CreateUserOperationReadyState (CreateUserOperation createUserOperation) {
+        super(createUserOperation);
     }
 
     public State processMessage (Message message) {
@@ -50,7 +50,7 @@ public class CreateUserOperationReadyState extends OperationState {
         CreateUserResponseMessage createUserResponseMessage = new CreateUserResponseMessage(
                 getCreateUserOperation().getQueue(), this, message.getUser(), message.getResult());
 
-        send(getRequester(), createUserResponseMessage);
+        send(getCreateUserOperation().getRequester(), createUserResponseMessage);
 
         return StopState.getInstance();
     }

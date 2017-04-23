@@ -28,7 +28,156 @@
     </div><!--/.container-fluid -->
 </nav>
 
+<button type="button" class="btn btn-default" onclick="createNewSubscription()">Create Subscription</button>
+<p>
+<table id="table">
+    <thead>
+        <tr>
+            <td>Name</td>
+        </tr>
+    </thead>
+
+    <tbody id="tableBody">
+    </tbody>
+</table>
+</p>
+
+<div id="dialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="dialogTitle">New Subscription</h4>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-horizontal">
+                <div class="span8">
+                    <div class="control-group">
+                        <label class="control-label">Name</label>
+                        <input id="name" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Topic</label>
+                        <input id="topic" type="text" class="input-medium">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">URL</label>
+                        <input id="url" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Liveliness URL</label>
+                        <input id="livelinessUrl" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Owner</label>
+                        <input id="owner" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Remote Policy</label>
+                        <label><input type="radio" name="remotePolicy">None</label>
+                        <label><input type="radio" name="remotePolicy">Received</label>
+                        <label><input type="radio" name="remotePolicy">Written</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button id="delete" type="button" data-dismiss="modal" hidden="true">Delete</button>
+            <button id="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button id="accept" type="button" class="btn btn-primary" data-dismiss="modal">Create</button>
+        </div>
+    </div> <!-- modal-dialog -->
+</div> <!-- dialog -->
+
 <script src="/js/jquery.js"></script>
 <script src="/bootstrap/js/bootstrap.js"></script>
+<script>
+    function showDialog () {
+        $('#dialog').modal('show');
+    }
+
+    function fillTable () {
+        $.get("/servlets/getSubscriptions", gotTableContents);
+    }
+
+    function gotTableContents (data, status) {
+        var response = JSON.parse(data);
+
+        if (response.result == "Success") {
+            var html = "";
+
+            $('#tableBody').empty();
+
+            response.subscriptions.forEach( function(subscription) {
+                html = html + "<tr>";
+                html = html + "<td>" + subscription.name + "</td>";
+                html = html + "</tr>";
+            } );
+
+            $('#tableBody').append(html);
+        }
+    }
+
+    function setupHandler () {
+        $('#table').find('tr').click(function () {
+            edit($(this).index());
+        });
+    }
+
+    function createNewSubscription () {
+        $('#dialogTitle').text("New Subscription");
+
+        $('#name').val("");
+        $('#topic').val("");
+        $('#url').val("");
+        $('#livelinessUrl').val("");
+        $('#remotePolicy').val("");
+
+        $('#accept').unbind();
+        $('#accept').click( function () { createSubscription(); });
+
+        showDialog();
+    }
+
+    function createSubscription () {
+        var subscription = new Object();
+
+        subscription.name = $('#name').val();
+        subscription.topic = $('#topic').val();
+        subscription.owner = $('#owner').val();
+        subscription.dataUrl = $('#url').val();
+        subscription.livelinessUrl = $('#livelinessUrl').val();
+        subscription.remotePolicy = $('#remotePolicy:checked').val();
+
+        var data = JSON.stringify(subscription);
+        $.post("/servlets/createSubscription", data, createResult);
+    }
+
+    function createResult (data, status) {
+        var result = JSON.parse(data);
+
+        if (result.result == "Success") {
+        } else if (result.result == "InsufficientPermissions") {
+            alert ("Create failed because you do not have permission");
+        } else if (result.result == "Duplicate") {
+            alert ("Create failed because the new subscription's name is in use");
+        } else if (result.result == "UserNotFound") {
+            alert ("Create failed because the new subscription's owner was not found");
+        } else if (result.result == "TopicNotFound") {
+            alert ("Create failed because the new subscription's topic was not found");
+        } else if (result.result == "Timeout") {
+            alert ("Create failed because of a timeout");
+        } else if (result.result == "Exception") {
+            alert ("Create failed due to an exception");
+        } else {
+            alert ("Create failed for an unknown reason");
+        }
+
+        fillTable();
+    }
+
+    fillTable();
+</script>
 </body>
 </html>

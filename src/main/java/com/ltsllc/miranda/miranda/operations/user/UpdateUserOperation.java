@@ -19,9 +19,9 @@ public class UpdateUserOperation extends Operation {
     }
 
     public UpdateUserOperation (User user, BlockingQueue<Message> requester) {
-        super("update user operation");
+        super("update user operation", requester);
 
-        UpdateUserOperationReadyState readyState = new UpdateUserOperationReadyState(this, requester);
+        UpdateUserOperationReadyState readyState = new UpdateUserOperationReadyState(this);
         setCurrentState(readyState);
 
         this.user = user;

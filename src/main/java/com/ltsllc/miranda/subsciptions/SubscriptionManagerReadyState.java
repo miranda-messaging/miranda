@@ -1,8 +1,10 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.subsciptions.messages.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,36 @@ public class SubscriptionManagerReadyState extends State {
                 break;
             }
 
+            case CreateSubscription: {
+                CreateSubscriptionMessage createSubscriptionMessage = (CreateSubscriptionMessage) message;
+                nextState = processCreateSubscriptionMessage (createSubscriptionMessage);
+                break;
+            }
+
+            case GetSubcription: {
+                GetSubscriptionMessage getSubscriptionMessage = (GetSubscriptionMessage) message;
+                nextState = processGetSubscriptionMessage (getSubscriptionMessage);
+                break;
+            }
+
+            case GetSubscriptions: {
+                GetSubscriptionsMessage getSubscriptionsMessage = (GetSubscriptionsMessage) message;
+                nextState = processGetSubscriptionsMessage (getSubscriptionsMessage);
+                break;
+            }
+
+            case UpdateSubscription: {
+                UpdateSubscriptionMessage updateSubscriptionMessage = (UpdateSubscriptionMessage) message;
+                nextState = processUpdateSubscriptionMessage (updateSubscriptionMessage);
+                break;
+            }
+
+            case DeleteSubscription: {
+                DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) message;
+                nextState = processDeleteSubscriptionMessage (deleteSubscriptionMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -56,6 +88,63 @@ public class SubscriptionManagerReadyState extends State {
 
     public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
         getSubscriptionManager().performGarbageCollection();
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processCreateSubscriptionMessage(CreateSubscriptionMessage createSubscriptionMessage) {
+        Results result = getSubscriptionManager().createSubscription (createSubscriptionMessage.getSubscription());
+        CreateSubscriptionResponseMessage response = new CreateSubscriptionResponseMessage(getSubscriptionManager().getQueue(),
+                this, result);
+        createSubscriptionMessage.reply(response);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processGetSubscriptionMessage (GetSubscriptionMessage getSubscriptionMessage) {
+        Results result;
+
+        Subscription subscription = getSubscriptionManager().findSubscription(getSubscriptionMessage.getName());
+        if (subscription == null)
+            result = Results.UserNotFound;
+        else
+            result = Results.Success;
+
+        GetSubscriptionResponseMessage response = new GetSubscriptionResponseMessage(getSubscriptionManager().getQueue(),
+                this, result, subscription);
+
+        getSubscriptionMessage.reply(response);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processGetSubscriptionsMessage (GetSubscriptionsMessage getSubscriptionsMessage) {
+        GetSubscriptionsResponseMessage response = new GetSubscriptionsResponseMessage(getSubscriptionManager().getQueue(),
+                this, getSubscriptionManager().getSubscriptions());
+
+        getSubscriptionsMessage.reply(response);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processUpdateSubscriptionMessage (UpdateSubscriptionMessage updateSubscriptionMessage) {
+        getSubscriptionManager().updateSubscription(updateSubscriptionMessage.getSubscription());
+
+        UpdateSubscriptionResponseMessage response = new UpdateSubscriptionResponseMessage(getSubscriptionManager().getQueue(),
+                this, Results.Success);
+
+        updateSubscriptionMessage.reply(response);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
+        getSubscriptionManager().deleteSubscription(deleteSubscriptionMessage.getName());
+
+        DeleteSubscriptionResponseMessage response = new DeleteSubscriptionResponseMessage(getSubscriptionManager().getQueue(),
+                this, Results.Success);
+
+        deleteSubscriptionMessage.reply(response);
 
         return getSubscriptionManager().getCurrentState();
     }

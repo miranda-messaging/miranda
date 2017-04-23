@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.subsciptions;
+package com.ltsllc.miranda.subsciptions.messages;
 
 import com.ltsllc.miranda.Message;
 

@@ -16,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class LoginOperationReadyState extends OperationState {
+public class LoginOperationReadyState extends State {
     private Session session;
 
     public Session getSession() {
@@ -27,8 +27,8 @@ public class LoginOperationReadyState extends OperationState {
         return (LoginOperation) getContainer();
     }
 
-    public LoginOperationReadyState (LoginOperation loginOperation, BlockingQueue<Message> requester) {
-        super(loginOperation, requester);
+    public LoginOperationReadyState (LoginOperation loginOperation) {
+        super(loginOperation);
     }
 
     public State processMessage (Message message) {
@@ -64,7 +64,7 @@ public class LoginOperationReadyState extends OperationState {
         LoginResponseMessage loginResponseMessage = new LoginResponseMessage(getLoginOperation().getQueue(),
                 this, getSessionResponseMessage.getResult(), getSessionResponseMessage.getSession());
 
-        send(getRequester(), loginResponseMessage);
+        send(getLoginOperation().getRequester(), loginResponseMessage);
 
         return StopState.getInstance();
     }
@@ -80,7 +80,7 @@ public class LoginOperationReadyState extends OperationState {
         LoginResponseMessage resultMessage = new LoginResponseMessage(getLoginOperation().getQueue(),
                 this, loginResult, createSessionResponseMessage.getSession());
 
-        send(getRequester(), resultMessage);
+        send(getLoginOperation().getRequester(), resultMessage);
 
         return StopState.getInstance();
     }

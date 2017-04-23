@@ -14,13 +14,13 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/18/2017.
  */
-public class CreateSessionOperationReadyState extends OperationState {
+public class CreateSessionOperationReadyState extends State {
     public CreateSessionOperation getCreateSessionOperation () {
         return (CreateSessionOperation) getContainer();
     }
 
-    public CreateSessionOperationReadyState (CreateSessionOperation createSessionOperation, BlockingQueue<Message> requester) {
-        super(createSessionOperation, requester);
+    public CreateSessionOperationReadyState (CreateSessionOperation createSessionOperation) {
+        super(createSessionOperation);
     }
 
     public State processMessage (Message message) {
@@ -51,7 +51,7 @@ public class CreateSessionOperationReadyState extends OperationState {
         } else {
             CreateSessionResponseMessage response = new CreateSessionResponseMessage(getCreateSessionOperation().getQueue(),
                     this, Results.UserNotFound, null);
-            send (getRequester(), response);
+            send (getCreateSessionOperation().getRequester(), response);
 
             return StopState.getInstance();
         }
@@ -61,7 +61,7 @@ public class CreateSessionOperationReadyState extends OperationState {
         CreateSessionResponseMessage response = new CreateSessionResponseMessage(getCreateSessionOperation().getQueue(),
                 this, createSessionResponseMessage.getResult(), createSessionResponseMessage.getSession());
 
-        send (getRequester(), response);
+        send (getCreateSessionOperation().getRequester(), response);
 
         return StopState.getInstance();
     }

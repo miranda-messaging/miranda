@@ -18,7 +18,11 @@ import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.*;
+import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
+import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.TopicManager;
@@ -345,6 +349,7 @@ public class Miranda extends Consumer {
         UserUpdatedMessage userUpdatedMessage = new UserUpdatedMessage(senderQueue, sender, user);
         sendToMe(userUpdatedMessage);
     }
+
     public void sendUserDeletedMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
         UserDeletedMessage userDeletedMessage = new UserDeletedMessage(senderQueue, sender, name);
         sendToMe(userDeletedMessage);
@@ -353,5 +358,25 @@ public class Miranda extends Consumer {
     public void sendLoginMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
         LoginMessage loginMessage = new LoginMessage(senderQueue, sender, name);
         sendToMe(loginMessage);
+    }
+
+    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
+        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, subscription);
+        sendToMe(createSubscriptionMessage);
+    }
+
+    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
+        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, subscription);
+        sendToMe(updateSubscriptionMessage);
+    }
+
+    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, name);
+        sendToMe(deleteSubscriptionMessage);
+    }
+
+    public void sendAuctionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        AuctionMessage auctionMessage = new AuctionMessage(senderQueue, sender);
+        sendToMe(auctionMessage);
     }
 }

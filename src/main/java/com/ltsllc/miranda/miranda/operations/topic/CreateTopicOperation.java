@@ -18,9 +18,9 @@ public class CreateTopicOperation extends Operation {
     }
 
     public CreateTopicOperation (Topic topic, BlockingQueue<Message> requester) {
-        super ("create topic operation");
+        super ("create topic operation", requester);
 
-        CreateTopicOperationReadyState readyState = new CreateTopicOperationReadyState(this, requester);
+        CreateTopicOperationReadyState readyState = new CreateTopicOperationReadyState(this);
         setCurrentState(readyState);
 
         this.topic = topic;

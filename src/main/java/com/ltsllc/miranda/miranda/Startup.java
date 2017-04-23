@@ -19,6 +19,7 @@ import com.ltsllc.miranda.servlet.login.LoginHolder;
 import com.ltsllc.miranda.servlet.login.LoginServlet;
 import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
+import com.ltsllc.miranda.servlet.subscription.*;
 import com.ltsllc.miranda.servlet.topic.CreateTopicServlet;
 import com.ltsllc.miranda.servlet.topic.GetTopicServlet;
 import com.ltsllc.miranda.servlet.topic.TopicsServlet;
@@ -224,6 +225,21 @@ public class Startup extends State {
         mappings.add (servletMapping);
 
         servletMapping = new ServletMapping("/servlets/fileServlet", FileServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servelts/createSubscription", CreateSubscriptionServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getSubscriptions", GetSubscriptionsServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getSubscription", GetSubscriptionServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/updateSubscription", UpdateSubscriptionServlet.class);
+        mappings.add (servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/deleteSubscription", DeleteSubscriptionServlet.class);
         mappings.add (servletMapping);
 
         MirandaStatus.initialize();

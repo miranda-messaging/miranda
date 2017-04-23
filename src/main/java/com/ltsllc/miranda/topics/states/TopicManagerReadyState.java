@@ -5,14 +5,13 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
-import com.ltsllc.miranda.subsciptions.OwnerQueryMessage;
-import com.ltsllc.miranda.subsciptions.OwnerQueryResponseMessage;
+import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
+import com.ltsllc.miranda.subsciptions.messages.OwnerQueryResponseMessage;
 import com.ltsllc.miranda.topics.DuplicateTopicException;
 import com.ltsllc.miranda.topics.TopicNotFoundException;
 import com.ltsllc.miranda.topics.messages.*;
 import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.TopicManager;
-import com.ltsllc.miranda.user.messages.*;
 
 import java.util.ArrayList;
 import java.util.List;

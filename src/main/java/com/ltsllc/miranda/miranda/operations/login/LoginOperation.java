@@ -18,11 +18,11 @@ public class LoginOperation extends Operation {
     }
 
     public LoginOperation (String name, BlockingQueue<Message> requester) {
-        super ("login operation");
+        super ("login operation", requester);
 
         this.user = name;
 
-        LoginOperationReadyState readyState = new LoginOperationReadyState(this, requester);
+        LoginOperationReadyState readyState = new LoginOperationReadyState(this);
         setCurrentState(readyState);
     }
 

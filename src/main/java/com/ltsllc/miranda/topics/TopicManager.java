@@ -3,15 +3,13 @@ package com.ltsllc.miranda.topics;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.subsciptions.OwnerQueryMessage;
+import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
 import com.ltsllc.miranda.topics.states.TopicManagerReadyState;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**

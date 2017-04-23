@@ -6,7 +6,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.states.OperationState;
-import com.ltsllc.miranda.subsciptions.OwnerQueryResponseMessage;
+import com.ltsllc.miranda.subsciptions.messages.OwnerQueryResponseMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.user.messages.DeleteUserResponseMessage;
@@ -17,7 +17,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class DeleteUserOperationReadyState extends OperationState {
+public class DeleteUserOperationReadyState extends State {
     private List<String> subsystems;
     private BlockingQueue<Message> requester;
 
@@ -33,8 +33,8 @@ public class DeleteUserOperationReadyState extends OperationState {
         return (DeleteUserOperation) getContainer();
     }
 
-    public DeleteUserOperationReadyState (DeleteUserOperation deleteUserOperation, BlockingQueue<Message> requester) {
-        super(deleteUserOperation, requester);
+    public DeleteUserOperationReadyState (DeleteUserOperation deleteUserOperation) {
+        super(deleteUserOperation);
     }
 
     public State processMessage (Message message) {

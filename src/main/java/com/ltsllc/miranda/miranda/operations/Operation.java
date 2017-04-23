@@ -9,7 +9,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/16/2017.
  */
 public class Operation extends Consumer {
-    public Operation (String name) {
+    private BlockingQueue<Message> requester;
+
+    public BlockingQueue<Message> getRequester() {
+        return requester;
+    }
+
+    public Operation (String name, BlockingQueue<Message> requester) {
         super(name);
+
+        this.requester = requester;
     }
 }
