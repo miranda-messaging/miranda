@@ -5,6 +5,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.file.Subscriber;
+import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
@@ -123,7 +124,8 @@ public class TestCluster extends TestCase {
     public void testConstructor () {
         assert (null != getCluster().getClusterFile());
         assert (getCluster().getCurrentState() instanceof ClusterLoadingState);
-        assert (isSubscriber(getCluster(), getCluster().getClusterFile().getSubscribers()));
+        verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class),
+                Matchers.any(Notification.class));
     }
 
     /**
