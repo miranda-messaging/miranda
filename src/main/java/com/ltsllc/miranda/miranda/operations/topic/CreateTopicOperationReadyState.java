@@ -7,6 +7,7 @@ import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.states.OperationState;
 import com.ltsllc.miranda.topics.messages.CreateTopicResponseMessage;
+import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -26,6 +27,12 @@ public class CreateTopicOperationReadyState extends State {
         State nextState = getCreateTopicOperation().getCurrentState();
 
         switch (message.getSubject()) {
+            case GetUserResponse: {
+                GetUserResponseMessage getUserResponseMessage = (GetUserResponseMessage) message;
+                nextState = processGetUserResponseMessage (getUserResponseMessage);
+                break;
+            }
+
             case CreateTopicResponse: {
                 CreateTopicResponseMessage createTopicResponseMessage = (CreateTopicResponseMessage) message;
                 nextState = processCreateTopicResponseMessage (createTopicResponseMessage);
@@ -42,16 +49,25 @@ public class CreateTopicOperationReadyState extends State {
     }
 
     public State processCreateTopicResponseMessage (CreateTopicResponseMessage message) {
-        if (message.getResult() == Results.Success) {
-            Miranda.getInstance().getCluster().sendNewTopicMessage (getCreateTopicOperation().getQueue(), this,
-                    getCreateTopicOperation().getTopic());
-        }
-
         CreateTopicResponseMessage createTopicResponseMessage = new CreateTopicResponseMessage(
                 getCreateTopicOperation().getQueue(), this, message.getResult());
 
         send (getCreateTopicOperation().getRequester(), createTopicResponseMessage);
 
         return StopState.getInstance();
+    }
+
+    public State processGetUserResponseMessage (GetUserResponseMessage getUserResponseMessage) {
+        if (getUserResponseMessage.getResult() != Results.Success) {
+            CreateTopicResponseMessage createTopicResponseMessage = new CreateTopicResponseMessage(getCreateTopicOperation().getQueue(),
+                    this, getUserResponseMessage.getResult());
+
+            send(getCreateTopicOperation().getRequester(), createTopicResponseMessage);
+        }
+
+        Miranda.getInstance().getTopicManager().sendCreateTopicMessage(getCreateTopicOperation().getQueue(), this,
+                getCreateTopicOperation().getTopic());
+
+        return getCreateTopicOperation().getCurrentState();
     }
 }

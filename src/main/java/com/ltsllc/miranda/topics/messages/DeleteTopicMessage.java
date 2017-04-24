@@ -9,15 +9,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/9/2017.
  */
 public class DeleteTopicMessage extends Message {
-    private Topic topic;
+    private String topicName;
 
-    public Topic getTopic() {
-        return topic;
+    public String getTopicName() {
+        return topicName;
     }
 
-    public DeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+    public DeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String topicName) {
         super(Subjects.DeleteTopic, senderQueue, sender);
 
-        this.topic = topic;
+        this.topicName = topicName;
     }
 }

@@ -8,20 +8,21 @@ import com.ltsllc.miranda.topics.Topic;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 4/16/2017.
+ * Created by Clark on 4/23/2017.
  */
-public class CreateTopicOperation extends Operation {
+public class UpdateTopicOperation extends Operation {
     private Topic topic;
 
     public Topic getTopic() {
         return topic;
     }
 
-    public CreateTopicOperation (Topic topic, BlockingQueue<Message> requester) {
-        super ("create topic operation", requester);
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
 
-        CreateTopicOperationReadyState readyState = new CreateTopicOperationReadyState(this);
-        setCurrentState(readyState);
+    public UpdateTopicOperation (Topic topic, BlockingQueue<Message> requester) {
+        super("update topic operation", requester);
 
         this.topic = topic;
     }

@@ -20,10 +20,7 @@ import com.ltsllc.miranda.servlet.login.LoginServlet;
 import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import com.ltsllc.miranda.servlet.subscription.*;
-import com.ltsllc.miranda.servlet.topic.CreateTopicServlet;
-import com.ltsllc.miranda.servlet.topic.GetTopicServlet;
-import com.ltsllc.miranda.servlet.topic.TopicsServlet;
-import com.ltsllc.miranda.servlet.topic.UpdateTopicServlet;
+import com.ltsllc.miranda.servlet.topic.*;
 import com.ltsllc.miranda.servlet.user.*;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.socket.SocketNetwork;
@@ -224,10 +221,13 @@ public class Startup extends State {
         servletMapping = new ServletMapping( "/servlets/updateTopic", UpdateTopicServlet.class);
         mappings.add (servletMapping);
 
+        servletMapping = new ServletMapping("/servlets/deleteTopic", DeleteTopicServlet.class);
+        mappings.add (servletMapping);
+
         servletMapping = new ServletMapping("/servlets/fileServlet", FileServlet.class);
         mappings.add (servletMapping);
 
-        servletMapping = new ServletMapping("/servelts/createSubscription", CreateSubscriptionServlet.class);
+        servletMapping = new ServletMapping("/servlets/createSubscription", CreateSubscriptionServlet.class);
         mappings.add (servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getSubscriptions", GetSubscriptionsServlet.class);
@@ -258,6 +258,9 @@ public class Startup extends State {
 
         TopicHolder.initialize(timeoutPeriod);
         TopicHolder.getInstance().start();
+
+        SubscriptionHolder.initialize(timeoutPeriod);
+        SubscriptionHolder.getInstance().start();
 
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this,
                 convertToArray(mappings));

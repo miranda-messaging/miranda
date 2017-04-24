@@ -12,6 +12,8 @@ import com.ltsllc.miranda.miranda.operations.subscriptions.CreateSubscriptionOpe
 import com.ltsllc.miranda.miranda.operations.subscriptions.DeleteSubscriptionOperation;
 import com.ltsllc.miranda.miranda.operations.subscriptions.UpdateSubscriptionOperation;
 import com.ltsllc.miranda.miranda.operations.topic.CreateTopicOperation;
+import com.ltsllc.miranda.miranda.operations.topic.DeleteTopicOperation;
+import com.ltsllc.miranda.miranda.operations.topic.UpdateTopicOperation;
 import com.ltsllc.miranda.miranda.operations.user.CreateUserOperation;
 import com.ltsllc.miranda.miranda.operations.user.DeleteUserOperation;
 import com.ltsllc.miranda.miranda.operations.user.UpdateUserOperation;
@@ -29,6 +31,8 @@ import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
+import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
+import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.user.messages.*;
 import org.apache.log4j.Logger;
@@ -146,6 +150,18 @@ public class ReadyState extends State {
             case CreateTopic: {
                 CreateTopicMessage createTopicMessage = (CreateTopicMessage) message;
                 nextState = processCreateTopicMessage(createTopicMessage);
+                break;
+            }
+
+            case UpdateTopic: {
+                UpdateTopicMessage updateTopicMessage = (UpdateTopicMessage) message;
+                nextState = processUpdateTopicMessage (updateTopicMessage);
+                break;
+            }
+
+            case DeleteTopic: {
+                DeleteTopicMessage deleteTopicMessage = (DeleteTopicMessage) message;
+                nextState = processDeleteTopicMessage (deleteTopicMessage);
                 break;
             }
 
@@ -382,6 +398,24 @@ public class ReadyState extends State {
     public State processAuctionMessage (AuctionMessage auctionMessage) {
         AuctionOperation auctionOperation = new AuctionOperation();
         auctionOperation.start();
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) {
+        UpdateTopicOperation updateTopicOperation = new UpdateTopicOperation(updateTopicMessage.getTopic(),
+                updateTopicMessage.getSender());
+
+        updateTopicOperation.start();
+
+        return getMiranda().getCurrentState();
+    }
+
+    public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) {
+        DeleteTopicOperation deleteTopicOperation = new DeleteTopicOperation(deleteTopicMessage.getTopicName(),
+                deleteTopicMessage.getSender());
+
+        deleteTopicOperation.start();
 
         return getMiranda().getCurrentState();
     }

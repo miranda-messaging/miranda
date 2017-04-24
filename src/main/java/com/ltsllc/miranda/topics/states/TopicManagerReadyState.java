@@ -31,7 +31,6 @@ public class TopicManagerReadyState extends State {
     public State processMessage(Message message) {
         State nextState = getTopicManager().getCurrentState();
 
-
         switch (message.getSubject()) {
             case GarbageCollection: {
                 GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
@@ -105,7 +104,9 @@ public class TopicManagerReadyState extends State {
     public State processGetTopicMessage (GetTopicMessage getTopicMessage) {
         Topic topic = getTopicManager().getTopic(getTopicMessage.getName());
 
-        GetTopicResponseMessage getTopicResponseMessage = new GetTopicResponseMessage(getTopicManager().getQueue(), this, topic);
+        GetTopicResponseMessage getTopicResponseMessage = new GetTopicResponseMessage(getTopicManager().getQueue(),
+                this, topic);
+
         getTopicMessage.reply(getTopicResponseMessage);
 
         return getTopicManager().getCurrentState();
@@ -147,7 +148,7 @@ public class TopicManagerReadyState extends State {
     }
 
     public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) {
-        getTopicManager().deleteTopic(deleteTopicMessage.getTopic());
+        getTopicManager().deleteTopic(deleteTopicMessage.getTopicName());
         DeleteTopicResponseMessage deleteTopicResponseMessage = new DeleteTopicResponseMessage(getTopicManager().getQueue(),
                 this, Results.Success);
 

@@ -10,10 +10,26 @@ import com.ltsllc.miranda.util.ImprovedRandom;
  * Created by Clark on 1/5/2017.
  */
 public class Topic extends StatusObject<Topic> implements Perishable {
-    private Gson ourGson = new Gson();
+    public enum RemotePolicies {
+        None,
+        Acknowledged,
+        Written
+    }
+
+
+    private static Gson ourGson = new Gson();
 
     private String name;
     private String owner;
+    private RemotePolicies remotePolicy;
+
+    public RemotePolicies getRemotePolicy() {
+        return remotePolicy;
+    }
+
+    public void setRemotePolicy(RemotePolicies remotePolicy) {
+        this.remotePolicy = remotePolicy;
+    }
 
     public String getOwner() {
         return owner;

@@ -74,9 +74,9 @@
                     </div>
                     <div class="control-group">
                         <label class="control-label">Remote Policy</label>
-                        <label><input type="radio" name="remotePolicy">None</label>
-                        <label><input type="radio" name="remotePolicy">Received</label>
-                        <label><input type="radio" name="remotePolicy">Written</label>
+                        <label><input id="node" type="radio" name="remotePolicy">None</label>
+                        <label><input id="received" type="radio" name="remotePolicy">Received</label>
+                        <label><input id="written" type="radio" name="remotePolicy">Written</label>
                     </div>
                 </div>
             </div>
@@ -148,7 +148,16 @@
         subscription.owner = $('#owner').val();
         subscription.dataUrl = $('#url').val();
         subscription.livelinessUrl = $('#livelinessUrl').val();
-        subscription.remotePolicy = $('#remotePolicy:checked').val();
+
+        if ($('#none').prop("checked")) {
+            subscription.remotePolicy = "None";
+        } else if ($('#received').prop("checked")) {
+            subscription.remotePolicy = "AcknowledgeReceipt";
+        } else if ($('#written').prop("checked")) {
+            subscription.remotePolicy = "Written";
+        } else {
+            alert ("Unknown remote policy");
+        }
 
         var data = JSON.stringify(subscription);
         $.post("/servlets/createSubscription", data, createResult);

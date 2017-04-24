@@ -130,9 +130,9 @@ public class TopicHolder extends ServletHolder {
         return getUpdateResult();
     }
 
-    public Results deleteTopic (Topic topic) throws TimeoutException {
+    public Results deleteTopic (String topicName) throws TimeoutException {
         setDeleteResult(Results.Unknown);
-        Miranda.getInstance().sendDeleteTopicMessage(getQueue(), this, topic);
+        Miranda.getInstance().sendDeleteTopicMessage(getQueue(), this, topicName);
 
         sleep();
 

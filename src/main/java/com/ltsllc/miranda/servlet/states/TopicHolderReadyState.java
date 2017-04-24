@@ -3,10 +3,7 @@ package com.ltsllc.miranda.servlet.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.holder.TopicHolder;
-import com.ltsllc.miranda.topics.messages.CreateTopicResponseMessage;
-import com.ltsllc.miranda.topics.messages.DeleteTopicResponseMessage;
-import com.ltsllc.miranda.topics.messages.GetTopicsResponseMessage;
-import com.ltsllc.miranda.topics.messages.UpdateTopicResponseMessage;
+import com.ltsllc.miranda.topics.messages.*;
 
 /**
  * Created by Clark on 4/9/2017.
@@ -25,8 +22,8 @@ public class TopicHolderReadyState extends State {
 
         switch (message.getSubject()) {
             case GetTopicResponse: {
-                GetTopicsResponseMessage getTopicsResponseMessage = (GetTopicsResponseMessage) message;
-                nextState = processGetTopicsResponseMessage (getTopicsResponseMessage);
+                GetTopicResponseMessage getTopicResponseMessage = (GetTopicResponseMessage) message;
+                nextState = processGetTopicResponseMessage (getTopicResponseMessage);
                 break;
             }
 
@@ -83,6 +80,12 @@ public class TopicHolderReadyState extends State {
 
     public State processDeleteTopicResponseMessage (DeleteTopicResponseMessage deleteTopicResponseMessage) {
         getTopicHolder().setDeleteResultAndAwaken(deleteTopicResponseMessage.getResult());
+
+        return getTopicHolder().getCurrentState();
+    }
+
+    public State processGetTopicResponseMessage (GetTopicResponseMessage getTopicResponseMessage) {
+        getTopicHolder().setTopicAndAwaken(getTopicResponseMessage.getTopic());
 
         return getTopicHolder().getCurrentState();
     }

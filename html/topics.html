@@ -27,13 +27,13 @@
     </div><!--/.container-fluid -->
 </nav>
 
-<button type="button" class="btn btn-default" onclick="showDialog()">Create a New Topic</button>
-
-<table id="usersTable" class="table-striped table-hover" onclick="editTopic()">
+<button type="button" class="btn btn-default" onclick="createNewTopic()">Create a New Topic</button>
+<p/>
+<h4>Topics</h4>
+<table id="table" class="table-striped table-hover">
     <thead>
     <tr>
         <th>Name</th>
-        <th>Status</th>
     </tr>
     </thead>
 
@@ -41,22 +41,38 @@
     </tbody>
 </table>
 
-<div id="newTopicDialog" class="modal fade">
+<div id="dialog" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">New Topic</h4>
+            <h4 id="title" class="modal-title">New Topic</h4>
         </div>
 
         <div class="modal-body">
-            <div class="form-group">
-                <p>Name: <input id="topicName" type="text"/></p>
+            <div class="form-horizontal">
+                <div class="span3">
+                    <div class="control-group">
+                        <label class="control-label">Name</label>
+                        <input id="name" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Owner</label>
+                        <input id="owner" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Remote Policy</label>
+                        <label><input id="node" type="radio" name="remotePolicy">None</label>
+                        <label><input id="received" type="radio" name="remotePolicy">Received</label>
+                        <label><input id="written" type="radio" name="remotePolicy">Written</label>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="modal-footer">
+            <button id="delete" type="button" class="btn btn-default" data-dismiss="modal" hidden="true">Delete</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="createTopic()">Create</button>
+            <button id="accept" type="button" class="btn btn-primary" data-dismiss="modal" onclick="createTopic()">Create</button>
         </div>
     </div> <!-- modal-dialog -->
 </div> <!-- newTopicDialog -->
@@ -65,40 +81,63 @@
 <script src="/bootstrap/js/bootstrap.js"></script>
 <script>
     function fillTable () {
-        $.get("/servlets/topics", gotRows);
+        $.get("/servlets/getTopics", gotRows);
     }
 
     function gotRows (data,status) {
-        var users = JSON.parse(data);
-        var html = "";
-        $('#tableBody').empty();
+        var result = JSON.parse(data);
+        if (result.result != "Success") {
+            alert ("Unable to get Topics " + result.result);
+        } else {
+            var html = "";
+            $('#tableBody').empty();
 
-        users.forEach(function(element) {
-            html = html + "<tr>";
-            html = html + "<td>" + element.name + "</td>";
-            html = html + "<td>" + element.status + "</td>";
-            html = html + "</tr>";
-        });
+            result.topicList.forEach(function(element) {
+                html = html + "<tr>";
+                html = html + "<td>" + element.name + "</td>";
+                html = html + "</tr>";
+            });
 
-        $('#tableBody').append(html);
+            $('#tableBody').append(html);
+            setupHandler();
+        }
     }
 
     function showDialog () {
-        $('#topicName').val("");
+        $('#dialog').modal('show');
+    }
 
-        $('#newTopicDialog').modal('show');
+    function createNewTopic () {
+        $('#title').val("New Topic");
+        $('#delete').prop("hidden", true);
+        var temp = $('#delete');
+        var temp2 = $('#doesNotExist');
+        $('#accept').text("Create");
+
+        showDialog();
     }
 
     function createTopic () {
         var topic = new Object();
-        topic.name = $('#topicName').val();
+        topic.name = $('#name').val();
+        topic.owner = $('#owner').val();
+
+        if ($('#none').prop("checked")) {
+            topic.remotePolicy = "None";
+        } else if ($('#received').prop("checked")) {
+            topic.remotePolicy = "Acknowledged";
+        } else if ($('#written').prop("checked")) {
+            topic.remotePolicy = "Written";
+        } else {
+            alert ("Unknown remote policy");
+        }
 
         var data = JSON.stringify(topic);
 
-        $.post("/servlets/createTopic", data, createdTopic);
+        $.post("/servlets/createTopic", data, createTopicResult);
     }
 
-    function createdTopic (data, status) {
+    function createTopicResult (data, status) {
         fillTable();
 
         var result = JSON.parse(data);
@@ -109,9 +148,105 @@
             alert (result.result);
     }
 
-    function editTopic () {
-        alert ("Edit topic");
+    function edit(index) {
+        var table = $('#table');
+        var anIndex = 1 + index;
+        var row = $(table).find("tr:nth-child(" + anIndex + ")");
+        var topic = new Object();
+        topic.name = $(row).find("td:nth-child(1)").text();
+        var data = JSON.stringify(topic);
+        $.post("/servlets/getTopic", data, commenceEdit);
     }
+
+    function commenceEdit (data, status) {
+        var result = JSON.parse(data);
+
+        if (result.result != "Success") {
+            alert ("Could not get topic");
+            return;
+        }
+
+        $('#title').text("Edit Topic");
+
+        $('#name').val(result.topic.name);
+        $('#name').prop("readonly", true);
+
+        $('#owner').val(result.topic.owner);
+
+        if (result.topic.remotePolicy == "None")
+            $('#none').prop("checked", true);
+        else if (result.topic.remotePolicy == "Acknowledged")
+            $('#received').prop("checked", true);
+        else if (result.topic.remotePolicy == "Written")
+            $('#written').prop("checked", true);
+        else {
+            alert ("Unrecognized remote policy " + result.topic.remotePolicy);
+        }
+        $('#delete').prop("hidden", false);
+
+        $('#accept').text("Update");
+        $('#accept').unbind();
+        $('#accept').click( function () { acceptEdit(); });
+
+        $('#delete').unbind();
+        $('#delete').prop("hidden", false);
+        $('#delete').click( function () { deleteTopic(); });
+
+        showDialog();
+    }
+
+    function acceptEdit () {
+        var topic = new Object();
+        topic.name = $('#name').val();
+        topic.owner = $('#owner').val();
+
+        if ($('#none').prop("checked")) {
+            topic.remotePolicy = "None";
+        } else if ($('#received').prop("checked")) {
+            topic.remotePolicy = "AcknowledgeReceipt";
+        } else if ($('#written').prop("checked")) {
+            topic.remotePolicy = "Written";
+        } else {
+            alert ("Unknown remote policy");
+        }
+
+        var data = JSON.stringify(topic);
+
+        $.post("/servlets/updateTopic", data, updateResult);
+    }
+
+    function updateResult (data, status) {
+        var result = JSON.parse(data);
+
+        if (result.result != "Success") {
+            alert("Update failed " + result.result);
+        }
+    }
+
+    function deleteTopic () {
+        confirm ("Delete " + $('#name').val());
+        var topic = new Object();
+        topic.name = $('#name').val();
+
+        var data = JSON.stringify(topic);
+        $.post("/servlets/deleteTopic", data, deleteResult);
+    }
+
+    function deleteResult (data, status) {
+        var result = JSON.parse(data);
+
+        if (result.result != "Success")
+            alert ("Delete failed " + result.result);
+    }
+
+
+    function setupHandler () {
+        $('#table').find('tr').unbind();
+        $('#table').find('tr').click(function() {
+            edit ($(this).index());
+        });
+    }
+
 
     fillTable();
 </script>

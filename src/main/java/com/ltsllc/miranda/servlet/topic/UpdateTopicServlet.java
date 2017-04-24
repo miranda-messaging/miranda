@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/9/2017.
  */
 public class UpdateTopicServlet extends MirandaServlet {
-    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResultObject resultObject = new ResultObject();
 
         try {

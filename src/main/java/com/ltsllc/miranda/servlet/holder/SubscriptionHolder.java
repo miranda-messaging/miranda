@@ -46,6 +46,10 @@ public class SubscriptionHolder extends ServletHolder {
         ourInstance = subscriptionHolder;
     }
 
+    public static void initialize (long timeout) {
+        ourInstance = new SubscriptionHolder(timeout);
+    }
+
     public Results getDeleteResult() {
         return deleteResult;
     }

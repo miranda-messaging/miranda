@@ -17,5 +17,7 @@ public class GetTopicResponseMessage extends Message {
 
     public GetTopicResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
         super(Subjects.GetTopicResponse, senderQueue, sender);
+
+        this.topic = topic;
     }
 }

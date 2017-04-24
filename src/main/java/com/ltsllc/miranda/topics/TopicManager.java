@@ -2,6 +2,7 @@ package com.ltsllc.miranda.topics;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
@@ -38,6 +39,11 @@ public class TopicManager extends Consumer {
 
         Miranda miranda = Miranda.getInstance();
         topicsFile = new TopicsFile(filename, miranda.getWriter());
+
+        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
+        topicsFile.addSubscriber(getQueue(), fileLoadedMessage);
+
+        topicsFile.start();
 
         TopicManagerReadyState topicManagerReadyState = new TopicManagerReadyState(this);
         setCurrentState(topicManagerReadyState);
@@ -118,8 +124,8 @@ public class TopicManager extends Consumer {
         sendToMe(updateTopicMessage);
     }
 
-    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
-        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topic);
+    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String topicName) {
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topicName);
         sendToMe(deleteTopicMessage);
     }
 

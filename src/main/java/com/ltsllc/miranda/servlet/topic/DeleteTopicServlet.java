@@ -22,7 +22,7 @@ public class DeleteTopicServlet extends MirandaServlet {
 
         try {
             Topic topicToDelete = fromJson(req.getInputStream(), Topic.class);
-            Results result = TopicHolder.getInstance().deleteTopic(topicToDelete);
+            Results result = TopicHolder.getInstance().deleteTopic(topicToDelete.getName());
             resultObject.setResult(result);
         } catch (MirandaException e) {
             resultObject.setResult(Results.Exception);

@@ -320,8 +320,8 @@ public class Miranda extends Consumer {
         sendToMe(sessionsExpiredMessage);
     }
 
-    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
-        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topic);
+    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String topicName) {
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topicName);
         sendToMe(deleteTopicMessage);
     }
 

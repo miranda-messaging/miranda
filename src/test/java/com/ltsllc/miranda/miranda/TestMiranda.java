@@ -95,7 +95,7 @@ public class TestMiranda extends TestCase {
     public void testSendDeleteTopicMessage () {
         Topic topic = new Topic("whatever");
         getMiranda().stop();
-        getMiranda().sendDeleteTopicMessage(null, this, topic);
+        getMiranda().sendDeleteTopicMessage(null, this, "whatever");
         assert (contains(Message.Subjects.DeleteTopic, getMiranda().getQueue()));
     }
 

@@ -42,6 +42,10 @@ public class TopicsFile extends SingleFile<Topic> {
         setCurrentState(topicsFileReadyState);
     }
 
+    public TopicsFile () {
+        super(null, null);
+    }
+
     public Type getBasicType ()
     {
         return new TypeToken<ArrayList<User>>() {}.getType();
