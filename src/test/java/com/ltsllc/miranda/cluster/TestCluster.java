@@ -1,8 +1,10 @@
 package com.ltsllc.miranda.cluster;
 
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
+import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
@@ -121,6 +123,7 @@ public class TestCluster extends TestCase {
     public void testConstructor () {
         assert (null != getCluster().getClusterFile());
         assert (getCluster().getCurrentState() instanceof ClusterLoadingState);
+        assert (isSubscriber(getCluster(), getCluster().getClusterFile().getSubscribers()));
     }
 
     /**
@@ -131,7 +134,7 @@ public class TestCluster extends TestCase {
     public void testInitialize() {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
         com.ltsllc.miranda.cluster.Cluster.reset();
-        com.ltsllc.miranda.cluster.Cluster.initializeClass(CLUSTER_FILENAME, Writer.getInstance(), getMockNetwork());
+        com.ltsllc.miranda.cluster.Cluster.initialize(CLUSTER_FILENAME, Writer.getInstance(), getMockNetwork());
         this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
 
         ClusterFile temp = ClusterFile.getInstance();

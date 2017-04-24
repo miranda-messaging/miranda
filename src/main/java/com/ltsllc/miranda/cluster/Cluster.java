@@ -7,6 +7,7 @@ import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -58,7 +59,7 @@ public class Cluster extends Consumer {
     private Network network;
     private ClusterFile clusterFile;
 
-    public static synchronized void initializeClass(String filename, Writer writer, Network network) {
+    public static synchronized void initialize(String filename, Writer writer, Network network) {
         if (null == ourInstance) {
             BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
 
@@ -87,10 +88,14 @@ public class Cluster extends Consumer {
 
         this.clusterFile = clusterFile;
 
+        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
+        clusterFile.addSubscriber(getQueue(),fileLoadedMessage);
+
         ClusterLoadingState clusterLoadingState = new ClusterLoadingState(this);
         setCurrentState(clusterLoadingState);
 
         this.network = network;
+        clusterFile.start();
     }
 
     public BlockingQueue<Message> getClusterFileQueue() {

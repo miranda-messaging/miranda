@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaFactory;
 import com.ltsllc.miranda.Version;
@@ -9,6 +10,7 @@ import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.MirandaFile;
+import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.network.Network;
@@ -785,5 +787,16 @@ public class TestCase {
 
     public void setupMockUserManager () {
         Miranda.getInstance().setUserManager(getMockUserManager());
+    }
+
+    public boolean isSubscriber (Consumer consumer, List<Subscriber> subscribers) {
+        BlockingQueue<Message> queue = consumer.getQueue();
+
+        for (Subscriber subscriber : subscribers) {
+            if (subscriber.getQueue() == queue)
+                return true;
+        }
+
+        return false;
     }
 }

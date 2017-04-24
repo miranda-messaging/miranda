@@ -359,7 +359,7 @@ public class Startup extends State {
 
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initializeClass(filename, Writer.getInstance(), network);
+        Cluster.initialize(filename, Writer.getInstance(), network);
         miranda.setCluster(Cluster.getInstance());
 
         Cluster.getInstance().sendConnect (null, this);
