@@ -1,23 +1,18 @@
 package com.ltsllc.miranda.cluster;
 
-import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
-import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
-import com.ltsllc.miranda.file.Matchable;
-import com.ltsllc.miranda.file.Subscriber;
+import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.file.messages.Notification;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
-import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
@@ -25,7 +20,6 @@ import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.test.TestCase;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
@@ -34,7 +28,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -126,7 +119,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testConstructor () {
         assert (null != getCluster().getClusterFile());
-        assert (getCluster().getCurrentState() instanceof ClusterLoadingState);
+        assert (getCluster().getCurrentState() instanceof ClusterStartState);
         verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class),
                 Matchers.any(Notification.class));
     }

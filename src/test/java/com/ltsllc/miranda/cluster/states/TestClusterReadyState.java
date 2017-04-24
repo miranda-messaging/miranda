@@ -309,4 +309,26 @@ public class TestClusterReadyState extends TestCase {
         assert (nextState == getClusterReadyState());
         verify(getMockCluster(), atLeastOnce()).broadcast(any(DeleteUserWireMessage.class));
     }
+
+    public boolean containsNode (List<Node> nodeList, Node node) {
+        for (Node element : nodeList) {
+            if (element.equals(node))
+                return true;
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testProcessNewNodeMessage () {
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        Node node = new Node(nodeElement, getMockNetwork(), getMockCluster());
+        NewNodeMessage newNodeMessage = new NewNodeMessage(null, this, node);
+        List<Node> nodes = new ArrayList<Node>();
+        when(getMockCluster().getNodes()).thenReturn(nodes);
+
+        State nextState = getClusterReadyState().processMessage(newNodeMessage);
+
+        assert (containsNode(nodes, node));
+    }
 }

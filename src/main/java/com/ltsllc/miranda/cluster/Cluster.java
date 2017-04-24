@@ -6,16 +6,15 @@ import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
-import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
+import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
+import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
@@ -91,8 +90,8 @@ public class Cluster extends Consumer {
         FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
         clusterFile.addSubscriber(getQueue(),fileLoadedMessage);
 
-        ClusterLoadingState clusterLoadingState = new ClusterLoadingState(this);
-        setCurrentState(clusterLoadingState);
+        ClusterStartState clusterStartState = new ClusterStartState(this);
+        setCurrentState(clusterStartState);
 
         this.network = network;
         clusterFile.start();
