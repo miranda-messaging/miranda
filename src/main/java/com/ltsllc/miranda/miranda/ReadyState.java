@@ -273,11 +273,9 @@ public class ReadyState extends State {
     }
 
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        GarbageCollectionMessage garbageCollectionMessage2 = new GarbageCollectionMessage(getMiranda().getQueue(), this);
-
-        send(getMiranda().getSubscriptionManager().getQueue(), garbageCollectionMessage2);
-        send(getMiranda().getTopicManager().getQueue(), garbageCollectionMessage2);
-        send(getMiranda().getUserManager().getQueue(), garbageCollectionMessage2);
+        getMiranda().getUserManager().sendGarbageCollectionMessage(getMiranda().getQueue(), this);
+        getMiranda().getTopicManager().sendGarbageCollectionMessage(getMiranda().getQueue(), this);
+        getMiranda().getSubscriptionManager().sendGarbageCollectionMessage(getMiranda().getQueue(), this);
 
         return this;
     }

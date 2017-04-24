@@ -2,6 +2,7 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -14,12 +15,12 @@ import org.junit.Test;
 import com.ltsllc.miranda.test.TestCase;
 import org.mockito.Matchers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 2/20/2017.
@@ -41,7 +42,7 @@ public class TestClusterFile extends TestCase {
             "        \"dns\" : \"foo.com\",",
             "        \"ip\" : \"192.168.1.1\",",
             "        \"port\" : 6789,",
-            "        \"description\" : \"a ssltest node\",",
+            "        \"description\" : \"a test node\",",
             "        \"expires\" : " + Long.MAX_VALUE,
             "    }",
             "]"
@@ -139,12 +140,94 @@ public class TestClusterFile extends TestCase {
         }
     }
 
-
     @Test
     public void testAdd() {
         NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
         getClusterFile().addNode(nodeElement);
 
         verify(getMockWriter(), atLeastOnce()).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.anyString(), Matchers.any(byte[].class));
+    }
+
+    @Test
+    public void testContainsNode () {
+        NodeElement contains = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement doesNotContain = new NodeElement("bar.com", "192.168.1.2", 6789, "a different test node");
+
+        assert(getClusterFile().contains(contains));
+        assert(!getClusterFile().contains(doesNotContain));
+    }
+
+    @Test
+    public void testContainsElement () {
+        NodeElement contains = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement doesNotContain = new NodeElement("bar.com", "192.168.1.2", 6789, "a different test node");
+
+        assert(getClusterFile().containsElement(contains));
+        assert(!getClusterFile().containsElement(doesNotContain));
+    }
+
+    @Test
+    public void testMergeNewElement () {
+        NodeElement newElement = new NodeElement("bar.com", "192.168.1.2", 6789, "a new element");
+        List<NodeElement> newElementList = new ArrayList<NodeElement>();
+        newElementList.add(newElement);
+
+        Version oldVersion = getClusterFile().getVersion();
+
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        when(getMockWriter().getQueue()).thenReturn(queue);
+
+        getClusterFile().merge(newElementList);
+
+        Version newVersion = getClusterFile().getVersion();
+
+        assert (getClusterFile().contains(newElement));
+        assert (oldVersion != newVersion);
+        assert (contains(Message.Subjects.Write, queue));
+        assert (contains(Message.Subjects.ClusterFileChanged, getCluster()));
+    }
+
+    @Test
+    public void testMergeNoChange () {
+        Version oldVersion = getClusterFile().getVersion();
+
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        when(getMockWriter().getQueue()).thenReturn(queue);
+
+        getClusterFile().merge(new ArrayList<NodeElement>());
+
+        Version newVersion = getClusterFile().getVersion();
+        assert (oldVersion.equals(newVersion));
+        assert (!contains(Message.Subjects.Write, queue));
+        assert (!contains(Message.Subjects.ClusterFileChanged, getCluster()));
+    }
+
+    @Test
+    public void testMatchingNode () {
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+
+        NodeElement match = getClusterFile().matchingNode(nodeElement);
+
+        assert (match != null);
+        assert (match.equals(nodeElement));
+    }
+
+    @Test
+    public void testCheckForDuplicatesHasDuplicates () {
+        getClusterFile().setLogger(getMockLogger());
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+
+        getClusterFile().getData().add (nodeElement);
+
+        getClusterFile().checkForDuplicates();
+
+        verify(getMockLogger(), atLeastOnce()).warn(Matchers.anyString());
+    }
+
+    @Test
+    public void testCheckForDuplicatesNoDuplicates () {
+        getClusterFile().checkForDuplicates();
+
+        verify(getMockLogger(), never()).warn(Matchers.anyString());
     }
 }

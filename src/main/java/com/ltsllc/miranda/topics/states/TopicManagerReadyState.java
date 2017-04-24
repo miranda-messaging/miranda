@@ -98,6 +98,8 @@ public class TopicManagerReadyState extends State {
     public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
         getTopicManager().performGarbageCollection();
 
+        getTopicManager().getTopicsFile().sendGarbageCollectionMessage(getTopicManager().getQueue(), this);
+
         return getTopicManager().getCurrentState();
     }
 

@@ -7,6 +7,9 @@ import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Clark on 2/21/2017.
  */
@@ -44,13 +47,18 @@ public class ClusterConnectingState extends State {
 
 
     private State processClusterFileMessage (ClusterFileMessage clusterFileMessage) {
+        List<Node> nodes = new ArrayList<Node>();
+
         for (NodeElement nodeElement : clusterFileMessage.getFile()) {
             if (!getCluster().contains(nodeElement)) {
                 Node node = new Node(nodeElement, getCluster().getNetwork(), getCluster());
                 node.start();
                 node.connect();
+                nodes.add(node);
             }
         }
+
+        getCluster().setNodes(nodes);
 
         ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
         return clusterReadyState;

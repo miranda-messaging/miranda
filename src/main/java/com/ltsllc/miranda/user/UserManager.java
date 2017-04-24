@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
@@ -181,5 +182,10 @@ public class UserManager extends Consumer {
     public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
         CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, user);
         sendToMe(createUserMessage);
+    }
+
+    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
+        sendToMe(garbageCollectionMessage);
     }
 }

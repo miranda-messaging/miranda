@@ -135,6 +135,7 @@ public class TestTopicHolder extends TestCase {
                 result = testTopicHolder.getTopicHolder().createTopic(topic);
             } catch (TimeoutException e) {
                 timeoutException = e;
+                result = Results.Timeout;
             }
         }
     }

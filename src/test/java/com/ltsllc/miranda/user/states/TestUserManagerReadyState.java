@@ -99,44 +99,4 @@ public class TestUserManagerReadyState extends TestCase {
         assert (nextState == getReadyState());
         assert (contains(Message.Subjects.GetUsersResponse, queue));
     }
-
-    @Test
-    public void testProcessNewUserMessageSuccess() {
-        User user = new User("whatever", "whatever");
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        NewUserMessage newUserMessage = new NewUserMessage(queue, this, user);
-
-        when(getMockUserManager().getCurrentState()).thenReturn(getReadyState());
-
-        State nextState = getReadyState().processMessage(newUserMessage);
-
-        try {
-            assert (nextState == getReadyState());
-            verify(getMockUserManager(), atLeastOnce()).addUser(Matchers.eq(user));
-            assert (contains(Message.Subjects.UserCreated, queue));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testProcessNewUserMessageDuplicateUserException() {
-        User user = new User("whatever", "whatever");
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        NewUserMessage newUserMessage = new NewUserMessage(queue, this, user);
-        DuplicateUserException duplicateUserException = new DuplicateUserException("test");
-        DuplicateUserException result = null;
-
-        when(getMockUserManager().getCurrentState()).thenReturn(getReadyState());
-        try {
-            doThrow(duplicateUserException).when(getMockUserManager()).addUser(Matchers.any(User.class));
-        } catch (DuplicateUserException e) {
-            result = e;
-        }
-
-        State nextState = getReadyState().processMessage(newUserMessage);
-
-        assert (nextState == getReadyState());
-        assert (contains(Message.Subjects.DuplicateUser, queue));
-    }
 }

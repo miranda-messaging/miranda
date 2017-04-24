@@ -7,6 +7,7 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.WatchMessage;
+import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -153,5 +154,10 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
     public void performGarbageCollection () {
         setLastCollection(System.currentTimeMillis());
+    }
+
+    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
+        sendToMe(garbageCollectionMessage);
     }
 }

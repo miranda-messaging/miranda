@@ -122,9 +122,9 @@ public class TestStartup extends TestCase {
         //
         // test that initial garbage collection got done
         //
-        assert (UsersFile.getInstance().getLastCollection() > then);
-        assert (TopicsFile.getInstance().getLastCollection() > then);
-        assert (SubscriptionsFile.getInstance().getLastCollection() > then);
+        assert (Miranda.getInstance().getUserManager().getUsersFile().getLastCollection() > then);
+        assert (Miranda.getInstance().getSubscriptionManager().getSubscriptionsFile().getLastCollection() > then);
+        assert (Miranda.getInstance().getTopicManager().getTopicsFile().getLastCollection() > then);
     }
 
     public boolean containsRootUser (UsersFile usersFile) {

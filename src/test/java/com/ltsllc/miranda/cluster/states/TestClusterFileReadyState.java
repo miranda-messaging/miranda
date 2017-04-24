@@ -38,7 +38,7 @@ public class TestClusterFileReadyState extends TestCase {
             "        \"dns\" : \"foo.com\",",
             "        \"ip\" : \"192.168.1.1\",",
             "        \"port\" : 6789,",
-            "        \"description\" : \"a ssltest node\",",
+            "        \"description\" : \"a test node\",",
             "        \"expires\" : " + Long.MAX_VALUE,
             "    }",
             "]"

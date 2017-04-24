@@ -3,6 +3,8 @@ package com.ltsllc.miranda.subsciptions;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
@@ -23,7 +25,6 @@ public class SubscriptionManager extends Consumer {
     }
 
     public SubscriptionsFile getSubscriptionsFile() {
-
         return subscriptionsFile;
     }
 
@@ -32,6 +33,11 @@ public class SubscriptionManager extends Consumer {
 
         Miranda miranda = Miranda.getInstance();
         subscriptionsFile = new SubscriptionsFile(miranda.getWriter(), filename);
+
+        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
+        subscriptionsFile.addSubscriber(getQueue(), fileLoadedMessage);
+
+        subscriptionsFile.start();
 
         SubscriptionManagerReadyState readyState = new SubscriptionManagerReadyState(this);
         setCurrentState(readyState);
@@ -43,6 +49,7 @@ public class SubscriptionManager extends Consumer {
     }
 
     public void performGarbageCollection () {
+        getSubscriptionsFile().sendGarbageCollectionMessage(getQueue(), this);
     }
 
     public void sendGetSubscriptionsMessage (BlockingQueue<Message> senderQueue, Object sender) {
@@ -118,5 +125,10 @@ public class SubscriptionManager extends Consumer {
         }
 
         return result;
+    }
+
+    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
+        sendToMe(garbageCollectionMessage);
     }
 }

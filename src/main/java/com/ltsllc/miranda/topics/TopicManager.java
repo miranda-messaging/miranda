@@ -3,6 +3,7 @@ package com.ltsllc.miranda.topics;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
@@ -171,5 +172,10 @@ public class TopicManager extends Consumer {
         }
 
         return property;
+    }
+
+    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
+        sendToMe(garbageCollectionMessage);
     }
 }

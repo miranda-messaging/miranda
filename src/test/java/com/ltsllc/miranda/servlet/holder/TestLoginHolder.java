@@ -71,9 +71,10 @@ public class TestLoginHolder extends TestCase {
             return name;
         }
 
-        public LocalRunner (TestLoginHolder testLoginHolder, LoginObject loginObject) {
+        public LocalRunner (TestLoginHolder testLoginHolder, LoginObject loginObject, String name) {
             this.testLoginHolder = testLoginHolder;
             this.loginObject = loginObject;
+            this.name = name;
         }
 
         public void run () {
@@ -91,14 +92,11 @@ public class TestLoginHolder extends TestCase {
     public void testLoginTimeout () {
         setupMockMiranda();
 
-        when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
-        when(getMockMiranda().getSessionManager()).thenReturn(getMockSessionManager());
-
         TimeoutException timeoutException = null;
 
         LoginObject loginObject = new LoginObject("whatever");
 
-        LocalRunner localRunner = new LocalRunner(this, loginObject);
+        LocalRunner localRunner = new LocalRunner(this, loginObject, "whatever");
         Thread thread = new Thread(localRunner);
         thread.start();
 
@@ -107,11 +105,6 @@ public class TestLoginHolder extends TestCase {
         timeoutException = localRunner.timeoutException;
 
         assert (timeoutException != null);
-        verify (getMockSessionManager(), atLeastOnce()).sendGetSessionMessage(Matchers.any(BlockingQueue.class),
-                Matchers.any(), Matchers.eq("whatever"));
-
-        verify(getMockUserManager(), atLeastOnce()).sendGetUser(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.eq("whatever"));
     }
 
     @Test
@@ -123,7 +116,7 @@ public class TestLoginHolder extends TestCase {
 
         LoginObject loginObject = new LoginObject("whatever");
 
-        LocalRunner localRunner = new LocalRunner(this, loginObject);
+        LocalRunner localRunner = new LocalRunner(this, loginObject, "whatever");
         Thread thread = new Thread(localRunner);
         thread.start();
 
@@ -152,7 +145,7 @@ public class TestLoginHolder extends TestCase {
         LoginObject loginObject = new LoginObject("whatever");
 
 
-        LocalRunner localRunner = new LocalRunner(this, loginObject);
+        LocalRunner localRunner = new LocalRunner(this, loginObject, "whatever");
         Thread thread = new Thread(localRunner);
         thread.start();
 

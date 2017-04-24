@@ -9,6 +9,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -17,6 +18,8 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
@@ -798,5 +801,33 @@ public class TestCase {
         }
 
         return false;
+    }
+
+    public boolean containsStatus(NodeStatus nodeStatus, ClusterStatusObject clusterStatusObject) {
+        for (NodeStatus nodeStatus2 : clusterStatusObject.getNodes()) {
+            if (nodeStatus.equals(nodeStatus2))
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean listContains (Matchable matchable, List<Matchable> list) {
+        for (Matchable element : list) {
+            if (element.matches(matchable))
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean listsAreEquivalent (List l1, List l2) {
+        for (Object o : l1) {
+            Matchable matchable = (Matchable) o;
+            if (!listContains(matchable, l2))
+                return false;
+        }
+
+        return true;
     }
 }

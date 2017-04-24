@@ -2,7 +2,6 @@ package com.ltsllc.miranda.property;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.PropertiesUtils;
@@ -203,7 +202,7 @@ public class TestMirandaProperties extends TestCase {
         assert (network == MirandaProperties.Networks.Unknown);
     }
 
-    public boolean listsAreEquivalent (List<Property> l1, List<Property> l2) {
+    public boolean propertyListsAreEquivalent(List<Property> l1, List<Property> l2) {
         if (l1.size() != l2.size())
             return false;
 
@@ -256,7 +255,7 @@ public class TestMirandaProperties extends TestCase {
         Properties systemPlusDefaults = PropertiesUtils.merge(System.getProperties(), defaults);
         List<Property> systemPlusDefaultsList = PropertiesUtils.toPropertyList(systemPlusDefaults);
 
-        assert (listsAreEquivalent(list, systemPlusDefaultsList));
+        assert (propertyListsAreEquivalent(list, systemPlusDefaultsList));
     }
 
     @Test

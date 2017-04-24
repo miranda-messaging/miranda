@@ -43,6 +43,10 @@ public class ClusterFile extends SingleFile<NodeElement> {
         ourInstance = null;
     }
 
+    public static void setLogger (Logger logger) {
+        ClusterFile.logger = logger;
+    }
+
     public BlockingQueue<Message> getCluster() {
         return cluster;
     }
@@ -104,7 +108,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    private boolean containsElement (NodeElement nodeElement) {
+    public boolean containsElement (NodeElement nodeElement) {
         if (null == getData())
         {
             logger.error("null data");
@@ -140,15 +144,17 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
 
     public void merge (List<NodeElement> list) {
+        boolean changed = false;
         List<NodeElement> adds = new ArrayList<NodeElement>();
 
         for (NodeElement element : list) {
             if (!containsElement(element)) {
                 adds.add(element);
+                changed = true;
             }
         }
 
-        if (adds.size() > 0) {
+        if (changed) {
             getData().addAll(adds);
 
             try {
@@ -212,13 +218,13 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
     public void checkForDuplicates () {
-        List<NodeElement> nodeList = new ArrayList<NodeElement>(getData());
         List<NodeElement> duplicates = new ArrayList<NodeElement>();
 
         for (NodeElement current : getData()) {
             for (NodeElement nodeElement : getData()) {
                 if (current.equivalent(nodeElement) && current != nodeElement) {
                     duplicates.add(current);
+                    logger.warn (nodeElement.getDns() + " is duplicated");
                 }
             }
         }

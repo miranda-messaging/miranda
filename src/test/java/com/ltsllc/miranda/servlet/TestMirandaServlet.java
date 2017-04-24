@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.test.TestServlet;
@@ -71,7 +72,7 @@ public class TestMirandaServlet extends TestServlet {
 
     @Test
     public void testFromJsonSuccess () {
-        String s = "{\"result\" : \"success\"}";
+        String s = "{\"result\" : \"Success\"}";
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(s.getBytes());
         ResultObject resultObject = null;
 
@@ -82,7 +83,7 @@ public class TestMirandaServlet extends TestServlet {
         }
 
         assert (null != resultObject);
-        assert (resultObject.getResult().equals("success"));
+        assert (resultObject.getResult().equals(Results.Success));
     }
 
     @Test
