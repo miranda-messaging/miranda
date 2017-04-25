@@ -274,6 +274,8 @@ public class Cluster extends Consumer {
     }
 
     public void stop () {
+        super.stop();
+
         for (Node node : getNodes()) {
             node.sendStop(getQueue(), this);
         }

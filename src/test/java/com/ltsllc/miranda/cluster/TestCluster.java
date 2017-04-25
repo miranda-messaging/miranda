@@ -343,6 +343,17 @@ public class TestCluster extends TestCase {
     }
 
     @Test
+    public void testStop () {
+        List<Node> nodes = new ArrayList<Node>();
+        nodes.add(getMockNode());
+        getCluster().setNodes(nodes);
+
+        getCluster().stop();
+
+        verify(getMockNode(), atLeastOnce()).sendStop(Matchers.any(BlockingQueue.class), Matchers.any());
+    }
+
+    @Test
     public void testSendNodeStopped () {
         getCluster().stop();
 

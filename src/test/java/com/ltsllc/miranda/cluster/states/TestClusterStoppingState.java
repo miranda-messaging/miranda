@@ -60,7 +60,7 @@ public class TestClusterStoppingState extends TestCase {
     }
 
     @Test
-    public void testDicardMessage () {
+    public void testDiscardMessage () {
         NewNodeMessage newNodeMessage = new NewNodeMessage(null, this, null);
 
         State nextState = getClusterStoppingState().processMessage(newNodeMessage);
