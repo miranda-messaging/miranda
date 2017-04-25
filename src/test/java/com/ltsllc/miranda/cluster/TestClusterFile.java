@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
+import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.NodeElement;
@@ -109,6 +110,11 @@ public class TestClusterFile extends TestCase {
         NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
         getClusterFile().add(nodeElement);
         assert (getClusterFile().contains(nodeElement));
+    }
+
+    @Test
+    public void testConstructor () {
+        assert (getClusterFile().getCurrentState() instanceof ClusterFileReadyState);
     }
 
     @Test
