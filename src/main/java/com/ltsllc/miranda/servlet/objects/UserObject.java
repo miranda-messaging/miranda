@@ -16,15 +16,24 @@ import static com.ltsllc.miranda.StatusObject.Status.New;
  */
 public class UserObject extends com.ltsllc.miranda.StatusObject {
     private String name;
+    private String category;
     private String description;
-    private String publicKey;
+    private String publicKeyPem;
 
-    public String getPublicKey() {
-        return publicKey;
+    public String getPublicKeyPem() {
+        return publicKeyPem;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setPublicKeyPem(String publicKeyPem) {
+        this.publicKeyPem = publicKeyPem;
     }
 
     public String getDescription() {
@@ -45,34 +54,26 @@ public class UserObject extends com.ltsllc.miranda.StatusObject {
         this.name = name;
     }
 
-    public UserObject () {
+    public UserObject() {
         super(New);
     }
 
-    public UserObject (String name, String description, String publicKey) {
+    public UserObject(String name, String category, String description, String publicKeyPem) {
         super(Status.New);
 
         this.name = name;
+        this.category = category;
         this.description = description;
-        this.publicKey = publicKey;
+        this.publicKeyPem = publicKeyPem;
     }
 
 
-    public User asUser () throws MirandaException {
-        try {
-            byte[] bytes = Base64.getDecoder().decode(getPublicKey());
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            java.security.PublicKey securityPublicKey = keyFactory.generatePublic(spec);
+    public User asUser() {
+        User.UserTypes category = User.UserTypes.valueOf(getCategory());
+        User user = new User(getName(), category, getDescription(), getPublicKeyPem());
 
-            PublicKey publicKey = new PublicKey(securityPublicKey);
-            User user = new User(getName(), getDescription(), publicKey);
+        user.setStatus(getStatus());
 
-            user.setStatus(getStatus());
-
-            return user;
-        } catch (GeneralSecurityException e) {
-            throw new MirandaException("Exception trying to convert user", e);
-        }
+        return user;
     }
 }

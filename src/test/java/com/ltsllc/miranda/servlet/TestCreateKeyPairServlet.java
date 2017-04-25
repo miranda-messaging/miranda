@@ -59,7 +59,7 @@ public class TestCreateKeyPairServlet extends TestServlet {
         }
 
         String result = stringServletOutputStream.getStringWriter().toString();
-        assert (result.startsWith("{ \"publicKey\""));
+        assert (result.startsWith("{\"publicKey\""));
     }
 
     @Test

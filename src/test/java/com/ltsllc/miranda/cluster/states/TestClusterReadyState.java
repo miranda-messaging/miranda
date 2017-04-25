@@ -21,6 +21,7 @@ import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
+import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,7 @@ import com.ltsllc.miranda.test.TestCase;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -237,7 +239,7 @@ public class TestClusterReadyState extends TestCase {
 
     @Test
     public void testProcessNewSessionMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY_PEM);
         User user = userObject.asUser();
 
         Session session = new Session(user,123, 456);
@@ -254,7 +256,7 @@ public class TestClusterReadyState extends TestCase {
 
     @Test
     public void testProcessSessionsExpired () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY_PEM);
         User user = userObject.asUser();
 
         Session session = new Session(user,123, 456);
@@ -270,11 +272,20 @@ public class TestClusterReadyState extends TestCase {
         verify(getMockCluster(), atLeastOnce()).broadcast(Matchers.any(WireMessage.class));
     }
 
-    public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
+    public static final String TEST_PUBLIC_KEY_PEM = "-----BEGIN PUBLIC KEY-----\n"
+    + "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1avWB4w2AtIN/DOSyyDu\n"
+    + "dN7OA3XVbjyq9cKkVkLtHuKQYvq2w1sFoToeZ15R+J7WxDGFuSzdWa/RbR5LLNeM\n"
+    + "BqgGZ+/jwGOipRtUMVa8467ZV5BL6vowkjAyUUevTABUxzTo+YvwrL8LPVpNOO1v\n"
+    + "VmAsWOe+lTyeQkAILaSeCvyjdmDRr5O5U5UILlAcZDJ8LFOm9kNQQ4yIVUqAMbBo\n"
+    + "MF+vPrmEA09tMqrmR5lb4RsmAUlDxiMWCU9AxwWfksHbd7fV8puvnxjuI1+TZ7SS\n"
+    + "Fk1L/bPothhCjsWYr4RMVDluzSAgqsFbAgLXGpraDibVOOrmmBtG2ngu9NJV5fGA\n"
+    + "NwIDAQAB\n"
+    + "-----END PUBLIC KEY-----\n";
+
 
     @Test
     public void testProcessNewUserMessage () throws MirandaException {
-        UserObject userObject = new UserObject("test", "a test user", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("test", "Publisher", "a test user", TEST_PUBLIC_KEY_PEM);
         User user = userObject.asUser();
         NewUserMessage newUserMessage = new NewUserMessage(null, this, user);
         when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
@@ -286,8 +297,8 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessUpdateUserMessage () throws MirandaException {
-        UserObject userObject = new UserObject("test", "a test user", TEST_PUBLIC_KEY);
+    public void testProcessUpdateUserMessage () throws MirandaException, GeneralSecurityException {
+        UserObject userObject = new UserObject("test", "Publisher","a test user", TEST_PUBLIC_KEY_PEM);
         User user = userObject.asUser();
         UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, user);
         when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());

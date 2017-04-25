@@ -1,5 +1,7 @@
 package com.ltsllc.miranda.servlet.enctypt;
 
+import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.MirandaServlet;
 import com.ltsllc.miranda.servlet.objects.KeyPairObject;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
@@ -30,7 +32,7 @@ import java.security.PrivateKey;
 /**
  * Created by Clark on 4/7/2017.
  */
-public class CreateKeyPairServlet extends HttpServlet {
+public class CreateKeyPairServlet extends MirandaServlet {
 
     public RSAPrivateCrtKeyParameters toBouncyCastle(KeyPair keyPair) {
         byte data[] = keyPair.getPrivate().getEncoded();
@@ -42,6 +44,9 @@ public class CreateKeyPairServlet extends HttpServlet {
 
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        KeyPairResult keyPairResult = new KeyPairResult();
+        keyPairResult.setResult(Results.Unknown);
+
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -51,18 +56,23 @@ public class CreateKeyPairServlet extends HttpServlet {
             keyPairObject.setPublicKey(keyPair.getPublic());
 
             StringWriter stringWriter = new StringWriter();
-            // RSAPrivateCrtKeyParameters rsaPrivateCrtKeyParameters = toBouncyCastle(keyPair);
-            JcaMiscPEMGenerator jcaMiscPEMGenerator = new JcaMiscPEMGenerator(keyPair);
-            PemObject pemObject = jcaMiscPEMGenerator.generate();
             PEMWriter pemWriter = new PEMWriter(stringWriter);
-            pemWriter.writeObject(pemObject);
+            pemWriter.writeObject(keyPair.getPrivate());
+            pemWriter.close();
+            keyPairResult.setPrivateKey(stringWriter.toString());
 
+            stringWriter = new StringWriter();
+            pemWriter = new PEMWriter(stringWriter);
+            pemWriter.writeObject(keyPair.getPublic());
+            pemWriter.close();
+            keyPairResult.setPublicKey(stringWriter.toString());
 
-            String json = keyPairObject.asJson();
-            resp.getOutputStream().println(json);
-            resp.setStatus(200);
+            keyPairResult.setResult(Results.Success);
         } catch (NoSuchAlgorithmException e) {
             throw new ServletException("Exception trying to generate key pair", e);
         }
+
+        respond(resp.getOutputStream(), keyPairResult);
+        resp.setStatus(200);
     }
 }

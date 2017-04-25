@@ -39,5 +39,7 @@
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.56" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.48" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk16:1.45" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcmail-jdk15:1.46" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15:1.46" level="project" />
   </component>
 </module>

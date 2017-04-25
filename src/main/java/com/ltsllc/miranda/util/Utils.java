@@ -9,7 +9,16 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.jcajce.util.JcaJceHelper;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.*;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 
+import javax.crypto.KeyGenerator;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -379,5 +388,36 @@ public class Utils {
         ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES);
         byteBuffer.putLong(value);
         return byteBuffer.array();
+    }
+
+    public static java.security.PublicKey pemStringToPublicKey (String pemString) {
+        try {
+            StringReader stringReader = new StringReader(pemString);
+            PEMParser pemParser = new PEMParser(stringReader);
+            SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) pemParser.readObject();
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider(new BouncyCastleProvider());
+            return converter.getPublicKey(subjectPublicKeyInfo);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String publicKeyToPemString (java.security.PublicKey publicKey) {
+        try {
+            StringWriter stringWriter = new StringWriter();
+            PEMWriter pemWriter = new PEMWriter(stringWriter);
+            pemWriter.writeObject(publicKey);
+            pemWriter.close();
+            return stringWriter.toString();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String createPublicKeyPem () throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return publicKeyToPemString(keyPair.getPublic());
     }
 }

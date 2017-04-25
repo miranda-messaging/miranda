@@ -77,7 +77,7 @@ public class TestReadyState extends TestCase {
 
     @Test
     public void testProcessAddSessionMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session(user,123, 456);
@@ -94,7 +94,7 @@ public class TestReadyState extends TestCase {
 
     @Test
     public void testProcessSessionsExpired () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session(user,123, 456);

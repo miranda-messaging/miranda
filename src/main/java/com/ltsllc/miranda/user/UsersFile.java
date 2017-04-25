@@ -101,12 +101,6 @@ public class UsersFile extends SingleFile<User> {
             write();
     }
 
-    public void rectify () throws MirandaException {
-        for (User user : getData()) {
-            user.rectify();
-        }
-    }
-
     public void sendNewUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
         NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
         sendToMe(newUserMessage);

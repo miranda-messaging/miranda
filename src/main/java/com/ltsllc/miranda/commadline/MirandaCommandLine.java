@@ -26,7 +26,7 @@ public class MirandaCommandLine extends CommandLine {
     }
 
     public void setLoggingLevel(String loggingLevel) {
-        if (loggingLevel.equalsIgnoreCase("degub") || loggingLevel.equalsIgnoreCase("debugging"))
+        if (loggingLevel.equalsIgnoreCase("debug") || loggingLevel.equalsIgnoreCase("debugging"))
             this.loggingLevel = MirandaProperties.LoggingLevel.Debug.toString();
         else if (loggingLevel.equalsIgnoreCase("info") || loggingLevel.equalsIgnoreCase("information"))
             this.loggingLevel = MirandaProperties.LoggingLevel.Info.toString();

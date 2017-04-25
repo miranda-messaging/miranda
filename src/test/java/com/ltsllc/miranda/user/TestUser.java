@@ -19,7 +19,7 @@ public class TestUser extends TestCase {
     @Test
     public void testAsUser () {
         try {
-            User user = new User("whatever", "another whatever", TEST_KEY);
+            User user = new User("whatever", "Publisher", "another whatever", TEST_KEY);
             UserObject userObject = user.asUserObject();
 
             assert (userObject.getName().equals("whatever"));

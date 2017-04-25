@@ -151,7 +151,7 @@ public class TestLoginHolder extends TestCase {
 
         pause(100);
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         long now = System.currentTimeMillis();

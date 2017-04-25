@@ -269,7 +269,7 @@ public class TestNodeReadyState extends TesterNodeState {
     public void testProcessNewSessionWireMessage () throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session (user, 123, 456);
@@ -288,7 +288,7 @@ public class TestNodeReadyState extends TesterNodeState {
     public void testProcessSessinsExpiredWireMessage () throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session (user, 123, 456);
@@ -312,7 +312,7 @@ public class TestNodeReadyState extends TesterNodeState {
     public void testProcessNewUserWireMessage () throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         NewUserWireMessage newUserWireMessage = new NewUserWireMessage(userObject);
         NetworkMessage networkMessage = new NetworkMessage(null, this, newUserWireMessage);
@@ -330,7 +330,7 @@ public class TestNodeReadyState extends TesterNodeState {
     public void testProcessUpdateUserWireMessage () throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         UpdateUserWireMessage updateUserWireMessage = new UpdateUserWireMessage(userObject);
         NetworkMessage networkMessage = new NetworkMessage(null, this, updateUserWireMessage);
@@ -348,7 +348,7 @@ public class TestNodeReadyState extends TesterNodeState {
     public void testProcessDeleteUserWireMessage () throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         DeleteUserWireMessage deleteUserWireMessage = new DeleteUserWireMessage("whatever");
         NetworkMessage networkMessage = new NetworkMessage(null, this, deleteUserWireMessage);

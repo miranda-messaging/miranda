@@ -34,19 +34,10 @@ public class CreateUserServlet extends MirandaServlet {
 
         try {
             UserObject user = fromJson(req.getInputStream(), UserObject.class);
-
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-            byte[] data = Base64.getDecoder().decode(user.getPublicKey());
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
-
-            PublicKey publicKey = keyFactory.generatePublic(spec);
-            com.ltsllc.miranda.PublicKey mirandaKey = new com.ltsllc.miranda.PublicKey(publicKey);
-
-            User newUser = new User(user.getName(), user.getDescription(), mirandaKey);
+            User newUser = new User(user.getName(), user.getCategory(), user.getDescription(), user.getPublicKeyPem());
             Results result = UserHolder.getInstance().createUser(newUser);
             resultObject.setResult(result);
-        } catch (GeneralSecurityException | IOException | MirandaException e) {
+        } catch (IOException | MirandaException e) {
             resultObject.setResult(Results.Exception);
             resultObject.setAdditionalInfo(e);
         } catch (TimeoutException e) {

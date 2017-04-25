@@ -61,7 +61,7 @@ public class TestMiranda extends TestCase {
 
     @Test
     public void testSendNewSessionMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session(user,123, 456);
@@ -76,7 +76,7 @@ public class TestMiranda extends TestCase {
 
     @Test
     public void testSendExpiredSessions () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session(user,123, 456);
@@ -110,7 +110,7 @@ public class TestMiranda extends TestCase {
 
     @Test
     public void testSendCreateUserMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         getMiranda().stop();
         getMiranda().sendCreateUserMessage(null,this, user);
@@ -120,7 +120,7 @@ public class TestMiranda extends TestCase {
 
     @Test
     public void testSendUpdateUserMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         getMiranda().stop();
         getMiranda().sendUpdateUserMessage(null,this, user);
@@ -130,7 +130,7 @@ public class TestMiranda extends TestCase {
 
     @Test
     public void testSendUserAddedMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         getMiranda().stop();
         getMiranda().sendUserAddedMessage(null, this, user);
@@ -140,7 +140,7 @@ public class TestMiranda extends TestCase {
 
     @Test
     public void testSendUserUpdatedMessage () throws MirandaException {
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         getMiranda().stop();
         getMiranda().sendUserUpdatedMessage(null, this, user);

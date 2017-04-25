@@ -20,7 +20,16 @@ import static org.mockito.Mockito.verify;
  * Created by Clark on 4/3/2017.
  */
 public class TestUsersFile extends TestCase {
-    public static final String TEST_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMOinA1ha2eTP/9KwszAhYfbNJiapjz8/3mgTnglRxi7Hi1cJSTODks7SKzzkDdM+GsQctOTMYMA3hittfuU3PiCv0hmDotwpdjvW+5r2xJ+DuFV7dSZOEVMeMJlO2MJEPFS0KPI/DUdy8+A//yu4qPzzC5A6U1zJ1jcQNzl/WUwIDAQAB";
+    public static final String TEST_PUBLIC_KEY_PEM = "-----BEGIN PUBLIC KEY-----\n"
+            + "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1avWB4w2AtIN/DOSyyDu\n"
+            + "dN7OA3XVbjyq9cKkVkLtHuKQYvq2w1sFoToeZ15R+J7WxDGFuSzdWa/RbR5LLNeM\n"
+            + "BqgGZ+/jwGOipRtUMVa8467ZV5BL6vowkjAyUUevTABUxzTo+YvwrL8LPVpNOO1v\n"
+            + "VmAsWOe+lTyeQkAILaSeCvyjdmDRr5O5U5UILlAcZDJ8LFOm9kNQQ4yIVUqAMbBo\n"
+            + "MF+vPrmEA09tMqrmR5lb4RsmAUlDxiMWCU9AxwWfksHbd7fV8puvnxjuI1+TZ7SS\n"
+            + "Fk1L/bPothhCjsWYr4RMVDluzSAgqsFbAgLXGpraDibVOOrmmBtG2ngu9NJV5fGA\n"
+            + "NwIDAQAB\n"
+            + "-----END PUBLIC KEY-----";
+
 
     private UsersFile usersFile;
 
@@ -41,8 +50,9 @@ public class TestUsersFile extends TestCase {
             "{",
             "    \"name\" : \"what\",",
             "    \"description\" : \"an expired user\", ",
+            "    \"category\" : \"Publisher\", ",
             "    \"status\" : \"New\",",
-            "    \"publicKey\" : \"" + TEST_KEY + "\"",
+            "    \"publicKeyPem\" : \"" + TEST_PUBLIC_KEY_PEM + "\"",
             "}",
             "]"
     };
@@ -79,7 +89,7 @@ public class TestUsersFile extends TestCase {
 
         User newUser = null;
         try {
-            newUser = new User("what", "ever", TEST_KEY);
+            newUser = new User("what", "Publisher","ever", TEST_PUBLIC_KEY_PEM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +106,7 @@ public class TestUsersFile extends TestCase {
         List<User> users = new ArrayList<User>();
         User newUser = null;
         try {
-            newUser = new User("what", "ever", TEST_KEY);
+            newUser = new User("what", "Publisher", "ever", TEST_PUBLIC_KEY_PEM);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,9 +123,11 @@ public class TestUsersFile extends TestCase {
     public static final String[] TEST_LOAD_CONTENTS = {
             "[",
             "{",
+            "    \"status\" : \"New\",",
             "    \"name\" : \"what\", ",
             "    \"description\" : \"ever\", ",
-            "    \"publicKey\" : \"" + TEST_KEY + "\"",
+            "    \"category\" : \"Publisher\", ",
+            "    \"publicKeyPem\" : \"" + TEST_PUBLIC_KEY_PEM + "\"",
             "}",
             "]",
     };

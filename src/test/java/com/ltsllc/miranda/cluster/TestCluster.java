@@ -414,7 +414,7 @@ public class TestCluster extends TestCase {
 
         long now = System.currentTimeMillis();
 
-        UserObject userObject = new UserObject("whatever", "whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         Session session = new Session(user, now + 120000, 123);
@@ -430,7 +430,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testSendNewUserMessage () throws MirandaException {
         getCluster().stop();
-        UserObject userObject = new UserObject("test", "a test user", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("test", "Publisher","a test user", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         getCluster().sendNewUserMessage(null, this, user);
@@ -441,7 +441,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testSendUpdateUserMessage () throws MirandaException {
         getCluster().stop();
-        UserObject userObject = new UserObject("test", "a test user", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("test", "Publisher","a test user", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
         UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, user);

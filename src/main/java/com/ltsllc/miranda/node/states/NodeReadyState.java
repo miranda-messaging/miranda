@@ -86,7 +86,7 @@ public class NodeReadyState extends NodeState {
 
             case NewSession: {
                 NewSessionWireMessage newSessionWireMessage = (NewSessionWireMessage) networkMessage.getWireMessage();
-                nextState = processNewSessionWireMessage (newSessionWireMessage);
+                nextState = processNewSessionWireMessage(newSessionWireMessage);
                 break;
             }
 
@@ -98,19 +98,19 @@ public class NodeReadyState extends NodeState {
 
             case NewUser: {
                 NewUserWireMessage newUserWireMessage = (NewUserWireMessage) networkMessage.getWireMessage();
-                nextState = processNewUserWireMessage (newUserWireMessage);
+                nextState = processNewUserWireMessage(newUserWireMessage);
                 break;
             }
 
             case UpdateUser: {
                 UpdateUserWireMessage updateUserWireMessage = (UpdateUserWireMessage) networkMessage.getWireMessage();
-                nextState = processUpdateUserWireMessage (updateUserWireMessage);
+                nextState = processUpdateUserWireMessage(updateUserWireMessage);
                 break;
             }
 
             case DeleteUser: {
                 DeleteUserWireMessage deleteUserWireMessage = (DeleteUserWireMessage) networkMessage.getWireMessage();
-                nextState = processDeleteUserWireMessage (deleteUserWireMessage);
+                nextState = processDeleteUserWireMessage(deleteUserWireMessage);
                 break;
             }
 
@@ -131,13 +131,13 @@ public class NodeReadyState extends NodeState {
         switch (message.getSubject()) {
             case NetworkMessage: {
                 NetworkMessage networkMessage = (NetworkMessage) message;
-                nextState = processNetworkMessage (networkMessage);
+                nextState = processNetworkMessage(networkMessage);
                 break;
             }
 
             case Version: {
                 VersionMessage versionMessage = (VersionMessage) message;
-                nextState = processVersionMessage (versionMessage);
+                nextState = processVersionMessage(versionMessage);
                 break;
             }
 
@@ -160,13 +160,13 @@ public class NodeReadyState extends NodeState {
 
             case Versions: {
                 VersionsMessage versionsMessage = (VersionsMessage) message;
-                nextState = processVersionsMessage (versionsMessage);
+                nextState = processVersionsMessage(versionsMessage);
                 break;
             }
 
             case GetFileResponse: {
                 GetFileResponseMessage getFileResponseMessage = (GetFileResponseMessage) message;
-                nextState = processGetFileResponseMessage (getFileResponseMessage);
+                nextState = processGetFileResponseMessage(getFileResponseMessage);
                 break;
             }
 
@@ -176,7 +176,7 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
-            default :
+            default:
                 nextState = super.processMessage(message);
                 break;
         }
@@ -185,7 +185,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private State processVersionMessage (VersionMessage versionMessage) {
+    private State processVersionMessage(VersionMessage versionMessage) {
         getVersions().put(versionMessage.getNameVersion().getName(), versionMessage.getNameVersion().getVersion());
 
         if (versions.size() >= 1) {
@@ -197,7 +197,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private State processGetVersionsWireMessage (GetVersionsWireMessage getVersionsWireMessage) {
+    private State processGetVersionsWireMessage(GetVersionsWireMessage getVersionsWireMessage) {
         GetVersionsMessage getVersionsMessage = new GetVersionsMessage(getNode().getQueue(), this);
         send(Miranda.getInstance().getQueue(), getVersionsMessage);
 
@@ -205,7 +205,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private List<NameVersion> versionsToList (NameVersion nameVersion) {
+    private List<NameVersion> versionsToList(NameVersion nameVersion) {
         List<NameVersion> list = new ArrayList<NameVersion>();
 
         list.add(nameVersion);
@@ -214,15 +214,15 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    public State processVersionsWireMessage (VersionsWireMessage versionsWireMessage) {
+    public State processVersionsWireMessage(VersionsWireMessage versionsWireMessage) {
         VersionsMessage versionsMessage = new VersionsMessage(getNode().getQueue(), this, versionsWireMessage.getVersions());
 
-        Consumer.staticSend (versionsMessage, Cluster.getInstance().getQueue());
+        Consumer.staticSend(versionsMessage, Cluster.getInstance().getQueue());
 
         return this;
     }
 
-    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
+    private State processGetClusterFileMessage(GetClusterFileMessage getClusterFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage("cluster");
         sendOnWire(getFileWireMessage);
 
@@ -230,7 +230,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private State processGetFileWireMessage (GetFileWireMessage getFileWireMessage) {
+    private State processGetFileWireMessage(GetFileWireMessage getFileWireMessage) {
         GetFileMessage getFileMessage = new GetFileMessage(getNode().getQueue(), this, getFileWireMessage.getFile());
 
         if (getFileWireMessage.getFile().equalsIgnoreCase(Cluster.FILE_NAME)) {
@@ -242,14 +242,14 @@ public class NodeReadyState extends NodeState {
         } else if (getFileWireMessage.getFile().equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
             send(SubscriptionsFile.getInstance().getQueue(), getFileMessage);
         } else {
-            logger.error ("Unknown file " + getFileWireMessage.getFile());
+            logger.error("Unknown file " + getFileWireMessage.getFile());
         }
 
         return this;
     }
 
 
-    private State processVersionsMessage (VersionsMessage versionsMessage) {
+    private State processVersionsMessage(VersionsMessage versionsMessage) {
         State nextState = this;
 
         VersionsWireMessage versionsWireMessage = new VersionsWireMessage(versionsMessage.getVersions());
@@ -259,7 +259,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private State processGetUsersFileMessage (GetUsersFileMessage getUsersFileMessage) {
+    private State processGetUsersFileMessage(GetUsersFileMessage getUsersFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage("users");
         sendOnWire(getFileWireMessage);
 
@@ -267,73 +267,65 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private State processGetFileResponseMessage (GetFileResponseMessage getFileResponseMessage) {
+    private State processGetFileResponseMessage(GetFileResponseMessage getFileResponseMessage) {
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(getFileResponseMessage.getRequester(), getFileResponseMessage.getContents());
         sendOnWire(getFileResponseWireMessage);
 
         return this;
     }
 
-    public State processStopMessage (StopMessage stopMessage) {
+    public State processStopMessage(StopMessage stopMessage) {
         StopWireMessage stopWireMessage = new StopWireMessage();
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), stopWireMessage);
 
         return new NodeStoppingState(getNode());
     }
 
-    public State processGetMessageWireMessage (GetMessagesWireMessage getMessagesWireMessage) {
+    public State processGetMessageWireMessage(GetMessagesWireMessage getMessagesWireMessage) {
         SystemMessages.getInstance().sendGetSystemMessages(getNode().getQueue(), this, getMessagesWireMessage.getFilename());
 
         return this;
     }
 
-    public State processGetDeliveriesWireMessage (GetDeliveriesWireMessage getDeliveriesWireMessage) {
+    public State processGetDeliveriesWireMessage(GetDeliveriesWireMessage getDeliveriesWireMessage) {
         SystemDeliveriesFile.getInstance().sendGetSystemDeliveries(getNode().getQueue(), this, getDeliveriesWireMessage.getFilename());
 
         return this;
     }
 
-    public State processNewSessionWireMessage (NewSessionWireMessage newSessionWireMessage) {
+    public State processNewSessionWireMessage(NewSessionWireMessage newSessionWireMessage) {
         Miranda.getInstance().sendAddSessionMessage(getNode().getQueue(), this, newSessionWireMessage.getSession());
 
         return getNode().getCurrentState();
     }
 
-    public State processSendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
+    public State processSendNetworkMessage(SendNetworkMessage sendNetworkMessage) {
         getNode().sendOnWire(sendNetworkMessage.getWireMessage());
 
         return getNode().getCurrentState();
     }
 
-    public State processSessionsExpiredWireMessage (SessionsExpiredWireMessage sessionsExpiredWireMessage) {
+    public State processSessionsExpiredWireMessage(SessionsExpiredWireMessage sessionsExpiredWireMessage) {
         Miranda.getInstance().sendSessionsExpiredMessage(getNode().getQueue(), this, sessionsExpiredWireMessage.getExpiredSessions());
 
         return getNode().getCurrentState();
     }
 
-    public State processNewUserWireMessage (NewUserWireMessage newUserWireMessage) {
-        try {
-            Miranda.getInstance().sendUserAddedMessage(getNode().getQueue(), this, newUserWireMessage.getUserObject().asUser());
-        } catch (MirandaException e) {
-            logger.error("Exception trying to convert a UserObject to a User", e);
-        }
+    public State processNewUserWireMessage(NewUserWireMessage newUserWireMessage) {
+        Miranda.getInstance().sendUserAddedMessage(getNode().getQueue(), this, newUserWireMessage.getUserObject().asUser());
 
         return getNode().getCurrentState();
     }
 
-    public State processUpdateUserWireMessage (UpdateUserWireMessage updateUserWireMessage) {
-        try {
-            Miranda.getInstance().sendUserUpdatedMessage (getNode().getQueue(), this,
-                    updateUserWireMessage.getUserObject().asUser());
-        } catch (MirandaException e) {
-            logger.error("Exception trying to convert a UserObject to a User", e);
-        }
+    public State processUpdateUserWireMessage(UpdateUserWireMessage updateUserWireMessage) {
+        Miranda.getInstance().sendUserUpdatedMessage(getNode().getQueue(), this,
+                updateUserWireMessage.getUserObject().asUser());
 
         return getNode().getCurrentState();
     }
 
-    public State processDeleteUserWireMessage (DeleteUserWireMessage deleteUserWireMessage) {
-        Miranda.getInstance().sendUserDeletedMessage (getNode().getQueue(), this,
+    public State processDeleteUserWireMessage(DeleteUserWireMessage deleteUserWireMessage) {
+        Miranda.getInstance().sendUserDeletedMessage(getNode().getQueue(), this,
                 deleteUserWireMessage.getName());
 
         return getNode().getCurrentState();

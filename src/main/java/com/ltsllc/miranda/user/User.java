@@ -9,11 +9,9 @@ import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.util.Utils;
+import org.bouncycastle.util.io.pem.PemReader;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.rmi.MarshalException;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
@@ -24,18 +22,61 @@ import java.util.Base64;
  * Created by Clark on 1/5/2017.
  */
 public class User extends StatusObject<User> implements Perishable, Serializable {
+    public enum UserTypes {
+        Publisher,
+        Subscriber,
+        Admin,
+        Nobody
+    }
+
     private static Gson ourGson = new Gson();
 
     private String name;
+    private UserTypes category;
     private String description;
+    private String publicKeyPem;
     private PublicKey publicKey;
 
+
+    public String getPublicKeyPem() {
+        if (null == publicKeyPem)
+            createPublicKeyPem();
+
+        return publicKeyPem;
+    }
+
+    public void setPublicKeyPem(String publicKeyPem) {
+        this.publicKeyPem = publicKeyPem;
+
+        if (this.publicKeyPem != null)
+            publicKey = null;
+    }
+
+    public UserTypes getCategory() {
+        return category;
+    }
+
+    public void setCategory(UserTypes category) {
+        this.category = category;
+    }
+
+    public void setCategory (String categoryString) {
+        UserTypes category = UserTypes.valueOf(categoryString);
+        this.category = category;
+    }
+
     public PublicKey getPublicKey() {
+        if (null == publicKey)
+            createPublicKey();
+
         return publicKey;
     }
 
     public void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
+
+        if (this.publicKey != null)
+            publicKeyPem = null;
     }
 
     public String getName() {
@@ -57,35 +98,52 @@ public class User extends StatusObject<User> implements Perishable, Serializable
         this.description = description;
     }
 
-    public User (String name, String description, String base64) throws MirandaException  {
+    public User (String name, UserTypes category, String description, String publicKeyPem) {
         super(Status.New);
 
-        byte[] data = Base64.getDecoder().decode(base64);
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
-        java.security.PublicKey publicKey = null;
-
-        try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            publicKey = keyFactory.generatePublic(spec);
-        } catch (GeneralSecurityException e) {
-            throw new MirandaException("Exception trying to create public key", e);
-        }
-
         this.name = name;
+        this.category = category;
         this.description = description;
-        this.publicKey = new PublicKey(publicKey);
+        this.publicKeyPem = publicKeyPem;
     }
 
-    public User (String name, String description, byte[] bytes) throws MirandaException {
-        this(name, description, toPublicKey(bytes));
-    }
-
-    public User (String name, String description, PublicKey publicKey) {
+    public User (String name, String categoryString, String description, String publicKeyPem) {
         super(Status.New);
 
         this.name = name;
+
+        UserTypes category = UserTypes.valueOf(categoryString);
+        this.category = category;
+
+        this.description = description;
+        this.publicKeyPem = publicKeyPem;
+    }
+
+
+    public User (String name, UserTypes category, String description) {
+        super(Status.New);
+
+        this.name = name;
+        this.category = category;
+        this.description = description;
+    }
+
+    public User (String name, UserTypes category, String description, PublicKey publicKey) {
+        super(Status.New);
+
+        this.name = name;
+        this.category = category;
         this.description = description;
         this.publicKey = publicKey;
+    }
+
+    public void createPublicKey () {
+        java.security.PublicKey jaPublicKey = Utils.pemStringToPublicKey(publicKeyPem);
+        publicKey = new PublicKey(jaPublicKey);
+    }
+
+    public void createPublicKeyPem () {
+        publicKeyPem = Utils.publicKeyToPemString(publicKey.getSecurityPublicKey());
     }
 
     public User () {
@@ -127,31 +185,14 @@ public class User extends StatusObject<User> implements Perishable, Serializable
 
         userObject.setName(getName());
         userObject.setDescription(getDescription());
-
-        byte[] data = Base64.getEncoder().encode(getPublicKey().getSecurityPublicKey().getEncoded());
-        String encoded = new String(data);
-        userObject.setPublicKey(encoded);
+        userObject.setPublicKeyPem(getPublicKeyPem());
 
         return userObject;
     }
 
-    public void rectify () throws MirandaException {
-    }
-
     public void updateFrom (UserObject userObject) throws MirandaException {
-        PublicKey publicKey = null;
-
-        try {
-            byte[] data = Base64.getDecoder().decode(userObject.getPublicKey());
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            java.security.PublicKey securityPublicKey = keyFactory.generatePublic(spec);
-            publicKey = new PublicKey(securityPublicKey);
-        } catch (GeneralSecurityException e) {
-            throw new MirandaException("Exception trying to get public key", e);
-        }
-
-        setPublicKey(publicKey);
+        setPublicKeyPem(userObject.getPublicKeyPem());
+        setCategory(userObject.getCategory());
         setDescription(userObject.getDescription());
     }
 

@@ -144,7 +144,7 @@ public class UserManager extends Consumer {
         User existingUser = getUser(userObject.getName());
 
         if (null == existingUser)
-            throw new UnknownUserException ("User " + userObject.getPublicKey() + " not found");
+            throw new UnknownUserException ("User " + userObject.getName() + " not found");
 
         existingUser.updateFrom (userObject);
     }
