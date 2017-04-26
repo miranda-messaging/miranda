@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.topics.states;
 
+import com.ltsllc.miranda.ManagerReadyState;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicManagerReadyState extends State {
+public class TopicManagerReadyState extends ManagerReadyState<Topic, Topic> {
     public TopicManager getTopicManager() {
         return (TopicManager) getContainer();
     }

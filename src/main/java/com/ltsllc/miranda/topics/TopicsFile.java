@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.topics;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.topics.states.TopicsFileReadyState;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.writer.Writer;

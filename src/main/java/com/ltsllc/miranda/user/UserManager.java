@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -21,33 +22,22 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 3/31/2017.
  */
-public class UserManager extends Consumer {
+public class UserManager extends Manager<User, User> {
     private static Logger logger = Logger.getLogger(UserManager.class);
 
-    private UsersFile usersFile;
-    private List<User> users;
-
     public List<User> getUsers() {
-        return users;
+        return getData();
     }
 
     public UsersFile getUsersFile() {
-        return usersFile;
+        return (UsersFile) getFile();
     }
 
     public UserManager(String filename) {
-        super("users");
+        super("users", new UsersFile(Miranda.getInstance().getWriter(), filename));
 
         UserManagerReadyState userManagerReadyState = new UserManagerReadyState(this);
         setCurrentState(userManagerReadyState);
-
-        users = new ArrayList<User>();
-        setUsers(users);
-
-        usersFile = new UsersFile(Miranda.getInstance().getWriter(), filename);
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
-        usersFile.addSubscriber(getQueue(), fileLoadedMessage);
-        usersFile.start();
     }
 
     public void start () {
@@ -72,8 +62,9 @@ public class UserManager extends Consumer {
     }
 
     public void performGarbageCollection () {
+        super.performGarbageCollection();
+
         garbageCollectUsers();
-        getUsersFile().performGarbageCollection();
     }
 
     public boolean contains (User user) {
@@ -116,7 +107,7 @@ public class UserManager extends Consumer {
     }
 
     public void setUsers(List<User> users) {
-        this.users = users;
+        setData(users);
     }
 
     public void sendGetUsers (BlockingQueue<Message> senderQueue, Object sender) {
@@ -187,5 +178,9 @@ public class UserManager extends Consumer {
     public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
         sendToMe(garbageCollectionMessage);
+    }
+
+    public User convert (User user) {
+        return user;
     }
 }

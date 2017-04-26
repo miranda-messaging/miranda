@@ -137,7 +137,7 @@ public class TestCluster extends TestCase {
 
         ClusterFile temp = ClusterFile.getInstance();
         assert(null != temp);
-        assert(getCluster().getClusterFileQueue() != null);
+        assert(getCluster().getFile().getQueue() != null);
     }
 
 
@@ -146,7 +146,7 @@ public class TestCluster extends TestCase {
      */
     @Test
     public void testLoad () {
-        getCluster().setClusterFile(getMockClusterFile());
+        getCluster().setFile(getMockClusterFile());
 
         getCluster().load();
 
@@ -162,7 +162,7 @@ public class TestCluster extends TestCase {
         List<Node> nodeList = new ArrayList<Node>(1);
         nodeList.add(node);
 
-        getCluster().setNodes(nodeList);
+        getCluster().setData(nodeList);
 
         assert (getCluster().contains(shouldContain));
         assert (!getCluster().contains(shouldNotContain));
@@ -173,22 +173,10 @@ public class TestCluster extends TestCase {
         ArrayList<Node> nodes = new ArrayList<Node>();
         nodes.add(getMockNode());
 
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
         getCluster().connect();
 
         verify(getMockNode(), atLeastOnce()).connect();
-    }
-
-    @Test
-    public void testReplaceNodes () {
-        ArrayList<NodeElement> nodeElements = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1",6789, "whatever");
-        nodeElements.add(nodeElement);
-
-        List<Node> list1 = getCluster().getNodes();
-        getCluster().replaceNodes(nodeElements);
-        List<Node> list2 = getCluster().getNodes();
-        assert (list1 != list2);
     }
 
     @Test
@@ -198,7 +186,7 @@ public class TestCluster extends TestCase {
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
         Node match = getCluster().matchingNode(nodeElement);
 
         assert(match != null);
@@ -211,7 +199,7 @@ public class TestCluster extends TestCase {
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
 
         NodeStatus nodeStatus = node.getStatus();
 
@@ -235,7 +223,7 @@ public class TestCluster extends TestCase {
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
 
         NodeElement newNode = new NodeElement("foo.com", "192.168.1.2", 6789, "another node");
         List<NodeElement> nodeElements = new ArrayList<NodeElement>();
@@ -296,7 +284,7 @@ public class TestCluster extends TestCase {
     public void testPerformHealthCheckUpdated () {
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(getMockNode());
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
 
         when(getMockNode().isConnected()).thenReturn(true);
 
@@ -346,7 +334,7 @@ public class TestCluster extends TestCase {
     public void testStop () {
         List<Node> nodes = new ArrayList<Node>();
         nodes.add(getMockNode());
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
 
         getCluster().stop();
 
@@ -400,7 +388,7 @@ public class TestCluster extends TestCase {
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
 
         List<NodeElement> nodeElements = getCluster().asNodeElements();
         assert(listsAreEquivalent(nodeElements, nodeElementList));

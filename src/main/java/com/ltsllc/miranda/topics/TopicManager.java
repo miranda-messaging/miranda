@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.topics;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
@@ -17,34 +18,21 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicManager extends Consumer {
+public class TopicManager extends Manager<Topic, Topic> {
     public static final String NAME = "TopicManager";
 
     private static Logger logger = Logger.getLogger(TopicManager.class);
 
-    private TopicsFile topicsFile;
-    private List<Topic> topics;
-
     public TopicsFile getTopicsFile() {
-        return topicsFile;
+        return (TopicsFile) getFile();
     }
 
     public List<Topic> getTopics() {
-        return topics;
+        return getData();
     }
 
     public TopicManager (String filename) {
-        super("topics manager");
-
-        topics = new ArrayList<Topic>();
-
-        Miranda miranda = Miranda.getInstance();
-        topicsFile = new TopicsFile(filename, miranda.getWriter());
-
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
-        topicsFile.addSubscriber(getQueue(), fileLoadedMessage);
-
-        topicsFile.start();
+        super("topics manager", new TopicsFile(filename, Miranda.getInstance().getWriter()));
 
         TopicManagerReadyState topicManagerReadyState = new TopicManagerReadyState(this);
         setCurrentState(topicManagerReadyState);
@@ -70,7 +58,6 @@ public class TopicManager extends Consumer {
         }
 
         getTopics().removeAll(expired);
-        getTopicsFile().sendRemoveObjectsMessage(getQueue(), this, expired);
     }
 
     public Topic getTopic (String name) {
@@ -112,7 +99,7 @@ public class TopicManager extends Consumer {
     }
 
     public void setTopics (List<Topic> topics) {
-        this.topics = new ArrayList<Topic>(topics);
+        setData(topics);
     }
 
     public void sendCreateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
@@ -177,5 +164,9 @@ public class TopicManager extends Consumer {
     public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
         sendToMe(garbageCollectionMessage);
+    }
+
+    public Topic convert (Topic topic) {
+        return topic;
     }
 }

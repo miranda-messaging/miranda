@@ -67,7 +67,6 @@ public class UserObject extends com.ltsllc.miranda.StatusObject {
         this.publicKeyPem = publicKeyPem;
     }
 
-
     public User asUser() {
         User.UserTypes category = User.UserTypes.valueOf(getCategory());
         User user = new User(getName(), category, getDescription(), getPublicKeyPem());
@@ -75,5 +74,27 @@ public class UserObject extends com.ltsllc.miranda.StatusObject {
         user.setStatus(getStatus());
 
         return user;
+    }
+
+    public boolean isValid () {
+        if (name != null)
+            name = name.trim();
+
+        if (name == null || name.equals(""))
+            return false;
+
+        if (category == null || category.equals("Nobody"))
+            return false;
+
+        if (description != null)
+            description = description.trim();
+
+        if (null != publicKeyPem)
+            publicKeyPem = publicKeyPem.trim();
+
+        if (null == publicKeyPem || publicKeyPem.equals(""))
+            return false;
+
+        return true;
     }
 }

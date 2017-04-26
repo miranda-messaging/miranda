@@ -1,8 +1,6 @@
 package com.ltsllc.miranda.cluster.states;
 
-import com.ltsllc.miranda.LoadResponseMessage;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.*;
@@ -33,7 +31,7 @@ import org.apache.log4j.Logger;
 /**
  * The cluster is ready to accept commands
  */
-public class ClusterReadyState extends State {
+public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     private static Logger logger = Logger.getLogger(ClusterReadyState.class);
 
     private Cluster cluster;
@@ -138,6 +136,12 @@ public class ClusterReadyState extends State {
                 break;
             }
 
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) m;
+                nextState = processShutdownMessage (shutdownMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(m);
                 break;
@@ -194,7 +198,7 @@ public class ClusterReadyState extends State {
 
     private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
         GetVersionMessage getVersionMessage2 = new GetVersionMessage(getCluster().getQueue(), this, getVersionMessage.getRequester());
-        send(getCluster().getClusterFileQueue(), getVersionMessage2);
+        send(getCluster().getFile().getQueue(), getVersionMessage2);
 
         return this;
     }
@@ -282,5 +286,13 @@ public class ClusterReadyState extends State {
         getCluster().broadcast(deleteUserWireMessage);
 
         return getCluster().getCurrentState();
+    }
+
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+        getCluster().getClusterFile().sendShutdown(getCluster().getQueue(), this);
+        ManagerShuttingDownState managerShuttindDownState = new ManagerShuttingDownState (getManager(),
+                shutdownMessage.getSender());
+
+        return managerShuttindDownState;
     }
 }

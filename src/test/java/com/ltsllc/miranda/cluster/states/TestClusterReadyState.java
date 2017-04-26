@@ -118,7 +118,9 @@ public class TestClusterReadyState extends TestCase {
     public void testProcessMessageGetVersion() {
         GetVersionMessage message = new GetVersionMessage(null, this, null);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        when(getMockCluster().getClusterFileQueue()).thenReturn(queue);
+
+        when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getQueue()).thenReturn(queue);
 
         getClusterReadyState().processMessage(message);
 
@@ -169,13 +171,14 @@ public class TestClusterReadyState extends TestCase {
 
         GetVersionMessage getVersionMessage = new GetVersionMessage(queue, this, queue);
 
-        when(getMockCluster().getClusterFileQueue()).thenReturn(queue);
+        when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getQueue()).thenReturn(queue);
         when(getMockCluster().getQueue()).thenReturn(queue);
 
         getClusterReadyState().processMessage(getVersionMessage);
 
         verify(getMockCluster(), atLeastOnce()).getQueue();
-        verify(getMockCluster(), atLeastOnce()).getClusterFileQueue();
+        verify(getMockCluster(), atLeastOnce()).getFile();
     }
 
     @Test

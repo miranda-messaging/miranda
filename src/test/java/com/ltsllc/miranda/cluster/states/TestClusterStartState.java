@@ -65,7 +65,7 @@ public class TestClusterStartState extends TestCase {
         State nextState = getClusterStartState().processMessage(fileLoadedMessage);
 
         assert (nextState instanceof ClusterReadyState);
-        verify(getMockCluster(), atLeastOnce()).setNodes(Matchers.anyList());
+        verify(getMockCluster(), atLeastOnce()).setData(Matchers.anyList());
         verify(getMockNetwork(), atLeastOnce()).sendConnect(Matchers.any(BlockingQueue.class),
                 Matchers.any(), Matchers.eq("foo.com"), Matchers.eq(6789));
     }

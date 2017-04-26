@@ -34,9 +34,13 @@ public class CreateUserServlet extends MirandaServlet {
 
         try {
             UserObject user = fromJson(req.getInputStream(), UserObject.class);
-            User newUser = new User(user.getName(), user.getCategory(), user.getDescription(), user.getPublicKeyPem());
-            Results result = UserHolder.getInstance().createUser(newUser);
-            resultObject.setResult(result);
+            if (!user.isValid())
+                resultObject.setResult(Results.InvalidRequest);
+            else {
+                User newUser = new User(user.getName(), user.getCategory(), user.getDescription(), user.getPublicKeyPem());
+                Results result = UserHolder.getInstance().createUser(newUser);
+                resultObject.setResult(result);
+            }
         } catch (IOException | MirandaException e) {
             resultObject.setResult(Results.Exception);
             resultObject.setAdditionalInfo(e);

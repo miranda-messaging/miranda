@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.topics.states.TopicsFileReadyState;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

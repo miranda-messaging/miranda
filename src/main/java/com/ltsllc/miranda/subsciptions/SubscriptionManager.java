@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -14,30 +15,23 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/12/2017.
  */
-public class SubscriptionManager extends Consumer {
+public class SubscriptionManager extends Manager<Subscription, Subscription> {
     public static final String NAME = "SubscriptionManager";
 
-    private SubscriptionsFile subscriptionsFile;
-    private List<Subscription> subscriptions;
-
     public List<Subscription> getSubscriptions() {
-        return subscriptions;
+        return getData();
     }
 
     public SubscriptionsFile getSubscriptionsFile() {
-        return subscriptionsFile;
+        return (SubscriptionsFile) getFile();
+    }
+
+    public void setSubscriptions(List<Subscription> subscriptions) {
+        setData(subscriptions);
     }
 
     public SubscriptionManager(String filename) {
-        super("subscription manager");
-
-        Miranda miranda = Miranda.getInstance();
-        subscriptionsFile = new SubscriptionsFile(miranda.getWriter(), filename);
-
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
-        subscriptionsFile.addSubscriber(getQueue(), fileLoadedMessage);
-
-        subscriptionsFile.start();
+        super("subscription manager", new SubscriptionsFile(Miranda.getInstance().getWriter(), filename));
 
         SubscriptionManagerReadyState readyState = new SubscriptionManagerReadyState(this);
         setCurrentState(readyState);
@@ -46,10 +40,6 @@ public class SubscriptionManager extends Consumer {
     public void sendOwnerQueryMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
         OwnerQueryMessage ownerQueryMessage = new OwnerQueryMessage(senderQueue, sender, name);
         sendToMe(ownerQueryMessage);
-    }
-
-    public void performGarbageCollection () {
-        getSubscriptionsFile().sendGarbageCollectionMessage(getQueue(), this);
     }
 
     public void sendGetSubscriptionsMessage (BlockingQueue<Message> senderQueue, Object sender) {
@@ -130,5 +120,9 @@ public class SubscriptionManager extends Consumer {
     public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
         sendToMe(garbageCollectionMessage);
+    }
+
+    public Subscription convert (Subscription subscription) {
+        return subscription;
     }
 }

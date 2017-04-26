@@ -8,10 +8,7 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
-import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.file.Matchable;
-import com.ltsllc.miranda.file.MirandaFile;
-import com.ltsllc.miranda.file.Subscriber;
+import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.network.Network;
@@ -105,6 +102,20 @@ public class TestCase {
 
     @Mock
     private SessionManager mockSessionManager;
+
+    @Mock
+    private SingleFile mockSingleFile;
+
+    @Mock
+    private BlockingQueue mockBlockingQueue;
+
+    public BlockingQueue getMockBlockingQueue() {
+        return mockBlockingQueue;
+    }
+
+    public SingleFile getMockSingleFile() {
+        return mockSingleFile;
+    }
 
     public SessionManager getMockSessionManager() {
         return mockSessionManager;
@@ -278,6 +289,8 @@ public class TestCase {
         this.mockUserManager = null;
         this.mockTopicManager = null;
         this.mockSessionManager = null;
+        this.mockSingleFile = null;
+        this.mockBlockingQueue = null;
     }
 
     public void setup () {
@@ -301,6 +314,8 @@ public class TestCase {
         this.mockUserManager = mock(UserManager.class);
         this.mockTopicManager = mock(TopicManager.class);
         this.mockSessionManager = mock(SessionManager.class);
+        this.mockSingleFile = mock(SingleFile.class);
+        this.mockBlockingQueue = mock(BlockingQueue.class);
     }
 
     public void setupMockNetwork () {

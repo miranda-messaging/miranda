@@ -52,7 +52,7 @@ public class ClusterStartState extends State {
             nodes.add(node);
         }
 
-        getCluster().setNodes(nodes);
+        getCluster().setData(nodes);
 
         ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
         return clusterReadyState;

@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
@@ -47,16 +48,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  * </P>
  * Created by Clark on 12/31/2016.
  */
-public class Cluster extends Consumer {
+public class Cluster extends Manager<Node, NodeElement> {
     public static final String FILE_NAME = "cluster";
 
     private Logger logger = Logger.getLogger(Cluster.class);
 
     private static Cluster ourInstance;
 
-    private List<Node> nodes = new ArrayList<Node>();
     private Network network;
-    private ClusterFile clusterFile;
 
     public static synchronized void initialize(String filename, Writer writer, Network network) {
         if (null == ourInstance) {
@@ -83,9 +82,7 @@ public class Cluster extends Consumer {
     }
 
     public Cluster(Network network, ClusterFile clusterFile) {
-        super("cluster");
-
-        this.clusterFile = clusterFile;
+        super("cluster", clusterFile);
 
         FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
         clusterFile.addSubscriber(getQueue(),fileLoadedMessage);
@@ -97,24 +94,12 @@ public class Cluster extends Consumer {
         clusterFile.start();
     }
 
-    public BlockingQueue<Message> getClusterFileQueue() {
-        return clusterFile.getQueue();
-    }
-
     public ClusterFile getClusterFile() {
-        return clusterFile;
-    }
-
-    public void setClusterFile(ClusterFile clusterFile) {
-        this.clusterFile = clusterFile;
+        return (ClusterFile) getFile();
     }
 
     public List<Node> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(List<Node> nodes) {
-        this.nodes = nodes;
+        return (List<Node>) getData();
     }
 
     public Network getNetwork() {
@@ -122,7 +107,7 @@ public class Cluster extends Consumer {
     }
 
     public boolean contains (NodeElement nodeElement) {
-        for (Node node : nodes) {
+        for (Node node : getNodes()) {
             if (node.equalsElement(nodeElement))
                 return true;
         }
@@ -136,23 +121,6 @@ public class Cluster extends Consumer {
             if (!node.isConnected())
                 node.connect();
         }
-    }
-
-    /**
-     * When the cluster is starting
-     *
-     * @param newNodes
-     */
-    public void replaceNodes (List<NodeElement> newNodes) {
-        List<Node> nodeList = new ArrayList<Node>();
-
-        for (NodeElement nodeElement : newNodes) {
-            Node node = new Node(nodeElement, getNetwork(), this);
-            node.start();
-            nodeList.add(node);
-        }
-
-        this.nodes = nodeList;
     }
 
     /**
@@ -199,7 +167,7 @@ public class Cluster extends Consumer {
 
             List<NodeElement> nodeList = asNodeElements();
             NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage(getQueue(), this, nodeList);
-            send(nodesUpdatedMessage, getClusterFileQueue());
+            send(nodesUpdatedMessage, getClusterFile().getQueue());
         }
     }
 
@@ -218,7 +186,7 @@ public class Cluster extends Consumer {
         List<NodeElement> nodeElementList = asNodeElements();
         NodesUpdatedMessage message = new NodesUpdatedMessage(getQueue(), this, nodeElementList);
 
-        send (message, getClusterFileQueue());
+        send (message, getFile().getQueue());
     }
 
     /**
@@ -248,7 +216,7 @@ public class Cluster extends Consumer {
 
         if (updated) {
             NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage (getQueue(), this, nodeList);
-            send(nodesUpdatedMessage, getClusterFileQueue());
+            send(nodesUpdatedMessage, getFile().getQueue());
         }
     }
 
@@ -335,5 +303,10 @@ public class Cluster extends Consumer {
     public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
         DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, name);
         sendToMe(deleteSubscriptionMessage);
+    }
+
+    public Node convert (NodeElement nodeElement) {
+        Node node = new Node(nodeElement, getNetwork(), this);
+        return node;
     }
 }

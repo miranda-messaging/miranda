@@ -12,6 +12,7 @@ public enum Results {
     UserOwnsTopics,
     UserOwnsSubscriptions,
     SessionCreated,
-    SubscriptionNotFound
+    SubscriptionNotFound,
+    InvalidRequest
 }
 

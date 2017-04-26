@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/1/2017.
  */
-public class UserManagerReadyState extends State {
+public class UserManagerReadyState extends ManagerReadyState<User, User> {
     private Logger logger = Logger.getLogger(UserManagerReadyState.class);
 
     public UserManager getUserManager () {
@@ -55,12 +55,6 @@ public class UserManagerReadyState extends State {
             case DeleteUser: {
                 DeleteUserMessage deleteUserMessage = (DeleteUserMessage) message;
                 nextState = processDeleteUserMessage (deleteUserMessage);
-                break;
-            }
-
-            case FileLoaded: {
-                FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
-                nextState = processFileLoadedMessage (fileLoadedMessage);
                 break;
             }
 

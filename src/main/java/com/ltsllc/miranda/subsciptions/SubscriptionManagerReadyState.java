@@ -3,6 +3,7 @@ package com.ltsllc.miranda.subsciptions;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
@@ -64,6 +65,12 @@ public class SubscriptionManagerReadyState extends State {
             case DeleteSubscription: {
                 DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) message;
                 nextState = processDeleteSubscriptionMessage (deleteSubscriptionMessage);
+                break;
+            }
+
+            case FileLoaded: {
+                FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
+                nextState = processFileLoadedMessage (fileLoadedMessage);
                 break;
             }
 
@@ -145,6 +152,14 @@ public class SubscriptionManagerReadyState extends State {
                 this, Results.Success);
 
         deleteSubscriptionMessage.reply(response);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
+        List<Subscription> subscriptions = (List<Subscription>) fileLoadedMessage.getData();
+
+        getSubscriptionManager().setSubscriptions (subscriptions);
 
         return getSubscriptionManager().getCurrentState();
     }
