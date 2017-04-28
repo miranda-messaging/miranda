@@ -3,7 +3,10 @@ package com.ltsllc.miranda.servlet.user;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
+import com.ltsllc.miranda.servlet.holder.ServletHolder;
 import com.ltsllc.miranda.servlet.holder.UserHolder;
+import com.ltsllc.miranda.servlet.objects.RequestObject;
+import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.servlet.objects.UserObjectResultObject;
 
@@ -16,24 +19,19 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/10/2017.
  */
-public class GetUserServlet extends MirandaServlet {
+public class GetUserServlet extends UserServlet {
+    public ResultObject createResultObject () {
+        return new ResultObject();
+    }
 
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserObjectResultObject result = new UserObjectResultObject();
+    public ResultObject basicService(HttpServletRequest request, HttpServletResponse response,
+                                                UserRequestObject requestObject) throws ServletException, IOException, TimeoutException
+    {
+        GetUserResponseObject getUserResponseObject = new GetUserResponseObject();
+        UserObject userObject = UserHolder.getInstance().getUser(requestObject.getUserObject().getName()).asUserObject();
+        getUserResponseObject.setUserObject(userObject);
+        getUserResponseObject.setResult(UserHolder.getInstance().getGetUserResults());
 
-        try {
-            UserObject userObject = fromJson(req.getInputStream(), UserObject.class);
-            userObject = UserHolder.getInstance().getUser(userObject.getName()).asUserObject();
-            result.setResult(Results.Success);
-            result.setUserObject(userObject);
-        } catch (MirandaException e) {
-            result.setResult(Results.Exception);
-            result.setAdditionalInfo(e);
-        } catch (TimeoutException e) {
-            result.setResult(Results.Timeout);
-        }
-
-        respond(resp.getOutputStream(), result);
-        resp.setStatus(200);
+        return getUserResponseObject;
     }
 }

@@ -43,4 +43,8 @@ public class Session {
         Session other = (Session) o;
         return getUser().equals(other.getUser()) && getExpires() == other.getExpires() && getId() == other.getId();
     }
+
+    public void extendExpires (long time) {
+        expires += time;
+    }
 }

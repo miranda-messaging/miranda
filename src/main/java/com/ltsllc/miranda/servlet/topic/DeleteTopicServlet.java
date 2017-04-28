@@ -4,6 +4,7 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
 import com.ltsllc.miranda.servlet.holder.TopicHolder;
+import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.topics.Topic;
 
@@ -16,22 +17,17 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class DeleteTopicServlet extends MirandaServlet {
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+public class DeleteTopicServlet extends TopicServlet {
+    public ResultObject createResultObject () {
+        return new ResultObject();
+    }
+
+    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+            throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
+        Results result = TopicHolder.getInstance().deleteTopic(requestObject.getTopic().getName());
+        resultObject.setResult(result);
 
-        try {
-            Topic topicToDelete = fromJson(req.getInputStream(), Topic.class);
-            Results result = TopicHolder.getInstance().deleteTopic(topicToDelete.getName());
-            resultObject.setResult(result);
-        } catch (MirandaException e) {
-            resultObject.setResult(Results.Exception);
-            resultObject.setAdditionalInfo(e);
-        } catch (TimeoutException e) {
-            resultObject.setResult(Results.Timeout);
-        }
-
-        respond(resp.getOutputStream(), resultObject);
-        resp.setStatus(200);
+        return resultObject;
     }
 }

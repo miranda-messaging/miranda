@@ -9,20 +9,18 @@ import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Clark on 3/31/2017.
  */
 public class LoginServlet extends MirandaServlet {
-    private static Logger logger = Logger.getLogger(LoginServlet.class);
-    private static Gson gson = new Gson();
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LoginResultObject result = new LoginResultObject();
 
@@ -32,9 +30,11 @@ public class LoginServlet extends MirandaServlet {
             result.setResult(loginResult.result);
 
             if (loginResult.session != null) {
-                byte[] plainText = Utils.toBytes(loginResult.session.getId());
+                String sessionIdString = Long.toString(loginResult.session.getId());
+                byte[] plainText = sessionIdString.getBytes();
                 byte[] cipherText = loginResult.session.getUser().getPublicKey().encrypt(plainText);
-                result.setSession(Utils.bytesToString(cipherText));
+                String string = new String(Base64.getEncoder().encode(cipherText));
+                result.setSession(string);
             }
         } catch (MirandaException | GeneralSecurityException e) {
             result.setResult(Results.Exception);

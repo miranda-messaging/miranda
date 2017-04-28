@@ -3,7 +3,9 @@ package com.ltsllc.miranda.servlet.holder;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.states.ServletHolderReadyState;
+import com.ltsllc.miranda.session.Session;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.TimeoutException;
@@ -16,6 +18,15 @@ public class ServletHolder extends Consumer {
 
     private long timeoutPeriod;
     private boolean awakened;
+    private Session session;
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
 
     public boolean getAwakened() {
         return awakened;
@@ -81,5 +92,20 @@ public class ServletHolder extends Consumer {
     public synchronized void wake () {
         setAwakened(true);
         notifyAll();
+    }
+
+    public Session getSession (long session) throws TimeoutException {
+        setSession(null);
+
+        Miranda.getInstance().getSessionManager().sendCheckSessionMessage (getQueue(), this, session);
+
+        sleep();
+
+        return getSession();
+    }
+
+    public void setSessionAndAwaken (Session session) {
+        setSession(session);
+        wake();
     }
 }

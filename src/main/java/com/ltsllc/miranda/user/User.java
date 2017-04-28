@@ -185,6 +185,7 @@ public class User extends StatusObject<User> implements Perishable, Serializable
 
         userObject.setName(getName());
         userObject.setDescription(getDescription());
+        userObject.setCategory(getCategory().toString());
         userObject.setPublicKeyPem(getPublicKeyPem());
 
         return userObject;

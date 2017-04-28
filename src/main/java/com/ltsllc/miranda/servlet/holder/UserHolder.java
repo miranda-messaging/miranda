@@ -19,8 +19,17 @@ public class UserHolder extends ServletHolder {
     private Results userCreateResults;
     private Results userUpdateResults;
     private Results userDeleteResults;
+    private Results getUserResults;
     private List<User> userList;
     private User user;
+
+    public Results getGetUserResults() {
+        return getUserResults;
+    }
+
+    public void setGetUserResults(Results getUserResults) {
+        this.getUserResults = getUserResults;
+    }
 
     public User getUser() {
         return user;

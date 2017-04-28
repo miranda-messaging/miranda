@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.miranda.operations.user;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
 import com.ltsllc.miranda.user.User;
@@ -27,6 +28,9 @@ public class CreateUserOperation extends Operation {
     }
 
     public void start () {
+        super.start();
+
         Miranda.getInstance().getUserManager().sendCreateUserMessage(getQueue(), this, getUser());
     }
+
 }

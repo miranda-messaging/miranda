@@ -6,6 +6,7 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.session.messages.CheckSessionMessage;
 import com.ltsllc.miranda.session.messages.CreateSessionMessage;
 import com.ltsllc.miranda.session.messages.GetSessionMessage;
 import com.ltsllc.miranda.user.User;
@@ -170,5 +171,23 @@ public class SessionManager extends Consumer {
 
     public Session getSessionFor (String name) {
         return getUserToSession().get(name);
+    }
+
+    public void sendCheckSessionMessage (BlockingQueue<Message> senderQueue, Object sender, long sessionId) {
+        CheckSessionMessage checkSessionMessage = new CheckSessionMessage(senderQueue, sender, sessionId);
+        sendToMe(checkSessionMessage);
+    }
+
+    public Session checkSession (long sessionId) {
+        Session session = getSessions().get(sessionId);
+
+        if (session != null) {
+            long sessionLength = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_SESSION_LENGTH,
+                    MirandaProperties.DEFAULT_SESSION_LENGTH);
+
+            session.extendExpires(sessionLength);
+        }
+
+        return session;
     }
 }

@@ -17,6 +17,8 @@ public class Message implements Perishable {
         AddSubscriber,
         AddSession,
         Ballot,
+        CheckSession,
+        CheckSessionResponse,
         Closed,
         ClusterFile,
         ClusterFileChanged,

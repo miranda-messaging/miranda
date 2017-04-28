@@ -6,10 +6,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.session.messages.CreateSessionMessage;
-import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
-import com.ltsllc.miranda.session.messages.GetSessionMessage;
-import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
+import com.ltsllc.miranda.session.messages.*;
 import com.ltsllc.miranda.session.operations.CreateSessionOperation;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 
@@ -70,6 +67,12 @@ public class SessionManagerReadyState extends State {
                 break;
             }
 
+            case CheckSession: {
+                CheckSessionMessage checkSessionMessage = (CheckSessionMessage) message;
+                nextState = processCheckSessionMessage(checkSessionMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -121,6 +124,23 @@ public class SessionManagerReadyState extends State {
 
             getSessionMessage.reply(response);
         }
+
+        return getSessionManager().getCurrentState();
+    }
+
+    public State processCheckSessionMessage (CheckSessionMessage checkSessionMessage) {
+        Session session = getSessionManager().checkSession(checkSessionMessage.getSessionId());
+
+        Results result;
+        if (session == null)
+            result = Results.SessionNotFound;
+        else
+            result = Results.Success;
+
+        CheckSessionResponseMessage response = new CheckSessionResponseMessage(getSessionManager().getQueue(),
+                this, result, session);
+
+        checkSessionMessage.reply(response);
 
         return getSessionManager().getCurrentState();
     }

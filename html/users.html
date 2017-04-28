@@ -117,7 +117,6 @@
         $('#dialog').modal('show');
     }
 
-
     function gotUsers (data,status) {
         var result = JSON.parse(data);
         if (result.result == "Success") {
@@ -231,25 +230,43 @@
     function commenceEdit(data, status) {
         var result = JSON.parse(data);
 
-        if (result.result == "Success") {
-            $('#dialogTitle').text ("Edit User");
-            $('#userName').prop('readonly', true);
-            $('#userName').val(result.userObject.name);
-            $('#userDescription').val(result.userObject.description);
-            $('#userPublicKey').val(result.userObject.publicKey);
-
-            $('#accept').text("Accept");
-            $('#delete').prop ("class", "btn btn-default");
-            $('#delete').prop ("hidden", false);
-
-            $('#accept').unbind ();
-            $('#accept').click (function () { acceptEditUser(); });
-
-            $('#delete').unbind();
-            $('#delete').click (function () { deleteUser(); });
-
-            $('#userDialog').modal('show');
+        if (result.result != "Success") {
+            alert ("Failed to get user " + result.result);
+        } else {
+            edit(result.userObject);
         }
+    }
+
+    function edit (user)
+    {
+        $('#title').text ("Edit User");
+
+        $('#name').prop('readonly', true);
+        $('#name').val(user.name);
+
+        if (user.category == "Publisher")
+            $('#puplisher').prop("checked", true);
+        else if (user.category == "Subscriber")
+            $('#subscriber').prop("checked", true);
+        else if (user.category == "Admin")
+            $('#admin').prop("checked", true);
+        else {
+            alert ("Unrecognized category " + userObject.category);
+        }
+
+        $('#description').val(user.description);
+        $('#publicKey').text(user.publicKeyPem);
+
+        $('#accept').text("Accept");
+        $('#delete').prop ("class", "btn btn-default");
+        $('#delete').prop ("hidden", false);
+
+        $('#accept').unbind ();
+        $('#accept').click (function () { acceptEditUser(); });
+        $('#delete').unbind();
+        $('#delete').click (function () { deleteUser(); });
+
+        showDialog();
     }
 
     function acceptEditUser () {

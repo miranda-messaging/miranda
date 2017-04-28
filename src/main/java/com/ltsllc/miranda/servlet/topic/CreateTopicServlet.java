@@ -4,8 +4,10 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
 import com.ltsllc.miranda.servlet.holder.TopicHolder;
+import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,22 +18,23 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class CreateTopicServlet extends MirandaServlet {
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+public class CreateTopicServlet extends TopicServlet {
+    @Override
+    public boolean allowAccess() {
+        return getSession().getUser().getCategory() == User.UserTypes.Publisher;
+    }
+
+    public ResultObject createResultObject() {
+        return new ResultObject();
+    }
+
+    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp,
+                                            TopicRequestObject requestObject)
+            throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
+        Results result = TopicHolder.getInstance().createTopic(requestObject.getTopic());
+        resultObject.setResult(result);
 
-        try {
-            Topic newTopic = fromJson(req.getInputStream(), Topic.class);
-            Results result = TopicHolder.getInstance().createTopic(newTopic);
-            resultObject.setResult(result);
-        } catch (MirandaException e) {
-            resultObject.setResult(Results.Exception);
-            resultObject.setAdditionalInfo(e);
-        } catch (TimeoutException e) {
-            resultObject.setResult(Results.Timeout);
-        }
-
-        respond(resp.getOutputStream(), resultObject);
-        resp.setStatus(200);
+        return resultObject;
     }
 }

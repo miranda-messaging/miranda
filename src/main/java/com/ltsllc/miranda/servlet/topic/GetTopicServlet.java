@@ -3,10 +3,13 @@ package com.ltsllc.miranda.servlet.topic;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
+import com.ltsllc.miranda.servlet.holder.ServletHolder;
 import com.ltsllc.miranda.servlet.holder.TopicHolder;
+import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.objects.TopicResultObject;
 import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,29 +20,22 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/11/2017.
  */
-public class GetTopicServlet extends MirandaServlet {
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+public class GetTopicServlet extends TopicServlet {
+    public ResultObject createResultObject () {
+        return new TopicResultObject();
+    }
+
+    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+            throws ServletException, IOException, TimeoutException {
         TopicResultObject topicResultObject = new TopicResultObject();
-        Topic topic = null;
-
-        try {
-            topic = fromJson(req.getInputStream(), Topic.class);
-            topic = TopicHolder.getInstance().getTopic(topic.getName());
-            if (topic != null) {
-                topicResultObject.setResult(Results.Success);
-                topicResultObject.setTopic(topic);
-            } else {
-                topicResultObject.setResult(Results.TopicNotFound);
-            }
-
-        } catch (TimeoutException e) {
-            topicResultObject.setResult(Results.Timeout);
-        } catch (MirandaException e) {
-            topicResultObject.setResult(Results.Exception);
-            topicResultObject.setAdditionalInfo(e);
+        Topic topic = TopicHolder.getInstance().getTopic(requestObject.getTopic().getName());
+        if (topic != null) {
+            topicResultObject.setResult(Results.Success);
+            topicResultObject.setTopic(topic);
+        } else {
+            topicResultObject.setResult(Results.TopicNotFound);
         }
 
-        respond(resp.getOutputStream(), topicResultObject);
-        resp.setStatus(200);
+        return topicResultObject;
     }
 }

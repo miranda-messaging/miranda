@@ -303,7 +303,6 @@ public class ReadyState extends State {
     }
 
     public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) {
-
         DeleteUserOperation deleteUserOperation = new DeleteUserOperation(deleteUserMessage.getSender(),
                 deleteUserMessage.getName());
 
@@ -313,8 +312,6 @@ public class ReadyState extends State {
     }
 
     public State processCreateUserMessage (CreateUserMessage createUserMessage) {
-        getMiranda().getUserManager().sendCreateUserMessage(getMiranda().getQueue(), this, createUserMessage.getUser());
-
         CreateUserOperation createUserOperation = new CreateUserOperation(createUserMessage.getSender(),
                 createUserMessage.getUser());
         createUserOperation.start();
@@ -323,8 +320,6 @@ public class ReadyState extends State {
     }
 
     public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
-        getMiranda().getUserManager().sendUpdateUserMessage(getMiranda().getQueue(), this, updateUserMessage.getUser());
-
         UpdateUserOperation updateUserOperation = new UpdateUserOperation(updateUserMessage.getUser(),
                 updateUserMessage.getSender());
 

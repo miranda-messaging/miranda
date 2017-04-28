@@ -13,6 +13,7 @@ public enum Results {
     UserOwnsSubscriptions,
     SessionCreated,
     SubscriptionNotFound,
-    InvalidRequest
+    InvalidRequest,
+    SessionNotFound
 }
 

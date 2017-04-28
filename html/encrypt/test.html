@@ -72,7 +72,6 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th>Status</th>
     </tr>
     </thead>
 
@@ -92,21 +91,23 @@
         $('#newUserDialog').modal('show');
     }
 
+    function populate (tableBody, users) {
+        var html = "";
+
+        users.forEach(function (element) {
+            html = html + "<tr>";
+            html = html + "<td>" + element.name + "</td>";
+            html = html + "</tr>";
+        });
+
+        tableBody.append(html);
+    }
+
 
     function gotUsers (data,status) {
         var result = JSON.parse(data);
         if (result.result == "Success") {
-            var html = "";
-            $('#tableBody').empty();
-
-            result.userList.forEach(function(element) {
-                html = html + "<tr>";
-                html = html + "<td>" + element.name + "</td>";
-                html = html + "<td>" + element.status + "</td>";
-                html = html + "</tr>";
-            });
-
-            $('#tableBody').append(html);
+            populate ($('#tableBody'), result.userList);
             setupHandler();
         }
     }
@@ -134,7 +135,48 @@
         jsencrypt.setPrivateKey(privateKey);
         var plaintext = jsencrypt.decrypt(result.session);
         whatever.val(plaintext);
+        var temp = parseInt(plaintext);
+        temp = temp
     }
+
+    function hexStringToBinaryArray (string) {
+        var result = [];
+        for (var i = 0; i < string.length; i = i + 2) {
+            var byteString = string.substring (i, i + 2);
+            var byte = convertByte(byteString);
+            result.push(byte);
+        }
+
+        return result;
+    }
+
+    function convertByte (byteString) {
+        var result = convertNibble (byteString.charAt(0));
+        result = result << 4;
+        result = result + convertNibble(byteString.charAt(1));
+
+        return result;
+    }
+
+    function convertNibble (char) {
+        if (char == 'A')
+            return 10;
+        else if (char == 'B')
+            return 11;
+        else if (char == 'C')
+            return 12;
+        else if (char == 'D')
+            return 13;
+        else if (char == 'E')
+            return 14;
+        else if (char == 'F')
+            return 15;
+        else {
+            return char - '0';
+        }
+    }
+
+
 
     function getUser (index) {
         var table = $('#usersTable');

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hex</title>
+</head>
+<body>
+<label>Input</label>
+<textarea id="input" rows="6" style="min-width: 100%"></textarea>
+<p>
+<button type="button" onclick="convert()">Convert</button>
+</p>
+<label>Output</label>
+<textarea id="output" rows="6" style="min-width: 100%"></textarea>
+
+<script src="/js/jquery.js"></script>
+<script src="/bootstrap/js/bootstrap.js"></script>
+
+<script>
+    function convert () {
+        var result = hexStringToBinaryArray($(input).val());
+        $(output).text(result);
+    }
+
+    function hexStringToBinaryArray (string) {
+        var result = [];
+        for (var i = 0; i < string.length; i = i + 2) {
+            var byteString = string.substring (i, i + 2);
+            var byte = convertByte(byteString);
+            result.push(byte);
+        }
+
+        return result;
+    }
+
+    function convertByte (byteString) {
+        var result = convertNibble (byteString.charAt(0));
+        result = result << 4;
+        result = result + convertNibble(byteString.charAt(1));
+
+        return result;
+    }
+
+    function convertNibble (char) {
+        if (char == 'A')
+            return 10;
+        else if (char == 'B')
+            return 11;
+        else if (char == 'C')
+            return 12;
+        else if (char == 'D')
+            return 13;
+        else if (char == 'E')
+            return 14;
+        else if (char == 'F')
+            return 15;
+        else {
+            return char - '0';
+        }
+    }
+
+
+
+</script>
+</body>
+</html>

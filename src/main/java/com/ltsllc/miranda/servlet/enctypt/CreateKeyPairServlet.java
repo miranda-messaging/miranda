@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.servlet.enctypt;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
 import com.ltsllc.miranda.servlet.objects.KeyPairObject;
@@ -19,6 +20,7 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +35,6 @@ import java.security.PrivateKey;
  * Created by Clark on 4/7/2017.
  */
 public class CreateKeyPairServlet extends MirandaServlet {
-
     public RSAPrivateCrtKeyParameters toBouncyCastle(KeyPair keyPair) {
         byte data[] = keyPair.getPrivate().getEncoded();
         RSAPrivateKey rsa = RSAPrivateKey.getInstance(data);
@@ -41,7 +42,6 @@ public class CreateKeyPairServlet extends MirandaServlet {
                 rsa.getPrivateExponent(), rsa.getPrime1(), rsa.getPrime2(), rsa.getExponent1(),
                 rsa.getExponent2(), rsa.getCoefficient());
     }
-
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         KeyPairResult keyPairResult = new KeyPairResult();

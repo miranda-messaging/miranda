@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
  * Created by Clark on 4/8/2017.
  */
 public class TestMirandaServlet extends TestServlet {
+    public static class TestServlet extends MirandaServlet {}
     private MirandaServlet mirandaServlet;
 
     public MirandaServlet getMirandaServlet() {

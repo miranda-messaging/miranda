@@ -4,6 +4,7 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
 import com.ltsllc.miranda.servlet.holder.SubscriptionHolder;
+import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
@@ -16,20 +17,17 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/22/2017.
  */
-public class UpdateSubscriptionServlet extends MirandaServlet {
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+public class UpdateSubscriptionServlet extends SubscriptionServlet {
+    public ResultObject createResultObject() {
+        return new ResultObject();
+    }
+
+    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
+            throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
+        Results result = SubscriptionHolder.getInstance().updateSubscription(requestObject.getSubscription());
+        resultObject.setResult(result);
 
-        try {
-            Subscription subscription = fromJson(req.getInputStream(), Subscription.class);
-            Results result = SubscriptionHolder.getInstance().updateSubscription(subscription);
-            resultObject.setResult(result);
-        } catch (MirandaException | TimeoutException e) {
-            resultObject.setResult(Results.Exception);
-            resultObject.setAdditionalInfo(e);
-        }
-
-        respond(resp.getOutputStream(), resultObject);
-        resp.setStatus(200);
+        return resultObject;
     }
 }

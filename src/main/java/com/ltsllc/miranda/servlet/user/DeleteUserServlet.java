@@ -4,6 +4,7 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.MirandaServlet;
 import com.ltsllc.miranda.servlet.holder.UserHolder;
+import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.User;
@@ -17,22 +18,18 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/11/2017.
  */
-public class DeleteUserServlet extends MirandaServlet {
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+public class DeleteUserServlet extends UserServlet {
+    public ResultObject createResultObject () {
+        return new ResultObject();
+    }
+
+    public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequestObject requestObject)
+            throws ServletException, IOException, TimeoutException {
+
         ResultObject resultObject = new ResultObject();
+        Results result = UserHolder.getInstance().deleteUser(requestObject.getUserObject().getName());
+        resultObject.setResult(result);
 
-        try {
-            UserObject userObject = fromJson(req.getInputStream(), UserObject.class);
-            Results result = UserHolder.getInstance().deleteUser(userObject.getName());
-            resultObject.setResult(result);
-        } catch (MirandaException e) {
-            resultObject.setResult(Results.Exception);
-            resultObject.setAdditionalInfo(e);
-        } catch (TimeoutException e) {
-            resultObject.setResult(Results.Timeout);
-        }
-
-        respond(resp.getOutputStream(), resultObject);
-        resp.setStatus(200);
+        return resultObject;
     }
 }
