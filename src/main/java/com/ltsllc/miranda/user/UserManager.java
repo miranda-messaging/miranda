@@ -122,7 +122,7 @@ public class UserManager extends Manager<User, User> {
     }
 
     public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
-        UpdateUserMessage updateUserMessage = new UpdateUserMessage (senderQueue, sender, user);
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage (senderQueue, sender, null, user);
         sendToMe(updateUserMessage);
     }
 

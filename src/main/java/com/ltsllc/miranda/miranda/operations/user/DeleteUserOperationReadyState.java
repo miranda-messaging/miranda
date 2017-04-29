@@ -18,17 +18,6 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/16/2017.
  */
 public class DeleteUserOperationReadyState extends State {
-    private List<String> subsystems;
-    private BlockingQueue<Message> requester;
-
-    public BlockingQueue<Message> getRequester() {
-        return requester;
-    }
-
-    public List<String> getSubsystems() {
-        return subsystems;
-    }
-
     public DeleteUserOperation getDeleteUserOperation () {
         return (DeleteUserOperation) getContainer();
     }
@@ -73,7 +62,7 @@ public class DeleteUserOperationReadyState extends State {
             DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(getDeleteUserOperation().getQueue(),
                     this, getDeleteUserOperation().getUser(), result);
 
-            send (getRequester(), deleteUserResponseMessage);
+            send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
             return StopState.getInstance();
         } else {
             getDeleteUserOperation().subsystemResponded(message.getSendingManager());
@@ -93,7 +82,7 @@ public class DeleteUserOperationReadyState extends State {
                     getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser(),
                     message.getResult());
 
-            send (getRequester(), deleteUserResponseMessage);
+            send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
 
             Miranda.getInstance().getCluster().sendDeleteUserMessage(
                     getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser());
@@ -102,7 +91,7 @@ public class DeleteUserOperationReadyState extends State {
                     getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser(),
                     message.getResult());
 
-            send(getRequester(), deleteUserResponseMessage);
+            send(getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
         }
 
         return StopState.getInstance();

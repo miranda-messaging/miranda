@@ -276,7 +276,7 @@ public class Cluster extends Manager<Node, NodeElement> {
     }
 
     public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
-        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, user);
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, null, user);
         sendToMe(updateUserMessage);
     }
 

@@ -321,7 +321,7 @@ public class ReadyState extends State {
 
     public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
         UpdateUserOperation updateUserOperation = new UpdateUserOperation(updateUserMessage.getUser(),
-                updateUserMessage.getSender());
+                updateUserMessage.getSession(), updateUserMessage.getSender());
 
         updateUserOperation.start();
 

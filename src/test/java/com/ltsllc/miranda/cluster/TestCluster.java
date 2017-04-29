@@ -432,7 +432,7 @@ public class TestCluster extends TestCase {
         UserObject userObject = new UserObject("test", "Publisher","a test user", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
-        UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, user);
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, null, user);
 
         getCluster().sendUpdateUserMessage(null, this, user);
 

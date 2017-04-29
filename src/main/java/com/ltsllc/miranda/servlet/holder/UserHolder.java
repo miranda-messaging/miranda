@@ -135,7 +135,7 @@ public class UserHolder extends ServletHolder {
 
     public Results updateUser (User user) throws TimeoutException {
         setUserUpdateResults(Results.Unknown);
-        Miranda.getInstance().sendUpdateUserMessage (getQueue(), this, user);
+        Miranda.getInstance().sendUpdateUserMessage (getQueue(), this, getSession(), user);
 
         sleep();
 

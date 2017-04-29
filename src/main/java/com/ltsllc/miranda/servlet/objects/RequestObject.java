@@ -15,6 +15,10 @@ public class RequestObject {
     }
 
     public long getSessionId () {
-        return Long.parseLong(getSessionIdString());
+        try {
+            return Long.parseLong(getSessionIdString());
+        } catch (NumberFormatException e) {
+            return  -1;
+        }
     }
 }

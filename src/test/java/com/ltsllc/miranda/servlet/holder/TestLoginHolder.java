@@ -94,7 +94,8 @@ public class TestLoginHolder extends TestCase {
 
         TimeoutException timeoutException = null;
 
-        LoginObject loginObject = new LoginObject("whatever");
+        LoginObject loginObject = new LoginObject();
+        loginObject.setName("whatever");
 
         LocalRunner localRunner = new LocalRunner(this, loginObject, "whatever");
         Thread thread = new Thread(localRunner);
@@ -114,7 +115,8 @@ public class TestLoginHolder extends TestCase {
         when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
         when(getMockMiranda().getSessionManager()).thenReturn(getMockSessionManager());
 
-        LoginObject loginObject = new LoginObject("whatever");
+        LoginObject loginObject = new LoginObject();
+        loginObject.setName("whatever");
 
         LocalRunner localRunner = new LocalRunner(this, loginObject, "whatever");
         Thread thread = new Thread(localRunner);
@@ -142,8 +144,8 @@ public class TestLoginHolder extends TestCase {
         when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
         when(getMockMiranda().getSessionManager()).thenReturn(getMockSessionManager());
 
-        LoginObject loginObject = new LoginObject("whatever");
-
+        LoginObject loginObject = new LoginObject();
+        loginObject.setName("whatever");
 
         LocalRunner localRunner = new LocalRunner(this, loginObject, "whatever");
         Thread thread = new Thread(localRunner);

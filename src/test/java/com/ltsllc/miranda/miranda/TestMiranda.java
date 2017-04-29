@@ -10,25 +10,36 @@ import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.user.User;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static org.mockito.Mockito.mock;
+
 /**
  * Created by Clark on 3/4/2017.
  */
 public class TestMiranda extends TestCase {
+    @Mock
+    private Session mockSession;
+
     private Miranda miranda;
 
     public Miranda getMiranda() {
         return miranda;
     }
 
+    public Session getMockSession() {
+        return mockSession;
+    }
+
     public void reset () {
         super.reset();
 
+        this.mockSession = null;
         this.miranda = null;
     }
 
@@ -38,6 +49,7 @@ public class TestMiranda extends TestCase {
 
         String[] empty = new String[0];
 
+        mockSession = mock(Session.class);
         miranda = new Miranda(empty);
     }
 
@@ -123,7 +135,7 @@ public class TestMiranda extends TestCase {
         UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         getMiranda().stop();
-        getMiranda().sendUpdateUserMessage(null,this, user);
+        getMiranda().sendUpdateUserMessage(null,this, getMockSession(), user);
 
         assert (contains(Message.Subjects.UpdateUser, getMiranda().getQueue()));
     }

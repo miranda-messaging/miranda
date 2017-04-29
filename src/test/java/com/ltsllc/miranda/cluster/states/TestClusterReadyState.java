@@ -303,7 +303,7 @@ public class TestClusterReadyState extends TestCase {
     public void testProcessUpdateUserMessage () throws MirandaException, GeneralSecurityException {
         UserObject userObject = new UserObject("test", "Publisher","a test user", TEST_PUBLIC_KEY_PEM);
         User user = userObject.asUser();
-        UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, user);
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, this, null, user);
         when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
 
         State nextState = getClusterReadyState().processMessage(updateUserMessage);

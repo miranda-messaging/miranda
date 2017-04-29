@@ -335,8 +335,8 @@ public class Miranda extends Consumer {
         sendToMe(createUserMessage);
     }
 
-    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
-        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, user);
+    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, session, user);
         sendToMe(updateUserMessage);
     }
 

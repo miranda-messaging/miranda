@@ -27,6 +27,11 @@
     </div><!--/.container-fluid -->
 </nav>
 
+<div class="control-group">
+    <label class="control-label">Session</label>
+    <input id="session" type="text" class="input-medium"/>
+</div>
+
 <button type="button" class="btn btn-default" onclick="createUser()">Create a New User</button>
 
 <h3>Users</h3>
@@ -34,7 +39,6 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th>Status</th>
     </tr>
     </thead>
 
@@ -67,7 +71,7 @@
                 </div>
                 <div class="control-group">
                     <label class="control-label">Public Key</label>
-                    <button type="button" onclick="createKeyPair">Create</button>
+                    <button type="button" onclick="createKeyPair()">Create</button>
                     <textarea id="publicKey" rows="5" style="min-width: 100%">
                     </textarea>
                 </div>
@@ -110,7 +114,10 @@
 <script src="/bootstrap/js/bootstrap.js"></script>
 <script>
     function fillTable () {
-        $.get("/servlets/getUsers", gotUsers);
+        var getUsersRequestObject = new Object();
+        getUsersRequestObject.sessionIdString = $('#session').val();
+        var json = JSON.stringify (getUsersRequestObject);
+        $.post("/servlets/getUsers", json, gotUsers);
     }
 
     function showDialog () {
@@ -119,14 +126,15 @@
 
     function gotUsers (data,status) {
         var result = JSON.parse(data);
-        if (result.result == "Success") {
+        if (result.result != "Success") {
+            alert("Error fetching users: " + result.result);
+        } else {
             var html = "";
             $('#tableBody').empty();
 
             result.userList.forEach(function(element) {
                 html = html + "<tr>";
                 html = html + "<td>" + element.name + "</td>";
-                html = html + "<td>" + element.status + "</td>";
                 html = html + "</tr>";
             });
 
@@ -138,6 +146,7 @@
     function createUser () {
         $('#title').text("Create New User");
 
+        $('#name').prop("readonly", false);
         $('#name').val("");
         $('#publisher').prop("checked", false);
         $('#subscriber').prop("checked", false);
@@ -147,10 +156,9 @@
 
         $('#delete').prop("hidden", true);
 
-        var temp = $('#accept');
-
-        temp.unbind();
-        temp.click(function () {
+        $('#accept').text("Create");
+        $('#accept').unbind();
+        $('#accept').click (function () {
             sendCreateUser();
         });
 
@@ -178,7 +186,11 @@
         user.description = $('#description').val();
         user.publicKeyPem = $('#publicKey').val();
 
-        var data = JSON.stringify(user);
+        var request = new Object();
+        request.sessionIdString = $('#session').val();
+        request.userObject = user;
+
+        var data = JSON.stringify(request);
 
         $.post("/servlets/createUser", data, createUserResults);
     }
@@ -193,7 +205,7 @@
         $('#keyPairPublic').val(keyPair.publicKey);
         $('#keyPairPrivate').val(keyPair.privateKey);
 
-        $('#userPublicKey').val(keyPair.publicKey);
+        $('#publicKey').val(keyPair.publicKey);
 
         $('#keyPairDialog').modal('show');
     }
@@ -221,9 +233,11 @@
         var table = $('#usersTable');
         var anIndex = 1 + index;
         var row = $(table).find("tr:nth-child(" + anIndex + ")");
-        var user = new Object();
-        user.name = $(row).find("td:nth-child(1)").text();
-        var data = JSON.stringify(user);
+        var request = new Object();
+        request.sessionIdString = $('#session').val();
+        request.userObject = new Object();
+        request.userObject.name = $(row).find("td:nth-child(1)").text();
+        var data = JSON.stringify(request);
         $.post("/servlets/getUser", data, commenceEdit);
     }
 
@@ -289,21 +303,6 @@
         }
     }
 
-    function editNewUser () {
-        $('#dialogTitle').text("New User");
-
-        $('#userName').val("");
-        $('#userDescription').val("");
-        $('#userPublicKey').val("");
-
-        $('#delete').prop ("class", "");
-        $('#delete').prop ("hidden", true);
-
-        $('#accept').unbind();
-        $('#accept').click(function () { acceptNewUser(); });
-        $('#userDialog').modal('show');
-    }
-
     function acceptNewUser () {
         var user = new Object();
 
@@ -329,28 +328,37 @@
     }
 
     function deleteUser () {
-        var name = $('#userName').val();
+        var name = $('#name').val();
 
         var result = confirm("Delete " + name + "?");
 
         if (result) {
             var user = new Object();
             user.name = name;
-            var data = JSON.stringify(user);
-            $.post("/servlets/deleteUser", data, showDeleteResult)
+            var request = new Object();
+            request.userObject = user;
+            request.sessionIdString = $('#session').val();
+            var data = JSON.stringify(request);
+            $.post("/servlets/deleteUser", data, deleteResult)
         }
     }
 
-    function showDeleteResult (data, status) {
+    function deleteResult (data, status) {
         var result = JSON.parse(data);
 
         if (result.result != "Success") {
-            alert ("Failed to delete user");
+            alert ("Failed to delete user " + result.result);
         }
 
         fillTable();
     }
 
+    function setupSession () {
+        var session = sessionStorage.getItem('session');
+        $('#session').val(session);
+    }
+
+    setupSession();
     fillTable();
 
 </script>

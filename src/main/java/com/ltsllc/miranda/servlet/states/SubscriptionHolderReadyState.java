@@ -8,7 +8,7 @@ import com.ltsllc.miranda.subsciptions.messages.*;
 /**
  * Created by Clark on 4/22/2017.
  */
-public class SubscriptionHolderReadyState extends State {
+public class SubscriptionHolderReadyState extends ServletHolderReadyState {
     public SubscriptionHolder getSubscriptionHolder () {
         return (SubscriptionHolder) getContainer();
     }

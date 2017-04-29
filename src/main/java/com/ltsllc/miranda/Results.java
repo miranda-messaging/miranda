@@ -14,6 +14,7 @@ public enum Results {
     SessionCreated,
     SubscriptionNotFound,
     InvalidRequest,
-    SessionNotFound
+    SessionNotFound,
+    NotOwner
 }
 

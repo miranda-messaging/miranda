@@ -77,6 +77,8 @@ public class SessionManager extends Consumer {
 
         Session newSession = new Session (user, now + getSessionLength(), session.longValue());
 
+        logger.info("Created session " + newSession.getId() + " for " + user.getName());
+
         getSessions().put(newSession.getId(), newSession);
         getUserToSession().put(user.getName(), newSession);
 

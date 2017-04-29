@@ -1,40 +1,84 @@
-Please enter your crendentials
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Miranda Users</title>
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+Please enter your credentials
 
 <br/>
-Name: <input id="name" type="text"/><br/>
-Password: <input id="password" type="password" /><br/>
+<div class="control-group">
+    <label class="control-label">Name</label>
+    <input id="name" type="text" class="input-medium"/>
+</div>
+<div class="control-group">
+    <label class="control-label">Private Key File</label>
+    <input id="file" type="file" onchange="getPrivateKey()"/>
+    <textarea id="privateKey" rows="6" style="min-width: 90%"></textarea>
+</div>
+<div class="control-group">
+    <label class="control-label">Cipher Text</label>
+    <textarea id="cipherText" rows="6" style="min-width: 90%"></textarea>
+</div>
+<div class="control-group">
+    <label class="control-label">Session</label>
+    <textarea id="session" rows="6" style="min-width: 90%"></textarea>
+</div>
+
 
 <button onclick="performLogin()">Login</button>
 
+<script src="/js/jsencrypt.js"></script>
 <script src="js/jquery.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
 
 <script>
-    function performLogin () {
-        var name = document.getElementById("name").value;
-        var password = document.getElementById("password").value;
-        var obj = { "name" : name, "password" : password };
-        var url = "/servlets/login";
-        var json = JSON.stringify(obj);
-        var result = null;
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: json,
-            dataType: 'json',
-            success: function (result) {
-                showResult(result);
-            },
-            complete: function (data) {
-                alert("complete called");
-            }
+    function getFile (form, func) {
+        $.ajax ({
+           url : '/servlets/fileServlet',
+           type : 'POST',
+           data : form,
+           processData: false,  // tell jQuery not to process the data
+           contentType: false,  // tell jQuery not to set contentType
+           success : func
         });
     }
 
-    function showResult (result) {
-        alert (result.result);
+    function getPrivateKey () {
+        var file = document.getElementById('file').files[0];
+        var form = new FormData();
+        form.append("content", file);
+        getFile(form, privateKeyResults);
     }
 
+    function privateKeyResults (data, status) {
+        var result = JSON.parse(data);
+        if (result.result == "Success") {
+            var textarea = $('#privateKey');
+            var text = String.fromCharCode.apply(String, result.content);
+            textarea.text(text);
+
+            var name = $('#name').val();
+            var loginObject = new Object();
+            loginObject.name = name;
+            var json = JSON.stringify(loginObject);
+
+            $.post("/servlets/login", json, loginResults);
+        }
+    }
+
+    function loginResults (data, status) {
+        var result = JSON.parse(data);
+        if (result.result == "Success") {
+            $('#cipherText').text(result.session);
+            var jsencrypt = new JSEncrypt();
+            jsencrypt.setPrivateKey($('#privateKey').val());
+            var clearText = jsencrypt.decrypt($('#cipherText').val());
+            $('#session').text(clearText);
+            sessionStorage.setItem('session', clearText);
+        }
+    }
 
 </script>

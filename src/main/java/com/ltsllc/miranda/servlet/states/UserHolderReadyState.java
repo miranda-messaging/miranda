@@ -3,12 +3,13 @@ package com.ltsllc.miranda.servlet.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.holder.UserHolder;
+import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
 import com.ltsllc.miranda.user.messages.*;
 
 /**
  * Created by Clark on 4/5/2017.
  */
-public class UserHolderReadyState extends State {
+public class UserHolderReadyState extends ServletHolderReadyState {
     public UserHolder getUserHolder () {
         return (UserHolder) getContainer();
     }
@@ -67,6 +68,7 @@ public class UserHolderReadyState extends State {
     }
 
     public State processGetUserResponseMessage (GetUserResponseMessage getUserResponseMessage) {
+        getUserHolder().setGetUserResults(getUserResponseMessage.getResult());
         getUserHolder().setUserAndAwaken(getUserResponseMessage.getUser());
 
         return getUserHolder().getCurrentState();
