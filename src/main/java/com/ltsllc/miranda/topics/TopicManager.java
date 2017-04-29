@@ -103,17 +103,17 @@ public class TopicManager extends Manager<Topic, Topic> {
     }
 
     public void sendCreateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
-        CreateTopicMessage createTopicMessage = new CreateTopicMessage(senderQueue, sender, topic);
+        CreateTopicMessage createTopicMessage = new CreateTopicMessage(senderQueue, sender, null, topic);
         sendToMe(createTopicMessage);
     }
 
     public void sendUpdateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
-        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, topic);
+        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, null, topic);
         sendToMe(updateTopicMessage);
     }
 
     public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String topicName) {
-        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topicName);
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, null, topicName);
         sendToMe(deleteTopicMessage);
     }
 

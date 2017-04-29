@@ -14,27 +14,23 @@ import java.util.concurrent.BlockingQueue;
  */
 public class UpdateUserOperation extends Operation {
     private User user;
-    private Session session;
 
     public User getUser() {
         return user;
     }
 
-    public Session getSession() {
-        return session;
-    }
-
-    public UpdateUserOperation (User user, Session session, BlockingQueue<Message> requester) {
-        super("update user operation", requester);
+    public UpdateUserOperation (BlockingQueue<Message> requester, Session session, User user) {
+        super("update user operation", requester, session);
 
         UpdateUserOperationReadyState readyState = new UpdateUserOperationReadyState(this);
         setCurrentState(readyState);
 
         this.user = user;
-        this.session = session;
     }
 
     public void start () {
+        super.start();
+
         Miranda.getInstance().getUserManager().sendGetUser(getQueue(), this, getUser().getName());
     }
 }

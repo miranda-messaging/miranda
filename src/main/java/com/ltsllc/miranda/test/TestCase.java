@@ -17,6 +17,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
@@ -109,6 +110,9 @@ public class TestCase {
     @Mock
     private BlockingQueue mockBlockingQueue;
 
+    @Mock
+    private Session mockSession;
+
     public BlockingQueue getMockBlockingQueue() {
         return mockBlockingQueue;
     }
@@ -174,6 +178,10 @@ public class TestCase {
 
     public MirandaProperties getMockProperties() {
         return mockProperties;
+    }
+
+    public Session getMockSession() {
+        return mockSession;
     }
 
     public static boolean deleteFile (File file) {
@@ -291,6 +299,7 @@ public class TestCase {
         this.mockSessionManager = null;
         this.mockSingleFile = null;
         this.mockBlockingQueue = null;
+        this.mockSession = null;
     }
 
     public void setup () {
@@ -316,6 +325,7 @@ public class TestCase {
         this.mockSessionManager = mock(SessionManager.class);
         this.mockSingleFile = mock(SingleFile.class);
         this.mockBlockingQueue = mock(BlockingQueue.class);
+        this.mockSession = mock(Session.class);
     }
 
     public void setupMockNetwork () {

@@ -7,6 +7,7 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
 import java.util.List;
@@ -52,18 +53,29 @@ public class SubscriptionManager extends Manager<Subscription, Subscription> {
         sendToMe(getSubscriptionMessage);
     }
 
-    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
-        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, subscription);
+    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender,
+                                               Session session, Subscription subscription) {
+
+        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender,
+                session, subscription);
+
         sendToMe(createSubscriptionMessage);
     }
 
-    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
-        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, subscription);
+    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               Subscription subscription) {
+        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender,
+                session, subscription);
+
         sendToMe(updateSubscriptionMessage);
     }
 
-    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, name);
+    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               String name) {
+
+        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender,
+                session, name);
+
         sendToMe(deleteSubscriptionMessage);
     }
 

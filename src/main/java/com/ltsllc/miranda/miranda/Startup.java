@@ -209,7 +209,7 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getTopics", TopicsServlet.class);
+        servletMapping = new ServletMapping("/servlets/getTopics", GetTopicsServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getTopic", GetTopicServlet.class);

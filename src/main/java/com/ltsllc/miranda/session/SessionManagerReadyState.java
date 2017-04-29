@@ -115,7 +115,7 @@ public class SessionManagerReadyState extends State {
 
         if (null == session) {
             CreateSessionOperation createSessionOperation = new CreateSessionOperation(getSessionMessage.getSender(),
-                    getSessionMessage.getName());
+                    null, getSessionMessage.getName());
 
             createSessionOperation.start();
         } else {

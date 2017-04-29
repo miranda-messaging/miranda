@@ -18,7 +18,7 @@ public class LoginOperation extends Operation {
     }
 
     public LoginOperation (String name, BlockingQueue<Message> requester) {
-        super ("login operation", requester);
+        super ("login operation", requester, null);
 
         this.user = name;
 

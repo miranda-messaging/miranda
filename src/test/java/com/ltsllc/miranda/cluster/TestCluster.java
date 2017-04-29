@@ -443,7 +443,7 @@ public class TestCluster extends TestCase {
     public void testSendDeleteUserMessage () {
         getCluster().stop();
 
-        getCluster().sendDeleteUserMessage(null, this, "joe");
+        getCluster().sendDeleteUserMessage(null, this, getMockSession(), "joe");
 
         assert (contains(Message.Subjects.DeleteUser, getCluster().getQueue()));
     }
@@ -465,7 +465,7 @@ public class TestCluster extends TestCase {
 
         Subscription subscription = new Subscription("whatever");
 
-        getCluster().sendCreateSubscriptionMessage(null, this, subscription);
+        getCluster().sendCreateSubscriptionMessage(null, this, getMockSession(), subscription);
 
         assert (contains(Message.Subjects.CreateSubscription, getCluster().getQueue()));
     }
@@ -476,7 +476,7 @@ public class TestCluster extends TestCase {
 
         Subscription subscription = new Subscription("whatever");
 
-        getCluster().sendUpdateSubscriptionMessage(null, this, subscription);
+        getCluster().sendUpdateSubscriptionMessage(null, this, getMockSession(), subscription);
 
         assert (contains(Message.Subjects.UpdateSubscription, getCluster().getQueue()));
     }
@@ -487,7 +487,7 @@ public class TestCluster extends TestCase {
 
         Subscription subscription = new Subscription("whatever");
 
-        getCluster().sendDeleteSubscriptionMessage(null, this, "whatever");
+        getCluster().sendDeleteSubscriptionMessage(null, this, getMockSession(), "whatever");
 
         assert (contains(Message.Subjects.DeleteSubscription, getCluster().getQueue()));
     }

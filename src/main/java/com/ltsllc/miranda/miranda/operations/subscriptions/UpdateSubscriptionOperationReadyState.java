@@ -8,6 +8,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionResponseMessage;
 import com.ltsllc.miranda.topics.messages.GetTopicResponseMessage;
 import com.ltsllc.miranda.topics.messages.GetTopicsResponseMessage;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 
 /**
@@ -58,7 +59,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
     public State processUpdateSubscriptionResponseMessage(UpdateSubscriptionResponseMessage updateSubscriptionResponseMessage) {
         if (updateSubscriptionResponseMessage.getResult() == Results.Success) {
             Miranda.getInstance().getCluster().sendUpdateSubscriptionMessage (getUpdateSubscriptionOperation().getQueue(),
-                    this, getUpdateSubscriptionOperation().getSubscription());
+                    this, getUpdateSubscriptionOperation().getSession(), getUpdateSubscriptionOperation().getSubscription());
         }
 
         UpdateSubscriptionResponseMessage updateSubscriptionResponseMessage2 = new UpdateSubscriptionResponseMessage(
@@ -80,11 +81,23 @@ public class UpdateSubscriptionOperationReadyState extends State {
             return StopState.getInstance();
         }
 
+        if (!getUpdateSubscriptionOperation().getSubscription().getOwner().equals(getUpdateSubscriptionOperation().getSession().getUser().getName()) &&
+                getUpdateSubscriptionOperation().getSession().getUser().getCategory() != User.UserTypes.Admin)
+        {
+            UpdateSubscriptionResponseMessage response = new UpdateSubscriptionResponseMessage(getUpdateSubscriptionOperation().getQueue(),
+                    this, Results.NotOwner);
+
+            send(getUpdateSubscriptionOperation().getRequester(), getUserResponseMessage);
+
+            return StopState.getInstance();
+        }
+
         getUpdateSubscriptionOperation().setUserManagerResponded(true);
 
         if (getUpdateSubscriptionOperation().getTopicManagerResponded()) {
             Miranda.getInstance().getSubscriptionManager().sendUpdateSubscriptionMessage(getUpdateSubscriptionOperation().getQueue(),
-                    this, getUpdateSubscriptionOperation().getSubscription());
+                    this, getUpdateSubscriptionOperation().getSession(),
+                    getUpdateSubscriptionOperation().getSubscription());
         }
 
         return getUpdateSubscriptionOperation().getCurrentState();
@@ -104,7 +117,8 @@ public class UpdateSubscriptionOperationReadyState extends State {
 
         if (getUpdateSubscriptionOperation().getUserManagerResponded()) {
             Miranda.getInstance().getSubscriptionManager().sendUpdateSubscriptionMessage(getUpdateSubscriptionOperation().getQueue(),
-                    this, getUpdateSubscriptionOperation().getSubscription());
+                    this, getUpdateSubscriptionOperation().getSession(),
+                    getUpdateSubscriptionOperation().getSubscription());
         }
 
         return getUpdateSubscriptionOperation().getCurrentState();

@@ -30,7 +30,7 @@ public class TestMinaHandler extends TestCase {
         return minaHandler;
     }
 
-    public IoSession getMockSession() {
+    public IoSession getMockIoSession() {
 
         return mockSession;
     }
@@ -64,14 +64,14 @@ public class TestMinaHandler extends TestCase {
     @Test
     public void testSesssionCreated () {
         InetSocketAddress inetSocketAddress = new InetSocketAddress("foo.com", 1234);
-        when(getMockSession().getRemoteAddress()).thenReturn(inetSocketAddress);
+        when(getMockIoSession().getRemoteAddress()).thenReturn(inetSocketAddress);
         try {
-            getMinaHandler().sessionCreated(getMockSession());
+            getMinaHandler().sessionCreated(getMockIoSession());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        assert (getMinaHandler().getSession() == getMockSession());
+        assert (getMinaHandler().getSession() == getMockIoSession());
     }
 
 
@@ -83,7 +83,7 @@ public class TestMinaHandler extends TestCase {
 
         getMinaHandler().setMinaHandle(getMockMinaHandle());
         try {
-            getMinaHandler().messageReceived(getMockSession(), message);
+            getMinaHandler().messageReceived(getMockIoSession(), message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,11 +94,11 @@ public class TestMinaHandler extends TestCase {
     @Test
     public void testSendOnWire () {
         JoinWireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
-        getMinaHandler().setSession(getMockSession());
+        getMinaHandler().setSession(getMockIoSession());
 
         getMinaHandler().sendOnWire(joinWireMessage);
 
-        verify(getMockSession(), atLeastOnce()).write(Matchers.any());
+        verify(getMockIoSession(), atLeastOnce()).write(Matchers.any());
     }
 
 }

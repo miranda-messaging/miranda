@@ -58,7 +58,8 @@ public class CreateSubscriptionOperationReadyState extends State {
     public State processCreateSubscriptionResponseMessage (CreateSubscriptionResponseMessage createSubscriptionResponseMessage) {
         if (createSubscriptionResponseMessage.getResult() == Results.Success) {
             Miranda.getInstance().getCluster().sendCreateSubscriptionMessage (getCreateSubscriptionOperation().getQueue(),
-                    this, getCreateSubscriptionOperation().getSubscription());
+                    this, getCreateSubscriptionOperation().getSession(),
+                    getCreateSubscriptionOperation().getSubscription());
 
             Miranda.getInstance().sendAuctionMessage(getCreateSubscriptionOperation().getQueue(), this);
         }
@@ -86,7 +87,8 @@ public class CreateSubscriptionOperationReadyState extends State {
 
         if (getCreateSubscriptionOperation().getTopicManagerResponded()) {
             Miranda.getInstance().getSubscriptionManager().sendCreateSubscriptionMessage(getCreateSubscriptionOperation().getQueue(),
-                    this, getCreateSubscriptionOperation().getSubscription());
+                    this, getCreateSubscriptionOperation().getSession(),
+                    getCreateSubscriptionOperation().getSubscription());
         }
 
         return getCreateSubscriptionOperation().getCurrentState();
@@ -106,7 +108,8 @@ public class CreateSubscriptionOperationReadyState extends State {
 
         if (getCreateSubscriptionOperation().getUserManagerResponded()) {
             Miranda.getInstance().getSubscriptionManager().sendCreateSubscriptionMessage(getCreateSubscriptionOperation().getQueue(),
-                    this, getCreateSubscriptionOperation().getSubscription());
+                    this, getCreateSubscriptionOperation().getSession(),
+                    getCreateSubscriptionOperation().getSubscription());
         }
 
         return getCreateSubscriptionOperation().getCurrentState();

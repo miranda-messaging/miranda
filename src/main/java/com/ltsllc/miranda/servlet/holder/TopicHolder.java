@@ -123,7 +123,7 @@ public class TopicHolder extends ServletHolder {
 
     public Results updateTopic (Topic topic) throws TimeoutException {
         setUpdateResult(Results.Unknown);
-        Miranda.getInstance().getTopicManager().sendUpdateTopicMessage(getQueue(), this, topic);
+        Miranda.getInstance().sendUpdateTopicMessage(getQueue(), this, getSession(), topic);
 
         sleep();
 
@@ -132,7 +132,7 @@ public class TopicHolder extends ServletHolder {
 
     public Results deleteTopic (String topicName) throws TimeoutException {
         setDeleteResult(Results.Unknown);
-        Miranda.getInstance().sendDeleteTopicMessage(getQueue(), this, topicName);
+        Miranda.getInstance().sendDeleteTopicMessage(getQueue(), this, getSession(), topicName);
 
         sleep();
 

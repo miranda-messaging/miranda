@@ -78,6 +78,7 @@ Please enter your credentials
             var clearText = jsencrypt.decrypt($('#cipherText').val());
             $('#session').text(clearText);
             sessionStorage.setItem('session', clearText);
+            sessionStorage.setItem('name', $('#name').val());
         }
     }
 

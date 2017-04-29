@@ -3,6 +3,7 @@ package com.ltsllc.miranda.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -16,8 +17,8 @@ public class DeleteTopicOperation extends Operation {
         return topicName;
     }
 
-    public DeleteTopicOperation (String topicName, BlockingQueue<Message> requester) {
-        super("delete topic operation", requester);
+    public DeleteTopicOperation (BlockingQueue<Message> requester, Session session, String topicName) {
+        super("delete topic operation", requester, session);
 
         this.topicName = topicName;
     }

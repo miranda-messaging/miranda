@@ -106,7 +106,7 @@ public class SubscriptionHolder extends ServletHolder {
     public Results createSubscription (Subscription subscription) throws TimeoutException {
         setCreateResult(Results.Unknown);
 
-        Miranda.getInstance().sendCreateSubscriptionMessage(getQueue(), this, subscription);
+        Miranda.getInstance().sendCreateSubscriptionMessage(getQueue(), this, getSession(), subscription);
 
         sleep();
 
@@ -116,7 +116,7 @@ public class SubscriptionHolder extends ServletHolder {
     public Results updateSubscription (Subscription subscription) throws TimeoutException {
         setUpdateResult(Results.Unknown);
 
-        Miranda.getInstance().sendUpdateSubscriptionMessage(getQueue(), this, subscription);
+        Miranda.getInstance().sendUpdateSubscriptionMessage(getQueue(), this, getSession(), subscription);
 
         sleep();
 
@@ -126,7 +126,7 @@ public class SubscriptionHolder extends ServletHolder {
     public Results deleteSubscription (String name) throws TimeoutException {
         setDeleteResult(Results.Unknown);
 
-        Miranda.getInstance().sendDeleteSubscriptionMessage (getQueue(), this, name);
+        Miranda.getInstance().sendDeleteSubscriptionMessage (getQueue(), this, getSession(), name);
 
         sleep();
 

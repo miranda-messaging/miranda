@@ -68,6 +68,7 @@ public class Topic extends StatusObject<Topic> implements Perishable {
         super.updateFrom(other);
 
         setOwner(other.getOwner());
+        setRemotePolicy(other.getRemotePolicy());
     }
 
     public boolean matches (Topic other) {

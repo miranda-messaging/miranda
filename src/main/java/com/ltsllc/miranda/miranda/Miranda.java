@@ -27,6 +27,7 @@ import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
+import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.*;
@@ -320,18 +321,18 @@ public class Miranda extends Consumer {
         sendToMe(sessionsExpiredMessage);
     }
 
-    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String topicName) {
-        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, topicName);
+    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String topicName) {
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, session, topicName);
         sendToMe(deleteTopicMessage);
     }
 
-    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, name);
+    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, session, name);
         sendToMe(deleteUserMessage);
     }
 
-    public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
-        CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, user);
+    public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
+        CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, session, user);
         sendToMe(createUserMessage);
     }
 
@@ -360,23 +361,37 @@ public class Miranda extends Consumer {
         sendToMe(loginMessage);
     }
 
-    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
-        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, subscription);
+    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               Subscription subscription) {
+        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, session,
+                subscription);
+
         sendToMe(createSubscriptionMessage);
     }
 
-    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
-        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, subscription);
+    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               Subscription subscription) {
+        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, session,
+                subscription);
+
         sendToMe(updateSubscriptionMessage);
     }
 
-    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, name);
+    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               String name) {
+        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, session,
+                name);
+
         sendToMe(deleteSubscriptionMessage);
     }
 
     public void sendAuctionMessage (BlockingQueue<Message> senderQueue, Object sender) {
         AuctionMessage auctionMessage = new AuctionMessage(senderQueue, sender);
         sendToMe(auctionMessage);
+    }
+
+    public void sendUpdateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
+        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, session, topic);
+        sendToMe(updateTopicMessage);
     }
 }

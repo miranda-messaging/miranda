@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.operations.CreateSessionOperation;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
@@ -37,11 +38,13 @@ public class CreateSubscriptionOperation extends Operation {
         return subscription;
     }
 
-    public CreateSubscriptionOperation (BlockingQueue<Message> requester, Subscription subscription) {
-        super("create subscription operation", requester);
+    public CreateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) {
+        super("create subscription operation", requester, session);
 
         CreateSubscriptionOperationReadyState readyState = new CreateSubscriptionOperationReadyState(this);
         setCurrentState(readyState);
+
+        this.subscription = subscription;
     }
 
     public void start () {

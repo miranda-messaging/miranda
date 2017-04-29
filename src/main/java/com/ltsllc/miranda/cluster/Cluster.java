@@ -280,8 +280,8 @@ public class Cluster extends Manager<Node, NodeElement> {
         sendToMe(updateUserMessage);
     }
 
-    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, name);
+    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, session, name);
         sendToMe(deleteUserMessage);
     }
 
@@ -290,18 +290,26 @@ public class Cluster extends Manager<Node, NodeElement> {
         sendToMe(newTopicMessage);
     }
 
-    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
-        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, subscription);
+    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender,
+                                               Session session, Subscription subscription) {
+        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, session,
+                subscription);
+
         sendToMe(createSubscriptionMessage);
     }
 
-    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Subscription subscription) {
-        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, subscription);
+    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               Subscription subscription) {
+        UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender,
+                session, subscription);
         sendToMe(updateSubscriptionMessage);
     }
 
-    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, name);
+    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                               String name) {
+        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, session,
+                name);
+
         sendToMe(deleteSubscriptionMessage);
     }
 

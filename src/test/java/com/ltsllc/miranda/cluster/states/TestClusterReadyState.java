@@ -314,7 +314,7 @@ public class TestClusterReadyState extends TestCase {
 
     @Test
     public void testProcessDeleteUserMessage () {
-        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(null, this, "test");
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(null, this, getMockSession(), "test");
 
         when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
 

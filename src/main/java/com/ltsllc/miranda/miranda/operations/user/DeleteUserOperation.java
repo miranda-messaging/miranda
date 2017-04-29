@@ -3,6 +3,7 @@ package com.ltsllc.miranda.miranda.operations.user;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.topics.TopicManager;
 
@@ -25,8 +26,8 @@ public class DeleteUserOperation extends Operation {
         return subsystems;
     }
 
-    public DeleteUserOperation (BlockingQueue<Message> requester, String user) {
-        super("delete user operation", requester);
+    public DeleteUserOperation (BlockingQueue<Message> requester, Session session, String user) {
+        super("delete user operation", requester, session);
 
         DeleteUserOperationReadyState readyState = new DeleteUserOperationReadyState(this);
         setCurrentState(readyState);

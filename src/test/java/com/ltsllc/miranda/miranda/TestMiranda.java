@@ -107,7 +107,7 @@ public class TestMiranda extends TestCase {
     public void testSendDeleteTopicMessage () {
         Topic topic = new Topic("whatever");
         getMiranda().stop();
-        getMiranda().sendDeleteTopicMessage(null, this, "whatever");
+        getMiranda().sendDeleteTopicMessage(null, this, getMockSession(),"whatever");
         assert (contains(Message.Subjects.DeleteTopic, getMiranda().getQueue()));
     }
 
@@ -116,7 +116,7 @@ public class TestMiranda extends TestCase {
     @Test
     public void testSendDeleteUserMessage () {
         getMiranda().stop();
-        getMiranda().sendDeleteUserMessage(null, this, "whatever");
+        getMiranda().sendDeleteUserMessage(null, this, getMockSession(), "whatever");
         assert (contains(Message.Subjects.DeleteUser, getMiranda().getQueue()));
     }
 
@@ -125,7 +125,7 @@ public class TestMiranda extends TestCase {
         UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         getMiranda().stop();
-        getMiranda().sendCreateUserMessage(null,this, user);
+        getMiranda().sendCreateUserMessage(null,this, getMockSession(), user);
 
         assert (contains(Message.Subjects.CreateUser, getMiranda().getQueue()));
     }

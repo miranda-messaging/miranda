@@ -20,11 +20,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicsServlet extends TopicServlet {
-    public Class getRequestClass () {
-        return RequestObject.class;
-    }
-
+public class GetTopicsServlet extends TopicServlet {
     public boolean allowAccess() {
         return true;
     }

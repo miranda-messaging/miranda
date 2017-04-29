@@ -271,35 +271,39 @@
         $('#description').val(user.description);
         $('#publicKey').text(user.publicKeyPem);
 
-        $('#accept').text("Accept");
+        $('#accept').text("Update");
         $('#delete').prop ("class", "btn btn-default");
         $('#delete').prop ("hidden", false);
 
         $('#accept').unbind ();
-        $('#accept').click (function () { acceptEditUser(); });
+        $('#accept').click (function () { sendUpdate(); });
         $('#delete').unbind();
         $('#delete').click (function () { deleteUser(); });
 
         showDialog();
     }
 
-    function acceptEditUser () {
-        var user = new Object();
-        user.name = $('#userName').val();
-        user.description = $('#userDescription').val();
-        user.publicKey = $('#userPublicKey').val();
+    function sendUpdate () {
+        var updateUserRequest = new Object();
+        updateUserRequest.sessionIdString = $('#session').val();
 
-        var data = JSON.stringify(user);
+        var user = new Object();
+        user.name = $('#name').val();
+        user.category = getCategory();
+        user.description = $('#description').val();
+        user.publicKeyPem = $('#publicKey').val();
+
+        updateUserRequest.userObject = user;
+
+        var data = JSON.stringify(updateUserRequest);
         $.post("/servlets/updateUser", data, showUpdateResult);
     }
 
     function showUpdateResult (data, status) {
         var result = JSON.parse(data);
 
-        if (result.result == "success") {
-            alert ("User updated");
-        } else {
-            alert ("Failed to update user");
+        if (result.result != "Success") {
+            alert ("Failed to update user " + result.result);
         }
     }
 

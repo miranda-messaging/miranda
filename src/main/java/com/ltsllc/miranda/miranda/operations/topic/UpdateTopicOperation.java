@@ -3,6 +3,7 @@ package com.ltsllc.miranda.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.topics.Topic;
 
 import java.util.concurrent.BlockingQueue;
@@ -21,13 +22,18 @@ public class UpdateTopicOperation extends Operation {
         this.topic = topic;
     }
 
-    public UpdateTopicOperation (Topic topic, BlockingQueue<Message> requester) {
-        super("update topic operation", requester);
+    public UpdateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) {
+        super("update topic operation", requester, session);
+
+        UpdateTopicOperationReadyState updateTopicOperationReadyState = new UpdateTopicOperationReadyState(this);
+        setCurrentState(updateTopicOperationReadyState);
 
         this.topic = topic;
     }
 
     public void start () {
+        super.start();
+
         Miranda.getInstance().getUserManager().sendGetUser(getQueue(), this, getTopic().getOwner());
     }
 }

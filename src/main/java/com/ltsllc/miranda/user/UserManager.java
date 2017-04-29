@@ -127,7 +127,7 @@ public class UserManager extends Manager<User, User> {
     }
 
     public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        DeleteUserMessage deleteUserMessage = new DeleteUserMessage (senderQueue, sender, name);
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage (senderQueue, sender, null, name);
         sendToMe(deleteUserMessage);
     }
 
@@ -171,7 +171,7 @@ public class UserManager extends Manager<User, User> {
     }
 
     public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
-        CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, user);
+        CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, null, user);
         sendToMe(createUserMessage);
     }
 

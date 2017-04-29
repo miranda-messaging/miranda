@@ -3,6 +3,7 @@ package com.ltsllc.miranda.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.topics.Topic;
 
 import java.util.concurrent.BlockingQueue;
@@ -17,8 +18,8 @@ public class CreateTopicOperation extends Operation {
         return topic;
     }
 
-    public CreateTopicOperation (Topic topic, BlockingQueue<Message> requester) {
-        super ("create topic operation", requester);
+    public CreateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) {
+        super ("create topic operation", requester, session);
 
         CreateTopicOperationReadyState readyState = new CreateTopicOperationReadyState(this);
         setCurrentState(readyState);

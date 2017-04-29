@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -17,8 +18,8 @@ public class CreateSessionOperation extends Operation {
         return user;
     }
 
-    public CreateSessionOperation (BlockingQueue<Message> requester, String user) {
-        super("create session operation", requester);
+    public CreateSessionOperation (BlockingQueue<Message> requester, Session session, String user) {
+        super("create session operation", requester, session);
 
         CreateSessionOperationReadyState readyState = new CreateSessionOperationReadyState(this);
         setCurrentState(readyState);

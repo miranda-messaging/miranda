@@ -37,7 +37,7 @@ public class TestMinaIncomingHandler extends TestCase {
         return handleQueue;
     }
 
-    public IoSession getMockSession() {
+    public IoSession getMockIoSession() {
         return mockSession;
     }
 
@@ -73,10 +73,10 @@ public class TestMinaIncomingHandler extends TestCase {
         InetSocketAddress inetSocketAddress = new InetSocketAddress("foo.com", 6789);
         Handle handle = null;
 
-        when(getMockSession().getRemoteAddress()).thenReturn(inetSocketAddress);
+        when(getMockIoSession().getRemoteAddress()).thenReturn(inetSocketAddress);
 
         try {
-            getMinaIncomingHandler().sessionCreated(getMockSession());
+            getMinaIncomingHandler().sessionCreated(getMockIoSession());
             handle = getHandleQueue().take();
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,10 +93,10 @@ public class TestMinaIncomingHandler extends TestCase {
         String message = TEST_MESSAGE;
 
         getMinaIncomingHandler().setHandle(getMockHandle());
-        getMinaIncomingHandler().setSession(getMockSession());
+        getMinaIncomingHandler().setSession(getMockIoSession());
 
         try {
-            getMinaIncomingHandler().messageReceived(getMockSession(), message);
+            getMinaIncomingHandler().messageReceived(getMockIoSession(), message);
         } catch (Exception e) {
             e.printStackTrace();
         }

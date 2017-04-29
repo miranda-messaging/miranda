@@ -304,7 +304,7 @@ public class ReadyState extends State {
 
     public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) {
         DeleteUserOperation deleteUserOperation = new DeleteUserOperation(deleteUserMessage.getSender(),
-                deleteUserMessage.getName());
+                deleteUserMessage.getSession(), deleteUserMessage.getName());
 
         deleteUserOperation.start();
 
@@ -313,15 +313,15 @@ public class ReadyState extends State {
 
     public State processCreateUserMessage (CreateUserMessage createUserMessage) {
         CreateUserOperation createUserOperation = new CreateUserOperation(createUserMessage.getSender(),
-                createUserMessage.getUser());
+                createUserMessage.getSession(), createUserMessage.getUser());
         createUserOperation.start();
 
         return getMiranda().getCurrentState();
     }
 
     public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
-        UpdateUserOperation updateUserOperation = new UpdateUserOperation(updateUserMessage.getUser(),
-                updateUserMessage.getSession(), updateUserMessage.getSender());
+        UpdateUserOperation updateUserOperation = new UpdateUserOperation(updateUserMessage.getSender(),
+                updateUserMessage.getSession(), updateUserMessage.getUser());
 
         updateUserOperation.start();
 
@@ -354,8 +354,8 @@ public class ReadyState extends State {
     }
 
     public State processCreateTopicMessage (CreateTopicMessage createTopicMessage) {
-        CreateTopicOperation createTopicOperation = new CreateTopicOperation(createTopicMessage.getTopic(),
-                createTopicMessage.getSender());
+        CreateTopicOperation createTopicOperation = new CreateTopicOperation(createTopicMessage.getSender(),
+                createTopicMessage.getSession(), createTopicMessage.getTopic());
 
         createTopicOperation.start();
 
@@ -364,7 +364,7 @@ public class ReadyState extends State {
 
     public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) {
         CreateSubscriptionOperation createSubscriptionOperation = new CreateSubscriptionOperation(createSubscriptionMessage.getSender(),
-                createSubscriptionMessage.getSubscription());
+                createSubscriptionMessage.getSession(), createSubscriptionMessage.getSubscription());
 
         createSubscriptionOperation.start();
 
@@ -373,7 +373,7 @@ public class ReadyState extends State {
 
     public State processUpdateSubscriptionMessage (UpdateSubscriptionMessage updateSubscriptionMessage) {
         UpdateSubscriptionOperation updateSubscriptionOperation = new UpdateSubscriptionOperation(updateSubscriptionMessage.getSender(),
-                updateSubscriptionMessage.getSubscription());
+                updateSubscriptionMessage.getSession(), updateSubscriptionMessage.getSubscription());
 
         updateSubscriptionOperation.start();
 
@@ -382,7 +382,7 @@ public class ReadyState extends State {
 
     public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
         DeleteSubscriptionOperation deleteSubscriptionOperation = new DeleteSubscriptionOperation(deleteSubscriptionMessage.getSender(),
-                deleteSubscriptionMessage.getName());
+                deleteSubscriptionMessage.getSession(), deleteSubscriptionMessage.getName());
 
         deleteSubscriptionOperation.start();
 
@@ -397,8 +397,8 @@ public class ReadyState extends State {
     }
 
     public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) {
-        UpdateTopicOperation updateTopicOperation = new UpdateTopicOperation(updateTopicMessage.getTopic(),
-                updateTopicMessage.getSender());
+        UpdateTopicOperation updateTopicOperation = new UpdateTopicOperation(updateTopicMessage.getSender(),
+                updateTopicMessage.getSession(), updateTopicMessage.getTopic());
 
         updateTopicOperation.start();
 
@@ -406,8 +406,8 @@ public class ReadyState extends State {
     }
 
     public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) {
-        DeleteTopicOperation deleteTopicOperation = new DeleteTopicOperation(deleteTopicMessage.getTopicName(),
-                deleteTopicMessage.getSender());
+        DeleteTopicOperation deleteTopicOperation = new DeleteTopicOperation(deleteTopicMessage.getSender(),
+                deleteTopicMessage.getSession(), deleteTopicMessage.getTopicName());
 
         deleteTopicOperation.start();
 

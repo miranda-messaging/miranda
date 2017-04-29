@@ -38,7 +38,7 @@ public class DeleteSubscriptionOperationReadyState extends State {
     public State processDeleteSubscriptionResponseMessage (DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage) {
         if (deleteSubscriptionResponseMessage.getResult() == Results.Success) {
             Miranda.getInstance().getCluster().sendDeleteSubscriptionMessage(getDeleteSubscriptionOperation().getQueue(),
-                    this, getDeleteSubscriptionOperation().getName());
+                    this, getDeleteSubscriptionOperation().getSession(), getDeleteSubscriptionOperation().getName());
         }
 
         DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage2 = new DeleteSubscriptionResponseMessage(

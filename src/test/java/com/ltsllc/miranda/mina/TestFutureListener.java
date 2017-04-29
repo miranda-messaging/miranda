@@ -50,7 +50,7 @@ public class TestFutureListener extends TestCase {
         return mockConnectFuture;
     }
 
-    public IoSession getMockSession() {
+    public IoSession getMockIoSession() {
         return mockSession;
     }
 
@@ -82,8 +82,8 @@ public class TestFutureListener extends TestCase {
     public void testOperationComplete () {
         InetSocketAddress inetSocketAddress = new InetSocketAddress("foo.com", 6789);
         when (getMockConnectFuture().isConnected()).thenReturn(true);
-        when (getMockConnectFuture().getSession()).thenReturn(getMockSession());
-        when (getMockSession().getRemoteAddress()).thenReturn(inetSocketAddress);
+        when (getMockConnectFuture().getSession()).thenReturn(getMockIoSession());
+        when (getMockIoSession().getRemoteAddress()).thenReturn(inetSocketAddress);
 
         getFutureListener().operationComplete(getMockConnectFuture());
 

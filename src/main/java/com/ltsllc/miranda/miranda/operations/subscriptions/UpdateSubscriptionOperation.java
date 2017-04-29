@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
 import java.util.concurrent.BlockingQueue;
@@ -36,8 +37,8 @@ public class UpdateSubscriptionOperation extends Operation {
         return subscription;
     }
 
-    public UpdateSubscriptionOperation (BlockingQueue<Message> requester, Subscription subscription) {
-        super("update subscription operation", requester);
+    public UpdateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) {
+        super("update subscription operation", requester, session);
 
         this.subscription = subscription;
         setUserManagerResponded(false);

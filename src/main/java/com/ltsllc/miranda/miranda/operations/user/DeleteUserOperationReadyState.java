@@ -85,7 +85,8 @@ public class DeleteUserOperationReadyState extends State {
             send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
 
             Miranda.getInstance().getCluster().sendDeleteUserMessage(
-                    getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser());
+                    getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getSession(),
+                    getDeleteUserOperation().getUser());
         } else {
             DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(
                     getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser(),

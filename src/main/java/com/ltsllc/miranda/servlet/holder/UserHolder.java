@@ -116,7 +116,7 @@ public class UserHolder extends ServletHolder {
 
     public Results createUser (User user) throws TimeoutException {
         setUserCreateResults(Results.Unknown);
-        Miranda.getInstance().sendCreateUserMessage(getQueue(), this, user);
+        Miranda.getInstance().sendCreateUserMessage(getQueue(), this, getSession(), user);
 
         sleep();
 
@@ -149,7 +149,7 @@ public class UserHolder extends ServletHolder {
 
     public Results deleteUser (String name) throws TimeoutException {
         setUserDeleteResults(Results.Unknown);
-        Miranda.getInstance().sendDeleteUserMessage (getQueue(), this, name);
+        Miranda.getInstance().sendDeleteUserMessage (getQueue(), this, getSession(), name);
 
         sleep();
 

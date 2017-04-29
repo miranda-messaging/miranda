@@ -26,7 +26,12 @@
 
     </div><!--/.container-fluid -->
 </nav>
-
+<p>
+<div class="control-group">
+    <label class="control-label">Session</label>
+    <label id="session" class="control-label"></label>
+</div>
+</p>
 <button type="button" class="btn btn-default" onclick="createNewTopic()">Create a New Topic</button>
 <p/>
 <h4>Topics</h4>
@@ -61,7 +66,7 @@
                     </div>
                     <div class="control-group">
                         <label class="control-label">Remote Policy</label>
-                        <label><input id="node" type="radio" name="remotePolicy">None</label>
+                        <label><input id="none" type="radio" name="remotePolicy">None</label>
                         <label><input id="received" type="radio" name="remotePolicy">Received</label>
                         <label><input id="written" type="radio" name="remotePolicy">Written</label>
                     </div>
@@ -72,7 +77,7 @@
         <div class="modal-footer">
             <button id="delete" type="button" class="btn btn-default" data-dismiss="modal" hidden="true">Delete</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button id="accept" type="button" class="btn btn-primary" data-dismiss="modal" onclick="createTopic()">Create</button>
+            <button id="accept" type="button" class="btn btn-primary" data-dismiss="modal">Create</button>
         </div>
     </div> <!-- modal-dialog -->
 </div> <!-- newTopicDialog -->
@@ -81,7 +86,12 @@
 <script src="/bootstrap/js/bootstrap.js"></script>
 <script>
     function fillTable () {
-        $.get("/servlets/getTopics", gotRows);
+        var getTopicsRequest = new Object();
+        getTopicsRequest.sessionIdString = $('#session').text();
+        getTopicsRequest.topic = new Object();
+        getTopicsRequest.topic.name = "whatever";
+        var json = JSON.stringify(getTopicsRequest);
+        $.post("/servlets/getTopics", json, gotRows);
     }
 
     function gotRows (data,status) {
@@ -109,15 +119,26 @@
 
     function createNewTopic () {
         $('#title').val("New Topic");
+        $('#name').val("");
+
+        var owner = sessionStorage.getItem('name');
+        $('#owner').val (owner);
+        $('#owner').prop ("readonly", true);
+
+        $('#none').prop("checked", false);
+        $('#received').prop("checked", false);
+        $('#written').prop("checked", false);
+
         $('#delete').prop("hidden", true);
-        var temp = $('#delete');
-        var temp2 = $('#doesNotExist');
+
         $('#accept').text("Create");
+        $('#accept').unbind();
+        $('#accept').click (function () { sendCreateTopic(); });
 
         showDialog();
     }
 
-    function createTopic () {
+    function sendCreateTopic () {
         var topic = new Object();
         topic.name = $('#name').val();
         topic.owner = $('#owner').val();
@@ -132,7 +153,11 @@
             alert ("Unknown remote policy");
         }
 
-        var data = JSON.stringify(topic);
+        var topicRequest = new Object();
+        topicRequest.topic = topic;
+        topicRequest.sessionIdString = $('#session').text();
+
+        var data = JSON.stringify(topicRequest);
 
         $.post("/servlets/createTopic", data, createTopicResult);
     }
@@ -142,10 +167,8 @@
 
         var result = JSON.parse(data);
 
-        if (result.result == "success")
-            alert ("Topic created")
-        else
-            alert (result.result);
+        if (result.result != "Success")
+            alert ("Topic create failed " + result.result);
     }
 
     function edit(index) {
@@ -154,15 +177,24 @@
         var row = $(table).find("tr:nth-child(" + anIndex + ")");
         var topic = new Object();
         topic.name = $(row).find("td:nth-child(1)").text();
-        var data = JSON.stringify(topic);
-        $.post("/servlets/getTopic", data, commenceEdit);
+        editTopic(topic.name);
+    }
+
+    function editTopic (name) {
+        var editRequest = new Object();
+        editRequest.sessionIdString = $('#session').text();
+        var topic = new Object();
+        topic.name = name;
+        editRequest.topic = topic;
+        var json = JSON.stringify(editRequest);
+        $.post("/servlets/getTopic", json, commenceEdit);
     }
 
     function commenceEdit (data, status) {
         var result = JSON.parse(data);
 
         if (result.result != "Success") {
-            alert ("Could not get topic");
+            alert ("Could not get topic " + result.result);
             return;
         }
 
@@ -186,7 +218,7 @@
 
         $('#accept').text("Update");
         $('#accept').unbind();
-        $('#accept').click( function () { acceptEdit(); });
+        $('#accept').click( function () { sendUpdateTopic(); });
 
         $('#delete').unbind();
         $('#delete').prop("hidden", false);
@@ -195,7 +227,7 @@
         showDialog();
     }
 
-    function acceptEdit () {
+    function sendUpdateTopic () {
         var topic = new Object();
         topic.name = $('#name').val();
         topic.owner = $('#owner').val();
@@ -210,7 +242,11 @@
             alert ("Unknown remote policy");
         }
 
-        var data = JSON.stringify(topic);
+        var updateRequest = new Object();
+        updateRequest.sessionIdString = $('#session').text();
+        updateRequest.topic = topic;
+
+        var data = JSON.stringify(updateRequest);
 
         $.post("/servlets/updateTopic", data, updateResult);
     }
@@ -225,10 +261,15 @@
 
     function deleteTopic () {
         confirm ("Delete " + $('#name').val());
+
         var topic = new Object();
         topic.name = $('#name').val();
 
-        var data = JSON.stringify(topic);
+        var deleteRequest = new Object();
+        deleteRequest.sessionIdString = $('#session').text();
+        deleteRequest.topic = topic;
+
+        var data = JSON.stringify(deleteRequest);
         $.post("/servlets/deleteTopic", data, deleteResult);
     }
 
@@ -247,7 +288,12 @@
         });
     }
 
+    function setupSession () {
+        var session = sessionStorage.getItem('session');
+        $('#session').text(session);
+    }
 
+    setupSession();
     fillTable();
 </script>
 </body>
