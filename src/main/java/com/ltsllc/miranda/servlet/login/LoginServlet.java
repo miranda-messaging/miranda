@@ -21,6 +21,15 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 3/31/2017.
  */
 public class LoginServlet extends MirandaServlet {
+    public void doOptions (HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Allow", "*");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, Access-Control-Allow-Origin");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        response.setHeader("Access-Control-Max-Age", "1209600");
+    }
+
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LoginResultObject result = new LoginResultObject();
 
@@ -44,6 +53,7 @@ public class LoginServlet extends MirandaServlet {
             result.setResult(Results.Timeout);
         }
 
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         respond(resp.getOutputStream(), result);
         resp.setStatus(200);
     }

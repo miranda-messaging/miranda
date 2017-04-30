@@ -16,6 +16,7 @@ import javax.servlet.http.Part;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 /**
  * Created by Clark on 4/18/2017.
@@ -43,6 +44,25 @@ public class FileServlet extends MirandaServlet {
 
     public static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
 
+    public Method[] getAllDeclaredMethods(Class<? extends HttpServlet> c) {
+        Class<?> clazz = c;
+
+        Method[] allMethods;
+        for(allMethods = null; !clazz.equals(HttpServlet.class); clazz = clazz.getSuperclass()) {
+            Method[] thisMethods = clazz.getDeclaredMethods();
+            if(allMethods != null && allMethods.length > 0) {
+                Method[] subClassMethods = allMethods;
+                allMethods = new Method[thisMethods.length + allMethods.length];
+                System.arraycopy(thisMethods, 0, allMethods, 0, thisMethods.length);
+                System.arraycopy(subClassMethods, 0, allMethods, thisMethods.length, subClassMethods.length);
+            } else {
+                allMethods = thisMethods;
+            }
+        }
+
+        return allMethods != null?allMethods:new Method[0];
+    }
+
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
         FileResult fileResult = new FileResult();
@@ -52,6 +72,7 @@ public class FileServlet extends MirandaServlet {
         fileResult.setResult(Results.Success);
 
         respond(resp.getOutputStream(), fileResult);
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setStatus(200);
     }
 }

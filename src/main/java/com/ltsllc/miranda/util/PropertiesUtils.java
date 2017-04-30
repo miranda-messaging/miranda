@@ -194,4 +194,15 @@ public class PropertiesUtils {
 
         return list;
     }
+
+    public static Properties mapToProperties (Map<String, String> map) {
+        Properties properties = new Properties();
+
+        for (String key : map.keySet()) {
+            String value = map.get(key);
+            properties.setProperty(key, value);
+        }
+
+        return properties;
+    }
 }
