@@ -2,6 +2,7 @@ package com.ltsllc.miranda.servlet.holder;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.servlet.states.SubscriptionHolderReadyState;
 import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 
@@ -15,12 +16,23 @@ import java.util.concurrent.TimeoutException;
 public class SubscriptionHolder extends ServletHolder {
     private static SubscriptionHolder ourInstance;
 
-    private List<Subscription> subscriptions;
+    private List<Subscription> subscriptionsList;
     private Subscription subscription;
     private Results getResult;
     private Results createResult;
     private Results updateResult;
     private Results deleteResult;
+
+    public List<Subscription> getSubscriptionList () {
+        if (subscriptionsList == null)
+            subscriptionsList = new ArrayList<Subscription>();
+
+        return subscriptionsList;
+    }
+
+    public void setSubscriptionsList (List<Subscription> list) {
+        this.subscriptionsList = list;
+    }
 
     public Subscription getSubscription() {
         return subscription;
@@ -59,7 +71,6 @@ public class SubscriptionHolder extends ServletHolder {
     }
 
     public Results getUpdateResult() {
-
         return updateResult;
     }
 
@@ -75,22 +86,21 @@ public class SubscriptionHolder extends ServletHolder {
         this.createResult = createResult;
     }
 
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
     public SubscriptionHolder (long timeout) {
         super ("subscription holder", timeout);
+
+        SubscriptionHolderReadyState readyState = new SubscriptionHolderReadyState(this);
+        setCurrentState(readyState);
     }
 
     public List<Subscription> getSubscriptions () throws TimeoutException {
-        setSubscriptions(new ArrayList<Subscription>());
+        setSubscriptionsList(null);
 
         Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionsMessage(getQueue(), this);
 
         sleep();
 
-        return getSubscriptions();
+        return getSubscriptionList();
     }
 
     public Subscription getSubscription (String name) throws TimeoutException {
@@ -134,7 +144,7 @@ public class SubscriptionHolder extends ServletHolder {
     }
 
     public void setSubscriptionsAndAwaken (List<Subscription> subscriptions) {
-        setSubscriptions(subscriptions);
+        setSubscriptionsList(subscriptions);
 
         wake();
     }

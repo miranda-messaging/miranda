@@ -32,6 +32,7 @@ public class CreateTopicServlet extends TopicServlet {
                                             TopicRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
+        requestObject.getTopic().setOwner(getSession().getUser().getName());
         Results result = TopicHolder.getInstance().createTopic(requestObject.getTopic());
         resultObject.setResult(result);
 

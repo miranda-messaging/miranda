@@ -6,6 +6,26 @@
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="">Miranda</a>
+        </div>
+
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="login.html">Login</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="cluster.html">Cluster</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="topics.html">Topics</a></li>
+            <li><a href="subscriptions.html">Subscriptions</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="deliveries.html">Deliveries</a></li>
+        </ul>
+
+    </div><!--/.container-fluid -->
+</nav>
+
 Please enter your credentials
 
 <br/>
@@ -79,6 +99,7 @@ Please enter your credentials
             $('#session').text(clearText);
             sessionStorage.setItem('session', clearText);
             sessionStorage.setItem('name', $('#name').val());
+            sessionStorage.setItem('category', result.category);
         }
     }
 

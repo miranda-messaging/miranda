@@ -7,6 +7,15 @@ import com.ltsllc.miranda.servlet.objects.ResultObject;
  */
 public class LoginResultObject extends ResultObject {
     private String session;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getSession() {
         return session;

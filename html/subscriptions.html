@@ -16,6 +16,7 @@
         </div>
 
         <ul class="nav navbar-nav">
+            <li><a href="login.html">Login</a></li>
             <li><a href="index.html">Home</a></li>
             <li><a href="cluster.html">Cluster</a></li>
             <li><a href="users.html">Users</a></li>
@@ -27,13 +28,16 @@
 
     </div><!--/.container-fluid -->
 </nav>
-
+<div class="control-group">
+    <label class="control-label">Session</label>
+    <label id="session" class="control-label"></label>
+</div>
 <button type="button" class="btn btn-default" onclick="createNewSubscription()">Create Subscription</button>
 <p>
 <table id="table">
     <thead>
         <tr>
-            <td>Name</td>
+            <th>Name</th>
         </tr>
     </thead>
 
@@ -46,7 +50,7 @@
     <div class="modal-dialog">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="dialogTitle">New Subscription</h4>
+            <h4 class="modal-title" id="title">New Subscription</h4>
         </div>
 
         <div class="modal-body">
@@ -55,6 +59,10 @@
                     <div class="control-group">
                         <label class="control-label">Name</label>
                         <input id="name" type="text" class="input-medium"/>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Owner</label>
+                        <input id="owner" type="text" class="input-medium"/>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Topic</label>
@@ -69,10 +77,6 @@
                         <input id="livelinessUrl" type="text" class="input-medium"/>
                     </div>
                     <div class="control-group">
-                        <label class="control-label">Owner</label>
-                        <input id="owner" type="text" class="input-medium"/>
-                    </div>
-                    <div class="control-group">
                         <label class="control-label">Remote Policy</label>
                         <label><input id="node" type="radio" name="remotePolicy">None</label>
                         <label><input id="received" type="radio" name="remotePolicy">Received</label>
@@ -83,9 +87,9 @@
         </div>
 
         <div class="modal-footer">
-            <button id="delete" type="button" data-dismiss="modal" hidden="true">Delete</button>
+            <button id="delete" type="button" class="btn btn-default" data-dismiss="modal" hidden="true">Delete</button>
             <button id="cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button id="accept" type="button" class="btn btn-primary" data-dismiss="modal">Create</button>
+            <button id="accept" type="button" class="btn btn-default" data-dismiss="modal">Create</button>
         </div>
     </div> <!-- modal-dialog -->
 </div> <!-- dialog -->
@@ -98,7 +102,16 @@
     }
 
     function fillTable () {
-        $.get("/servlets/getSubscriptions", gotTableContents);
+        var getSubscriptionsRequest = new Object();
+        getSubscriptionsRequest.sessionIdString = $('#session').text();
+
+        var subscription = new Object();
+        subscription.name = "whatever";
+        getSubscriptionsRequest.subscription = subscription;
+
+        var json = JSON.stringify(getSubscriptionsRequest);
+
+        $.post("/servlets/getSubscriptions", json, gotTableContents);
     }
 
     function gotTableContents (data, status) {
@@ -117,12 +130,155 @@
 
             $('#tableBody').append(html);
         }
+
+        setupTableHandler();
     }
 
-    function setupHandler () {
-        $('#table').find('tr').click(function () {
-            edit($(this).index());
-        });
+    function edit(index) {
+        var table = $('#table');
+        var anIndex = 1 + index;
+        var row = $(table).find("tr:nth-child(" + anIndex + ")");
+        var topic = new Object();
+        topic.name = $(row).find("td:nth-child(1)").text();
+        editSubscription(topic.name);
+    }
+
+    function editSubscription (name) {
+        var getSubscriptionRequest = new Object();
+        getSubscriptionRequest.sessionIdString = $('#session').text();
+
+        var subscription = new Object();
+        subscription.name = name;
+
+        getSubscriptionRequest.subscription = subscription;
+
+        var json = JSON.stringify(getSubscriptionRequest);
+        $.post("/servlets/getSubscription", json, getSubscriptionResult);
+    }
+
+    function deleteSubscription () {
+        var name = $('#name').val();
+
+        if (confirm("Delete " + name + "?"))
+            sendDelete();
+    }
+
+    function sendDelete () {
+         var subscription = getSubscription();
+
+         var deleteRequest = new Object();
+         deleteRequest.sessionIdString = $('#session').text();
+         deleteRequest.subscription = subscription;
+
+         var json = JSON.stringify(deleteRequest);
+
+         $.post("/servlets/deleteSubscription", json, sendDeleteResponse);
+    }
+
+    function sendDeleteResponse (data, status) {
+        fillTable();
+        var result = JSON.parse(data);
+
+        if (result.result != "Success") {
+            alert ("Failed to delete subscription " + result.result);
+            return;
+        }
+    }
+
+    function sendUpdate () {
+        var updateRequest = new Object();
+        updateRequest.sessionIdString = $('#session').text();
+        updateRequest.subscription = getSubscription();
+
+        var json = JSON.stringify(updateRequest);
+
+        $.post("/servlets/updateSubscription", json, sendUpdateResponse);
+    }
+
+    function sendUpdateResponse (data, status) {
+        var result = JSON.parse(data);
+
+        if (result.result != "Success") {
+            alert ("Failed to update subscription " + result.result);
+            return;
+        }
+    }
+
+    function getSubscription () {
+        var subscription = new Object();
+
+        subscription.name = $('#name').val();
+        subscription.owner = $('#owner').val();
+        subscription.topic = $('#topic').val();
+        subscription.dataUrl = $('#url').val();
+        subscription.livelinessUrl = $('#livelinessUrl').val();
+
+        subscription.remotePolicy = getRemotePolicy();
+
+        return subscription;
+    }
+
+    function setSubscription (subscription) {
+        $('#name').val(subscription.name);
+        $('#owner').val(subscription.owner);
+
+        var category = sessionStorage.getItem ('category');
+        if (category != "Admin") {
+            $('#owner').prop("readonly", true);
+        }
+
+        $('#topic').val(subscription.topic);
+        $('#url').val(subscription.dataUrl);
+        $('#livelinessUrl').val (subscription.livelinessUrl);
+
+        setRemotePolicy(subscription.remotePolicy);
+    }
+
+    function setRemotePolicy (remotePolicy) {
+        $('#none').prop("checked", false);
+        $('#received').prop("checked", false);
+        $('#written').prop("checked", false);
+
+        if (remotePolicy == "None")
+            $('#none').prop("checked", true);
+        else if (remotePolicy == "AcknowledgeReceipt")
+            $('#received').prop("checked", true);
+        else if (remotePolicy == "Written")
+            $('#written').prop("checked", true);
+    }
+
+    function getRemotePolicy () {
+        if ($('#none').prop("checked"))
+           return "None";
+        else if ($('#received').prop("checked"))
+            return "AcknowledgeReceipt";
+        else if ($('#written').prop("checked"))
+            return "Written";
+        else {
+            alert ("Please select a remote policy");
+            return "Unknown";
+        }
+    }
+
+    function getSubscriptionResult (data, status) {
+        var result = JSON.parse(data);
+
+        if (result.result != "Success") {
+            alert ("Get subscription failed " + result.result);
+            return;
+        }
+
+        $('#dialogTitle').text("Update Subscription");
+
+        setSubscription(result.subscription);
+
+        sowDelete(function () { deleteSubscription(); });
+
+        $('#accept').text("Update");
+        $('#accept').unbind();
+        $('#accept').click (function () { sendUpdate(); } );
+
+        showDialog();
     }
 
     function createNewSubscription () {
@@ -132,15 +288,21 @@
         $('#topic').val("");
         $('#url').val("");
         $('#livelinessUrl').val("");
-        $('#remotePolicy').val("");
 
+        setRemotePolicy("unknown");
+
+        $('#accept').text ("Create");
         $('#accept').unbind();
-        $('#accept').click( function () { createSubscription(); });
+        $('#accept').click( function () { sendCreateSubscription(); });
 
+        hideDelete();
         showDialog();
     }
 
-    function createSubscription () {
+    function sendCreateSubscription () {
+        var createSubscriptionRequest = new Object();
+        createSubscriptionRequest.sessionIdString = $('#session').text();
+
         var subscription = new Object();
 
         subscription.name = $('#name').val();
@@ -149,18 +311,12 @@
         subscription.dataUrl = $('#url').val();
         subscription.livelinessUrl = $('#livelinessUrl').val();
 
-        if ($('#none').prop("checked")) {
-            subscription.remotePolicy = "None";
-        } else if ($('#received').prop("checked")) {
-            subscription.remotePolicy = "AcknowledgeReceipt";
-        } else if ($('#written').prop("checked")) {
-            subscription.remotePolicy = "Written";
-        } else {
-            alert ("Unknown remote policy");
-        }
+        subscription.remotePolicy = getRemotePolicy();
 
-        var data = JSON.stringify(subscription);
-        $.post("/servlets/createSubscription", data, createResult);
+        createSubscriptionRequest.subscription = subscription;
+
+        var json = JSON.stringify(createSubscriptionRequest);
+        $.post("/servlets/createSubscription", json, createResult);
     }
 
     function createResult (data, status) {
@@ -186,7 +342,32 @@
         fillTable();
     }
 
+    function setupSession () {
+        var session = sessionStorage.getItem('session');
+        $('#session').text(session);
+    }
+
+    function setupTableHandler () {
+        $('#table').find('tr').unbind();
+        $('#table').find('tr').click(function() {
+            edit ($(this).index());
+        });
+    }
+
+    function hideDelete () {
+        $('#delete').hide();
+    }
+
+    function showDelete (func) {
+        $('#delete').show();
+        $('#delete').unbind();
+        $('#delete').click(func);
+    }
+
+
+    setupSession();
     fillTable();
+
 </script>
 </body>
 </html>

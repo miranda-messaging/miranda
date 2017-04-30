@@ -382,7 +382,7 @@ public class ReadyState extends State {
 
     public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
         DeleteSubscriptionOperation deleteSubscriptionOperation = new DeleteSubscriptionOperation(deleteSubscriptionMessage.getSender(),
-                deleteSubscriptionMessage.getSession(), deleteSubscriptionMessage.getName());
+                deleteSubscriptionMessage.getSession(), deleteSubscriptionMessage.getSubscriptionName());
 
         deleteSubscriptionOperation.start();
 

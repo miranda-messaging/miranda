@@ -16,12 +16,15 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
         AcknowledgeReceipt,
         Written
     }
-    private Gson ourGson = new Gson();
+    private static Gson ourGson = new Gson();
 
     private long expires;
     private String name;
     private String owner;
     private String topic;
+    private String dataUrl;
+    private String livelinessUrl;
+    private RemotePolicies remotePolicy;
 
     public String getTopic() {
         return topic;
@@ -31,9 +34,6 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
         this.topic = topic;
     }
 
-    private String dataUrl;
-    private String livelinessUrl;
-    private RemotePolicies remotePolicy;
 
     public Subscription () {
         super(Status.New);

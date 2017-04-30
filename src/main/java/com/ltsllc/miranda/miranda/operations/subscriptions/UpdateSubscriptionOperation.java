@@ -50,6 +50,8 @@ public class UpdateSubscriptionOperation extends Operation {
 
 
     public void start () {
+        super.start();
+
         Miranda miranda = Miranda.getInstance();
         miranda.getUserManager().sendGetUser(getQueue(), this, getSubscription().getOwner());
         miranda.getTopicManager().sendGetTopicMessage(getQueue(), this, getSubscription().getTopic());

@@ -94,10 +94,10 @@ public class ServletHolder extends Consumer {
         notifyAll();
     }
 
-    public Session getSession (long session) throws TimeoutException {
+    public Session getSession (long sessionId) throws TimeoutException {
         setSession(null);
 
-        Miranda.getInstance().getSessionManager().sendCheckSessionMessage (getQueue(), this, session);
+        Miranda.getInstance().getSessionManager().sendCheckSessionMessage (getQueue(), this, sessionId);
 
         sleep();
 

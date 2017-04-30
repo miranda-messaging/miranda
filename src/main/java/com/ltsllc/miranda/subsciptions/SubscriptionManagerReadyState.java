@@ -146,7 +146,7 @@ public class SubscriptionManagerReadyState extends State {
     }
 
     public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
-        getSubscriptionManager().deleteSubscription(deleteSubscriptionMessage.getName());
+        getSubscriptionManager().deleteSubscription(deleteSubscriptionMessage.getSubscriptionName());
 
         DeleteSubscriptionResponseMessage response = new DeleteSubscriptionResponseMessage(getSubscriptionManager().getQueue(),
                 this, Results.Success);

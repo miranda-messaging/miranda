@@ -4,6 +4,8 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.operations.Operation;
 import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.user.User;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -12,6 +14,15 @@ import java.util.concurrent.BlockingQueue;
  */
 public class DeleteSubscriptionOperation extends Operation {
     private String subscriptionName;
+    private Subscription subscription;
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
 
     public String getSubscriptionName() {
         return subscriptionName;
@@ -27,7 +38,8 @@ public class DeleteSubscriptionOperation extends Operation {
     }
 
     public void start () {
-        Miranda.getInstance().getSubscriptionManager().sendDeleteSubscriptionMessage(getQueue(), this, getSession(),
-                getSubscriptionName());
+        super.start();
+
+        Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionMessage(getQueue(), this, getSubscriptionName());
     }
 }

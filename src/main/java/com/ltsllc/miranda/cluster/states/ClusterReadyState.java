@@ -4,9 +4,7 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.*;
-import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
-import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
-import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.*;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -19,6 +17,12 @@ import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
+import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
+import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
+import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
@@ -142,6 +146,41 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
                 break;
             }
 
+            case CreateSubscription: {
+                CreateSubscriptionMessage createSubscriptionMessage = (CreateSubscriptionMessage) m;
+                nextState = processCreateSubscriptionMessage(createSubscriptionMessage);
+                break;
+            }
+
+            case UpdateSubscription: {
+                UpdateSubscriptionMessage updateSubscriptionMessage = (UpdateSubscriptionMessage) m;
+                nextState = processUpdateSubscriptionMessage (updateSubscriptionMessage);
+                break;
+            }
+
+            case DeleteSubscription: {
+                DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) m;
+                nextState = processDeleteSubscriptionMessage (deleteSubscriptionMessage);
+                break;
+            }
+
+            case UpdateTopic: {
+                UpdateTopicMessage updateTopicMessage = (UpdateTopicMessage) m;
+                nextState = processUpdateTopicMessage (updateTopicMessage);
+                break;
+            }
+
+            case CreateTopic: {
+                CreateTopicMessage createTopicMessage = (CreateTopicMessage) m;
+                nextState = processCreateTopicMessage(createTopicMessage);
+                break;
+            }
+
+            case DeleteTopic: {
+                DeleteTopicMessage deleteTopicMessage = (DeleteTopicMessage) m;
+                nextState = processDeleteTopicMessage (deleteTopicMessage);
+                break;
+            }
             default:
                 nextState = super.processMessage(m);
                 break;
@@ -295,4 +334,48 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
         return managerShuttindDownState;
     }
+
+    public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) {
+        NewSubscriptionWireMessage newSubscriptionWireMessage = new NewSubscriptionWireMessage(createSubscriptionMessage.getSubscription());
+        getCluster().broadcast(newSubscriptionWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processUpdateSubscriptionMessage(UpdateSubscriptionMessage updateSubscriptionMessage) {
+        UpdateSubscriptionWireMessage updateSubscriptionWireMessage = new UpdateSubscriptionWireMessage(updateSubscriptionMessage.getSubscription());
+        getCluster().broadcast(updateSubscriptionWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
+        DeleteSubscriptionWireMessage deleteSubscriptionWireMessage = new DeleteSubscriptionWireMessage(
+                deleteSubscriptionMessage.getSubscriptionName());
+        getCluster().broadcast(deleteSubscriptionWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processCreateTopicMessage (CreateTopicMessage createTopicMessage) {
+        NewTopicWireMessage newTopicWireMessage = new NewTopicWireMessage(createTopicMessage.getTopic());
+        getCluster().broadcast(newTopicWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) {
+        UpdateTopicWireMessage updateTopicWireMessage = new UpdateTopicWireMessage(updateTopicMessage.getTopic());
+        getCluster().broadcast(updateTopicWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) {
+        DeleteTopicWireMessage deleteTopicWireMessage = new DeleteTopicWireMessage(deleteTopicMessage.getTopicName());
+        getCluster().broadcast(deleteTopicWireMessage);
+
+        return getCluster().getCurrentState();
+    }
+
 }

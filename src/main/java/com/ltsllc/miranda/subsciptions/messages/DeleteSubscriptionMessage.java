@@ -10,15 +10,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/22/2017.
  */
 public class DeleteSubscriptionMessage extends SessionMessage {
-    private String name;
+    private String subscriptionName;
 
-    public String getName() {
-        return name;
+    public String getSubscriptionName() {
+        return subscriptionName;
     }
 
-    public DeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
+    public DeleteSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, String subscriptionName) {
         super(Subjects.DeleteSubscription, senderQueue, sender, session);
 
-        this.name = name;
+        this.subscriptionName = subscriptionName;
     }
 }

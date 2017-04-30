@@ -60,7 +60,7 @@ public class SubscriptionHolderReadyState extends ServletHolderReadyState {
             }
 
             default: {
-                nextState = processMessage(message);
+                nextState = super.processMessage(message);
                 break;
             }
         }

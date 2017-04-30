@@ -30,6 +30,7 @@ public class LoginServlet extends MirandaServlet {
             result.setResult(loginResult.result);
 
             if (loginResult.session != null) {
+                result.setCategory(loginResult.session.getUser().getCategory().toString());
                 String sessionIdString = Long.toString(loginResult.session.getId());
                 byte[] plainText = sessionIdString.getBytes();
                 byte[] cipherText = loginResult.session.getUser().getPublicKey().encrypt(plainText);
