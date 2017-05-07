@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.TestClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
@@ -46,7 +47,14 @@ public class TestClusterReadyState extends TestCase {
     @Mock
     private Node mockNode;
 
+    @Mock
+    private ClusterFile mockClusterFile;
+
     private ClusterReadyState clusterReadyState;
+
+    public ClusterFile getMockClusterFile() {
+        return mockClusterFile;
+    }
 
     public ClusterReadyState getClusterReadyState() {
         return clusterReadyState;
@@ -59,6 +67,7 @@ public class TestClusterReadyState extends TestCase {
     public void reset() {
         super.reset();
 
+        this.mockClusterFile = null;
         this.mockNode = null;
 
         deleteFile(PROPERTIES_FILENAME);
@@ -75,6 +84,7 @@ public class TestClusterReadyState extends TestCase {
         setupKeyStore();
         setupTrustStore();
 
+        this.mockClusterFile = mock(ClusterFile.class);
         this.mockNode = mock(Node.class);
         this.clusterReadyState = new ClusterReadyState(getMockCluster());
     }
@@ -344,5 +354,17 @@ public class TestClusterReadyState extends TestCase {
         State nextState = getClusterReadyState().processMessage(newNodeMessage);
 
         assert (containsNode(nodes, node));
+    }
+
+    @Test
+    public void testProcessShutdownMessage () {
+        ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
+
+        when(getMockCluster().getClusterFile()).thenReturn(getMockClusterFile());
+        State nextState = getClusterReadyState().processMessage(shutdownMessage);
+
+        verify(getMockCluster(), atLeastOnce()).shutdown();
+        verify(getMockCluster(), atLeastOnce()).setClusterFileResponded(Matchers.eq(false));
+        verify(getMockClusterFile(), atLeastOnce()).sendShutdown(Matchers.any(BlockingQueue.class), Matchers.any());
     }
 }

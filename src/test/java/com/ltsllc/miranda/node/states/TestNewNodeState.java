@@ -73,7 +73,7 @@ public class TestNewNodeState extends TesterNodeState {
         List<NameVersion> nameVersions = new ArrayList<NameVersion>();
         Version version = new Version();
         version.setSha1("whatever");
-        nameVersions.add (new NameVersion(Cluster.FILE_NAME, version));
+        nameVersions.add (new NameVersion(Cluster.NAME, version));
         VersionsWireMessage versionsWireMessage = new VersionsWireMessage(nameVersions);
         NetworkMessage networkMessage = new NetworkMessage(null, this, versionsWireMessage);
 
@@ -89,7 +89,7 @@ public class TestNewNodeState extends TesterNodeState {
     public void testGetFileResponseWireMessageCluster () {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockCluster();
-        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(Cluster.FILE_NAME, "whatever");
+        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(Cluster.NAME, "whatever");
         NetworkMessage networkMessage = new NetworkMessage(null, this, getFileResponseWireMessage);
 
         when (getMockCluster().getQueue()).thenReturn(queue);
@@ -188,7 +188,7 @@ public class TestNewNodeState extends TesterNodeState {
             message = new GetSystemMessagesMessage(null, this, "whatever");
         else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
             message = new GetDeliveriesMessage(null, this, "whatever");
-        else if (file.equalsIgnoreCase(Cluster.FILE_NAME))
+        else if (file.equalsIgnoreCase(Cluster.NAME))
             message = new GetClusterFileMessage(null, this);
         else {
             System.err.println ("Unrecognized file: " + file);
@@ -217,7 +217,7 @@ public class TestNewNodeState extends TesterNodeState {
 
     @Test
     public void testProcessGetClusterFileMessage () {
-        testProcessGetFileMessage(Cluster.FILE_NAME);
+        testProcessGetFileMessage(Cluster.NAME);
     }
 
     @Test

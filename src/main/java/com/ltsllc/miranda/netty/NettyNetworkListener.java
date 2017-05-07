@@ -190,21 +190,23 @@ public class NettyNetworkListener extends NetworkListener {
 
         if (mode == MirandaProperties.EncryptionModes.LocalCA || mode == MirandaProperties.EncryptionModes.RemoteCA)
         {
-            String keyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
+            String keyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             String keyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            String keyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
+            // String keyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
 
             String certificateFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
             String certificatePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
             String certificateAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
 
+            /*
             try {
-                sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias,
-                        certificateFilename, certificatePassword, certificateAlias);
+                //sslContext = Utils.createServerSslContext(keyStoreFilename, keyStorePassword, keyStoreAlias,
+                        //certificateFilename, certificatePassword, certificateAlias);
             } catch (IOException | GeneralSecurityException e) {
                 Panic panic = new StartupPanic("Exception trying to start netty NeworkListener", e, StartupPanic.StartupReasons.ExceptionStartingNetworkListener);
                 Miranda.getInstance().panic(panic);
             }
+            */
         }
 
         LocalInitializer localInitializer = new LocalInitializer(sslContext);

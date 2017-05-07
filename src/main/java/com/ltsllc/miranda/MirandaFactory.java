@@ -144,10 +144,11 @@ public class MirandaFactory {
     }
 
     public SslContext buildLocalCaServerSslContext () throws MirandaException {
+        /*
         MirandaProperties properties = Miranda.properties;
 
-        String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
-        checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
+        String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+        checkProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, serverKeyStoreFilename);
 
         String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
         checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
@@ -170,10 +171,13 @@ public class MirandaFactory {
         } catch (IOException | GeneralSecurityException e) {
             throw new MirandaException("Exception trying to create server SSL context", e);
         }
+        */
+        return null;
     }
 
 
     public SslContext buildRemoteCaServerContext () throws MirandaException {
+        /*
         try {
             MirandaProperties properties = Miranda.properties;
 
@@ -205,6 +209,8 @@ public class MirandaFactory {
             throw new MirandaException("Exception trying to create SSL context", e);
         }
 
+*/
+        return null;
     }
 
     private static final String JETTY_BASE = "jetty.base";
@@ -260,8 +266,8 @@ public class MirandaFactory {
 
             jetty.setHandler(handlerCollection);
 
-            String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
+            String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, serverKeyStoreFilename);
 
             String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
             checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
@@ -293,39 +299,6 @@ public class MirandaFactory {
         }
     }
 
-    public SSLContext buildLocalCaSocketServerSslContext () throws MirandaException {
-        SSLContext sslContext = null;
-
-        try {
-            MirandaProperties properties = Miranda.properties;
-
-            String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
-
-            String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
-
-            String serverKeyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS, serverKeyStoreAlias);
-
-            String trustStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            checkProperty(MirandaProperties.PROPERTY_TRUST_STORE, trustStoreFilename);
-
-            String trustStorePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-            checkProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD, trustStorePassword);
-
-            String trustStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
-            checkProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS, trustStoreAlias);
-
-            sslContext = Utils.createSocketServerSslContext(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias,
-                    trustStoreFilename, trustStorePassword, trustStoreAlias);
-        } catch (GeneralSecurityException | IOException e) {
-            throw new MirandaException("Exception trying to get SSL context", e);
-        }
-
-        return sslContext;
-    }
-
     public SSLContext buildServerSSLContext () {
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SSLContext sslContext = null;
@@ -349,7 +322,7 @@ public class MirandaFactory {
         SSLContext sslContext = null;
 
         try {
-            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE);
+            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             String keyStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
             KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -377,7 +350,7 @@ public class MirandaFactory {
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(trustKeyStore);
 
-            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE);
+            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             String keyStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
             KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());

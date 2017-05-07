@@ -12,17 +12,10 @@ import org.apache.log4j.Logger;
 /**
  * Created by Clark on 3/19/2017.
  */
-public class MirandaPropertiesReadyState extends MirandaFileReadyState {
+
+public class MirandaPropertiesReadyState {
+    /*
     private static Logger logger = Logger.getLogger(MirandaPropertiesReadyState.class);
-
-    public MirandaProperties getMirandaProperties () {
-        return (MirandaProperties) getContainer();
-    }
-
-    public MirandaPropertiesReadyState (MirandaProperties properties)
-    {
-        super(properties);
-    }
 
     @Override
     public State processMessage(Message message) {
@@ -61,5 +54,5 @@ public class MirandaPropertiesReadyState extends MirandaFileReadyState {
 
         return getMirandaProperties().getCurrentState();
     }
-
+*/
 }

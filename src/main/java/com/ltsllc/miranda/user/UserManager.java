@@ -23,6 +23,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 3/31/2017.
  */
 public class UserManager extends Manager<User, User> {
+    public static final String NAME = "user manager";
+
     private static Logger logger = Logger.getLogger(UserManager.class);
 
     public List<User> getUsers() {

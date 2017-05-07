@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.network.messages.*;
 import org.apache.log4j.Logger;
@@ -41,8 +42,8 @@ public class NetworkReadyState extends State {
             }
 
             case Disconnect: {
-                CloseMessage disconnectMessage = (CloseMessage) m;
-                nextState = processDisconectMessage(disconnectMessage);
+                CloseMessage closeMessage = (CloseMessage) m;
+                nextState = processCloseMessage(closeMessage);
                 break;
             }
 
@@ -67,8 +68,11 @@ public class NetworkReadyState extends State {
     }
 
 
-    private State processDisconectMessage (CloseMessage disconnectMessage) {
-        getNetwork().disconnect(disconnectMessage);
+    private State processCloseMessage(CloseMessage closeMessage) {
+        getNetwork().disconnect(closeMessage);
+
+        CloseResponseMessage reply = new CloseResponseMessage(getNetwork().getQueue(), this, closeMessage.getHandle(),
+                Results.Success);
 
         return this;
     }

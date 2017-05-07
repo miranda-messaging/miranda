@@ -3,7 +3,9 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
+import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
+import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.NetworkListener;
@@ -13,6 +15,7 @@ import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
@@ -34,6 +37,7 @@ import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -59,13 +63,27 @@ public class Miranda extends Consumer {
     private UserManager userManager;
     private TopicManager topicManager;
     private SubscriptionManager subscriptionManager;
-    private SystemMessages events;
-    private SystemDeliveriesFile deliveries;
+    private EventManager eventManager;
+    private DeliveryManager deliveryManager;
     private Cluster cluster;
     private PanicPolicy panicPolicy;
     private NetworkListener networkListener;
     private SessionManager sessionManager;
     private Writer writer;
+    private Reader reader;
+    private List<String> waitingOn;
+
+    public List<String> getWaitingOn() {
+        return waitingOn;
+    }
+
+    public Reader getReader() {
+        return reader;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
 
     public Writer getWriter() {
         return writer;
@@ -111,22 +129,6 @@ public class Miranda extends Consumer {
         this.httpServer = httpServer;
     }
 
-    public SystemDeliveriesFile getDeliveries () {
-        return deliveries;
-    }
-
-    public void setDeliveries(SystemDeliveriesFile deliveries) {
-        this.deliveries = deliveries;
-    }
-
-    public SystemMessages getEvents () {
-        return events;
-    }
-
-    public void setEvents(SystemMessages events) {
-        this.events = events;
-    }
-
     public Cluster getCluster() {
         return cluster;
     }
@@ -157,6 +159,22 @@ public class Miranda extends Consumer {
 
     public void setSubscriptionManager (SubscriptionManager subscriptionManager) {
         this.subscriptionManager = subscriptionManager;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public void setEventManager(EventManager eventManager) {
+        this.eventManager = eventManager;
+    }
+
+    public DeliveryManager getDeliveryManager() {
+        return deliveryManager;
+    }
+
+    public void setDeliveryManager(DeliveryManager deliveryManager) {
+        this.deliveryManager = deliveryManager;
     }
 
     public Miranda (String[] argv) {
@@ -209,8 +227,8 @@ public class Miranda extends Consumer {
         userManager = null;
         topicManager = null;
         subscriptionManager = null;
-        events = null;
-        deliveries = null;
+        eventManager = null;
+        deliveryManager = null;
         panicPolicy = null;
     }
 
@@ -230,7 +248,6 @@ public class Miranda extends Consumer {
         sendIfNotNull(message, getHttp());
 
         sendIfNotNull(message, fileWatcher);
-        sendIfNotNull(message, properties);
         sendIfNotNull(message, timer);
 
         if (null != getCluster()) {
@@ -293,11 +310,11 @@ public class Miranda extends Consumer {
         if (null != getSubscriptionManager())
             getSubscriptionManager().sendShutdown(getQueue(), this);
 
-        if (null != getEvents())
-            getEvents().sendShutdown(getQueue(), this);
+        if (null != getEventManager())
+            getEventManager().sendShutdown(getQueue(), this);
 
-        if (null != getDeliveries())
-            getDeliveries().sendShutdown(getQueue(), this);
+        if (null != getDeliveryManager())
+            getDeliveryManager().sendShutdown(getQueue(), this);
 
         if (null != fileWatcher)
             fileWatcher.sendShutdown(getQueue(), this);
@@ -305,8 +322,8 @@ public class Miranda extends Consumer {
         if (null != timer)
             timer.sendShutdown(getQueue(), this);
 
-        if (null != properties)
-            properties.sendShutdown(getQueue(), this);
+        if (null != getNetworkListener())
+            getNetworkListener().sendShutdown(getQueue(), this);
 
         setCurrentState(new ShuttingDownState(this));
     }
@@ -393,5 +410,35 @@ public class Miranda extends Consumer {
     public void sendUpdateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
         UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, session, topic);
         sendToMe(updateTopicMessage);
+    }
+
+    public void initializeWaitingOn () {
+        waitingOn = new ArrayList<String>();
+        waitingOn.add(Cluster.NAME);
+        waitingOn.add(UserManager.NAME);
+        waitingOn.add(TopicManager.NAME);
+        waitingOn.add(SubscriptionManager.NAME);
+        waitingOn.add(EventManager.NAME);
+        waitingOn.add(DeliveryManager.NAME);
+        waitingOn.add(NetworkListener.NAME);
+    }
+
+    public void subsystemShutDown (String subsystem) {
+        String match = null;
+
+        for (String s : getWaitingOn())
+            if (s.equals(subsystem))
+                match = s;
+
+        if (match == null) {
+            logger.warn ("Got shutdown response from unrecognized system, " + subsystem);
+        } else {
+            logger.info("Got shutdown response from " + subsystem);
+            getWaitingOn().remove(match);
+        }
+    }
+
+    public boolean readyToShutDown () {
+        return getWaitingOn().size() < 1;
     }
 }

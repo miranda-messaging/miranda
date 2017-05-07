@@ -3,12 +3,16 @@ package com.ltsllc.miranda.writer;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 
+import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.PublicKey;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -17,6 +21,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Writer extends Consumer {
     private static Writer ourInstance;
+
+    private PublicKey publicKey;
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
 
     public static synchronized void setInstance (Writer writer) {
         if (null == ourInstance)
@@ -27,13 +37,15 @@ public class Writer extends Consumer {
         return ourInstance;
     }
 
-    public Writer () {
+    public Writer (PublicKey publicKey) {
         super("writer");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
         setCurrentState(new WriterReadyState(this));
 
         setInstance(this);
+
+        this.publicKey = publicKey;
     }
 
     public void write (String filename, byte[] data) throws IOException {
@@ -44,9 +56,18 @@ public class Writer extends Consumer {
 
         FileOutputStream fos = null;
 
+        byte[] ciphertext = null;
+
+        try {
+            ciphertext = encrypt(data);
+        } catch (GeneralSecurityException e) {
+            Panic panic = new Panic("Attempt to encrypt " + filename + " failed", e, Panic.Reasons.EncryptException);
+            Miranda.getInstance().panic(panic);
+        }
+
         try {
             fos = new FileOutputStream(filename);
-            fos.write(data);
+            fos.write(ciphertext);
         } finally {
             Utils.closeIgnoreExceptions(fos);
         }
@@ -86,5 +107,9 @@ public class Writer extends Consumer {
     public void sendWrite (BlockingQueue<Message> senderQueue, Object sender, String filename, byte[] data) {
         WriteMessage writeMessage = new WriteMessage(filename, data, senderQueue, sender);
         sendToMe(writeMessage);
+    }
+
+    public byte[] encrypt (byte[] plaintext) throws GeneralSecurityException {
+        return getPublicKey().encrypt(plaintext);
     }
 }

@@ -153,7 +153,7 @@ public class NewNodeState extends NodeState {
 
 
     private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.FILE_NAME);
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.NAME);
         sendOnWire(getFileWireMessage);
 
         return this;
@@ -210,7 +210,7 @@ public class NewNodeState extends NodeState {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getNode().getQueue(), this,
                 getFileResponseWireMessage.getRequester(), getFileResponseWireMessage.getContents());
 
-        if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(Cluster.FILE_NAME)) {
+        if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(Cluster.NAME)) {
             send(Cluster.getInstance().getQueue(), getFileResponseMessage);
         } else if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(UsersFile.FILE_NAME)) {
             send(UsersFile.getInstance().getQueue(), getFileResponseMessage);

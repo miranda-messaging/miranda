@@ -23,6 +23,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/20/2017.
  */
 public class ClusterFile extends SingleFile<NodeElement> {
+    public static final String NAME = "clusterfile";
+
     private static Logger logger = Logger.getLogger(ClusterFile.class);
     private static ClusterFile ourInstance;
 

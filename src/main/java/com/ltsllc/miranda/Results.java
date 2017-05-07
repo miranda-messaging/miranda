@@ -15,6 +15,9 @@ public enum Results {
     SubscriptionNotFound,
     InvalidRequest,
     SessionNotFound,
-    NotOwner
+    NotOwner,
+    FileTooLarge,
+    FileNotFound,
+    ShortRead
 }
 

@@ -4,12 +4,15 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
+import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
+import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.*;
 import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
@@ -17,6 +20,8 @@ import com.ltsllc.miranda.servlet.file.FileServlet;
 import com.ltsllc.miranda.servlet.holder.*;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
 import com.ltsllc.miranda.servlet.login.LoginServlet;
+import com.ltsllc.miranda.servlet.misc.ShutdownHolder;
+import com.ltsllc.miranda.servlet.misc.ShutdownServlet;
 import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import com.ltsllc.miranda.servlet.subscription.*;
@@ -29,13 +34,18 @@ import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.user.UserManager;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -69,7 +79,43 @@ public class Startup extends State {
     private HttpServer httpServer;
     private MirandaCommandLine commandLine;
     private MirandaFactory factory;
+    private MirandaProperties properties;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
+    private Reader reader;
 
+    public Reader getReader() {
+        return reader;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public PublicKey getPublicKey() {
+
+        return publicKey;
+    }
+
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public MirandaProperties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(MirandaProperties properties) {
+        this.properties = properties;
+    }
 
     public HttpServer getHttpServer() {
         return httpServer;
@@ -138,9 +184,11 @@ public class Startup extends State {
 
         try {
             processCommandLine();
+            setupProperties();
+            getKeys();
             startLogger();
             startWriter();
-            loadProperties();
+            startReader();
             defineFactory();
             definePanicPolicy();
             startServices();
@@ -162,6 +210,94 @@ public class Startup extends State {
         }
 
         return StopState.getInstance();
+    }
+
+    public void checkProperty (String name) {
+        String value = getProperties().getProperty(name);
+
+        if (null != value)
+            value = value.trim();
+
+        if (null == value || value.equals("")) {
+            String message = "The property, " + name + ", is undefined or empty";
+            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.MissingProperty);
+            Miranda.getInstance().panic(startupPanic);
+        }
+    }
+
+    public void checkProperties (String[] array) {
+        for (String s : array) {
+            checkProperty(s);
+        }
+    }
+
+    public void checkProperties (String p1, String p2, String p3) {
+        String[] properties = { p1, p2, p3 };
+        checkProperties(properties);
+    }
+
+    public void getKeys () {
+        checkProperties (MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
+        String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+
+        File file = new File(getProperties().getProperty(keyStoreFilename));
+        if (!file.exists()) {
+            String message = "The keystore file, " + keyStoreFilename + ", does not exist";
+            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.KeystoreDoesNotExist);
+            Miranda.getInstance().panic(startupPanic);
+        }
+
+        String password = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
+        if (null != password)
+            password = password.trim();
+
+        if (null == password || password.equals("")) {
+            System.out.println("Plesae enter the keystore password: ");
+            Scanner scanner = new Scanner(System.in);
+            password = scanner.nextLine();
+            if (password != null) {
+                password = password.trim();
+            }
+        }
+
+        KeyStore keyStore = null;
+
+        try {
+            keyStore = Utils.loadKeyStore(keyStoreFilename, password);
+        } catch (GeneralSecurityException | IOException e) {
+            String message = "Exception trying to open keystore, " + keyStoreFilename + ".";
+            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.ExceptionOpeningKeystore);
+            Miranda.getInstance().panic(startupPanic);
+        }
+
+        String publicKeyAlias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS);
+        String privateKeyAlias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
+
+        try {
+            java.security.PublicKey jsPublicKey = (java.security.PublicKey) keyStore.getKey(publicKeyAlias, null);
+            if (null == jsPublicKey) {
+                String message = "Missing public key.  Keystore: " + keyStoreFilename + " alias: " + publicKeyAlias;
+                StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.MissingKey);
+                Miranda.getInstance().panic(startupPanic);
+            }
+            PublicKey publicKey = new PublicKey(jsPublicKey);
+            setPublicKey(publicKey);
+
+            java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey(privateKeyAlias, null);
+            if (null == jsPrivateKey) {
+                String message = "Missing private key.  Keystore " + keyStoreFilename + " alias: " + privateKeyAlias;
+                StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.MissingKey);
+                Miranda.getInstance().panic(startupPanic);
+            }
+            PrivateKey privateKey = new PrivateKey(jsPrivateKey);
+            setPrivateKey(privateKey);
+        } catch (GeneralSecurityException e) {
+            String message = "Caught exception while trying to get keys.  Keystore: " + keyStoreFilename + " public key alias: "
+                    + publicKeyAlias + " private key alias: " + privateKeyAlias;
+
+            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.ExceptionManipulatingKeystore);
+            Miranda.getInstance().panic(startupPanic);
+        }
     }
 
     public ServletMapping[] convertToArray (List<ServletMapping> mappings) {
@@ -242,6 +378,9 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/deleteSubscription", DeleteSubscriptionServlet.class);
         mappings.add (servletMapping);
 
+        servletMapping = new ServletMapping("/servlets/shutdown", ShutdownServlet.class);
+        mappings.add (servletMapping);
+
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
 
@@ -261,6 +400,9 @@ public class Startup extends State {
 
         SubscriptionHolder.initialize(timeoutPeriod);
         SubscriptionHolder.getInstance().start();
+
+        ShutdownHolder.initialize(timeoutPeriod);
+        ShutdownHolder.getInstance().start();
 
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this,
                 convertToArray(mappings));
@@ -334,10 +476,12 @@ public class Startup extends State {
      * if it finds a proerties file it will augment the result with that
      * file.
      */
-    private void loadProperties() {
-        Miranda.properties = new MirandaProperties(getPropertiesFilename(), Writer.getInstance());
+    private void setupProperties() {
+        Miranda.properties = new MirandaProperties(getPropertiesFilename());
         Miranda.properties.log();
         Miranda.properties.updateSystemProperties();
+
+        this.properties = Miranda.properties;
     }
 
     /**
@@ -370,10 +514,17 @@ public class Startup extends State {
     }
 
     public void startWriter () {
-        Writer writer = new Writer();
+        Writer writer = new Writer(getPublicKey());
         writer.start();
 
         getMiranda().setWriter(writer);
+    }
+
+    public void startReader () {
+        Reader reader = new Reader(getPrivateKey());
+        reader.start();
+
+        getMiranda().setReader(reader);
     }
 
     private void setupHttpServer() {
@@ -415,20 +566,16 @@ public class Startup extends State {
             String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);
             directoryName = f.getCanonicalPath();
-            SystemMessages messages = new SystemMessages(directoryName, getWriter());
-            messages.start();
-            messages.load();
-            messages.updateVersion();
-            miranda.setEvents(messages);
+            EventManager eventManager = new EventManager(directoryName, getReader(), getWriter());
+            eventManager.start();
+            miranda.setEventManager(eventManager);
 
             directoryName = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
             f = new File(directoryName);
             directoryName = f.getCanonicalPath();
-            SystemDeliveriesFile deliveriesFile = new SystemDeliveriesFile(directoryName, getWriter());
-            deliveriesFile.start();
-            deliveriesFile.load();
-            deliveriesFile.updateVersion();
-            miranda.setDeliveries(deliveriesFile);
+            DeliveryManager deliveryManager = new DeliveryManager(directoryName, getReader(), getWriter());
+            miranda.setDeliveryManager(deliveryManager);
+
         } catch (Exception e) {
             Panic panic = new StartupPanic("Unchecked exception during startup", e, StartupPanic.StartupReasons.UncheckedException);
             Miranda.getInstance().panic(panic);

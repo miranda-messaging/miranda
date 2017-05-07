@@ -67,7 +67,7 @@ public class TestMirandaProperties extends TestCase {
     public void setup () {
         setuplog4j();
         saveSystemProperties();
-        properties = new MirandaProperties(TEST_FILENAME, getMockWriter());
+        properties = new MirandaProperties(TEST_FILENAME);
     }
 
     @After

@@ -91,7 +91,7 @@ public class TestNodeReadyState extends TesterNodeState {
             message = new GetSystemMessagesMessage(null, this, "whatever");
         else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
             message = new GetDeliveriesMessage(null, this, "whatever");
-        else if (file.equalsIgnoreCase(Cluster.FILE_NAME))
+        else if (file.equalsIgnoreCase(Cluster.NAME))
             message = new GetClusterFileMessage(null, this);
         else {
             System.err.println ("Unrecognized file: " + file);
@@ -115,7 +115,7 @@ public class TestNodeReadyState extends TesterNodeState {
 
     @Test
     public void testGetClusterFile () {
-        testGetFileMessage(Cluster.FILE_NAME);
+        testGetFileMessage(Cluster.NAME);
     }
 
     @Test
@@ -188,7 +188,7 @@ public class TestNodeReadyState extends TesterNodeState {
     public void testProcessGetFileWireMessage (String file) {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
-        if (file.equalsIgnoreCase(Cluster.FILE_NAME)) {
+        if (file.equalsIgnoreCase(Cluster.NAME)) {
             setupMockCluster();
             when(getMockCluster().getQueue()).thenReturn(queue);
         } else if (file.equalsIgnoreCase(UsersFile.FILE_NAME)) {
@@ -237,7 +237,7 @@ public class TestNodeReadyState extends TesterNodeState {
 
     @Test
     public void testProcessGetFileWireMessageCluster () {
-        testProcessGetFileWireMessage(Cluster.FILE_NAME);
+        testProcessGetFileWireMessage(Cluster.NAME);
     }
 
     @Test

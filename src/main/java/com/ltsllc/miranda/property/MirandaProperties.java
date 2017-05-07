@@ -27,7 +27,9 @@ import java.util.Properties;
  *     objects.
  * </P>
  */
-public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Property> {
+public class MirandaProperties {
+    public static final String NAME = "miranda properties";
+
     private static Logger logger = Logger.getLogger(MirandaProperties.class);
 
     public enum EncryptionModes {
@@ -78,6 +80,8 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
 
     public static final String SERVLET_PACKAGE = PACKAGE_NAME + "servlet.";
 
+    public static final String KEYSTORE_PACKAGE = PACKAGE_NAME + "keystore.";
+
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
@@ -98,9 +102,6 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
     public static final String PROPERTY_CLUSTER_TIMEOUT = CLUSTER_PACKAGE + "Timeout";
     public static final String PROPERTY_CLUSTER_PORT = CLUSTER_PACKAGE + "Port";
 
-    public static final String PROPERTY_KEYSTORE = ENCRYPTION_PACKAGE + "KeyStore";
-    public static final String PROPERTY_KEYSTORE_PASSWORD = ENCRYPTION_PACKAGE + "KeyStorePassword";
-    public static final String PROPERTY_KEYSTORE_ALIAS = ENCRYPTION_PACKAGE + "KeyStoreAlias";
     public static final String PROPERTY_CERTIFICATE_PASSWORD = ENCRYPTION_PACKAGE + "CertificatePassword";
     public static final String PROPERTY_CERTIFICATE_ALIAS = ENCRYPTION_PACKAGE + "CertificateAlias";
     public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
@@ -128,6 +129,11 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
 
     public static final String PROPERTY_SERVLET_TIMEOUT = SERVLET_PACKAGE + "Timeout";
 
+    public static final String PROPERTY_KEYSTORE_FILE = KEYSTORE_PACKAGE + "File";
+    public static final String PROPERTY_KEYSTORE_PASSWORD = KEYSTORE_PACKAGE + "Password";
+    public static final String PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS = KEYSTORE_PACKAGE + "PublicKey";
+    public static final String PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS = KEYSTORE_PACKAGE + "PrivateKey";
+
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -154,8 +160,6 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
     public static final String DEFAULT_ENCRYPION_MODE = "localCA";
     public static final String DEFAULT_TRUST_STORE = "truststore";
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
-    public static final String DEFAULT_KEYSTORE = "serverkeystore";
-    public static final String DEFAULT_KEYSTORE_ALIAS = "server";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "server";
 
     public static final String DEFAULT_HTTP_BASE = "html";
@@ -168,6 +172,10 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
     public static final String DEFAULT_SESSION_LOGIN_TIMEOUT = "1000";
 
     public static final String DEFAULT_SERVLET_TIMEOUT = "1000";
+
+    public static final String DEFAULT_KEYSTORE_FILE = "keystore";
+    public static final String DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS = "publickey";
+    public static final String DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS = "privatekey";
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
@@ -186,8 +194,6 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
             {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPION_MODE},
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
-            {PROPERTY_KEYSTORE, DEFAULT_KEYSTORE},
-            {PROPERTY_KEYSTORE_ALIAS, DEFAULT_KEYSTORE_ALIAS},
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
 
             {PROPERTY_CLUSTER_FILE, DEFAULT_CLUSTER_FILE},
@@ -211,33 +217,35 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
             {PROPERTY_SESSION_LOGIN_TIMEOUT, DEFAULT_SESSION_LOGIN_TIMEOUT},
 
             {PROPERTY_SERVLET_TIMEOUT, DEFAULT_SERVLET_TIMEOUT},
+
+            {PROPERTY_KEYSTORE_FILE, DEFAULT_KEYSTORE_FILE},
+            {PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS},
+            {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS}
     };
 
     private Properties properties;
+    private String filename;
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
     public Properties getProperties() {
         return properties;
     }
 
-    public MirandaProperties (String filename, Writer writer) {
-        super(filename, writer);
-
+    public MirandaProperties (String filename) {
         properties = new Properties();
         load();
-
-        MirandaPropertiesReadyState mirandaPropertiesReadyState = new MirandaPropertiesReadyState(this);
-        setCurrentState(mirandaPropertiesReadyState);
     }
 
-    /**
-     * Use this constructor for testing only because it <b>it will not work!</b>.
-     * In particular calls to things like {@link #load()} and {@link #watch()}
-     * will result in a NullPointerException.
-     */
     public MirandaProperties()
     {
-        super (null, null);
-        setupDefaults();
+        properties = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
     }
 
     /**
@@ -402,24 +410,16 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
     }
 
     public void write () {
-        OutputStreamWriter outputStreamWriter = null;
+        FileOutputStream fileOutputStream = null;
 
         try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            outputStreamWriter = new OutputStreamWriter(byteArrayOutputStream);
-
-            getProperties().store(outputStreamWriter, null);
-
-            outputStreamWriter.close();
-            byteArrayOutputStream.close();
-
-            byte[] data = byteArrayOutputStream.toByteArray();
-            getWriter().sendWrite(getQueue(), this, getFilename(), data);
+            fileOutputStream = new FileOutputStream(getFilename());
+            getProperties().store(fileOutputStream, null);
         } catch (IOException e) {
             Panic panic = new Panic("Exception trying to write properties file", e, Panic.Reasons.ExceptionWritingFile);
             Miranda.getInstance().panic(panic);
         } finally {
-            Utils.closeIgnoreExceptions(outputStreamWriter);
+            Utils.closeIgnoreExceptions(fileOutputStream);
         }
     }
 
@@ -453,6 +453,4 @@ public class MirandaProperties extends SingleFile<com.ltsllc.miranda.property.Pr
 
         return -1;
     }
-
-    public void checkForDuplicates () {}
 }

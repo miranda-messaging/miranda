@@ -9,7 +9,6 @@ import com.ltsllc.miranda.node.networkMessages.GetFileWireMessage;
 import com.ltsllc.miranda.node.networkMessages.GetVersionsWireMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinResponseWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
-import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -64,7 +63,7 @@ public class TestJoiningState extends TesterNodeState {
         State nextState = getJoiningState().processMessage(networkMessage);
 
         verify (getMockNetwork(), atLeastOnce()).sendClose(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.anyInt());
-        assert (nextState instanceof ClosingState);
+        assert (nextState instanceof NodeStoppingState);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class TestJoiningState extends TesterNodeState {
      */
     @Test
     public void testProcessGetClusterFile () {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.FILE_NAME);
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.NAME);
         GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(null, this);
 
         when(getMockNode().getHandle()).thenReturn(13);

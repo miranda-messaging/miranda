@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
@@ -219,6 +220,11 @@ public class ReadyState extends State {
                 break;
             }
 
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage (shutdownMessage);
+                break;
+            }
 
             default:
                 nextState = super.processMessage(message);
@@ -412,5 +418,13 @@ public class ReadyState extends State {
         deleteTopicOperation.start();
 
         return getMiranda().getCurrentState();
+    }
+
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+        getMiranda().shutdown();
+
+        ShuttingDownState shuttingDownState = new ShuttingDownState(getMiranda());
+
+        return shuttingDownState;
     }
 }

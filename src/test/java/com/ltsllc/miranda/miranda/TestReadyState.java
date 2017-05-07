@@ -1,9 +1,6 @@
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
@@ -124,4 +121,14 @@ public class TestReadyState extends TestCase {
 
 
     public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
+
+    @Test
+    public void testProcessShutdownMessage () {
+        ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
+
+        State nextState = getReadyState().processMessage(shutdownMessage);
+
+        assert (nextState instanceof ShuttingDownState);
+        verify(getMockMiranda(), atLeastOnce()).shutdown();
+    }
 }

@@ -10,6 +10,7 @@ import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
+import com.ltsllc.miranda.miranda.ShuttingDownState;
 import com.ltsllc.miranda.miranda.StopMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
@@ -25,7 +26,6 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
-import com.ltsllc.miranda.user.messages.NewUserMessage;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -114,6 +114,8 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+
+
             default: {
                 nextState = super.processNetworkMessage(networkMessage);
                 break;
@@ -176,6 +178,12 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage(shutdownMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -233,7 +241,7 @@ public class NodeReadyState extends NodeState {
     private State processGetFileWireMessage(GetFileWireMessage getFileWireMessage) {
         GetFileMessage getFileMessage = new GetFileMessage(getNode().getQueue(), this, getFileWireMessage.getFile());
 
-        if (getFileWireMessage.getFile().equalsIgnoreCase(Cluster.FILE_NAME)) {
+        if (getFileWireMessage.getFile().equalsIgnoreCase(Cluster.NAME)) {
             send(Cluster.getInstance().getQueue(), getFileMessage);
         } else if (getFileWireMessage.getFile().equalsIgnoreCase(UsersFile.FILE_NAME)) {
             send(UsersFile.getInstance().getQueue(), getFileMessage);
@@ -329,5 +337,15 @@ public class NodeReadyState extends NodeState {
                 deleteUserWireMessage.getName());
 
         return getNode().getCurrentState();
+    }
+
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+        ShuttingDownWireMessage shuttingDownWireMessage = new ShuttingDownWireMessage();
+        sendOnWire(shuttingDownWireMessage);
+
+        getNetwork().sendCloseMessage(getNode().getQueue(), this, getNode().getHandle());
+
+        NodeStoppingState nodeStoppingState = new NodeStoppingState(getNode());
+        return nodeStoppingState;
     }
 }

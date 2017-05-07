@@ -1,10 +1,7 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaFactory;
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.SystemMessages;
@@ -33,7 +30,9 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.mockito.Mock;
 
 import java.io.*;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Random;
@@ -112,6 +111,13 @@ public class TestCase {
 
     @Mock
     private Session mockSession;
+
+    @Mock
+    private PublicKey mockPublicKey;
+
+    public PublicKey getMockPublicKey() {
+        return mockPublicKey;
+    }
 
     public BlockingQueue getMockBlockingQueue() {
         return mockBlockingQueue;
@@ -300,6 +306,7 @@ public class TestCase {
         this.mockSingleFile = null;
         this.mockBlockingQueue = null;
         this.mockSession = null;
+        this.mockPublicKey = null;
     }
 
     public void setup () {
@@ -326,6 +333,7 @@ public class TestCase {
         this.mockSingleFile = mock(SingleFile.class);
         this.mockBlockingQueue = mock(BlockingQueue.class);
         this.mockSession = mock(Session.class);
+        this.mockPublicKey = mock(PublicKey.class);
     }
 
     public void setupMockNetwork () {
@@ -481,7 +489,7 @@ public class TestCase {
 
     public void setupKeyStore () {
         MirandaProperties properties = Miranda.properties;
-        properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE, TEMP_KEYSTORE);
+        properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, TEMP_KEYSTORE);
         properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, TEMP_KEYSTORE_PASSWORD);
 
         String filename = TEMP_KEYSTORE;
@@ -690,7 +698,7 @@ public class TestCase {
     }
 
     public void setupWriter () {
-        com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer();
+        com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer(getMockPublicKey());
 
         this.writerQueue = new LinkedBlockingQueue<Message>();
         writer.setQueue(this.writerQueue);

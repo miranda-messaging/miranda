@@ -1,10 +1,8 @@
 package com.ltsllc.miranda.cluster.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.NodeStoppedMessage;
@@ -40,6 +38,12 @@ public class ClusterStoppingState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
+            case ShutdownResponse: {
+                ShutdownResponseMessage shutdownResponseMessage = (ShutdownResponseMessage) message;
+                nextState = processShutdownResponseMessage(shutdownResponseMessage);
+                break;
+            }
+
             case NodeStopped: {
                 NodeStoppedMessage nodeStoppedMessage = (NodeStoppedMessage) message;
                 nextState = processNodeStoppedMessage(nodeStoppedMessage);
@@ -76,5 +80,19 @@ public class ClusterStoppingState extends State {
         logger.warn (getCluster() + " is discarding " + message);
 
         return this;
+    }
+
+    public State processShutdownResponseMessage (ShutdownResponseMessage shutdownResponseMessage) {
+        logger.info (shutdownResponseMessage.getName() + " stopped");
+
+        if (shutdownResponseMessage.getName().equals(ClusterFile.NAME))
+            getCluster().setClusterFileResponded(true);
+
+        if (getCluster().disconnected() && getCluster().getClusterFileResponded()) {
+            Miranda.getInstance().sendShutdownResponse(getCluster().getQueue(), this, Cluster.NAME);
+            return StopState.getInstance();
+        }
+
+        return getCluster().getCurrentState();
     }
 }

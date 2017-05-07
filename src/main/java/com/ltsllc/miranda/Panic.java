@@ -13,6 +13,7 @@ public class Panic extends Exception {
         CouldNotWrite, // A subsystem received a WriteFailed message
         DoesNotUnderstand, // A state received a message it does not know how to process
         DoesNotUnderstandNetworkMessage, // A state received a network message it does not know how to process
+        EncryptException, // trying to encrypt a file prior to writing failed.  We effectively cannot write anything
         ExceptionCreatingSslContext,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,

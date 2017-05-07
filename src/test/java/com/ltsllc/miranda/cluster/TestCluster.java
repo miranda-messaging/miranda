@@ -491,4 +491,25 @@ public class TestCluster extends TestCase {
 
         assert (contains(Message.Subjects.DeleteSubscription, getCluster().getQueue()));
     }
+
+    @Test
+    public void testDisconnected () {
+        getCluster().getNodes().add(getMockNode());
+
+        when(getMockNode().isConnected()).thenReturn(false);
+        boolean result = getCluster().disconnected();
+        assert (result);
+
+        when(getMockNode().isConnected()).thenReturn(true);
+        result = getCluster().disconnected();
+        assert (!result);
+    }
+
+    @Test
+    public void testShutdown () {
+        getCluster().getNodes().add(getMockNode());
+        getCluster().shutdown();
+        verify(getMockNode(), atLeastOnce()).sendShutdown(Matchers.any(BlockingQueue.class), Matchers.any());
+    }
+
 }

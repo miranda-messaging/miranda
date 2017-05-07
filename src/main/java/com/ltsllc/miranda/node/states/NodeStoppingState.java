@@ -1,8 +1,10 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.network.messages.CloseResponseMessage;
 import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import com.ltsllc.miranda.node.Node;
 import org.apache.log4j.Logger;
@@ -37,9 +39,9 @@ public class NodeStoppingState extends State {
 
         switch (message.getSubject())
         {
-            case Disconnected: {
-                DisconnectedMessage disconnectedMessage = (DisconnectedMessage) message;
-                nextState = processDisconntedMessage(disconnectedMessage);
+            case CloseResponse: {
+                CloseResponseMessage closeResponseMessage = (CloseResponseMessage) message;
+                nextState = processCloseResponseMessage(closeResponseMessage);
                 break;
             }
 
@@ -52,9 +54,13 @@ public class NodeStoppingState extends State {
         return nextState;
     }
 
-    public State processDisconntedMessage(DisconnectedMessage disconnectedMessage) {
-        logger.info(getNode() + " disconnected, stopping");
-        getNode().getCluster().sendNodeStopped(getNode().getQueue(), this, getNode());
+    public State processCloseResponseMessage (CloseResponseMessage closeResponseMessage) {
+        if (closeResponseMessage.getResult() != Results.Success) {
+            logger.error("Got result " + closeResponseMessage.getResult() + " shutting down.  Continuing with shutdown");
+        }
+
+        String name = getNode().getDns() + ":" + getNode().getPort();
+        getNode().getCluster().sendShutdownResponse(getNode().getQueue(),this, name);
 
         return StopState.getInstance();
     }

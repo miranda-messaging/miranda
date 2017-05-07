@@ -3,20 +3,13 @@ package com.ltsllc.miranda.node.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.messages.ClusterFileMessage;
 import com.ltsllc.miranda.miranda.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
-import com.ltsllc.miranda.node.messages.GetVersionMessage;
-import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
 import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A node which has sent a join message enters this state and remains here
@@ -89,7 +82,7 @@ public class JoiningState extends NodeState {
 
 
     private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.FILE_NAME);
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.NAME);
         sendOnWire(getFileWireMessage);
 
         return this;
@@ -113,7 +106,6 @@ public class JoiningState extends NodeState {
 
     private State processJoinResponse (JoinResponseWireMessage joinResponse) {
         State nextState = this;
-
         if (joinResponse.getResult() == JoinResponseWireMessage.Responses.Success) {
             logger.info ("Successfully joined cluster");
 
@@ -126,8 +118,8 @@ public class JoiningState extends NodeState {
 
             getNetwork().sendClose(getNode().getQueue(), this, getNode().getHandle());
 
-            ClosingState closingState = new ClosingState(getNode(), getNetwork());
-            nextState = closingState;
+            NodeStoppingState  nodeStoppingState = new NodeStoppingState(getNode());
+            nextState = nodeStoppingState;
         }
 
         return nextState;

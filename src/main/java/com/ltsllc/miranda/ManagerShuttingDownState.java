@@ -43,7 +43,8 @@ public class ManagerShuttingDownState extends State {
 
 
     public State processShutdownResponseMessage (ShutdownResponseMessage shutdownResponseMessage) {
-        ShutdownResponseMessage shutdownResponseMessage2 = new ShutdownResponseMessage(getManager().getQueue(), this);
+        ShutdownResponseMessage shutdownResponseMessage2 = new ShutdownResponseMessage(getManager().getQueue(), this,
+                getManager().getName());
 
         send(getRequester(), shutdownResponseMessage2);
 

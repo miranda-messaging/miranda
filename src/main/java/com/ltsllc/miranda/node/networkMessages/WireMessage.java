@@ -32,6 +32,7 @@ public class WireMessage {
         NewSubscription,
         NewTopic,
         NewUser,
+        ShuttingDown,
         Stop,
         Stopping,
         StopResponse,

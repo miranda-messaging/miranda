@@ -113,8 +113,8 @@ public class TestStartup extends TestCase {
         assert (getMiranda().getCluster() != null);
         assert (getMiranda().getUserManager() != null);
         assert (getMiranda().getPanicPolicy() != null);
-        assert (getMiranda().getEvents() != null);
-        assert (getMiranda().getDeliveries() != null);
+        assert (getMiranda().getEventManager() != null);
+        assert (getMiranda().getDeliveryManager() != null);
         assert (getMiranda().getTopicManager() != null);
         assert (getMiranda().getHttp() != null);
         assert (getMiranda().getSubscriptionManager() != null);

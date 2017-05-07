@@ -2,6 +2,7 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
@@ -27,6 +28,9 @@ import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Clark on 1/3/2017.
@@ -181,6 +185,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
                 nextState = processDeleteTopicMessage (deleteTopicMessage);
                 break;
             }
+
             default:
                 nextState = super.processMessage(m);
                 break;
@@ -284,12 +289,6 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return this;
     }
 
-    public State processStopMessage (StopMessage stopMessage) {
-        getCluster().stop();
-
-        return new ClusterStoppingState(getCluster());
-    }
-
     public State processAddSessionMessage (AddSessionMessage addSessionMessage) {
         NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(addSessionMessage.getSession());
         getCluster().broadcast (newSessionWireMessage);
@@ -328,11 +327,12 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     }
 
     public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+        getCluster().shutdown();
+        getCluster().setClusterFileResponded(false);
         getCluster().getClusterFile().sendShutdown(getCluster().getQueue(), this);
-        ManagerShuttingDownState managerShuttindDownState = new ManagerShuttingDownState (getManager(),
-                shutdownMessage.getSender());
 
-        return managerShuttindDownState;
+        ClusterStoppingState clusterStoppingState = new ClusterStoppingState (getCluster());
+        return clusterStoppingState;
     }
 
     public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) {
@@ -377,5 +377,4 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
         return getCluster().getCurrentState();
     }
-
 }

@@ -275,6 +275,11 @@ public class Consumer extends Subsystem implements Comparer {
         sendToMe(shutdownMessage);
     }
 
+    public void sendShutdownResponse (BlockingQueue<Message> senderQueue, Object sender, String name) {
+        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(senderQueue, sender, name);
+        sendToMe(shutdownResponseMessage);
+    }
+
     public void shutdown() {
         logger.info(this + " shutting down.");
         setCurrentState(StopState.getInstance());

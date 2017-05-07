@@ -21,6 +21,8 @@ abstract public class NetworkListener extends Consumer {
     abstract public void startup (BlockingQueue<Handle> queue) throws NetworkException;
     abstract public void stopListening();
 
+    public static final String NAME = "network listener";
+
     private int port;
     private boolean keepGoing = true;
     private int connectionCount;

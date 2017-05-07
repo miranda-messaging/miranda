@@ -1,8 +1,6 @@
 package com.ltsllc.miranda.cluster;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Manager;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
@@ -49,13 +47,22 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 12/31/2016.
  */
 public class Cluster extends Manager<Node, NodeElement> {
-    public static final String FILE_NAME = "cluster";
+    public static final String NAME = "cluster";
 
     private Logger logger = Logger.getLogger(Cluster.class);
 
     private static Cluster ourInstance;
 
     private Network network;
+    private boolean clusterFileResponded;
+
+    public boolean getClusterFileResponded() {
+        return clusterFileResponded;
+    }
+
+    public void setClusterFileResponded(boolean clusterFileResponded) {
+        this.clusterFileResponded = clusterFileResponded;
+    }
 
     public static synchronized void initialize(String filename, Writer writer, Network network) {
         if (null == ourInstance) {
@@ -316,5 +323,20 @@ public class Cluster extends Manager<Node, NodeElement> {
     public Node convert (NodeElement nodeElement) {
         Node node = new Node(nodeElement, getNetwork(), this);
         return node;
+    }
+
+    public boolean disconnected () {
+        for (Node node : getNodes()) {
+            if (node.isConnected())
+                return false;
+        }
+
+        return true;
+    }
+
+    public void shutdown () {
+        for (Node node : getNodes()) {
+            node.sendShutdown(getQueue(), this);
+        }
     }
 }

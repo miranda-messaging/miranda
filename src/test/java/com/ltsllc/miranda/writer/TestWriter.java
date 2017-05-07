@@ -33,7 +33,7 @@ public class TestWriter extends TestCase {
         super.setup();
 
         setuplog4j();
-        writer = new Writer();
+        writer = new Writer(getMockPublicKey());
     }
 
     @After
