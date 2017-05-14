@@ -39,7 +39,7 @@ public class UserManager extends StandardManager<User> {
     }
 
     public UserManager(String filename) {
-        super("users", filename);
+        super(NAME, filename);
     }
 
     public State createStartState () {

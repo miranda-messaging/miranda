@@ -20,6 +20,15 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
 
     private SingleFile<F> file;
     private List<E> data;
+    private boolean testMode;
+
+    public boolean getTestMode() {
+        return testMode;
+    }
+
+    public void setTestMode(boolean testMode) {
+        this.testMode = testMode;
+    }
 
     public SingleFile<F> getFile() {
         return file;
@@ -59,13 +68,29 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
     public Manager (String name, String filename) {
         super(name);
 
-        setFile(createFile(filename));
+        SingleFile<F> file = createFile(filename);
+        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(getQueue(), this, null);
+        file.addSubscriber(getQueue(), fileLoadedMessage);
+        setFile(file);
+        file.start();
 
         State startState = createStartState();
         setCurrentState(startState);
 
         List<E> newList = new ArrayList<E>();
         this.data = newList;
+    }
+
+    public Manager (String name, boolean testMode) {
+        super(name);
+
+        State startState = createStartState();
+        setCurrentState(startState);
+
+        List<E> newList = new ArrayList<E>();
+        this.data = newList;
+
+
     }
 
     public void performGarbageCollection () {

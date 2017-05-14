@@ -73,6 +73,12 @@ public class Cluster extends Manager<Node, NodeElement> {
         this.network = network;
     }
 
+    public Cluster(Network network, boolean testMode) {
+        super(NAME, testMode);
+
+        this.network = network;
+    }
+
     public ClusterFile getClusterFile() {
         return (ClusterFile) getFile();
     }
