@@ -102,7 +102,6 @@ public class MirandaProperties {
     public static final String PROPERTY_CLUSTER_TIMEOUT = CLUSTER_PACKAGE + "Timeout";
     public static final String PROPERTY_CLUSTER_PORT = CLUSTER_PACKAGE + "Port";
 
-    public static final String PROPERTY_CERTIFICATE_PASSWORD = ENCRYPTION_PACKAGE + "CertificatePassword";
     public static final String PROPERTY_CERTIFICATE_ALIAS = ENCRYPTION_PACKAGE + "CertificateAlias";
     public static final String PROPERTY_ENCRYPTION_MODE = ENCRYPTION_PACKAGE + "Mode";
 
@@ -115,7 +114,6 @@ public class MirandaProperties {
     public static final String PROPERTY_HTTP_SERVER = HTTP_PACKAGE_NAME + "Server";
 
     public static final String PROPERTY_TRUST_STORE = ENCRYPTION_PACKAGE + "Truststore";
-    public static final String PROPERTY_TRUST_STORE_PASSWORD = ENCRYPTION_PACKAGE + "TruststorePassword";
     public static final String PROPERTY_TRUST_STORE_ALIAS = ENCRYPTION_PACKAGE + "TruststoreAlias";
 
     public static final String PROPERTY_MY_DNS = MY_PACKAGE + "Dns";
@@ -130,9 +128,10 @@ public class MirandaProperties {
     public static final String PROPERTY_SERVLET_TIMEOUT = SERVLET_PACKAGE + "Timeout";
 
     public static final String PROPERTY_KEYSTORE_FILE = KEYSTORE_PACKAGE + "File";
-    public static final String PROPERTY_KEYSTORE_PASSWORD = KEYSTORE_PACKAGE + "Password";
     public static final String PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS = KEYSTORE_PACKAGE + "PublicKey";
     public static final String PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS = KEYSTORE_PACKAGE + "PrivateKey";
+    public static final String PROPERTY_KEYSTORE_CERTIFICATE_ALIAS = KEYSTORE_PACKAGE + "Certificate";
+    public static final String PROPERTY_KEYSTORE_CA_ALIAS = KEYSTORE_PACKAGE + "CA";
 
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
@@ -157,7 +156,7 @@ public class MirandaProperties {
     public static final String DEFAULT_PANIC_LIMIT = "3";
     public static final String DEFAULT_PANIC_TIMEOUT = "3600000"; // one hour
 
-    public static final String DEFAULT_ENCRYPION_MODE = "localCA";
+    public static final String DEFAULT_ENCRYPTION_MODE = "localCA";
     public static final String DEFAULT_TRUST_STORE = "truststore";
     public static final String DEFAULT_TRUST_STORE_ALIAS = "ca";
     public static final String DEFAULT_CERTIFICATE_ALIAS = "server";
@@ -174,8 +173,10 @@ public class MirandaProperties {
     public static final String DEFAULT_SERVLET_TIMEOUT = "1000";
 
     public static final String DEFAULT_KEYSTORE_FILE = "keystore";
-    public static final String DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS = "publickey";
-    public static final String DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS = "privatekey";
+    public static final String DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS = "public";
+    public static final String DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS = "private";
+    public static final String DEFAULT_KEYSTORE_CERTIFICATE_ALIAS = "certificate";
+    public static final String DEFAULT_KEYSTORE_CA_ALIAS = "ca";
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
@@ -191,7 +192,7 @@ public class MirandaProperties {
             {PROPERTY_NETWORK, DEFAULT_NETWORK},
             {PROPERTY_MAX_WRITE_FAILURES, DEFAULT_MAX_WRITE_FAILURES},
 
-            {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPION_MODE},
+            {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPTION_MODE},
             {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
@@ -220,7 +221,9 @@ public class MirandaProperties {
 
             {PROPERTY_KEYSTORE_FILE, DEFAULT_KEYSTORE_FILE},
             {PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS},
-            {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS}
+            {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS},
+            {PROPERTY_KEYSTORE_CERTIFICATE_ALIAS, DEFAULT_KEYSTORE_CERTIFICATE_ALIAS},
+            {PROPERTY_KEYSTORE_CA_ALIAS, DEFAULT_KEYSTORE_CA_ALIAS},
     };
 
     private Properties properties;
@@ -452,5 +455,9 @@ public class MirandaProperties {
         }
 
         return -1;
+    }
+
+    public void remove (String property) {
+        getProperties().remove(property);
     }
 }

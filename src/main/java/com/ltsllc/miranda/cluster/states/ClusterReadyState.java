@@ -2,16 +2,14 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
-import com.ltsllc.miranda.miranda.StopMessage;
+import com.ltsllc.miranda.manager.ManagerReadyState;
 import com.ltsllc.miranda.node.*;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
-import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
@@ -28,9 +26,6 @@ import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Clark on 1/3/2017.

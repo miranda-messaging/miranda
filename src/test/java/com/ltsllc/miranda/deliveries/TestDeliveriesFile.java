@@ -29,12 +29,13 @@ public class TestDeliveriesFile extends TestCase {
 
         super.setup();
 
-        setupWriter();
+        setupMockReader();
+        setupMockWriter();
         setupMirandaProperties();
         MirandaProperties properties = Miranda.properties;
 
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
-        this.deliveriesFile = new DeliveriesFile(directory, Writer.getInstance());
+        this.deliveriesFile = new DeliveriesFile(directory, getMockReader(), getMockWriter());
     }
 
     @Test

@@ -3,8 +3,6 @@ package com.ltsllc.miranda.test;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
@@ -12,6 +10,8 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.reader.*;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.session.Session;
@@ -77,12 +77,6 @@ public class TestCase {
     private SubscriptionsFile mockSubscriptionsFile;
 
     @Mock
-    private SystemMessages mockSystemMessages;
-
-    @Mock
-    private SystemDeliveriesFile mockSystemDeliveriesFile;
-
-    @Mock
     private Logger mockLogger;
 
     @Mock
@@ -114,6 +108,30 @@ public class TestCase {
 
     @Mock
     private PublicKey mockPublicKey;
+
+    @Mock
+    private MirandaFactory mockMirandaFactory;
+
+    @Mock
+    private com.ltsllc.miranda.reader.Reader mockReader;
+
+    @Mock
+    private FileWatcher mockFileWatcher;
+
+    @Mock
+    private FileWatcherService mockFileWatcherService;
+
+    public FileWatcherService getMockFileWatcherService() {
+        return mockFileWatcherService;
+    }
+
+    public FileWatcher getMockFileWatcher() {
+        return mockFileWatcher;
+    }
+
+    public MirandaFactory getMockMirandaFactory() {
+        return mockMirandaFactory;
+    }
 
     public PublicKey getMockPublicKey() {
         return mockPublicKey;
@@ -147,15 +165,6 @@ public class TestCase {
         return mockTimer;
     }
 
-    public SystemDeliveriesFile getMockSystemDeliveriesFile() {
-        return mockSystemDeliveriesFile;
-    }
-
-    public SystemMessages getMockSystemMessages() {
-
-        return mockSystemMessages;
-    }
-
     public SubscriptionsFile getMockSubscriptionsFile() {
 
         return mockSubscriptionsFile;
@@ -180,6 +189,10 @@ public class TestCase {
 
     public Cluster getMockCluster() {
         return mockCluster;
+    }
+
+    public Reader getMockReader() {
+        return mockReader;
     }
 
     public MirandaProperties getMockProperties() {
@@ -294,8 +307,6 @@ public class TestCase {
         this.mockUsersFile = null;
         this.mockTopicsFile = null;
         this.mockSubscriptionsFile = null;
-        this.mockSystemMessages = null;
-        this.mockSystemDeliveriesFile = null;
         this.mockLogger = null;
         this.mockTimer = null;
         this.mockProperties = null;
@@ -307,6 +318,9 @@ public class TestCase {
         this.mockBlockingQueue = null;
         this.mockSession = null;
         this.mockPublicKey = null;
+        this.mockMirandaFactory = null;
+        this.mockFileWatcher  = null;
+        this.mockFileWatcherService = null;
     }
 
     public void setup () {
@@ -321,8 +335,6 @@ public class TestCase {
         this.mockUsersFile = mock(UsersFile.class);
         this.mockTopicsFile = mock(TopicsFile.class);
         this.mockSubscriptionsFile = mock(SubscriptionsFile.class);
-        this.mockSystemMessages = mock(SystemMessages.class);
-        this.mockSystemDeliveriesFile = mock(SystemDeliveriesFile.class);
         this.mockLogger = mock(Logger.class);
         this.mockTimer = mock(MirandaTimer.class);
         this.mockProperties = mock(MirandaProperties.class);
@@ -334,6 +346,9 @@ public class TestCase {
         this.mockBlockingQueue = mock(BlockingQueue.class);
         this.mockSession = mock(Session.class);
         this.mockPublicKey = mock(PublicKey.class);
+        this.mockMirandaFactory = mock(MirandaFactory.class);
+        this.mockFileWatcher = mock(FileWatcher.class);
+        this.mockFileWatcherService = mock(FileWatcherService.class);
     }
 
     public void setupMockNetwork () {
@@ -473,7 +488,6 @@ public class TestCase {
     public void setupTrustStore () {
         MirandaProperties properties = Miranda.properties;
         properties.setProperty(MirandaProperties.PROPERTY_TRUST_STORE, TEMP_TRUSTSTORE);
-        properties.setProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD, TEMP_TRUSTSTORE_PASSWORD);
 
         createFile(TEMP_TRUSTSTORE, TRUST_STORE_CONTENTS);
     }
@@ -490,7 +504,6 @@ public class TestCase {
     public void setupKeyStore () {
         MirandaProperties properties = Miranda.properties;
         properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, TEMP_KEYSTORE);
-        properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, TEMP_KEYSTORE_PASSWORD);
 
         String filename = TEMP_KEYSTORE;
 
@@ -593,9 +606,7 @@ public class TestCase {
     }
 
     public void setupMiranda () {
-        String[] empty = {};
-
-        new Miranda(empty);
+        new Miranda();
     }
 
     public static void setupTimer () {
@@ -725,10 +736,10 @@ public class TestCase {
         Cluster.setInstance(getMockCluster());
     }
 
-    public void setupMirandaFactory () {
+    public void setupMirandaFactory (String keystorePassword, String truststorePassword) {
         setupMirandaProperties();
 
-        Miranda.factory = new MirandaFactory(Miranda.properties);
+        Miranda.factory = new MirandaFactory(Miranda.properties, keystorePassword, truststorePassword);
     }
 
     public void setupMockMiranda () {
@@ -750,14 +761,6 @@ public class TestCase {
 
     public void setupMockSubscriptionsFile () {
         SubscriptionsFile.setInstance(getMockSubscriptionsFile());
-    }
-
-    public void setupMockSystemMessages () {
-        SystemMessages.setInstance(getMockSystemMessages());
-    }
-
-    public void setupMockSystemDeliveries () {
-        SystemDeliveriesFile.setInstance(getMockSystemDeliveriesFile());
     }
 
     public void setupMockTimer () {
@@ -863,4 +866,40 @@ public class TestCase {
 
         return true;
     }
+
+    public String fileContentsAsHexString (String filename) {
+        File file = new File (filename);
+        int intLength = (int) file.length();
+        byte[] buffer = new byte[intLength];
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(buffer);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            Utils.closeIgnoreExceptions(fileInputStream);
+        }
+
+        return Utils.bytesToString(buffer);
+    }
+
+    public void setupInputStream (String input) {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(input.getBytes());
+        Miranda.setInputStream(byteArrayInputStream);
+    }
+
+    public void createDirectory (String directory){
+        File file = new File(directory);
+        file.mkdir();
+    }
+
+    public void setupMockFileWatcherService () {
+        Miranda.fileWatcher = getMockFileWatcherService();
+    }
+
+    public void setupMockReader () {
+        Miranda.getInstance().setReader(getMockReader());
+    }
+
 }

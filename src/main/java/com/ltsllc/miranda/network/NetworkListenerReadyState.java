@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.miranda.StopMessage;
+import com.ltsllc.miranda.miranda.messages.StopMessage;
 
 /**
  * Created by Clark on 3/10/2017.

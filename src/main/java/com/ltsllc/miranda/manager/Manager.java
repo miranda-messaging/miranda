@@ -1,5 +1,6 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Updateable;

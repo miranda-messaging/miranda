@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.file.states.DirectoryReadyState;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
@@ -24,8 +25,8 @@ abstract public class Directory extends MirandaFile {
 
     private List<MirandaFile> files = new ArrayList<MirandaFile>();
 
-    public Directory (String filename, Writer writer) {
-        super(filename, writer);
+    public Directory (String filename, Reader reader, Writer writer) {
+        super(filename, reader, writer);
 
         DirectoryReadyState readyState = new DirectoryReadyState(this);
         setCurrentState(readyState);

@@ -120,6 +120,9 @@ public class TestMinaNetwork extends TestCase {
         }
     }
 
+    public static final String TEST_KEYSTORE_PASSWORD = "hi there";
+    public static final String TEST_TRUSTSTORE_PASSWORD = "hi there";
+
     @Before
     public void setup() {
         reset();
@@ -129,7 +132,7 @@ public class TestMinaNetwork extends TestCase {
         setuplog4j();
 
         mockMinaIncomingHadeler = mock(MinaIncomingHandler.class);
-        minaNetwork = new MinaNetwork();
+        minaNetwork = new MinaNetwork(TEST_KEYSTORE_PASSWORD, TEST_TRUSTSTORE_PASSWORD);
     }
 
     @After

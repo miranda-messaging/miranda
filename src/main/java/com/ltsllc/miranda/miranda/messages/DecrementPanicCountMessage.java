@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.miranda;
+package com.ltsllc.miranda.miranda.messages;
 
 import com.ltsllc.miranda.Message;
 

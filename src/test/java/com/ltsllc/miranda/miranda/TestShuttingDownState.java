@@ -1,12 +1,11 @@
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.test.TestCase;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

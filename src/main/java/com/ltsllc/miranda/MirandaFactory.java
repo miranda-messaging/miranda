@@ -39,13 +39,25 @@ public class MirandaFactory {
     private static Logger logger = Logger.getLogger(MirandaFactory.class);
 
     private MirandaProperties properties;
+    private String keystorePassword;
+    private String truststorePassword;
+
+    public String getTruststorePassword() {
+        return truststorePassword;
+    }
+
+    public String getKeystorePassword() {
+        return keystorePassword;
+    }
 
     public MirandaProperties getProperties() {
         return properties;
     }
 
-    public MirandaFactory (MirandaProperties properties) {
+    public MirandaFactory (MirandaProperties properties, String keystorePassword, String truststorePassword) {
         this.properties = properties;
+        this.keystorePassword = keystorePassword;
+        this.truststorePassword = truststorePassword;
     }
 
     public NetworkListener buildNetworkListener () {
@@ -109,9 +121,8 @@ public class MirandaFactory {
 
     public SslContext buildNettyClientSslContext () throws IOException, GeneralSecurityException {
         String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-        String password = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
 
-        return Utils.createClientSslContext(filename, password);
+        return Utils.createClientSslContext(filename, getTruststorePassword());
     }
 
     public void checkProperty (String name, String value) throws MirandaException {
@@ -269,16 +280,13 @@ public class MirandaFactory {
             String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             checkProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, serverKeyStoreFilename);
 
-            String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
-
             HttpConfiguration https = new HttpConfiguration();
             https.addCustomizer(new SecureRequestCustomizer());
 
             SslContextFactory sslContextFactory = new SslContextFactory();
             sslContextFactory.setKeyStorePath(serverKeyStoreFilename);
-            sslContextFactory.setKeyStorePassword(serverKeyStorePassword);
-            sslContextFactory.setKeyManagerPassword(serverKeyStorePassword);
+            sslContextFactory.setKeyStorePassword(getKeystorePassword());
+            sslContextFactory.setKeyManagerPassword(getKeystorePassword());
 
             ServerConnector sslConnector = new ServerConnector(jetty,
                     new SslConnectionFactory(sslContextFactory, "http/1.1"),
@@ -323,10 +331,9 @@ public class MirandaFactory {
 
         try {
             String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            String keyStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
+            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, getKeystorePassword());
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+            keyManagerFactory.init(keyStore, getKeystorePassword().toCharArray());
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
@@ -345,16 +352,14 @@ public class MirandaFactory {
 
         try {
             String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String trustStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-            KeyStore trustKeyStore = Utils.loadKeyStore(trustStoreFilename, trustStorePassword);
+            KeyStore trustKeyStore = Utils.loadKeyStore(trustStoreFilename, getTruststorePassword());
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(trustKeyStore);
 
             String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            String keyStorePassword = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
+            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, getKeystorePassword());
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+            keyManagerFactory.init(keyStore, getKeystorePassword().toCharArray());
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
@@ -389,7 +394,7 @@ public class MirandaFactory {
 
         switch (mode) {
             case LocalCA: {
-                network = new MinaNetwork();
+                network = new MinaNetwork(getKeystorePassword(), getTruststorePassword());
                 break;
             }
 

@@ -4,7 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
 import java.util.ArrayList;

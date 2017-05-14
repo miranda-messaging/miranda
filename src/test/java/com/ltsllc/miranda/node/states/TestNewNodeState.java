@@ -5,8 +5,6 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.*;
@@ -145,35 +143,6 @@ public class TestNewNodeState extends TesterNodeState {
         assert (nextState instanceof NewNodeState);
     }
 
-    @Test
-    public void testGetFileResponseWireMessageSystemMessages () {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        setupMockSystemMessages();
-        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(SystemMessages.FILE_NAME, "whatever");
-        NetworkMessage networkMessage = new NetworkMessage(null, this, getFileResponseWireMessage);
-
-        when (getMockSystemMessages().getQueue()).thenReturn(queue);
-
-        State nextState = getNewNodeState().processMessage(networkMessage);
-
-        assert (contains(Message.Subjects.GetFileResponse, queue));
-        assert (nextState instanceof NewNodeState);
-    }
-
-    @Test
-    public void testGetFileResponseWireMessageSystemDeliveries () {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        setupMockSystemDeliveries();
-        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(SystemDeliveriesFile.FILE_NAME, "whatever");
-        NetworkMessage networkMessage = new NetworkMessage(null, this, getFileResponseWireMessage);
-
-        when (getMockSystemDeliveriesFile().getQueue()).thenReturn(queue);
-
-        State nextState = getNewNodeState().processMessage(networkMessage);
-
-        assert (contains(Message.Subjects.GetFileResponse, queue));
-        assert (nextState instanceof NewNodeState);
-    }
 
     public void testProcessGetFileMessage (String file) {
         Message message = null;
@@ -184,10 +153,6 @@ public class TestNewNodeState extends TesterNodeState {
             message = new GetTopicsFileMessage(null, this);
         else if (file.equalsIgnoreCase(SubscriptionsFile.FILE_NAME))
             message = new GetSubscriptionsFileMessage(null, this);
-        else if (file.equalsIgnoreCase(SystemMessages.FILE_NAME))
-            message = new GetSystemMessagesMessage(null, this, "whatever");
-        else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
-            message = new GetDeliveriesMessage(null, this, "whatever");
         else if (file.equalsIgnoreCase(Cluster.NAME))
             message = new GetClusterFileMessage(null, this);
         else {
@@ -198,11 +163,6 @@ public class TestNewNodeState extends TesterNodeState {
         State nextState = getNewNodeState().processMessage(message);
 
         WireMessage wireMessage = new GetFileWireMessage(file);
-
-        if (file.equalsIgnoreCase(SystemMessages.FILE_NAME))
-            wireMessage = new GetMessagesWireMessage("whatever");
-        else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
-            wireMessage = new GetDeliveriesWireMessage("whatever");
 
         verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
                 Matchers.anyInt(), Matchers.eq(wireMessage));
@@ -228,16 +188,6 @@ public class TestNewNodeState extends TesterNodeState {
     @Test
     public void testProcessGetSubscriptionsFileMessage () {
         testProcessGetFileMessage(SubscriptionsFile.FILE_NAME);
-    }
-
-    @Test
-    public void testProcessGetSystemMessagesMessage () {
-        testProcessGetFileMessage(SystemMessages.FILE_NAME);
-    }
-
-    @Test
-    public void testProcessGetSystemDeliveriesMessage () {
-        testProcessGetFileMessage(SystemDeliveriesFile.FILE_NAME);
     }
 
     @Test

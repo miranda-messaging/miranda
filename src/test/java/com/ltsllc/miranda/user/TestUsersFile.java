@@ -66,7 +66,7 @@ public class TestUsersFile extends TestCase {
         setuplog4j();
 
         createFile(TEST_FILENAME, TEST_FILE_CONTENTS);
-        usersFile = new UsersFile(getMockWriter(), TEST_FILENAME);
+        usersFile = new UsersFile(getMockReader(), getMockWriter(), TEST_FILENAME);
     }
 
     @After

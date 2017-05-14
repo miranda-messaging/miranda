@@ -2,7 +2,7 @@ package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.miranda.StopMessage;
+import com.ltsllc.miranda.miranda.messages.StopMessage;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

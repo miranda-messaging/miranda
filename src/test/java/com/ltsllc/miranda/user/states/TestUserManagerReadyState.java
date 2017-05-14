@@ -2,14 +2,12 @@ package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.DuplicateUserException;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.GetUserMessage;
 import com.ltsllc.miranda.user.messages.GetUsersMessage;
-import com.ltsllc.miranda.user.messages.NewUserMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

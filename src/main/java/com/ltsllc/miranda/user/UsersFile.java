@@ -8,6 +8,8 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.*;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UsersFileReadyState;
@@ -37,8 +39,8 @@ public class UsersFile extends SingleFile<User> {
         ourInstance = usersFile;
     }
 
-    public UsersFile (Writer writer, String filename) {
-        super(filename, writer);
+    public UsersFile (com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) {
+        super(filename, reader, writer);
 
         UsersFileReadyState usersFileReadyState = new UsersFileReadyState(this);
         setCurrentState(usersFileReadyState);
@@ -65,9 +67,9 @@ public class UsersFile extends SingleFile<User> {
         }
     }
 
-    public static synchronized void initialize(String filename, Writer writer) {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer) {
         if (null == ourInstance) {
-            ourInstance = new UsersFile(writer, filename);
+            ourInstance = new UsersFile(reader, writer, filename);
             ourInstance.start();
             ourInstance.load();
         }

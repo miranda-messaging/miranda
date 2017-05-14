@@ -3,6 +3,7 @@ package com.ltsllc.miranda.deliveries;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.lang.reflect.Type;
@@ -16,8 +17,8 @@ import java.util.Map;
  */
 public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
 
-    public DeliveriesFile (String filename, Writer writer) {
-        super(filename, writer);
+    public DeliveriesFile (String filename, Reader reader, Writer writer) {
+        super(filename, reader, writer);
 
         setCurrentState(new MirandaFileReadyState(this));
     }

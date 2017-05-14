@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.miranda;
+package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
@@ -7,6 +7,10 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.miranda.operations.login.LoginOperation;
 import com.ltsllc.miranda.miranda.operations.subscriptions.CreateSubscriptionOperation;

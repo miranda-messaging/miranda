@@ -1,4 +1,10 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.manager;
+
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.ShutdownResponseMessage;
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.manager.Manager;
 
 import java.util.concurrent.BlockingQueue;
 

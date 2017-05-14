@@ -1,20 +1,17 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.miranda.states.ReadyState;
+import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.messages.UserAddedMessage;
-import com.ltsllc.miranda.node.messages.UserDeletedMessage;
-import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
-import com.ltsllc.miranda.subsciptions.messages.OwnerQueryResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
-import com.ltsllc.miranda.user.messages.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -23,7 +20,6 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.*;
 

@@ -7,7 +7,7 @@ import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.messages.*;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
-import java.io.File;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;

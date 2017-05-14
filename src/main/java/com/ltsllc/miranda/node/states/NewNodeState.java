@@ -9,8 +9,6 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.*;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.network.Network;
@@ -218,10 +216,6 @@ public class NewNodeState extends NodeState {
             send(TopicsFile.getInstance().getQueue(), getFileResponseMessage);
         } else if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
             send(SubscriptionsFile.getInstance().getQueue(), getFileResponseMessage);
-        } else if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(SystemMessages.FILE_NAME)) {
-            send(SystemMessages.getInstance().getQueue(), getFileResponseMessage);
-        } else if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME)) {
-            send(SystemDeliveriesFile.getInstance().getQueue(), getFileResponseMessage);
         }
 
         return this;

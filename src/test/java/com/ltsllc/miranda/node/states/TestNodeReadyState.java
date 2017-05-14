@@ -9,8 +9,6 @@ import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.node.NameVersion;
@@ -47,14 +45,14 @@ public class TestNodeReadyState extends TesterNodeState {
         return readyState;
     }
 
-    public void reset () {
+    public void reset() {
         super.reset();
 
         readyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup() {
         reset();
 
         super.setup();
@@ -63,8 +61,8 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessVersionMessage () {
-        Version version = new Version ();
+    public void testProcessVersionMessage() {
+        Version version = new Version();
         NameVersion nameVersion = new NameVersion("whatever", version);
         List<NameVersion> nameVersions = new ArrayList<NameVersion>();
         nameVersions.add(nameVersion);
@@ -78,7 +76,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
 
-    public void testGetFileMessage (String file) {
+    public void testGetFileMessage(String file) {
         Message message = null;
 
         if (file.equalsIgnoreCase(UsersFile.FILE_NAME))
@@ -87,25 +85,16 @@ public class TestNodeReadyState extends TesterNodeState {
             message = new GetTopicsFileMessage(null, this);
         else if (file.equalsIgnoreCase(SubscriptionsFile.FILE_NAME))
             message = new GetSubscriptionsFileMessage(null, this);
-        else if (file.equalsIgnoreCase(SystemMessages.FILE_NAME))
-            message = new GetSystemMessagesMessage(null, this, "whatever");
-        else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
-            message = new GetDeliveriesMessage(null, this, "whatever");
         else if (file.equalsIgnoreCase(Cluster.NAME))
             message = new GetClusterFileMessage(null, this);
         else {
-            System.err.println ("Unrecognized file: " + file);
+            System.err.println("Unrecognized file: " + file);
             System.exit(1);
         }
 
         State nextState = getReadyState().processMessage(message);
 
         WireMessage wireMessage = new GetFileWireMessage(file);
-
-        if (file.equalsIgnoreCase(SystemMessages.FILE_NAME))
-            wireMessage = new GetMessagesWireMessage("whatever");
-        else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
-            wireMessage = new GetDeliveriesWireMessage("whatever");
 
         verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
                 Matchers.anyInt(), Matchers.eq(wireMessage));
@@ -114,17 +103,17 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testGetClusterFile () {
+    public void testGetClusterFile() {
         testGetFileMessage(Cluster.NAME);
     }
 
     @Test
-    public void testGetUsersFile () {
+    public void testGetUsersFile() {
         testGetFileMessage(UsersFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessVersionsMessage () {
+    public void testProcessVersionsMessage() {
         Version version = new Version();
         NameVersion nameVersion = new NameVersion("whatever", version);
         List<NameVersion> nameVersionList = new ArrayList<NameVersion>();
@@ -141,7 +130,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessGetFileResonseMessage () {
+    public void testProcessGetFileResonseMessage() {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "whatever", "whtever");
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage("whatever", "whatever");
 
@@ -153,7 +142,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testGetVersionsWireMessage () {
+    public void testGetVersionsWireMessage() {
         setupMockMiranda();
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         NetworkMessage networkMessage = new NetworkMessage(null, this, getVersionsWireMessage);
@@ -167,7 +156,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessVersionsWireMessage () {
+    public void testProcessVersionsWireMessage() {
         setupMockCluster();
         Version version = new Version();
         NameVersion nameVersion = new NameVersion("whatever", version);
@@ -185,7 +174,7 @@ public class TestNodeReadyState extends TesterNodeState {
         assert (contains(Message.Subjects.Versions, queue));
     }
 
-    public void testProcessGetFileWireMessage (String file) {
+    public void testProcessGetFileWireMessage(String file) {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
         if (file.equalsIgnoreCase(Cluster.NAME)) {
@@ -199,80 +188,51 @@ public class TestNodeReadyState extends TesterNodeState {
             when(getMockTopicsFile().getQueue()).thenReturn(queue);
         } else if (file.equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
             setupMockSubscriptionsFile();
-            when (getMockSubscriptionsFile().getQueue()).thenReturn(queue);
-        } else if (file.equalsIgnoreCase(SystemMessages.FILE_NAME)) {
-            setupMockSystemMessages();
-            when (getMockSystemMessages().getQueue()).thenReturn(queue);
-        } else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME)) {
-            setupMockSystemDeliveries();
-            when (getMockSystemDeliveriesFile().getQueue()).thenReturn(queue);
+            when(getMockSubscriptionsFile().getQueue()).thenReturn(queue);
         } else {
-            System.err.println ("Unrecognized file: " + file);
+            System.err.println("Unrecognized file: " + file);
             System.exit(1);
         }
 
         WireMessage wireMessage = new GetFileWireMessage(file);
 
-        if (file.equalsIgnoreCase(SystemMessages.FILE_NAME))
-            wireMessage = new GetMessagesWireMessage("whatever");
-        else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME))
-            wireMessage = new GetDeliveriesWireMessage("whatever");
 
         NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
 
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
-
-        if (file.equalsIgnoreCase(SystemMessages.FILE_NAME)) {
-            verify (getMockSystemMessages(), atLeastOnce()).sendGetSystemMessages(Matchers.any(BlockingQueue.class),
-                    Matchers.any(), Matchers.eq("whatever"));
-        } else if (file.equalsIgnoreCase(SystemDeliveriesFile.FILE_NAME)) {
-            verify (getMockSystemDeliveriesFile(), atLeastOnce()).sendGetSystemDeliveries(Matchers.any(BlockingQueue.class),
-                    Matchers.any(), Matchers.eq("whatever"));
-        } else {
-            assert (contains(Message.Subjects.GetFile, queue));
-        }
+        assert (contains(Message.Subjects.GetFile, queue));
     }
 
     @Test
-    public void testProcessGetFileWireMessageCluster () {
+    public void testProcessGetFileWireMessageCluster() {
         testProcessGetFileWireMessage(Cluster.NAME);
     }
 
     @Test
-    public void testProcessGetFileWireMessageUsers () {
+    public void testProcessGetFileWireMessageUsers() {
         testProcessGetFileWireMessage(UsersFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetFileWireMessageTopics () {
+    public void testProcessGetFileWireMessageTopics() {
         testProcessGetFileWireMessage(TopicsFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetFileWireMessageSubscriptions () {
+    public void testProcessGetFileWireMessageSubscriptions() {
         testProcessGetFileWireMessage(SubscriptionsFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetFileWireMessageSystemMessages () {
-        testProcessGetFileWireMessage(SystemMessages.FILE_NAME);
-    }
-
-    @Test
-    public void testProcessGetFileWireMessageSystemDeliveries () {
-        testProcessGetFileWireMessage(SystemDeliveriesFile.FILE_NAME);
-    }
-
-    @Test
-    public void testProcessNewSessionWireMessage () throws MirandaException {
+    public void testProcessNewSessionWireMessage() throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
-        Session session = new Session (user, 123, 456);
+        Session session = new Session(user, 123, 456);
         NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(session);
         NetworkMessage networkMessage = new NetworkMessage(null, this, newSessionWireMessage);
 
@@ -281,17 +241,17 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
-        verify (getMockMiranda(), atLeastOnce()).sendAddSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
+        verify(getMockMiranda(), atLeastOnce()).sendAddSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
     }
 
     @Test
-    public void testProcessSessinsExpiredWireMessage () throws MirandaException {
+    public void testProcessSessinsExpiredWireMessage() throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
 
-        Session session = new Session (user, 123, 456);
+        Session session = new Session(user, 123, 456);
         List<Session> expiredSessions = new ArrayList<Session>();
         expiredSessions.add(session);
         SessionsExpiredWireMessage sessionsExpiredWireMessage = new SessionsExpiredWireMessage(expiredSessions);
@@ -302,14 +262,14 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
-        verify (getMockMiranda(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(expiredSessions));
+        verify(getMockMiranda(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(expiredSessions));
     }
 
 
     public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
 
     @Test
-    public void testProcessNewUserWireMessage () throws MirandaException {
+    public void testProcessNewUserWireMessage() throws MirandaException {
         setupMockMiranda();
 
         UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
@@ -317,7 +277,7 @@ public class TestNodeReadyState extends TesterNodeState {
         NewUserWireMessage newUserWireMessage = new NewUserWireMessage(userObject);
         NetworkMessage networkMessage = new NetworkMessage(null, this, newUserWireMessage);
 
-        when (getMockNode().getCurrentState()).thenReturn(getReadyState());
+        when(getMockNode().getCurrentState()).thenReturn(getReadyState());
 
         State nextState = getReadyState().processMessage(networkMessage);
 
@@ -327,15 +287,15 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessUpdateUserWireMessage () throws MirandaException {
+    public void testProcessUpdateUserWireMessage() throws MirandaException {
         setupMockMiranda();
 
-        UserObject userObject = new UserObject("whatever", "Publisher","whatever", TEST_PUBLIC_KEY);
+        UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
         User user = userObject.asUser();
         UpdateUserWireMessage updateUserWireMessage = new UpdateUserWireMessage(userObject);
         NetworkMessage networkMessage = new NetworkMessage(null, this, updateUserWireMessage);
 
-        when (getMockNode().getCurrentState()).thenReturn(getReadyState());
+        when(getMockNode().getCurrentState()).thenReturn(getReadyState());
 
         State nextState = getReadyState().processMessage(networkMessage);
 
@@ -345,7 +305,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessDeleteUserWireMessage () throws MirandaException {
+    public void testProcessDeleteUserWireMessage() throws MirandaException {
         setupMockMiranda();
 
         UserObject userObject = new UserObject("whatever", "Publisher", "whatever", TEST_PUBLIC_KEY);
@@ -353,7 +313,7 @@ public class TestNodeReadyState extends TesterNodeState {
         DeleteUserWireMessage deleteUserWireMessage = new DeleteUserWireMessage("whatever");
         NetworkMessage networkMessage = new NetworkMessage(null, this, deleteUserWireMessage);
 
-        when (getMockNode().getCurrentState()).thenReturn(getReadyState());
+        when(getMockNode().getCurrentState()).thenReturn(getReadyState());
 
         State nextState = getReadyState().processMessage(networkMessage);
 

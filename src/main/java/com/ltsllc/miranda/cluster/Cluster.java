@@ -7,10 +7,12 @@ import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
@@ -64,11 +66,11 @@ public class Cluster extends Manager<Node, NodeElement> {
         this.clusterFileResponded = clusterFileResponded;
     }
 
-    public static synchronized void initialize(String filename, Writer writer, Network network) {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer, Network network) {
         if (null == ourInstance) {
             BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
 
-            ClusterFile.initialize(filename, writer, clusterQueue);
+            ClusterFile.initialize(filename, reader, writer, clusterQueue);
 
             ourInstance = new Cluster(network, ClusterFile.getInstance());
             ourInstance.start();

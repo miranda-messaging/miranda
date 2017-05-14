@@ -60,7 +60,7 @@ public class TestMirandaFile extends TestCase {
 
         createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
-        eventsFile = new EventsFile("testdir/new/20170220-001.msg", getMockWriter());
+        eventsFile = new EventsFile("testdir/new/20170220-001.msg", getMockReader(), getMockWriter());
         eventsFile.start();
         eventsFile.load();
     }
@@ -126,7 +126,7 @@ public class TestMirandaFile extends TestCase {
         assert (getEventsFile().getLastLoaded() > then);
     }
 
-    private void changeEvent (Event event) {
+    private void changeEvent(Event event) {
         switch (event.getMethod()) {
             case DELETE: {
                 event.setMethod(Event.Methods.POST);
@@ -151,18 +151,13 @@ public class TestMirandaFile extends TestCase {
     }
 
     @Test
-    public void testUpdateVersion () {
+    public void testUpdateVersion() {
         getEventsFile().load();
         Version oldVersion = getEventsFile().getVersion();
 
         Event event = getEventsFile().getData().get(0);
-        changeEvent (event);
-
-        try {
-            getEventsFile().updateVersion();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+        changeEvent(event);
+        getEventsFile().updateVersion();
 
         Version newVersion = getEventsFile().getVersion();
 
@@ -170,9 +165,9 @@ public class TestMirandaFile extends TestCase {
     }
 
     @Test
-    public void testEquals () {
+    public void testEquals() {
         getEventsFile().load();
-        EventsFile other = new EventsFile(FILENAME, Writer.getInstance());
+        EventsFile other = new EventsFile(FILENAME, getMockReader(), getMockWriter());
         other.load();
 
         assert (other.equals(getEventsFile()));
@@ -180,11 +175,7 @@ public class TestMirandaFile extends TestCase {
         Event event = other.getData().get(0);
         changeEvent(event);
 
-        try {
-            other.updateVersion();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+        other.updateVersion();
 
         assert (!other.equals(getEventsFile()));
     }

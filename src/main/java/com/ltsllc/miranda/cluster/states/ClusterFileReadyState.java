@@ -163,13 +163,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
             logger.info("dropping nodes that have timed out: " + drops);
             getClusterFile().getData().removeAll(drops);
 
-            try {
-                getClusterFile().updateVersion();
-            } catch (NoSuchAlgorithmException e) {
-                Panic panic = new Panic ("Exception trying to calculate version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
-                Miranda.getInstance().panic(panic);
-            }
-
+            getClusterFile().updateVersion();
             getClusterFile().write();
 
             for (NodeElement droppedNode : drops) {
@@ -182,13 +176,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         // if we changed anything, update the version and write out the file
         //
         if (nodesUpdated || drops.size() > 0) {
-            try {
-                getClusterFile().updateVersion();
-            } catch (NoSuchAlgorithmException e) {
-                Panic panic = new Panic("Exception while caculating version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
-                Miranda.getInstance().panic(panic);
-            }
-
+            getClusterFile().updateVersion();
             getClusterFile().write();
         }
 

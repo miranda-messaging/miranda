@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.topics;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.topics.states.TopicsFileReadyState;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.file.SingleFile;
@@ -25,9 +26,9 @@ public class TopicsFile extends SingleFile<Topic> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Writer writer) {
+    public static synchronized void initialize (String filename, Reader reader, Writer writer) {
         if (null == ourInstance) {
-            ourInstance = new TopicsFile(filename, writer);
+            ourInstance = new TopicsFile(filename, reader, writer);
             ourInstance.start();
             ourInstance.load();
         }
@@ -37,14 +38,14 @@ public class TopicsFile extends SingleFile<Topic> {
         ourInstance = topicsFile;
     }
 
-    public TopicsFile(String filename, Writer writer) {
-        super(filename, writer);
+    public TopicsFile(String filename, Reader reader, Writer writer) {
+        super(filename, reader, writer);
         TopicsFileReadyState topicsFileReadyState = new TopicsFileReadyState(this);
         setCurrentState(topicsFileReadyState);
     }
 
     public TopicsFile () {
-        super(null, null);
+        super(null, null, null);
     }
 
     public Type getBasicType ()

@@ -1,7 +1,8 @@
 package com.ltsllc.miranda;
 
-import com.ltsllc.miranda.cluster.states.ClusterFileGettingVersionState;
-import com.ltsllc.miranda.miranda.StopMessage;
+import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
+import com.ltsllc.miranda.cluster.states.ClusterReadyState;
+import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,10 +66,7 @@ public class TestState extends TestCase {
 
         super.setup();
 
-        mockConsumer = mock(Consumer.class);
-        queue = new LinkedBlockingQueue<Message>();
-
-        state = new ClusterFileGettingVersionState(mockConsumer, queue);
+        this.state = new ClusterReadyState(getMockCluster());
     }
 
     @Test

@@ -4,10 +4,12 @@ import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.EventManager;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.StopMessage;
+import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
@@ -19,7 +21,6 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.*;
 import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
@@ -37,6 +38,7 @@ import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -58,6 +60,7 @@ public class Miranda extends Consumer {
     public static MirandaCommandLine commandLine;
     public static MirandaFactory factory;
     public static boolean panicking = false;
+    public static InputStream inputStream;
 
     private BlockingQueue<Message> httpServer;
     private UserManager userManager;
@@ -72,6 +75,14 @@ public class Miranda extends Consumer {
     private Writer writer;
     private Reader reader;
     private List<String> waitingOn;
+
+    public static InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public static void setInputStream(InputStream inputStream) {
+        Miranda.inputStream = inputStream;
+    }
 
     public List<String> getWaitingOn() {
         return waitingOn;
@@ -187,6 +198,23 @@ public class Miranda extends Consumer {
 
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
+
+        inputStream = System.in;
+    }
+
+    public Miranda () {
+        super("miranda");
+        ourInstance = this;
+
+        String[] emptyArgv = new String[0];
+        State s = new Startup(this, emptyArgv);
+        setCurrentStateWithoutStart(s);
+
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        setQueue(queue);
+
+        inputStream = System.in;
+
     }
 
     public static Miranda getInstance() {

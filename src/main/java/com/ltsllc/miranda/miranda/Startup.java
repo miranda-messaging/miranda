@@ -5,10 +5,10 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
 import com.ltsllc.miranda.event.EventManager;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.network.NetworkListener;
@@ -83,6 +83,20 @@ public class Startup extends State {
     private PublicKey publicKey;
     private PrivateKey privateKey;
     private Reader reader;
+    private String keystorePassword;
+    private String truststorePassword;
+
+    public String getTruststorePassword() {
+        return truststorePassword;
+    }
+
+    public String getKeystorePassword() {
+        return keystorePassword;
+    }
+
+    public void setKeystorePassword(String keystorePassword) {
+        this.keystorePassword = keystorePassword;
+    }
 
     public Reader getReader() {
         return reader;
@@ -145,11 +159,11 @@ public class Startup extends State {
         return commandLine;
     }
 
-    public Miranda getMiranda () {
+    public Miranda getMiranda() {
         return (Miranda) getContainer();
     }
 
-    public Startup (Miranda miranda, String[] argv){
+    public Startup(Miranda miranda, String[] argv) {
         super(miranda);
 
         this.commandLine = new MirandaCommandLine(argv);
@@ -203,16 +217,16 @@ public class Startup extends State {
             return new ReadyState(getMiranda());
         } catch (MirandaException e) {
             Panic panic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
-            Miranda.getInstance().panic (panic);
+            Miranda.getInstance().panic(panic);
         } catch (Exception e) {
             Panic panic = new StartupPanic("Unchecked exception during startup", e, StartupPanic.StartupReasons.UncheckedException);
-            Miranda.getInstance().panic (panic);
+            Miranda.getInstance().panic(panic);
         }
 
         return StopState.getInstance();
     }
 
-    public void checkProperty (String name) {
+    public void checkProperty(String name) {
         String value = getProperties().getProperty(name);
 
         if (null != value)
@@ -225,39 +239,33 @@ public class Startup extends State {
         }
     }
 
-    public void checkProperties (String[] array) {
+    public void checkProperties(String[] array) {
         for (String s : array) {
             checkProperty(s);
         }
     }
 
-    public void checkProperties (String p1, String p2, String p3) {
-        String[] properties = { p1, p2, p3 };
+    public void checkProperties(String p1, String p2, String p3) {
+        String[] properties = {p1, p2, p3};
         checkProperties(properties);
     }
 
-    public void getKeys () {
-        checkProperties (MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
+    public void getKeys() {
+        checkProperties(MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
         String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
 
-        File file = new File(getProperties().getProperty(keyStoreFilename));
+        File file = new File(keyStoreFilename);
         if (!file.exists()) {
             String message = "The keystore file, " + keyStoreFilename + ", does not exist";
             StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.KeystoreDoesNotExist);
             Miranda.getInstance().panic(startupPanic);
         }
 
-        String password = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-        if (null != password)
+        System.out.println("Please enter the keystore password: ");
+        Scanner scanner = new Scanner(Miranda.getInputStream());
+        String password = scanner.nextLine();
+        if (password != null) {
             password = password.trim();
-
-        if (null == password || password.equals("")) {
-            System.out.println("Plesae enter the keystore password: ");
-            Scanner scanner = new Scanner(System.in);
-            password = scanner.nextLine();
-            if (password != null) {
-                password = password.trim();
-            }
         }
 
         KeyStore keyStore = null;
@@ -300,7 +308,7 @@ public class Startup extends State {
         }
     }
 
-    public ServletMapping[] convertToArray (List<ServletMapping> mappings) {
+    public ServletMapping[] convertToArray(List<ServletMapping> mappings) {
         ServletMapping[] mappingArray = new ServletMapping[mappings.size()];
         for (int i = 0; i < mappingArray.length; i++) {
             mappingArray[i] = mappings.get(i);
@@ -309,7 +317,7 @@ public class Startup extends State {
         return mappingArray;
     }
 
-    public void setupServlets () {
+    public void setupServlets() {
         List<ServletMapping> mappings = new ArrayList<ServletMapping>();
 
         ServletMapping servletMapping = new ServletMapping("/servlets/status", StatusServlet.class);
@@ -349,37 +357,37 @@ public class Startup extends State {
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getTopic", GetTopicServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/createTopic", CreateTopicServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping( "/servlets/updateTopic", UpdateTopicServlet.class);
-        mappings.add (servletMapping);
+        servletMapping = new ServletMapping("/servlets/updateTopic", UpdateTopicServlet.class);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/deleteTopic", DeleteTopicServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/fileServlet", FileServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/createSubscription", CreateSubscriptionServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getSubscriptions", GetSubscriptionsServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getSubscription", GetSubscriptionServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/updateSubscription", UpdateSubscriptionServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/deleteSubscription", DeleteSubscriptionServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/shutdown", ShutdownServlet.class);
-        mappings.add (servletMapping);
+        mappings.add(servletMapping);
 
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
@@ -407,29 +415,29 @@ public class Startup extends State {
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this,
                 convertToArray(mappings));
 
-        send (getMiranda().getHttp(), setupServletsMessage);
+        send(getMiranda().getHttp(), setupServletsMessage);
     }
 
 
     /**
      * Services are the static variable of {@link Miranda} like {@link Miranda#timer},
      * except for {@link Miranda#properties}.
-     *
      * <p>
-     *     Note that {@link Miranda#properties} must have already been initialized when
-     *     this method is called.
+     * <p>
+     * Note that {@link Miranda#properties} must have already been initialized when
+     * this method is called.
      * </p>
-     *
      * <p>
-     *     The services that this method initializes:
+     * <p>
+     * The services that this method initializes:
      * </p>
      * <ul>
-     *     <li>{@link Miranda#fileWatcher}</li>
-     *     <li>{@link Miranda#timer}</li>
-     *     <li>{@link Miranda#commandLine}</li>
+     * <li>{@link Miranda#fileWatcher}</li>
+     * <li>{@link Miranda#timer}</li>
+     * <li>{@link Miranda#commandLine}</li>
      * </ul>
      */
-    public void startServices () {
+    public void startServices() {
         MirandaProperties properties = Miranda.properties;
 
         Miranda.fileWatcher = new FileWatcherService(properties.getIntProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
@@ -444,11 +452,11 @@ public class Startup extends State {
     private static class LocalRunnable implements Runnable {
         private String filename;
 
-        public LocalRunnable (String filename) {
+        public LocalRunnable(String filename) {
             this.filename = filename;
         }
 
-        public void run () {
+        public void run() {
             DOMConfigurator.configure(filename);
         }
     }
@@ -495,7 +503,7 @@ public class Startup extends State {
      */
     private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
-        MirandaFactory factory = new MirandaFactory(properties);
+        MirandaFactory factory = new MirandaFactory(properties, getKeystorePassword(), getTruststorePassword());
         Miranda miranda = Miranda.getInstance();
 
         Network network = factory.buildNetwork();
@@ -503,24 +511,24 @@ public class Startup extends State {
 
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
-        Cluster.initialize(filename, Writer.getInstance(), network);
+        Cluster.initialize(filename, Miranda.getInstance().getReader(), Writer.getInstance(), network);
         miranda.setCluster(Cluster.getInstance());
 
-        Cluster.getInstance().sendConnect (null, this);
+        Cluster.getInstance().sendConnect(null, this);
 
         SessionManager sessionManager = new SessionManager();
         sessionManager.start();
         miranda.setSessionManager(sessionManager);
     }
 
-    public void startWriter () {
+    public void startWriter() {
         Writer writer = new Writer(getPublicKey());
         writer.start();
 
         getMiranda().setWriter(writer);
     }
 
-    public void startReader () {
+    public void startReader() {
         Reader reader = new Reader(getPrivateKey());
         reader.start();
 
@@ -545,7 +553,7 @@ public class Startup extends State {
             MirandaProperties properties = Miranda.properties;
 
             String clusterFile = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-            ClusterFile.initialize(clusterFile, getWriter(), Cluster.getInstance().getQueue());
+            ClusterFile.initialize(clusterFile, getReader(), getWriter(), Cluster.getInstance().getQueue());
             miranda.setCluster(Cluster.getInstance());
 
             String filename = properties.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
@@ -583,7 +591,7 @@ public class Startup extends State {
     }
 
 
-    public void setupSchedule () {
+    public void setupSchedule() {
         MirandaProperties properties = Miranda.properties;
 
         long garbageCollectionPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_GARBAGE_COLLECTION_PERIOD, MirandaProperties.DEFAULT_GARBAGE_COLLECTION_PERIOD);
@@ -595,15 +603,15 @@ public class Startup extends State {
 
     /**
      * Get the log4j configuration file, before the properties have been loaded.
-     *
      * <p>
-     *     Normally, this would be obtained from the properties file, but since
-     *     logging needs to be setup early, this method is provided.
+     * <p>
+     * Normally, this would be obtained from the properties file, but since
+     * logging needs to be setup early, this method is provided.
      * </p>
      *
      * @return
      */
-    public String getLogConfigurationFile () {
+    public String getLogConfigurationFile() {
         //
         // if its defined on the command line, use that
         //
@@ -626,22 +634,22 @@ public class Startup extends State {
         return filename;
     }
 
-    public void startHttpServer () {
+    public void startHttpServer() {
         getHttpServer().sendStart(getMiranda().getQueue());
     }
 
-    public void definePanicPolicy () {
+    public void definePanicPolicy() {
         PanicPolicy panicPolicy = Miranda.factory.buildPanicPolicy();
         Miranda.getInstance().setPanicPolicy(panicPolicy);
     }
 
-    public void defineFactory () {
-        Miranda.factory = new MirandaFactory(Miranda.properties);
+    public void defineFactory() {
+        Miranda.factory = new MirandaFactory(Miranda.properties, getKeystorePassword(), getTruststorePassword());
 
         setFactory(Miranda.factory);
     }
 
-    public String getPropertiesFilename () {
+    public String getPropertiesFilename() {
         String filename = null;
 
         //
@@ -652,23 +660,21 @@ public class Startup extends State {
         //
         // if there is a name defined in the environment, use that
         //
-        if (System.getenv().get(MirandaProperties.PROPERTY_PROPERTIES_FILE) != null)
-        {
+        if (System.getenv().get(MirandaProperties.PROPERTY_PROPERTIES_FILE) != null) {
             filename = (String) System.getenv().get(MirandaProperties.PROPERTY_PROPERTIES_FILE);
         }
 
         //
         // if it was on the commad line, use that
         //
-        if (getCommandLine().getPropertiesFilename() != null)
-        {
+        if (getCommandLine().getPropertiesFilename() != null) {
             filename = getCommandLine().getPropertiesFilename();
         }
 
         return filename;
     }
 
-    public void startListening () {
+    public void startListening() {
         NetworkListener networkListener = getFactory().buildNetworkListener();
         networkListener.start();
 

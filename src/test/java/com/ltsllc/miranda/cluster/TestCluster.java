@@ -132,7 +132,8 @@ public class TestCluster extends TestCase {
     public void testInitialize() {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
         com.ltsllc.miranda.cluster.Cluster.reset();
-        com.ltsllc.miranda.cluster.Cluster.initialize(CLUSTER_FILENAME, Writer.getInstance(), getMockNetwork());
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        com.ltsllc.miranda.cluster.Cluster.initialize(CLUSTER_FILENAME, getMockReader(), getMockWriter(), getMockNetwork());
         this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
 
         ClusterFile temp = ClusterFile.getInstance();

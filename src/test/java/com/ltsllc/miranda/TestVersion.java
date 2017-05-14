@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Clark on 3/28/2017.
@@ -59,7 +60,8 @@ public class TestVersion extends TestCase {
     public void testConstructor2 () {
         setuplog4j();
         createFile(TEST_FILENAME, TEST_STRING.getBytes());
-        ClusterFile clusterFile = new ClusterFile(TEST_FILENAME, null, null);
+        LinkedBlockingQueue<Message> temp = new LinkedBlockingQueue<Message>();
+        ClusterFile clusterFile = new ClusterFile(TEST_FILENAME, null, null, temp);
         try {
             Version version = new Version(clusterFile);
             assert (version.getSha1().equals(TEST_BINARY_SHA1));

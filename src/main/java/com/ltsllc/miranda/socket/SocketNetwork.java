@@ -40,8 +40,7 @@ public class SocketNetwork extends Network {
 
             if (properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE) == MirandaProperties.EncryptionModes.LocalCA) {
                 String trustStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-                String trustStorePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-                TrustManagerFactory trustManagerFactory = Utils.createTrustManagerFactory(trustStoreFilename, trustStorePassword);
+                TrustManagerFactory trustManagerFactory = Utils.createTrustManagerFactory(trustStoreFilename, getTruststorePassword());
 
                 SSLContext sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());

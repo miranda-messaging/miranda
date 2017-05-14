@@ -9,11 +9,15 @@ import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.*;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.miranda.writer.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,9 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
+
     abstract public Type listType();
+
     abstract public void checkForDuplicates();
 
 
@@ -50,8 +56,8 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         this.dirty = dirty;
     }
 
-    public SingleFile (String filename, com.ltsllc.miranda.writer.Writer writer) {
-        super(filename, writer);
+    public SingleFile(String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) {
+        super(filename, reader, writer);
 
         setDirty(false);
         subscribers = new ArrayList<Subscriber>();
@@ -59,11 +65,11 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
 
     private List<E> data = buildEmptyList();
 
-    public List<E> getData () {
+    public List<E> getData() {
         return data;
     }
 
-    public void setData (List<E> list) {
+    public void setData(List<E> list) {
         this.data = list;
     }
 
@@ -78,7 +84,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         return ret;
     }
 
-    public static String readFile (String filename) {
+    public static String readFile(String filename) {
         FileReader fileReader = null;
 
         try {
@@ -99,57 +105,39 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         return null;
     }
 
-    public void load ()
-    {
+    public void load() {
+        getReader().sendReadMessage(getQueue(), this, getFilename());
+    }
+
+    public void processData(byte[] data) {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+        InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
+        List<E> temp = null;
+        temp = getGson().fromJson(inputStreamReader, listType());
+        setData(temp);
+        updateVersion();
+        setLastLoaded(System.currentTimeMillis());
+        fireFileLoaded();
+    }
+
+    public void updateVersion() {
         try {
-            logger.info("loading " + getFilename());
-
-            File f = new File(getFilename());
-            if (!f.exists()) {
-                List list = buildEmptyList();
-                setData(list);
-            } else {
-                Gson gson = new Gson();
-                FileReader fr = null;
-                List<E> temp = null;
-                try {
-                    fr = new FileReader(getFilename());
-                    temp = ourGson.fromJson(fr, listType());
-                } catch (FileNotFoundException e) {
-                    logger.info(getFilename() + " not found");
-                } finally {
-                    Utils.closeIgnoreExceptions(fr);
-                }
-
-                setData(temp);
-            }
-
-            String json = ourGson.toJson(getData());
-
-            Version version = null;
-            try {
-                version = new Version(json);
-            } catch (NoSuchAlgorithmException e) {
-                Panic panic = new Panic("Error trying to calculate new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
-                Miranda.getInstance().panic(panic);
-            }
+            String json = getGson().toJson(getData());
+            Version version = new Version(json);
             setVersion(version);
-
-            setLastLoaded(System.currentTimeMillis());
-            fireFileLoaded();
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Exception trying to load " + getFilename(), e);
+        } catch (GeneralSecurityException e) {
+            Panic panic = new Panic("Exception calculating new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
+            Miranda.getInstance().panic(panic);
         }
     }
 
-
-    public byte[] getBytes () {
+    public byte[] getBytes() {
         String json = ourGson.toJson(getData());
         return json.getBytes();
     }
 
 
-    public boolean contains (E e) {
+    public boolean contains(E e) {
         for (E contained : getData()) {
             if (contained.equals(e))
                 return true;
@@ -159,20 +147,13 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     }
 
 
-    public void add (E e)
-    {
+    public void add(E e) {
         add(e, true);
     }
 
     public void add(E e, boolean write) {
         getData().add(e);
-
-        try {
-            updateVersion();
-        } catch (NoSuchAlgorithmException x) {
-            Panic panic = new Panic ("Exception trying to calculate new version", x, Panic.Reasons.ExceptionTryingToCalculateVersion);
-            Miranda.getInstance().panic(panic);
-        }
+        updateVersion();
 
         if (write) {
             getWriter().sendWrite(getQueue(), this, getFilename(), getBytes());
@@ -180,7 +161,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     }
 
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
 
@@ -192,7 +173,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     }
 
 
-    public boolean compare (Map<Object,Boolean> map, Object o) {
+    public boolean compare(Map<Object, Boolean> map, Object o) {
         if (map.containsKey(o))
             return map.get(o).booleanValue();
 
@@ -214,12 +195,12 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         return super.compare(map, o);
     }
 
-    public void sendLoad (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendLoad(BlockingQueue<Message> senderQueue, Object sender) {
         LoadMessage loadMessage = new LoadMessage(senderQueue, sender);
         sendToMe(loadMessage);
     }
 
-    public void merge (List<E> list) {
+    public void merge(List<E> list) {
         List<E> newItems = new ArrayList<E>();
 
         for (E e : list) {
@@ -232,56 +213,56 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         }
     }
 
-    public void sendAddSubscriberMessage (BlockingQueue<Message> senderQueue, Object sender, Notification notification) {
+    public void sendAddSubscriberMessage(BlockingQueue<Message> senderQueue, Object sender, Notification notification) {
         AddSubscriberMessage addSubscriberMessage = new AddSubscriberMessage(senderQueue, sender, notification);
         sendToMe(addSubscriberMessage);
     }
 
-    public void sendRemoveSubscriberMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendRemoveSubscriberMessage(BlockingQueue<Message> senderQueue, Object sender) {
         RemoveSubscriberMessage removeSubscriberMessage = new RemoveSubscriberMessage(senderQueue, sender);
     }
 
-    public void addSubscriber (BlockingQueue<Message> subscriberQueue, Notification notification) {
+    public void addSubscriber(BlockingQueue<Message> subscriberQueue, Notification notification) {
         Subscriber subscriber = new Subscriber(subscriberQueue, notification);
         getSubscribers().add(subscriber);
     }
 
-    public void removeSubscriber (BlockingQueue<Message> queue) {
+    public void removeSubscriber(BlockingQueue<Message> queue) {
         for (Subscriber subscriber : getSubscribers()) {
             if (queue == subscriber.getQueue())
                 getSubscribers().remove(subscriber);
         }
     }
 
-    public void fireFileLoaded () {
+    public void fireFileLoaded() {
         for (Subscriber subscriber : getSubscribers()) {
             subscriber.notifySubscriber(getData());
         }
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         load();
     }
 
-    public void sendRemoveObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
+    public void sendRemoveObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
         RemoveObjectsMessage removeObjectsMessage = new RemoveObjectsMessage(senderQueue, sender, objects);
         sendToMe(removeObjectsMessage);
     }
 
-    public void sendAddObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, E object) {
+    public void sendAddObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, E object) {
         List<E> objects = new ArrayList<E>();
         objects.add(object);
         sendAddObjectsMessage(senderQueue, sender, objects);
     }
 
-    public void sendAddObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
+    public void sendAddObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
         AddObjectsMessage addObjectsMessage = new AddObjectsMessage(senderQueue, sender, objects);
         sendToMe(addObjectsMessage);
     }
 
-    public void sendUpdateObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, E updatedObject) {
+    public void sendUpdateObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, E updatedObject) {
         List<E> updatedObjects = new ArrayList<E>();
         updatedObjects.add(updatedObject);
 
@@ -289,13 +270,13 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         sendToMe(updateObjectsMessage);
     }
 
-    public void sendRemoveObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, E object) {
+    public void sendRemoveObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, E object) {
         List<E> objects = new ArrayList<E>();
         objects.add(object);
         sendRemoveObjectsMessage(senderQueue, sender, objects);
     }
 
-    public void addObjects (List list) {
+    public void addObjects(List list) {
         List<E> newObjects = (List<E>) list;
         for (E object : newObjects) {
             if (!contains(object))
@@ -305,7 +286,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         write();
     }
 
-    public void updateObjects (List<E> updatedObjects) {
+    public void updateObjects(List<E> updatedObjects) {
         for (E updatedObject : updatedObjects) {
             update(updatedObject);
         }
@@ -315,19 +296,19 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         write();
     }
 
-    public void update (E updatedObject) {
-        E existingObject = find (updatedObject);
+    public void update(E updatedObject) {
+        E existingObject = find(updatedObject);
 
         if (null == existingObject) {
             logger.error("Could not find match for update");
         } else {
-            existingObject.updateFrom (updatedObject);
+            existingObject.updateFrom(updatedObject);
         }
 
         write();
     }
 
-    public E findMatch (E object) {
+    public E findMatch(E object) {
         for (E candidate : getData()) {
             if (object.matches(candidate))
                 return candidate;
@@ -336,7 +317,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         return null;
     }
 
-    public void removeObjects (List objects) {
+    public void removeObjects(List objects) {
         List<E> oldObjects = (List<E>) objects;
         List<E> existingObjects = new ArrayList<E>(objects.size());
 
@@ -354,7 +335,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         write();
     }
 
-    public E find (E object) {
+    public E find(E object) {
         for (E candidate : getData()) {
             if (candidate.matches(object))
                 return candidate;

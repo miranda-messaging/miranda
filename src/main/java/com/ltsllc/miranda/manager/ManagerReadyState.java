@@ -1,7 +1,12 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.ShutdownMessage;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.manager.Manager;
+import com.ltsllc.miranda.manager.ManagerShuttingDownState;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 
 import java.util.List;
 

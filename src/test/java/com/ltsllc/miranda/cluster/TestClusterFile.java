@@ -75,7 +75,7 @@ public class TestClusterFile extends TestCase {
 
         putFile(filename, CLUSTER_FILE_CONTENTS);
 
-        ClusterFile.initialize(filename, getMockWriter(), getCluster());
+        ClusterFile.initialize(filename, getMockReader(), getMockWriter(), getCluster());
         this.clusterFile = ClusterFile.getInstance();
     }
 

@@ -17,9 +17,23 @@ public class StatusObject<E extends StatusObject> implements Matchable<E>, Updat
     }
 
     private Status status;
+    private long modified;
+
+    public long getModified() {
+        return modified;
+    }
+
+    public void setModified(long modified) {
+        this.modified = modified;
+    }
 
     public StatusObject (Status status) {
         this.status = status;
+    }
+
+    public StatusObject(Status status, long modified) {
+        this.status = status;
+        this.modified = modified;
     }
 
     public Status getStatus() {
@@ -43,6 +57,6 @@ public class StatusObject<E extends StatusObject> implements Matchable<E>, Updat
     }
 
     public boolean matches (E other) {
-        return getStatus() == other.getStatus();
+        return getStatus() == other.getStatus() && getModified() == other.getModified();
     }
 }

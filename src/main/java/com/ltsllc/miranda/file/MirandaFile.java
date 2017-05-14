@@ -7,8 +7,9 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.WatchMessage;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -31,6 +32,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
     private String filename;
     private Writer writer;
+    private Reader reader;
     private List<Perishable> elements = new ArrayList<Perishable>();
     private Version version;
     private long lastLoaded = -1;
@@ -72,11 +74,24 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         this.lastLoaded = lastLoaded;
     }
 
-    public MirandaFile(String filename, Writer writer) {
+    public Reader getReader() {
+        return reader;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public static Gson getGson() {
+        return ourGson;
+    }
+
+    public MirandaFile(String filename, Reader reader, Writer writer) {
         super("file");
 
         this.filename = filename;
         this.writer = writer;
+        this.reader = reader;
         this.lastCollection = -1;
     }
 

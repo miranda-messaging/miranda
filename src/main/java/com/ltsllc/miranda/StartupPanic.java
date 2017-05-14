@@ -12,10 +12,12 @@ public class StartupPanic extends Panic {
         ExceptionInStart, // the start method of the current state threw an exception
         ExceptionManipulatingKeystore, // An exception was caught while trying to manipulate the keystore
         ExceptionOpeningKeystore, // an exception was caught trying to open the system Keystore
+        ExceptionScanning,
         ExceptionStartingHttpServer,
         ExceptionStartingNetworkListener,
         ExceptionListening,
         ExceptionLoadingProperties,
+        ExceptionWatchingFile,
         MissingKey, // A key that the system needs is missing from the keystore
         MissingProperty, // A Property that the system requires to start up is missing
         NetworkListener, // NetworkListener.startup threw an exception

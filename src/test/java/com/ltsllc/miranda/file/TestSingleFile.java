@@ -70,7 +70,7 @@ public class TestSingleFile extends TestCase {
         setupDirectory();
         setupRandomFile();
 
-        this.singleFile = new ClusterFile(TEST_FILE, getMockWriter(), getQueue());
+        this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
     }
 
     @After
@@ -125,7 +125,7 @@ public class TestSingleFile extends TestCase {
         nodeElementList.add(nodeElement);
 
         setupFile(TEST_FILE, nodeElementList);
-        this.singleFile = new ClusterFile(TEST_FILE, getMockWriter(), getQueue());
+        this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
 
         getSingleFile().load();
 
@@ -133,7 +133,7 @@ public class TestSingleFile extends TestCase {
         setupDirectory();
         makeFile(TEST_FILENAME2, data);
 
-        ClusterFile clusterFile = new ClusterFile(TEST_FILENAME2, getMockWriter(), getQueue());
+        ClusterFile clusterFile = new ClusterFile(TEST_FILENAME2, getMockReader(), getMockWriter(), getQueue());
         clusterFile.load();
 
         assert (getSingleFile().equals(clusterFile));
@@ -147,7 +147,7 @@ public class TestSingleFile extends TestCase {
 
         setupFile(TEST_FILE, nodeElementList);
 
-        this.singleFile = new ClusterFile(TEST_FILE, getMockWriter(), getQueue());
+        this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
 
         getSingleFile().load();
 
@@ -185,7 +185,7 @@ public class TestSingleFile extends TestCase {
         List<NodeElement> nodeElementList2 = new ArrayList<NodeElement>();
         nodeElementList2.add(notPresent);
 
-        ClusterFile clusterFile2 = new ClusterFile(TEST_FILE, getMockWriter(), getQueue(), nodeElementList2);
+        ClusterFile clusterFile2 = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue(), nodeElementList2);
 
         assert (getSingleFile().equals(getSingleFile()));
         assert (!getSingleFile().equals(nodeElementList2));

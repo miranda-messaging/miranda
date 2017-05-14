@@ -14,6 +14,7 @@ public class Panic extends Exception {
         DoesNotUnderstand, // A state received a message it does not know how to process
         DoesNotUnderstandNetworkMessage, // A state received a network message it does not know how to process
         EncryptException, // trying to encrypt a file prior to writing failed.  We effectively cannot write anything
+        ErrorLoadingFile,
         ExceptionCreatingSslContext,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
@@ -42,6 +43,11 @@ public class Panic extends Exception {
     }
 
     private Reasons reason;
+    private String additionalInfo;
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
 
     public Reasons getReason() {
         return reason;
@@ -63,5 +69,12 @@ public class Panic extends Exception {
         super (message);
 
         this.reason = reason;
+    }
+
+    public Panic (String message, Reasons reason, String additionalInfo) {
+        super(message);
+
+        this.reason = reason;
+        this.additionalInfo = additionalInfo;
     }
 }

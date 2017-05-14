@@ -17,6 +17,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
+import sun.security.tools.keytool.CertAndKeyGen;
 
 import javax.crypto.KeyGenerator;
 import javax.net.ssl.KeyManagerFactory;
@@ -357,9 +358,9 @@ public class Utils {
         return bootstrap;
     }
 
-    public static SslContext createClientSslContext(String filename, String password)
+    public static SslContext createClientSslContext(String filename, String truststorePassword)
             throws IOException, GeneralSecurityException {
-        TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, password);
+        TrustManagerFactory trustManagerFactory = createTrustManagerFactory(filename, truststorePassword);
 
         SslContext sslContext = SslContextBuilder
                 .forClient()
@@ -420,4 +421,5 @@ public class Utils {
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return publicKeyToPemString(keyPair.getPublic());
     }
+
 }

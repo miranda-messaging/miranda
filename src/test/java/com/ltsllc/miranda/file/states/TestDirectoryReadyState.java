@@ -2,8 +2,7 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.file.MirandaFile;
-import com.ltsllc.miranda.file.states.DirectoryReadyState;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;

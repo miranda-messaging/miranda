@@ -24,6 +24,16 @@ abstract public class Network extends Consumer {
 
     private Map<Integer, Handle> integerToHandle = new HashMap<Integer, Handle>();
     private int handleCount = 0;
+    private String truststorePassword;
+    private String keystorePassword;
+
+    public String getKeystorePassword() {
+        return keystorePassword;
+    }
+
+    public String getTruststorePassword() {
+        return truststorePassword;
+    }
 
     public Network () {
         super("network");

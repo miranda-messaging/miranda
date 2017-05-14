@@ -5,7 +5,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ExpiredMessage;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.PerishableFile;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import org.apache.log4j.Logger;
 
 import java.util.HashSet;

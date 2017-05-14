@@ -1,10 +1,13 @@
-package com.ltsllc.miranda.miranda;
+package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
+import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.messages.DoneSynchronizingMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.NameVersion;

@@ -1,7 +1,9 @@
-package com.ltsllc.miranda.miranda;
+package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
+import com.ltsllc.miranda.miranda.messages.DecrementPanicCountMessage;
 
 /**
  * Created by Clark on 3/8/2017.

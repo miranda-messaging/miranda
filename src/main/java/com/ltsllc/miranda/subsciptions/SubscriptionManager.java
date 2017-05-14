@@ -1,11 +1,9 @@
 package com.ltsllc.miranda.subsciptions;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Manager;
+import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.*;
@@ -32,7 +30,7 @@ public class SubscriptionManager extends Manager<Subscription, Subscription> {
     }
 
     public SubscriptionManager(String filename) {
-        super("subscription manager", new SubscriptionsFile(Miranda.getInstance().getWriter(), filename));
+        super("subscription manager", new SubscriptionsFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename));
 
         SubscriptionManagerReadyState readyState = new SubscriptionManagerReadyState(this);
         setCurrentState(readyState);

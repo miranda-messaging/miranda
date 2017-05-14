@@ -1,11 +1,10 @@
 package com.ltsllc.miranda.user;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Manager;
+import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
@@ -36,7 +35,7 @@ public class UserManager extends Manager<User, User> {
     }
 
     public UserManager(String filename) {
-        super("users", new UsersFile(Miranda.getInstance().getWriter(), filename));
+        super("users", new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename));
 
         UserManagerReadyState userManagerReadyState = new UserManagerReadyState(this);
         setCurrentState(userManagerReadyState);

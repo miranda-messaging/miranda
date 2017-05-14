@@ -3,12 +3,11 @@ package com.ltsllc.miranda.session;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.session.messages.*;
 import com.ltsllc.miranda.session.operations.CreateSessionOperation;
-import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 
 
 /**

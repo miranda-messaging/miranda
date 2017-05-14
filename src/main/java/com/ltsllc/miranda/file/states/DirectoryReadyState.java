@@ -4,7 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.file.MirandaFile;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import org.apache.log4j.Logger;
 
 /**

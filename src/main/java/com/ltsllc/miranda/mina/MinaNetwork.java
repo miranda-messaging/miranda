@@ -65,16 +65,23 @@ public class MinaNetwork extends Network {
         this.node = node;
     }
 
-    public MinaNetwork () {
+    public MinaNetwork (String keystorePassword, String truststorePassword) {
         NetworkReadyState readyState = new NetworkReadyState(this);
         setCurrentState(readyState);
         setInstance(this);
+
+        setUseEncryption(true);
     }
 
     public MinaNetwork (boolean useEncryption) {
-        this();
+        NetworkReadyState networkReadyState = new NetworkReadyState(this);
+        setCurrentState(networkReadyState);
+
+        setInstance(this);
+
         setUseEncryption(useEncryption);
     }
+
 
     public SslFilter createSslFilter () throws NetworkException {
         if (!getUseEncryption())
@@ -86,9 +93,8 @@ public class MinaNetwork extends Network {
             MirandaProperties properties = Miranda.properties;
 
             String filename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String password = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
 
-            KeyStore keyStore = Utils.loadKeyStore(filename, password);
+            KeyStore keyStore = Utils.loadKeyStore(filename, getTruststorePassword());
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
 

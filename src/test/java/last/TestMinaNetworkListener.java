@@ -83,7 +83,6 @@ public class TestMinaNetworkListener extends TestCase {
 
         setuplog4j();
         super.setup();
-        setupMirandaFactory();
         setupTrustStore();
         setupKeyStore();
 

@@ -6,12 +6,9 @@ import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
-import com.ltsllc.miranda.deliveries.SystemDeliveriesFile;
-import com.ltsllc.miranda.event.SystemMessages;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
-import com.ltsllc.miranda.miranda.ShuttingDownState;
-import com.ltsllc.miranda.miranda.StopMessage;
+import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.NameVersion;
@@ -21,7 +18,7 @@ import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
-import com.ltsllc.miranda.miranda.GetVersionsMessage;
+import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
@@ -69,18 +66,6 @@ public class NodeReadyState extends NodeState {
             case GetFile: {
                 GetFileWireMessage getFileWireMessage = (GetFileWireMessage) networkMessage.getWireMessage();
                 nextState = processGetFileWireMessage(getFileWireMessage);
-                break;
-            }
-
-            case GetMessages: {
-                GetMessagesWireMessage getMessagesWireMessage = (GetMessagesWireMessage) networkMessage.getWireMessage();
-                nextState = processGetMessageWireMessage(getMessagesWireMessage);
-                break;
-            }
-
-            case GetDeliveries: {
-                GetDeliveriesWireMessage getDeliveriesWireMessage = (GetDeliveriesWireMessage) networkMessage.getWireMessage();
-                nextState = processGetDeliveriesWireMessage(getDeliveriesWireMessage);
                 break;
             }
 
@@ -287,18 +272,6 @@ public class NodeReadyState extends NodeState {
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), stopWireMessage);
 
         return new NodeStoppingState(getNode());
-    }
-
-    public State processGetMessageWireMessage(GetMessagesWireMessage getMessagesWireMessage) {
-        SystemMessages.getInstance().sendGetSystemMessages(getNode().getQueue(), this, getMessagesWireMessage.getFilename());
-
-        return this;
-    }
-
-    public State processGetDeliveriesWireMessage(GetDeliveriesWireMessage getDeliveriesWireMessage) {
-        SystemDeliveriesFile.getInstance().sendGetSystemDeliveries(getNode().getQueue(), this, getDeliveriesWireMessage.getFilename());
-
-        return this;
     }
 
     public State processNewSessionWireMessage(NewSessionWireMessage newSessionWireMessage) {

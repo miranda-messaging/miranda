@@ -48,23 +48,21 @@ public class SocketNetworkListener extends NetworkListener {
         return handleQueue;
     }
 
-    private SSLContext createSslContext () throws GeneralSecurityException, IOException {
+    private SSLContext createSslContext (String keystorePassword, String truststorePassword) throws GeneralSecurityException, IOException {
         MirandaProperties properties = Miranda.getInstance().properties;
         MirandaProperties.EncryptionModes encryptionMode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SSLContext sslContext = null;
 
         if (encryptionMode == MirandaProperties.EncryptionModes.LocalCA) {
             String trustStoreFileneame = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            String trustStorePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-            KeyStore keyStore = Utils.loadKeyStore(trustStoreFileneame, trustStorePassword);
+            KeyStore keyStore = Utils.loadKeyStore(trustStoreFileneame, truststorePassword);
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
 
             String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            keyStore = Utils.loadKeyStore(serverKeyStoreFilename, serverKeyStorePassword);
+            keyStore = Utils.loadKeyStore(serverKeyStoreFilename, keystorePassword);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, serverKeyStorePassword.toCharArray());
+            keyManagerFactory.init(keyStore, keystorePassword.toCharArray());
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());

@@ -8,6 +8,7 @@ import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.*;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
@@ -30,22 +31,22 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
     private BlockingQueue<Message> cluster;
 
-    public static ClusterFile getInstance () {
+    public static ClusterFile getInstance() {
         return ourInstance;
     }
 
-    public static synchronized void initialize(String filename, Writer writer, BlockingQueue<Message> cluster) {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
         if (null == ourInstance) {
-            ourInstance = new ClusterFile(filename, writer, cluster);
+            ourInstance = new ClusterFile(filename, reader, writer, cluster);
             ourInstance.start();
         }
     }
 
-    public static void reset () {
+    public static void reset() {
         ourInstance = null;
     }
 
-    public static void setLogger (Logger logger) {
+    public static void setLogger(Logger logger) {
         ClusterFile.logger = logger;
     }
 
@@ -53,8 +54,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return cluster;
     }
 
-    public ClusterFile (String filename, Writer writer, BlockingQueue<Message> cluster) {
-        super(filename, writer);
+    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
+        super(filename, reader, writer);
 
         this.cluster = cluster;
 
@@ -62,8 +63,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
         setCurrentState(clusterFileReadyState);
     }
 
-    public ClusterFile (String filename, Writer writer, BlockingQueue<Message> queue, List<NodeElement> nodeElementList) {
-        super(filename, writer);
+    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue, List<NodeElement> nodeElementList) {
+        super(filename, reader, writer);
 
         this.cluster = queue;
 
@@ -85,7 +86,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public void addNode (NodeElement nodeElement) {
+    public void addNode(NodeElement nodeElement) {
         boolean dirty = false;
 
         if (!containsElement(nodeElement)) {
@@ -110,9 +111,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public boolean containsElement (NodeElement nodeElement) {
-        if (null == getData())
-        {
+    public boolean containsElement(NodeElement nodeElement) {
+        if (null == getData()) {
             logger.error("null data");
             setData(new ArrayList<NodeElement>());
         }
@@ -126,16 +126,17 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public List buildEmptyList () {
+    public List buildEmptyList() {
         return new ArrayList<NodeElement>();
     }
 
-    public Type listType () {
-        return new TypeToken<ArrayList<NodeElement>>(){}.getType();
+    public Type listType() {
+        return new TypeToken<ArrayList<NodeElement>>() {
+        }.getType();
     }
 
 
-    public boolean contains (NodeElement nodeElement) {
+    public boolean contains(NodeElement nodeElement) {
         for (NodeElement element : getData()) {
             if (element.equals(nodeElement))
                 return true;
@@ -145,7 +146,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public void merge (List<NodeElement> list) {
+    public void merge(List<NodeElement> list) {
         boolean changed = false;
         List<NodeElement> adds = new ArrayList<NodeElement>();
 
@@ -158,13 +159,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
         if (changed) {
             getData().addAll(adds);
-
-            try {
-                updateVersion();
-            } catch (NoSuchAlgorithmException e) {
-                Panic panic = new Panic ("Exception trying to calculate version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
-                Miranda.getInstance().panic(panic);
-            }
+            updateVersion();
 
             WriteMessage writeMessage = new WriteMessage(getFilename(), getBytes(), getQueue(), this);
             send(writeMessage, getWriterQueue());
@@ -175,7 +170,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public void updateNode (NodeElement nodeElement) {
+    public void updateNode(NodeElement nodeElement) {
         for (NodeElement element : getData()) {
             if (element.equals(nodeElement)) {
                 element.setLastConnected(nodeElement.getLastConnected());
@@ -191,7 +186,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
      * @param nodeElement
      * @return
      */
-    public NodeElement matchingNode (NodeElement nodeElement) {
+    public NodeElement matchingNode(NodeElement nodeElement) {
         for (NodeElement element : getData())
             if (element.equals(nodeElement))
                 return element;
@@ -200,33 +195,26 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public void updateNode (NodeElement oldValue, NodeElement newValue) {
+    public void updateNode(NodeElement oldValue, NodeElement newValue) {
         if (!contains(oldValue)) {
-            logger.error ("asked to update a node that we don't contain");
+            logger.error("asked to update a node that we don't contain");
             return;
         }
 
         NodeElement current = matchingNode(oldValue);
         current.update(newValue);
-
-        try {
-            updateVersion();
-        } catch (NoSuchAlgorithmException e) {
-            Panic panic = new Panic("Exception calculating new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
-            Miranda.getInstance().panic(panic);
-        }
-
+        updateVersion();
         write();
     }
 
-    public void checkForDuplicates () {
+    public void checkForDuplicates() {
         List<NodeElement> duplicates = new ArrayList<NodeElement>();
 
         for (NodeElement current : getData()) {
             for (NodeElement nodeElement : getData()) {
                 if (current.equivalent(nodeElement) && current != nodeElement) {
                     duplicates.add(current);
-                    logger.warn (nodeElement.getDns() + " is duplicated");
+                    logger.warn(nodeElement.getDns() + " is duplicated");
                 }
             }
         }

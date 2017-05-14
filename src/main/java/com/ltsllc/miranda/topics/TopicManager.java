@@ -1,10 +1,8 @@
 package com.ltsllc.miranda.topics;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Manager;
+import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.miranda.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
@@ -32,7 +30,7 @@ public class TopicManager extends Manager<Topic, Topic> {
     }
 
     public TopicManager (String filename) {
-        super("topics manager", new TopicsFile(filename, Miranda.getInstance().getWriter()));
+        super("topics manager", new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter()));
 
         TopicManagerReadyState topicManagerReadyState = new TopicManagerReadyState(this);
         setCurrentState(topicManagerReadyState);
