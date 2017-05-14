@@ -1,8 +1,11 @@
 package com.ltsllc.miranda.subsciptions;
 
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.Session;
@@ -14,7 +17,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/12/2017.
  */
-public class SubscriptionManager extends Manager<Subscription, Subscription> {
+public class SubscriptionManager extends StandardManager<Subscription> {
     public static final String NAME = "SubscriptionManager";
 
     public List<Subscription> getSubscriptions() {
@@ -30,10 +33,15 @@ public class SubscriptionManager extends Manager<Subscription, Subscription> {
     }
 
     public SubscriptionManager(String filename) {
-        super("subscription manager", new SubscriptionsFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename));
+        super("subscription manager", filename);
+    }
 
-        SubscriptionManagerReadyState readyState = new SubscriptionManagerReadyState(this);
-        setCurrentState(readyState);
+    public SingleFile createFile(String filename) {
+        return new SubscriptionsFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
+    }
+
+    public State createStartState () {
+        return new SubscriptionManagerStartState(this);
     }
 
     public void sendOwnerQueryMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {

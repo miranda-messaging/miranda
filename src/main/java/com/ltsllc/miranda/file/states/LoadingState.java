@@ -7,6 +7,9 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.sun.net.httpserver.Authenticator;
+
+import static com.ltsllc.miranda.reader.ReadResponseMessage.Results.Success;
 
 /**
  * Created by Clark on 5/14/2017.
@@ -44,7 +47,7 @@ abstract public class LoadingState extends State {
     public State processReadResponseMessage (ReadResponseMessage readResponseMessage) {
         State nextState = getSingleFile().getCurrentState();
 
-        if (readResponseMessage.getResult() == Results.Success) {
+        if (readResponseMessage.getResult() == Success) {
             getSingleFile().processData(readResponseMessage.getData());
             nextState = getReadyState();
         } else {

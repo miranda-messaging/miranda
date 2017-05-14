@@ -204,6 +204,7 @@ public class Startup extends State {
             startWriter();
             startReader();
             defineFactory();
+            startNetwork();
             definePanicPolicy();
             startServices();
             startSubsystems();
@@ -510,11 +511,8 @@ public class Startup extends State {
         network.start();
 
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-
-        Cluster.initialize(filename, Miranda.getInstance().getReader(), Writer.getInstance(), network);
-        miranda.setCluster(Cluster.getInstance());
-
-        Cluster.getInstance().sendConnect(null, this);
+        Cluster cluster = new Cluster(miranda.getNetwork(), filename);
+        miranda.setCluster(cluster);
 
         SessionManager sessionManager = new SessionManager();
         sessionManager.start();
@@ -551,10 +549,6 @@ public class Startup extends State {
         try {
             Miranda miranda = Miranda.getInstance();
             MirandaProperties properties = Miranda.properties;
-
-            String clusterFile = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-            ClusterFile.initialize(clusterFile, getReader(), getWriter(), Cluster.getInstance().getQueue());
-            miranda.setCluster(Cluster.getInstance());
 
             String filename = properties.getProperty(MirandaProperties.PROPERTY_USERS_FILE);
             UserManager userManager = new UserManager(filename);
@@ -679,5 +673,15 @@ public class Startup extends State {
         networkListener.start();
 
         getMiranda().setNetworkListener(networkListener);
+    }
+
+    public void startNetwork () {
+        try {
+            Network network = getFactory().buildNetwork();
+            Miranda.getInstance().setNetwork(network);
+        } catch (MirandaException e) {
+            StartupPanic startupPanic = new StartupPanic("Exception starting network", e, StartupPanic.StartupReasons.ExceptionStartingNetwork);
+            Miranda.getInstance().panic(startupPanic);
+        }
     }
 }

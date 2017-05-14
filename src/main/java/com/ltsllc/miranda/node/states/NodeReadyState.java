@@ -210,7 +210,7 @@ public class NodeReadyState extends NodeState {
     public State processVersionsWireMessage(VersionsWireMessage versionsWireMessage) {
         VersionsMessage versionsMessage = new VersionsMessage(getNode().getQueue(), this, versionsWireMessage.getVersions());
 
-        Consumer.staticSend(versionsMessage, Cluster.getInstance().getQueue());
+        Consumer.staticSend(versionsMessage, Miranda.getInstance().getCluster().getQueue());
 
         return this;
     }
@@ -227,7 +227,7 @@ public class NodeReadyState extends NodeState {
         GetFileMessage getFileMessage = new GetFileMessage(getNode().getQueue(), this, getFileWireMessage.getFile());
 
         if (getFileWireMessage.getFile().equalsIgnoreCase(Cluster.NAME)) {
-            send(Cluster.getInstance().getQueue(), getFileMessage);
+            send(Miranda.getInstance().getCluster().getQueue(), getFileMessage);
         } else if (getFileWireMessage.getFile().equalsIgnoreCase(UsersFile.FILE_NAME)) {
             send(UsersFile.getInstance().getQueue(), getFileMessage);
         } else if (getFileWireMessage.getFile().equalsIgnoreCase(TopicsFile.FILE_NAME)) {

@@ -10,6 +10,7 @@ import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
@@ -75,6 +76,15 @@ public class Miranda extends Consumer {
     private Writer writer;
     private Reader reader;
     private List<String> waitingOn;
+    private Network network;
+
+    public Network getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 
     public static InputStream getInputStream() {
         return inputStream;

@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.file.messages.Notification;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
@@ -100,12 +101,11 @@ public class TestCluster extends TestCase {
         setupTrustStore();
 
         deleteFile(CLUSTER_FILENAME);
-        Cluster.reset();
 
         this.mockClusterFile = mock(ClusterFile.class);
         this.mockNode = mock(Node.class);
 
-        this.cluster = new Cluster(getMockNetwork(), mockClusterFile);
+        this.cluster = new Cluster(getMockNetwork(), "testFile");
 
         this.mockNode2 = mock(Node.class);
     }
@@ -131,10 +131,8 @@ public class TestCluster extends TestCase {
     @Test
     public void testInitialize() {
         putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        com.ltsllc.miranda.cluster.Cluster.reset();
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        com.ltsllc.miranda.cluster.Cluster.initialize(CLUSTER_FILENAME, getMockReader(), getMockWriter(), getMockNetwork());
-        this.cluster = com.ltsllc.miranda.cluster.Cluster.getInstance();
+        this.cluster = Miranda.getInstance().getCluster();
 
         ClusterFile temp = ClusterFile.getInstance();
         assert(null != temp);

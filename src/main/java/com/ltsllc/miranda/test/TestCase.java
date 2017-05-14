@@ -733,7 +733,7 @@ public class TestCase {
         if (null == getMockCluster())
             this.mockCluster = mock(Cluster.class);
 
-        Cluster.setInstance(getMockCluster());
+        Miranda.getInstance().setCluster(mockCluster);
     }
 
     public void setupMirandaFactory (String keystorePassword, String truststorePassword) {

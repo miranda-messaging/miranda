@@ -95,7 +95,7 @@ public class NettyNetworkListener extends NetworkListener {
             NettyHandle nettyHandle = new NettyHandle(Network.getInstance().getQueue(), socketChannel);
             int handle = Network.getInstance().newConnection(nettyHandle);
 
-            Node node = new Node(handle, Network.getInstance(), Cluster.getInstance());
+            Node node = new Node(handle, Network.getInstance(), Miranda.getInstance().getCluster());
             node.start();
 
             NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);

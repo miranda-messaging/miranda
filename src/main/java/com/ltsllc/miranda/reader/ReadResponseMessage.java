@@ -12,6 +12,12 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 5/14/2017.
  */
 public class ReadResponseMessage extends Message {
+    public enum Results {
+        Success,
+        FileDoesNotExist,
+        ExceptionReadingFile
+    }
+
     private String additionalInfo;
     private String filename;
     private Results result;

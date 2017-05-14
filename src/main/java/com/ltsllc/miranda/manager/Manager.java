@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Updateable;
@@ -13,6 +14,8 @@ import java.util.List;
  * Created by Clark on 4/26/2017.
  */
 public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends Consumer {
+    abstract public SingleFile<F> createFile (String filename);
+    abstract public State createStartState ();
     abstract public E convert (F f);
 
     private SingleFile<F> file;
@@ -23,7 +26,15 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
     }
 
     public void setFile (SingleFile<F> file) {
+        if (this.file != null)
+            this.file.removeSubscriber(getQueue());
+
         this.file = file;
+
+        if (this.file != null) {
+            FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this, null);
+            this.file.addSubscriber(getQueue(), fileLoadedMessage);
+        }
     }
 
     public List<E> getData() {
@@ -45,14 +56,13 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
         return newList;
     }
 
-    public Manager (String name, SingleFile<F> singleFile) {
+    public Manager (String name, String filename) {
         super(name);
 
-        this.file = singleFile;
+        setFile(createFile(filename));
 
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
-        this.file.addSubscriber(getQueue(), fileLoadedMessage);
-        this.file.start();
+        State startState = createStartState();
+        setCurrentState(startState);
 
         List<E> newList = new ArrayList<E>();
         this.data = newList;

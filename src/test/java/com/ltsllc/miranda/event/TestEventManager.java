@@ -1,11 +1,8 @@
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.writer.Writer;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
 

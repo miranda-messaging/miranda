@@ -1,12 +1,16 @@
 package com.ltsllc.miranda.topics;
 
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
 import com.ltsllc.miranda.topics.states.TopicManagerReadyState;
+import com.ltsllc.miranda.topics.states.TopicManagerStartState;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicManager extends Manager<Topic, Topic> {
+public class TopicManager extends StandardManager <Topic> {
     public static final String NAME = "TopicManager";
 
     private static Logger logger = Logger.getLogger(TopicManager.class);
@@ -30,10 +34,15 @@ public class TopicManager extends Manager<Topic, Topic> {
     }
 
     public TopicManager (String filename) {
-        super("topics manager", new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter()));
+        super("topics manager", filename);
+    }
 
-        TopicManagerReadyState topicManagerReadyState = new TopicManagerReadyState(this);
-        setCurrentState(topicManagerReadyState);
+    public SingleFile<Topic> createFile (String filename) {
+        return new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter());
+    }
+
+    public State createStartState () {
+        return new TopicManagerStartState(this);
     }
 
     public void sendGetTopicsMessage (BlockingQueue<Message> senderQueue, Object sender) {

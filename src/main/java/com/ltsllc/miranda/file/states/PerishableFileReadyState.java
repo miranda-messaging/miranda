@@ -5,6 +5,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ExpiredMessage;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.PerishableFile;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import org.apache.log4j.Logger;
 
@@ -55,6 +56,6 @@ public class PerishableFileReadyState extends State {
 
     private void notifyContainer(Set<Perishable> expired) {
         ExpiredMessage expiredMessage = new ExpiredMessage (getContainer().getQueue(), this, expired);
-        send(Cluster.getInstance().getQueue(), expiredMessage);
+        send(Miranda.getInstance().getCluster().getQueue(), expiredMessage);
     }
 }

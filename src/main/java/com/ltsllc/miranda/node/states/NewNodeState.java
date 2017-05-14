@@ -209,7 +209,7 @@ public class NewNodeState extends NodeState {
                 getFileResponseWireMessage.getRequester(), getFileResponseWireMessage.getContents());
 
         if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(Cluster.NAME)) {
-            send(Cluster.getInstance().getQueue(), getFileResponseMessage);
+            send(Miranda.getInstance().getCluster().getQueue(), getFileResponseMessage);
         } else if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(UsersFile.FILE_NAME)) {
             send(UsersFile.getInstance().getQueue(), getFileResponseMessage);
         } else if (getFileResponseWireMessage.getRequester().equalsIgnoreCase(TopicsFile.FILE_NAME)) {

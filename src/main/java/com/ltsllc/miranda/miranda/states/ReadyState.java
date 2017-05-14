@@ -268,7 +268,7 @@ public class ReadyState extends State {
     private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) {
         GetVersionMessage getVersionMessage = new GetVersionMessage(getMiranda().getQueue(), this, getMiranda().getQueue());
 
-        send(Cluster.getInstance().getQueue(), getVersionMessage);
+        send(Miranda.getInstance().getCluster().getQueue(), getVersionMessage);
         send(UsersFile.getInstance().getQueue(), getVersionMessage);
         send(TopicsFile.getInstance().getQueue(), getVersionMessage);
         send(SubscriptionsFile.getInstance().getQueue(), getVersionMessage);

@@ -6,8 +6,10 @@ import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.Manager;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -53,8 +55,6 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     private Logger logger = Logger.getLogger(Cluster.class);
 
-    private static Cluster ourInstance;
-
     private Network network;
     private boolean clusterFileResponded;
 
@@ -66,41 +66,11 @@ public class Cluster extends Manager<Node, NodeElement> {
         this.clusterFileResponded = clusterFileResponded;
     }
 
-    public static synchronized void initialize(String filename, Reader reader, Writer writer, Network network) {
-        if (null == ourInstance) {
-            BlockingQueue<Message> clusterQueue = new LinkedBlockingQueue<Message>();
 
-            ClusterFile.initialize(filename, reader, writer, clusterQueue);
-
-            ourInstance = new Cluster(network, ClusterFile.getInstance());
-            ourInstance.start();
-        }
-    }
-
-    public static Cluster getInstance() {
-        return ourInstance;
-    }
-
-    // for testing
-    public static void setInstance (Cluster cluster) {
-        ourInstance = cluster;
-    }
-
-    public static synchronized void reset() {
-        ourInstance = null;
-    }
-
-    public Cluster(Network network, ClusterFile clusterFile) {
-        super("cluster", clusterFile);
-
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
-        clusterFile.addSubscriber(getQueue(),fileLoadedMessage);
-
-        ClusterStartState clusterStartState = new ClusterStartState(this);
-        setCurrentState(clusterStartState);
+    public Cluster(Network network, String filename) {
+        super(NAME, filename);
 
         this.network = network;
-        clusterFile.start();
     }
 
     public ClusterFile getClusterFile() {
@@ -113,6 +83,14 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     public Network getNetwork() {
         return network;
+    }
+
+    public SingleFile<NodeElement> createFile (String filename) {
+        return new ClusterFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), getQueue());
+    }
+
+    public State createStartState () {
+        return new ClusterStartState(this);
     }
 
     public boolean contains (NodeElement nodeElement) {

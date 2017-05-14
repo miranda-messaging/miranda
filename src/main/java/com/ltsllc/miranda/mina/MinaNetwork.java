@@ -151,14 +151,14 @@ public class MinaNetwork extends Network {
     public Handle createHandle (Object o) {
         MinaIncomingHandler minaIncomingHandler = (MinaIncomingHandler) o;
         int handle = nextHandle();
-        Node node = new Node(handle, this, Cluster.getInstance());
+        Node node = new Node(handle, this, Miranda.getInstance().getCluster());
         setNode(node);
 
         MinaIncomingHandle minaIncomingHandle = new MinaIncomingHandle(node.getQueue(), minaIncomingHandler);
         setHandle(handle, minaIncomingHandle);
 
         NewNodeMessage newNodeMessage = new NewNodeMessage(getQueue(), this, node);
-        send(newNodeMessage, Cluster.getInstance().getQueue());
+        send (newNodeMessage, Miranda.getInstance().getCluster().getQueue());
 
         return minaIncomingHandle;
     }

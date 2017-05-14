@@ -53,7 +53,7 @@ public class ClusterStatus extends Consumer {
     public ClusterStatusObject getClusterStatus () {
         setClusterStatusObject(null);
 
-        Cluster.getInstance().sendGetStatus(getQueue(), this);
+        Miranda.getInstance().getCluster().sendGetStatus(getQueue(), this);
         try {
             synchronized (this) {
                 wait(1000);

@@ -1,9 +1,12 @@
 package com.ltsllc.miranda.user;
 
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
@@ -12,6 +15,7 @@ import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.user.states.UserManagerReadyState;
+import com.ltsllc.miranda.user.states.UserManagerStartState;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -21,7 +25,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 3/31/2017.
  */
-public class UserManager extends Manager<User, User> {
+public class UserManager extends StandardManager<User> {
     public static final String NAME = "user manager";
 
     private static Logger logger = Logger.getLogger(UserManager.class);
@@ -35,10 +39,15 @@ public class UserManager extends Manager<User, User> {
     }
 
     public UserManager(String filename) {
-        super("users", new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename));
+        super("users", filename);
+    }
 
-        UserManagerReadyState userManagerReadyState = new UserManagerReadyState(this);
-        setCurrentState(userManagerReadyState);
+    public State createStartState () {
+        return new UserManagerStartState(this);
+    }
+
+    public SingleFile<User> createFile (String filename) {
+        return new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 
     public void start () {
