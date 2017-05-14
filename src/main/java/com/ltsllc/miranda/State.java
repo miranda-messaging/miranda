@@ -4,6 +4,8 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import org.apache.log4j.Logger;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -17,6 +19,11 @@ public abstract class State {
 
     private Consumer container;
     private boolean started = false;
+    private List<Message> deferredQueue;
+
+    public State () {
+        this.deferredQueue = new LinkedList<Message>();
+    }
 
     public boolean stated () {
         return started;
@@ -118,5 +125,17 @@ public abstract class State {
 
         StopState stopState = StopState.getInstance();
         return stopState;
+    }
+
+    public State ignore (Message message) {
+        logger.info (this + " ignoring " + message);
+
+        return getContainer().getCurrentState();
+    }
+
+    public State defer (Message message) {
+        deferredQueue.add(message);
+
+        return getContainer().getCurrentState();
     }
 }

@@ -12,8 +12,9 @@ public class NodeAddedMessage extends Message {
     private Node node;
 
 
-    public NodeAddedMessage(BlockingQueue<Message> sender, Node node) {
-        super(Subjects.NodeAdded, null, null);
+    public NodeAddedMessage(BlockingQueue<Message> senderQueue, Object sender, Node node) {
+        super(Subjects.NodeAdded, senderQueue, sender);
+
         this.node = node;
     }
 
