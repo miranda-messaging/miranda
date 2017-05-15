@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.SessionServlet;
+import com.ltsllc.miranda.servlet.session.SessionServlet;
 import com.ltsllc.miranda.servlet.holder.ServletHolder;
 import com.ltsllc.miranda.servlet.holder.UserHolder;
 import com.ltsllc.miranda.servlet.objects.RequestObject;

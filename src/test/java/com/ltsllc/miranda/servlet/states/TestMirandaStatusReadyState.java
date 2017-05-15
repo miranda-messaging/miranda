@@ -5,7 +5,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.servlet.miranda.MirandaStatusReadyState;
 import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
-import com.ltsllc.miranda.servlet.StatusServlet;
+import com.ltsllc.miranda.servlet.status.StatusServlet;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
 import com.ltsllc.miranda.test.TestCase;

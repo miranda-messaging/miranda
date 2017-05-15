@@ -1,12 +1,10 @@
 package com.ltsllc.miranda.servlet.misc;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.SessionServlet;
+import com.ltsllc.miranda.servlet.session.SessionServlet;
 import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.user.User;
-import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

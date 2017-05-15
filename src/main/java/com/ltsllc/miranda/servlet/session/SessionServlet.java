@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.session;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;

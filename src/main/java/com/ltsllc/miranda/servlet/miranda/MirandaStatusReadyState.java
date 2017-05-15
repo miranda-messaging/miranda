@@ -4,7 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
-import com.ltsllc.miranda.servlet.StatusServlet;
+import com.ltsllc.miranda.servlet.status.StatusServlet;
 
 /**
  * Created by Clark on 3/9/2017.

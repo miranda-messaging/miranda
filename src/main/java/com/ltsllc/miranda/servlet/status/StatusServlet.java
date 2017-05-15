@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.status;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
