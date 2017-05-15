@@ -40,6 +40,8 @@ public class ReaderReadyState extends State {
         ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this, result.result,
                 result.data);
 
+        readMessage.reply(response);
+
         return getReader().getCurrentState();
     }
 }

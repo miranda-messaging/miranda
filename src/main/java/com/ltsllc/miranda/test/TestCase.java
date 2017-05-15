@@ -321,6 +321,7 @@ public class TestCase {
         this.mockMirandaFactory = null;
         this.mockFileWatcher  = null;
         this.mockFileWatcherService = null;
+        this.mockReader = null;
     }
 
     public void setup () {
@@ -349,6 +350,7 @@ public class TestCase {
         this.mockMirandaFactory = mock(MirandaFactory.class);
         this.mockFileWatcher = mock(FileWatcher.class);
         this.mockFileWatcherService = mock(FileWatcherService.class);
+        this.mockReader = mock(Reader.class);
     }
 
     public void setupMockNetwork () {
