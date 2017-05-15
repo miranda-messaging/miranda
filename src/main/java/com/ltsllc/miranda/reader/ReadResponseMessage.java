@@ -15,7 +15,8 @@ public class ReadResponseMessage extends Message {
     public enum Results {
         Success,
         FileDoesNotExist,
-        ExceptionReadingFile
+        ExceptionReadingFile,
+        Unknown
     }
 
     private String additionalInfo;
@@ -39,10 +40,31 @@ public class ReadResponseMessage extends Message {
         return additionalInfo;
     }
 
-    public ReadResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, byte[] data) {
+    public ReadResponseMessage (BlockingQueue<Message> senderQueue, Object sender, com.ltsllc.miranda.Results result, byte[] data) {
         super(Subjects.ReadResponse, senderQueue, sender);
 
-        this.result = result;
+        switch (result) {
+            case Success: {
+                this.result = Results.Success;
+                break;
+            }
+
+            case FileNotFound: {
+                this.result = Results.FileDoesNotExist;
+                break;
+            }
+
+            case Exception: {
+                this.result = Results.ExceptionReadingFile;
+                break;
+            }
+
+            default: {
+                this.result = Results.Unknown;
+                break;
+            }
+        }
+
         this.data = data;
     }
 

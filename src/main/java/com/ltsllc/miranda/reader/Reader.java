@@ -46,6 +46,9 @@ public class Reader extends Consumer {
         super (NAME);
 
         this.privateKey = privateKey;
+
+        ReaderReadyState readerReadyState = new ReaderReadyState(this);
+        setCurrentState(readerReadyState);
     }
 
     public ReadResult read (String filename) {
