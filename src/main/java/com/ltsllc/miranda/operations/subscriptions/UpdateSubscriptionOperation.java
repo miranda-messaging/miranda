@@ -37,7 +37,7 @@ public class UpdateSubscriptionOperation extends Operation {
     }
 
     public UpdateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) {
-        super("update subscription operation", requester, session);
+        super("update subscription operations", requester, session);
 
         this.subscription = subscription;
         setUserManagerResponded(false);

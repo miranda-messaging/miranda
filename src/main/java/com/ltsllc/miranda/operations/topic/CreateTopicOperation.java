@@ -19,7 +19,7 @@ public class CreateTopicOperation extends Operation {
     }
 
     public CreateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) {
-        super ("create topic operation", requester, session);
+        super ("create topic operations", requester, session);
 
         CreateTopicOperationReadyState readyState = new CreateTopicOperationReadyState(this);
         setCurrentState(readyState);

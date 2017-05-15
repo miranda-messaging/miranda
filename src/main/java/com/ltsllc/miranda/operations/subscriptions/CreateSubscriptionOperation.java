@@ -37,7 +37,7 @@ public class CreateSubscriptionOperation extends Operation {
     }
 
     public CreateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) {
-        super("create subscription operation", requester, session);
+        super("create subscription operations", requester, session);
 
         CreateSubscriptionOperationReadyState readyState = new CreateSubscriptionOperationReadyState(this);
         setCurrentState(readyState);

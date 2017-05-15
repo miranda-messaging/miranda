@@ -27,7 +27,7 @@ public class DeleteUserOperation extends Operation {
     }
 
     public DeleteUserOperation (BlockingQueue<Message> requester, Session session, String user) {
-        super("delete user operation", requester, session);
+        super("delete user operations", requester, session);
 
         DeleteUserOperationReadyState readyState = new DeleteUserOperationReadyState(this);
         setCurrentState(readyState);

@@ -19,7 +19,7 @@ public class CreateUserOperation extends Operation {
     }
 
     public CreateUserOperation (BlockingQueue<Message> requester, Session session, User user) {
-        super("create user operation", requester, session);
+        super("create user operations", requester, session);
 
         CreateUserOperationReadyState readyState = new CreateUserOperationReadyState( this);
         setCurrentState(readyState);

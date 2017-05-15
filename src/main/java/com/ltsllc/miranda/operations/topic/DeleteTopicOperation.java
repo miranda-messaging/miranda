@@ -18,7 +18,7 @@ public class DeleteTopicOperation extends Operation {
     }
 
     public DeleteTopicOperation (BlockingQueue<Message> requester, Session session, String topicName) {
-        super("delete topic operation", requester, session);
+        super("delete topic operations", requester, session);
 
         this.topicName = topicName;
     }

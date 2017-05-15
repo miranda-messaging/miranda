@@ -7,7 +7,7 @@ import com.ltsllc.miranda.Consumer;
  */
 public class AuctionOperation extends Consumer {
     public AuctionOperation () {
-        super("auction operation");
+        super("auction operations");
         AuctionOperationReadyState auctionOperationReadyState = new AuctionOperationReadyState(this);
         setCurrentState(auctionOperationReadyState);
     }

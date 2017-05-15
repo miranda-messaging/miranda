@@ -19,7 +19,7 @@ public class UpdateUserOperation extends Operation {
     }
 
     public UpdateUserOperation (BlockingQueue<Message> requester, Session session, User user) {
-        super("update user operation", requester, session);
+        super("update user operations", requester, session);
 
         UpdateUserOperationReadyState readyState = new UpdateUserOperationReadyState(this);
         setCurrentState(readyState);

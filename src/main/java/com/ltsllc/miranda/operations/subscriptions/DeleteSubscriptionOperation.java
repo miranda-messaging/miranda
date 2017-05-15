@@ -28,7 +28,7 @@ public class DeleteSubscriptionOperation extends Operation {
     }
 
     public DeleteSubscriptionOperation (BlockingQueue<Message> requester, Session session, String subscriptionName) {
-        super("delete subscription operation", requester, session);
+        super("delete subscription operations", requester, session);
 
         this.subscriptionName = subscriptionName;
 

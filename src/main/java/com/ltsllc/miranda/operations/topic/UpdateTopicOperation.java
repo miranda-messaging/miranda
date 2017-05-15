@@ -23,7 +23,7 @@ public class UpdateTopicOperation extends Operation {
     }
 
     public UpdateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) {
-        super("update topic operation", requester, session);
+        super("update topic operations", requester, session);
 
         UpdateTopicOperationReadyState updateTopicOperationReadyState = new UpdateTopicOperationReadyState(this);
         setCurrentState(updateTopicOperationReadyState);
