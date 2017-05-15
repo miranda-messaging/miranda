@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.util;
 
-import com.ltsllc.miranda.servlet.objects.Property;
+import com.ltsllc.miranda.servlet.property.Property;
 import org.apache.log4j.Logger;
 
 import java.io.File;

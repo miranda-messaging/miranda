@@ -2,6 +2,7 @@ package com.ltsllc.miranda.servlet.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.holder.UserHolder;
+import com.ltsllc.miranda.servlet.user.UserHolderReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.GetUsersResponseMessage;

@@ -1,9 +1,9 @@
-package com.ltsllc.miranda.servlet.states;
+package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.holder.UserHolder;
-import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
+import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.user.messages.*;
 
 /**

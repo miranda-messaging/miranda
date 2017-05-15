@@ -1,9 +1,8 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.property;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.servlet.objects.Property;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

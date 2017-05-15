@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.states;
+package com.ltsllc.miranda.servlet.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;

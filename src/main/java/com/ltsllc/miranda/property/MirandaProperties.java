@@ -5,12 +5,10 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
-import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.objects.Property;
+import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.util.Utils;
-import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.*;

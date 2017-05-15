@@ -1,8 +1,9 @@
-package com.ltsllc.miranda.servlet.states;
+package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.holder.SubscriptionHolder;
+import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
 /**

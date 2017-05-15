@@ -5,7 +5,7 @@ import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;

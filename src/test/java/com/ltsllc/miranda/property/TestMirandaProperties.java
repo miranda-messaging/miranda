@@ -2,7 +2,7 @@ package com.ltsllc.miranda.property;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
-import com.ltsllc.miranda.servlet.objects.Property;
+import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.junit.After;

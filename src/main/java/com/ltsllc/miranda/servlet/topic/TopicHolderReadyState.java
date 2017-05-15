@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.states;
+package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;

@@ -2,7 +2,6 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
-import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -12,9 +11,8 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.user.messages.*;
-import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
 import org.apache.log4j.Logger;
 

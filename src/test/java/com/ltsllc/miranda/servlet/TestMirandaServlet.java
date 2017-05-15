@@ -2,8 +2,9 @@ package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.test.TestServlet;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,5 +1,6 @@
-package com.ltsllc.miranda.servlet.objects;
+package com.ltsllc.miranda.servlet.topic;
 
+import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.topics.Topic;
 
 import java.util.List;

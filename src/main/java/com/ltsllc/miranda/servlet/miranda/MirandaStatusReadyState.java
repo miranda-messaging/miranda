@@ -1,9 +1,8 @@
-package com.ltsllc.miranda.servlet.states;
+package com.ltsllc.miranda.servlet.miranda;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.objects.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.servlet.StatusServlet;
 

@@ -1,10 +1,9 @@
 package com.ltsllc.miranda.servlet.holder;
 
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
-import com.ltsllc.miranda.servlet.states.ClusterStatusReadyState;
+import com.ltsllc.miranda.servlet.cluster.ClusterStatusReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

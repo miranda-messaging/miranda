@@ -14,7 +14,7 @@ import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;

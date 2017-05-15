@@ -4,19 +4,11 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.StatusObject;
-import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
-import com.ltsllc.miranda.file.Updateable;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.util.Utils;
-import org.bouncycastle.util.io.pem.PemReader;
 
 import java.io.*;
-import java.rmi.MarshalException;
-import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 
 /**
  * Created by Clark on 1/5/2017.

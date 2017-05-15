@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.servlet.enctypt;
 
-import com.ltsllc.miranda.servlet.MirandaServlet;
+import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

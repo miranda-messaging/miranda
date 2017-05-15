@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.servlet.property.PropertiesServlet;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.junit.Before;

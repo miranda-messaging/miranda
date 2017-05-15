@@ -1,15 +1,10 @@
 package com.ltsllc.miranda.servlet.login;
 
-import com.google.gson.Gson;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.MirandaServlet;
-import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.util.Utils;
-import org.apache.log4j.Logger;
+import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

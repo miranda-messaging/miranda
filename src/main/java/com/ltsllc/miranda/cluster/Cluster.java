@@ -7,16 +7,14 @@ import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.file.SingleFile;
-import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
@@ -31,13 +29,11 @@ import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
-import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**

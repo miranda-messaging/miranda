@@ -1,18 +1,13 @@
 package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.MirandaServlet;
-import com.ltsllc.miranda.servlet.holder.ServletHolder;
 import com.ltsllc.miranda.servlet.holder.TopicHolder;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.TopicsResultObject;
 import com.ltsllc.miranda.topics.Topic;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;

@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.miranda;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

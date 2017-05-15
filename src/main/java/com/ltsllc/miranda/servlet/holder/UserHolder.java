@@ -2,8 +2,7 @@ package com.ltsllc.miranda.servlet.holder;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.objects.UserObject;
-import com.ltsllc.miranda.servlet.states.UserHolderReadyState;
+import com.ltsllc.miranda.servlet.user.UserHolderReadyState;
 import com.ltsllc.miranda.user.User;
 
 import java.util.ArrayList;

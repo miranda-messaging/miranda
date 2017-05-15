@@ -4,20 +4,15 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
 import com.ltsllc.miranda.servlet.login.LoginObject;
-import com.ltsllc.miranda.servlet.login.LoginResult;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
-import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

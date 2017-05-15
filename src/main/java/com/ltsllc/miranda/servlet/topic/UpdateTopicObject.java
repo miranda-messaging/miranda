@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.objects;
+package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.topics.Topic;
 

@@ -1,9 +1,8 @@
-package com.ltsllc.miranda.servlet;
+package com.ltsllc.miranda.servlet.property;
 
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

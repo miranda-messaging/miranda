@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.objects;
+package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.PublicKey;
