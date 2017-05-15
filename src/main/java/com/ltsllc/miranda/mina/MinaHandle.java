@@ -44,8 +44,4 @@ public class MinaHandle extends Handle {
     public void panic () {
         close();
     }
-
-    public void newMessage (WireMessage wireMessage) {
-        deliver(wireMessage);
-    }
 }
