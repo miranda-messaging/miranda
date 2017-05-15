@@ -64,7 +64,7 @@ public class TestMirandaPanicPolicy extends TestCase {
     }
 
     @Test
-    public void testPanicNetworkDoesNotUnderstand () {
+    public void testPanicDoesNotUnderstandNetworkMessage () {
         Panic panic = new Panic("a test", null, Panic.Reasons.DoesNotUnderstandNetworkMessage);
 
         int before = getMirandaPanicPolicy().getPanicCount();
