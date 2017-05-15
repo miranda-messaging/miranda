@@ -743,7 +743,6 @@ public class TestCase {
     }
 
     public void setupMockMiranda () {
-        this.mockMiranda = mock(Miranda.class);
         Miranda.setInstance(mockMiranda);
     }
 

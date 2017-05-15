@@ -14,33 +14,21 @@ import com.ltsllc.miranda.session.Session;
  * Created by Clark on 4/16/2017.
  */
 public class LoginOperationReadyState extends State {
-    private Session session;
-
-    public Session getSession() {
-        return session;
-    }
-
-    public LoginOperation getLoginOperation () {
+    public LoginOperation getLoginOperation() {
         return (LoginOperation) getContainer();
     }
 
-    public LoginOperationReadyState (LoginOperation loginOperation) {
+    public LoginOperationReadyState(LoginOperation loginOperation) {
         super(loginOperation);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage(Message message) {
         State nextState = getLoginOperation().getCurrentState();
 
         switch (message.getSubject()) {
             case GetSessionResponse: {
                 GetSessionResponseMessage getSessionResponseMessage = (GetSessionResponseMessage) message;
                 nextState = processGetSessionResponseMessage(getSessionResponseMessage);
-                break;
-            }
-
-            case CreateSessionResponse: {
-                CreateSessionResponseMessage createSessionResponseMessage = (CreateSessionResponseMessage) message;
-                nextState = processCreateSessionResponseMessage(createSessionResponseMessage);
                 break;
             }
 
@@ -52,11 +40,12 @@ public class LoginOperationReadyState extends State {
         return nextState;
     }
 
-    public State processGetSessionResponseMessage (GetSessionResponseMessage getSessionResponseMessage) {
+    public State processGetSessionResponseMessage(GetSessionResponseMessage getSessionResponseMessage) {
         if (getSessionResponseMessage.getResult() == Results.SessionCreated) {
             Miranda.getInstance().getCluster().sendNewSession(getLoginOperation().getQueue(), this,
                     getSessionResponseMessage.getSession());
         }
+
 
         LoginResponseMessage loginResponseMessage = new LoginResponseMessage(getLoginOperation().getQueue(),
                 this, getSessionResponseMessage.getResult(), getSessionResponseMessage.getSession());
@@ -66,7 +55,7 @@ public class LoginOperationReadyState extends State {
         return StopState.getInstance();
     }
 
-    public State processCreateSessionResponseMessage (CreateSessionResponseMessage createSessionResponseMessage) {
+    public State processCreateSessionResponseMessage(CreateSessionResponseMessage createSessionResponseMessage) {
         Results loginResult;
 
         if (createSessionResponseMessage.getResult() == Results.Success)
