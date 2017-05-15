@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.operations.states;
+package com.ltsllc.miranda.operations;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
