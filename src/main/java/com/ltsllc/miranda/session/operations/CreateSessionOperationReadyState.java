@@ -5,11 +5,8 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.miranda.operations.states.OperationState;
 import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
-
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 4/18/2017.
