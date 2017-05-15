@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.holder.TopicHolder;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 
 import javax.servlet.ServletException;

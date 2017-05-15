@@ -1,6 +1,5 @@
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.servlet.holder.UserHolder;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 
 import javax.servlet.ServletException;

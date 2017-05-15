@@ -1,8 +1,8 @@
-package com.ltsllc.miranda.servlet.holder;
+package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.subscription.SubscriptionHolderReadyState;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
 import java.util.ArrayList;

@@ -1,10 +1,9 @@
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.servlet.holder.UserHolder;
+import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.servlet.user.GetUsersServlet;
 import com.ltsllc.miranda.test.TestServlet;
 import com.ltsllc.miranda.user.User;
-import org.apache.mina.util.byteaccess.ByteArray;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

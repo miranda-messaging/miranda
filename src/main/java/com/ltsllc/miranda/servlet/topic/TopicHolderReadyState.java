@@ -2,13 +2,13 @@ package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.servlet.holder.*;
+import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.topics.messages.*;
 
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicHolderReadyState extends com.ltsllc.miranda.servlet.holder.ServletHolderReadyState {
+public class TopicHolderReadyState extends ServletHolderReadyState {
     public TopicHolder getTopicHolder() {
         return (TopicHolder) getContainer();
     }

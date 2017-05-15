@@ -1,10 +1,9 @@
-package com.ltsllc.miranda.servlet.holder;
+package com.ltsllc.miranda.servlet;
 
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.session.Session;
 import org.apache.log4j.Logger;
 

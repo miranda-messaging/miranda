@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.servlet.holder;
 
+import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 

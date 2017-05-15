@@ -1,9 +1,9 @@
 package com.ltsllc.miranda.servlet.holder;
 
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.topic.TopicHolder;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.topics.Topic;
-import com.ltsllc.miranda.user.messages.CreateUserResponseMessage;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.servlet.misc;
 
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
 import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
@@ -26,7 +27,7 @@ public class ShutdownServlet extends SessionServlet {
         return getSession().getUser().getCategory() == User.UserTypes.Admin;
     }
 
-    public com.ltsllc.miranda.servlet.holder.ServletHolder getServletHolder () {
+    public ServletHolder getServletHolder () {
         return ShutdownHolder.getInstance();
     }
 

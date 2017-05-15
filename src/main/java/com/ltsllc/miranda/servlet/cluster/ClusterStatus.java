@@ -1,10 +1,8 @@
-package com.ltsllc.miranda.servlet.holder;
+package com.ltsllc.miranda.servlet.cluster;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.cluster.ClusterStatusReadyState;
 import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
 
 /**

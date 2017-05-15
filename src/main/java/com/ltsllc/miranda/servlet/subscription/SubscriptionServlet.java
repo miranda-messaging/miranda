@@ -1,8 +1,7 @@
 package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.servlet.session.SessionServlet;
-import com.ltsllc.miranda.servlet.holder.ServletHolder;
-import com.ltsllc.miranda.servlet.holder.SubscriptionHolder;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 

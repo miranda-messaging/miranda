@@ -1,8 +1,8 @@
-package com.ltsllc.miranda.servlet.holder;
+package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.user.UserHolderReadyState;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.user.User;
 
 import java.util.ArrayList;

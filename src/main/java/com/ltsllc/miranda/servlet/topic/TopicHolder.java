@@ -1,8 +1,8 @@
-package com.ltsllc.miranda.servlet.holder;
+package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.topic.TopicHolderReadyState;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.topics.Topic;
 import org.apache.log4j.Logger;
 

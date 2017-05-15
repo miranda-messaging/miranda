@@ -2,10 +2,8 @@ package com.ltsllc.miranda.servlet.login;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.servlet.holder.ServletHolder;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.user.User;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.TimeoutException;

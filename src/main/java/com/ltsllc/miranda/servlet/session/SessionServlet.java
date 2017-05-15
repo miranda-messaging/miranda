@@ -2,7 +2,7 @@ package com.ltsllc.miranda.servlet.session;
 
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.holder.ServletHolder;
+import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;

@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.servlet.misc;
 
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.holder.ServletHolder;
+import com.ltsllc.miranda.servlet.ServletHolder;
 
 import java.util.concurrent.TimeoutException;
 
