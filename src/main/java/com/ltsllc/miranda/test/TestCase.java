@@ -12,6 +12,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.holder.ServletHolder;
 import com.ltsllc.miranda.servlet.objects.NodeStatus;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
@@ -119,6 +120,13 @@ public class TestCase {
 
     @Mock
     private FileWatcherService mockFileWatcherService;
+
+    @Mock
+    private ServletHolder mockServletHolder;
+
+    public ServletHolder getMockServletHolder() {
+        return mockServletHolder;
+    }
 
     public FileWatcherService getMockFileWatcherService() {
         return mockFileWatcherService;
@@ -321,6 +329,7 @@ public class TestCase {
         this.mockFileWatcher  = null;
         this.mockFileWatcherService = null;
         this.mockReader = null;
+        this.mockServletHolder = null;
     }
 
     public void setup () {
@@ -350,6 +359,7 @@ public class TestCase {
         this.mockFileWatcher = mock(FileWatcher.class);
         this.mockFileWatcherService = mock(FileWatcherService.class);
         this.mockReader = mock(Reader.class);
+        this.mockServletHolder = mock(ServletHolder.class);
     }
 
     public void setupMockNetwork () {
