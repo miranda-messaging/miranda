@@ -109,6 +109,7 @@ abstract public class NetworkListener extends Consumer {
 
     public void shutdown () {
         setKeepGoing(false);
+        getThread().interrupt();
         setCurrentState(StopState.getInstance());
     }
 }
