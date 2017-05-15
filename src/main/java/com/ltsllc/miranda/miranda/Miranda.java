@@ -479,4 +479,8 @@ public class Miranda extends Consumer {
     public boolean readyToShutDown () {
         return getWaitingOn().size() < 1;
     }
+
+    public static boolean panicMiranda (Panic panic) {
+        return getInstance().panic(panic);
+    }
 }

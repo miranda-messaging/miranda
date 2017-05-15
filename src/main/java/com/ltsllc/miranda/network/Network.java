@@ -137,13 +137,7 @@ abstract public class Network extends Consumer {
         else if (panic.getReason() == Panic.Reasons.NetworkThreadCrashed)
         {
             Panic newPanic = new Panic(panic.getCause(), Panic.Reasons.Network);
-            boolean decisionPanic = Miranda.getInstance().panic(newPanic);
-
-            if (decisionPanic) {
-                NetworkPanicState panicState = new NetworkPanicState(this);
-                setCurrentState(panicState);
-                return decisionPanic;
-            }
+            Miranda.getInstance().panic(newPanic);
         }
 
         return false;

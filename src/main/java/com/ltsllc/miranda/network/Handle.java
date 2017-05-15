@@ -3,6 +3,7 @@ package com.ltsllc.miranda.network;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.PanicMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
@@ -60,6 +61,18 @@ abstract public class Handle {
         } catch (InterruptedException e) {
             Panic panic = new Panic ("Exception trying to sendToMe mesage", e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.getInstance().panic(panic);
+        }
+    }
+
+    public void sendPanicMessage (BlockingQueue<Message> senderQueue, Object sender, boolean ignoreExceptions) {
+        PanicMessage panicMessage = new PanicMessage(senderQueue, sender);
+        try {
+            getQueue().put(panicMessage);
+        } catch (InterruptedException e) {
+            if (!ignoreExceptions) {
+                Panic panic = new Panic("Exception trying to send message", e, Panic.Reasons.ExceptionSendingMessage);
+                Miranda.getInstance().panic(panic);
+            }
         }
     }
 }
