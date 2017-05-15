@@ -25,6 +25,7 @@ public class StartupPanic extends Panic {
         NullStartState, // The currentState was null for a Consumer when starting
         SendingMessage, // An exception occurred while trying to sendToMe a message
         StartupFailed, // Some sort of error prevented the Startup class from completing
+        Test,
         UncheckedException, // an unchecked exception was thrown during startup
         UndefinedKeystore, // The keystore property was null or empty
         UnrecognizedEncryptionMode,
