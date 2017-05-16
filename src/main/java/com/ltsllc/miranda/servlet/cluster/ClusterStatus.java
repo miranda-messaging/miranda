@@ -3,7 +3,7 @@ package com.ltsllc.miranda.servlet.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.messages.GetStatusResponseMessage;
+import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 
 /**
  * Created by Clark on 3/10/2017.

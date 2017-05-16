@@ -19,7 +19,7 @@ import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.servlet.messages.GetStatusMessage;
+import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.session.*;
