@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Long Term Software LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
@@ -10,6 +26,9 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
+import com.ltsllc.miranda.network.messages.NewConnectionMessage;
+import com.ltsllc.miranda.node.NameVersion;
+import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.operations.login.LoginOperation;
 import com.ltsllc.miranda.operations.subscriptions.CreateSubscriptionOperation;
@@ -21,15 +40,12 @@ import com.ltsllc.miranda.operations.topic.UpdateTopicOperation;
 import com.ltsllc.miranda.operations.user.CreateUserOperation;
 import com.ltsllc.miranda.operations.user.DeleteUserOperation;
 import com.ltsllc.miranda.operations.user.UpdateUserOperation;
-import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.status.StatusObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
-import com.ltsllc.miranda.network.messages.NewConnectionMessage;
-import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
@@ -38,7 +54,10 @@ import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
 import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
 import com.ltsllc.miranda.user.UsersFile;
-import com.ltsllc.miranda.user.messages.*;
+import com.ltsllc.miranda.user.messages.CreateUserMessage;
+import com.ltsllc.miranda.user.messages.DeleteUserMessage;
+import com.ltsllc.miranda.user.messages.LoginMessage;
+import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

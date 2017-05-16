@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Long Term Software LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
@@ -9,16 +25,13 @@ import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.reader.*;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.util.Utils;
-import com.ltsllc.miranda.writer.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

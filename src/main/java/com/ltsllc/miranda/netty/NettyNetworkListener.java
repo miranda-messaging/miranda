@@ -1,19 +1,36 @@
+/*
+ * Copyright 2017 Long Term Software LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ltsllc.miranda.netty;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.StartupPanic;
-import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.network.*;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.JsonParser;
+import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.network.messages.ConnectionClosedMessage;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
-import com.ltsllc.miranda.util.Utils;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.Node;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
+import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.util.Utils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -22,9 +39,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.security.GeneralSecurityException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 

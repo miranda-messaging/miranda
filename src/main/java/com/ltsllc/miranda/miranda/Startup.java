@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Long Term Software LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.*;
@@ -6,22 +22,23 @@ import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.http.HttpServer;
+import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusServlet;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
 import com.ltsllc.miranda.servlet.file.FileServlet;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
 import com.ltsllc.miranda.servlet.login.LoginServlet;
+import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
 import com.ltsllc.miranda.servlet.misc.ShutdownHolder;
 import com.ltsllc.miranda.servlet.misc.ShutdownServlet;
-import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import com.ltsllc.miranda.servlet.property.PropertiesServlet;
 import com.ltsllc.miranda.servlet.property.SetPropertyServlet;
@@ -31,7 +48,6 @@ import com.ltsllc.miranda.servlet.topic.*;
 import com.ltsllc.miranda.servlet.user.*;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.socket.SocketNetwork;
-import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
