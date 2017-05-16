@@ -3,7 +3,7 @@ package com.ltsllc.miranda.servlet.holder;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

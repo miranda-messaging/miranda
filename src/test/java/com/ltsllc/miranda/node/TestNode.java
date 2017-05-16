@@ -2,7 +2,7 @@ package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.ConnectingState;
-import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

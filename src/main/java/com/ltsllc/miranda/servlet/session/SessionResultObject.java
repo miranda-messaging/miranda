@@ -1,4 +1,6 @@
-package com.ltsllc.miranda.servlet.objects;
+package com.ltsllc.miranda.servlet.session;
+
+import com.ltsllc.miranda.servlet.objects.ResultObject;
 
 /**
  * Created by Clark on 4/15/2017.

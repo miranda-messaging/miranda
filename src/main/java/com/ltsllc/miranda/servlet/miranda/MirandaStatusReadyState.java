@@ -3,7 +3,7 @@ package com.ltsllc.miranda.servlet.miranda;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
+import com.ltsllc.miranda.servlet.status.StatusObject;
 import com.ltsllc.miranda.servlet.status.StatusServlet;
 
 /**

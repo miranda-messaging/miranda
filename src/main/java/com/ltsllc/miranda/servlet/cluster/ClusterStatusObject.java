@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.servlet.cluster;
 
-import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.servlet.status.NodeStatus;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,7 @@ import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.*;
-import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.servlet.status.NodeStatus;
 import org.apache.log4j.Logger;
 
 import java.util.Date;

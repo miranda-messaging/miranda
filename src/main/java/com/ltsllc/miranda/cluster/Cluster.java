@@ -15,7 +15,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.objects.NodeStatus;
+import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;

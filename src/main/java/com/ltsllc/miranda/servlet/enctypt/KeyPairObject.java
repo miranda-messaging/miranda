@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.objects;
+package com.ltsllc.miranda.servlet.enctypt;
 
 
 import java.security.PrivateKey;

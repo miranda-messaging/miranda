@@ -1,12 +1,9 @@
 package com.ltsllc.miranda.servlet.miranda;
 
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.servlet.property.Property;
-import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
-import com.ltsllc.miranda.test.ServletHolderRunner;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +54,7 @@ public class TestMirandaStatusReadyState extends TestCase {
 
     @Test
     public void testProcessGetStatusResponseMessage () {
-        com.ltsllc.miranda.servlet.objects.StatusObject statusObject = new com.ltsllc.miranda.servlet.objects.StatusObject(
+        com.ltsllc.miranda.servlet.status.StatusObject statusObject = new com.ltsllc.miranda.servlet.status.StatusObject(
                 null,
                 new ArrayList<Property>(),
                 new ArrayList<NodeElement>()
@@ -70,6 +67,6 @@ public class TestMirandaStatusReadyState extends TestCase {
         State nextState = getReadyState().processMessage(getStatusResponseMessage);
 
         assert (nextState == getReadyState());
-        verify(getMockMirandaStatus(), atLeastOnce()).receivedStatus(Matchers.any(com.ltsllc.miranda.servlet.objects.StatusObject.class));
+        verify(getMockMirandaStatus(), atLeastOnce()).receivedStatus(Matchers.any(com.ltsllc.miranda.servlet.status.StatusObject.class));
     }
 }

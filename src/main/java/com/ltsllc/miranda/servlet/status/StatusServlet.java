@@ -2,7 +2,6 @@ package com.ltsllc.miranda.servlet.status;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

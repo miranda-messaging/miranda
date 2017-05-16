@@ -21,7 +21,7 @@ import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.property.Property;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
+import com.ltsllc.miranda.servlet.status.StatusObject;
 import com.ltsllc.miranda.session.*;
 import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;

@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.objects;
+package com.ltsllc.miranda.servlet.status;
 
 import com.ltsllc.miranda.node.NodeElement;
 
