@@ -71,4 +71,9 @@ public class CommandLine {
 
     public void parse () {
     }
+
+    public void backup () {
+        if (argIndex > 0)
+            argIndex--;
+    }
 }

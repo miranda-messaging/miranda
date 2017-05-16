@@ -23,22 +23,92 @@ import java.util.Properties;
 
 /**
  * The arguments to the program.
- *
  * <p>
- *     Note that the default value for things like the properties filename is
- *     null.  This means it was absent from the arguments.
+ * <p>
+ * Note that the default value for things like the properties filename is
+ * null.  This means it was absent from the arguments.
  * </p>
  */
 public class MirandaCommandLine extends CommandLine {
+    public enum Options {
+        Unknown,
+
+        Debug,
+        LoggingLevel,
+        Log4j,
+        Mode,
+        Password,
+        Properties
+    }
+
+    public static final String OPTION_DEBUGGING_MODE_SHORT = "-d";
+    public static final String OPTION_DEBUGGING_MODE_LONG = "--debug";
+
+    public static final String OPTION_LOGGING_LEVEL_SHORT = "-l";
+    public static final String OPTION_LOGGING_LEVEL_LONG = "--loggingLevel";
+
+    public static final String OPTION_MODE_SHORT = "-m";
+    public static final String OPTION_MODE_LONG = "--mode";
+
+    public static final String OPTION_PASSWORD_SHORT = "-p";
+    public static final String OPTION_PASSWORD_LONG = "--password";
+
+    public static final String OPTION_PROPERTIES_SHORT = "-r";
+    public static final String OPTION_PROPERTIES_LONG = "--properties";
+
+    public static final String OPTION_LOG4J_SHORT = "-4";
+    public static final String OPTION_LOG4J_LONG = "--log4j";
+
+    public static final String USAGE = "miranda [-l <logging level>] [-m <mode>] [-p <password>] [-r <properties file>]";
+
     private static Logger logger = Logger.getLogger(MirandaCommandLine.class);
 
     private String loggingLevel;
     private String log4jFilename;
     private String propertiesFilename;
     private String mirandaMode;
+    private String password;
+    private boolean error;
+
+    public boolean getError () {
+        return error;
+    }
+
+    public void setError (boolean error) {
+        this.error = error;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getLoggingLevel() {
         return loggingLevel;
+    }
+
+    public Options argumentToOption(String argument) {
+        Options option = Options.Unknown;
+
+        if (null == argument)
+            option = Options.Unknown;
+        else if (argument.equals(OPTION_DEBUGGING_MODE_SHORT) || argument.equals(OPTION_DEBUGGING_MODE_LONG))
+            option = Options.Debug;
+        else if (argument.equals(OPTION_LOGGING_LEVEL_SHORT) || argument.equals(OPTION_LOGGING_LEVEL_LONG))
+            option = Options.LoggingLevel;
+        else if (argument.equals(OPTION_MODE_SHORT) || argument.equals(OPTION_MODE_LONG))
+            option = Options.Mode;
+        else if (argument.equals(OPTION_PASSWORD_SHORT) || argument.equals(OPTION_PASSWORD_LONG))
+            option = Options.Password;
+        else if (argument.equals(OPTION_PROPERTIES_SHORT) || argument.equals(OPTION_PROPERTIES_LONG))
+            option = Options.Properties;
+        else if (argument.equals(OPTION_LOG4J_SHORT) || argument.equals(OPTION_LOG4J_LONG))
+            option = Options.Log4j;
+
+        return option;
     }
 
     public void setLoggingLevel(String loggingLevel) {
@@ -48,17 +118,16 @@ public class MirandaCommandLine extends CommandLine {
             this.loggingLevel = MirandaProperties.LoggingLevel.Info.toString();
         else if (
                 loggingLevel.equalsIgnoreCase("warn") || loggingLevel.equalsIgnoreCase("warning")
-                || loggingLevel.equalsIgnoreCase("default")
-        ) {
+                        || loggingLevel.equalsIgnoreCase("default")
+                ) {
             this.loggingLevel = MirandaProperties.LoggingLevel.Warning.toString();
-        }
-        else if (loggingLevel.equalsIgnoreCase("error"))
+        } else if (loggingLevel.equalsIgnoreCase("error"))
             this.loggingLevel = MirandaProperties.LoggingLevel.Error.toString();
         else if (loggingLevel.equalsIgnoreCase("fatal"))
             this.loggingLevel = MirandaProperties.LoggingLevel.Fatal.toString();
         else {
             String level = MirandaProperties.LoggingLevel.Warning.toString();
-            logger.error ("Unknown logging level " + loggingLevel + " setting level to " + level);
+            logger.error("Unknown logging level " + loggingLevel + " setting level to " + level);
             this.loggingLevel = level;
         }
     }
@@ -87,13 +156,13 @@ public class MirandaCommandLine extends CommandLine {
         this.mirandaMode = mirandaMode;
     }
 
-    public MirandaCommandLine (String[] argv) {
+    public MirandaCommandLine(String[] argv) {
         super(argv);
 
         parse();
     }
 
-    public Properties asProperties () {
+    public Properties asProperties() {
         Properties properties = super.asProperties();
 
         if (null != getLog4jFilename())
@@ -105,7 +174,8 @@ public class MirandaCommandLine extends CommandLine {
         return properties;
     }
 
-    public void parse () {
+
+    public void parse() {
         super.parse();
 
 
@@ -113,38 +183,121 @@ public class MirandaCommandLine extends CommandLine {
             setPropertiesFilename(getArgAndAdvance());
         }
 
-        while (hasMoreArgs()) {
-            if (null != getArg() && getArg().equalsIgnoreCase("-mode")) {
-                advance();
+        while (hasMoreArgs() && !getError()) {
+            Options option = argumentToOption(getArg());
+            advance();
 
-                String mode = getArgAndAdvance();
-
-                if (mode.equalsIgnoreCase("normal"))
-                    setMirandaMode(MirandaProperties.MirandaModes.Normal.toString());
-                else if (mode.equalsIgnoreCase("debug"))
-                    setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
-                else {
-                    printUsage();
-                    throw new IllegalArgumentException ("Unknown Mirana mode: " + mode);
-                }
-            } else if (getArg().equalsIgnoreCase("-debug")) {
-                setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
-                setLoggingLevel(MirandaProperties.LoggingLevel.Debug.toString());
-            } else if (getArg().equalsIgnoreCase("-log4j")) {
-                advance();
-
-                if (!hasMoreArgs()) {
-                    throw new IllegalStateException ("Must supply a parameter to -log4j");
+            switch (option) {
+                case Debug: {
+                    processDebug();
+                    break;
                 }
 
-                setLog4jFilename(getArgAndAdvance());
-            } else {
-                System.err.println ("Unrecognized option: " + getArgAndAdvance());
+                case Log4j: {
+                    processLog4j();
+                    break;
+                }
+
+                case LoggingLevel: {
+                    processLoggingLevel();
+                    break;
+                }
+
+                case Mode: {
+                    processMode();
+                    break;
+                }
+
+                case Password: {
+                    processPassword();
+                    break;
+                }
+
+                case Properties: {
+                    processProperties();
+                    break;
+                }
+
+                default: {
+                    backup();
+                    error("Unknown option: " + getArgAndAdvance());
+                    break;
+                }
             }
         }
     }
 
-    public void printUsage () {
-        System.err.println ("usage: miranda [<properties file> [-mode <miranda mode>] [-debug] [-log4j <log4j config file>]]");
+    public void error (String message) {
+        System.err.println (message);
+        System.err.println (USAGE);
+        setError(true);
+    }
+
+    public void processDebug() {
+        setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
+        setLoggingLevel(MirandaProperties.LoggingLevel.Debug.toString());
+    }
+
+    public void processLog4j() {
+        if (hasMoreArgs())
+            setLog4jFilename(getArgAndAdvance());
+        else
+            error("missing log4j properties file argument");
+    }
+
+    public void processMode() {
+        advance();
+
+        String mode = getArgAndAdvance();
+
+        if (mode.equalsIgnoreCase("normal"))
+            setMirandaMode(MirandaProperties.MirandaModes.Normal.toString());
+        else if (mode.equalsIgnoreCase("debug"))
+            setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
+        else {
+            String message = "Unknown mode: " + mode;
+            error (message);
+        }
+    }
+
+    public void processLoggingLevel () {
+        if (!hasMoreArgs()) {
+            error("Missing logging level argument");
+            return;
+        }
+
+        if (getArg().equalsIgnoreCase("debug") || getArg().equalsIgnoreCase("debugging"))
+            this.loggingLevel = MirandaProperties.LoggingLevel.Debug.toString();
+        else if (getArg().equalsIgnoreCase("info") || getArg().equalsIgnoreCase("information"))
+            this.loggingLevel = MirandaProperties.LoggingLevel.Info.toString();
+        else if (
+                getArg().equalsIgnoreCase("warn") || getArg().equalsIgnoreCase("warning")
+                        || getArg().equalsIgnoreCase("default")
+                ) {
+            this.loggingLevel = MirandaProperties.LoggingLevel.Warning.toString();
+        } else if (getArg().equalsIgnoreCase("error"))
+            this.loggingLevel = MirandaProperties.LoggingLevel.Error.toString();
+        else if (getArg().equalsIgnoreCase("fatal"))
+            this.loggingLevel = MirandaProperties.LoggingLevel.Fatal.toString();
+        else {
+            String message = "Unknown logging level: " + getArg() + ". Setting logging level to warning";
+            error(message);
+            this.loggingLevel = MirandaProperties.LoggingLevel.Warning.toString();
+        }
+
+    }
+
+    public void processPassword () {
+        if (hasMoreArgs())
+            setPassword(getArgAndAdvance());
+        else
+            error("Missing password argument");
+    }
+
+    public void processProperties () {
+        if (hasMoreArgs())
+            setPropertiesFilename(getArgAndAdvance());
+        else
+            error ("Missing properties file argument");
     }
 }

@@ -1,0 +1,23 @@
+miranda --- a tool for creating reliable web services
+
+INSTALLATION
+
+To install miranda follow these steps:
+
+1) Download the distribution(s)
+2) Compile miranda
+3) Create a Certificate Authority
+
+Download the distribution(s)
+
+Download miranda from github at
+
+https://github.com/ClarkHobbie/miranda
+
+Compile miranda
+
+miranda use maven for builds.  Compile it with the following command:
+
+mvn package
+
+Assuming everything went OK, you should have

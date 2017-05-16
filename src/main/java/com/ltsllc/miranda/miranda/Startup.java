@@ -486,7 +486,9 @@ public class Startup extends State {
     }
 
     public void processCommandLine() {
-        this.commandLine = getCommandLine();
+        commandLine.parse();
+        if (commandLine.getError())
+            System.exit(-1);
     }
 
 
