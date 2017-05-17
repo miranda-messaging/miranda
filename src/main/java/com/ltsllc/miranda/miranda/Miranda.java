@@ -74,13 +74,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  */
 public class Miranda extends Consumer {
+    public static final String NAME = "miranda";
+
     private static Logger logger = Logger.getLogger(Miranda.class);
     private static Miranda ourInstance;
 
     public static FileWatcherService fileWatcher;
     public static MirandaTimer timer;
     public static MirandaProperties properties;
-    public static MirandaCommandLine commandLine;
     public static MirandaFactory factory;
     public static boolean panicking = false;
     public static InputStream inputStream;
@@ -99,6 +100,15 @@ public class Miranda extends Consumer {
     private Reader reader;
     private List<String> waitingOn;
     private Network network;
+    public MirandaCommandLine commandLine;
+
+    public MirandaCommandLine getCommandLine() {
+        return commandLine;
+    }
+
+    public void setCommandLine(MirandaCommandLine commandLine) {
+        this.commandLine = commandLine;
+    }
 
     public Network getNetwork() {
         return network;
@@ -220,8 +230,13 @@ public class Miranda extends Consumer {
         this.deliveryManager = deliveryManager;
     }
 
-    public Miranda (String[] argv) {
-        super ("miranda");
+    public Miranda (String arguments) {
+        String[] argv = arguments.split(" |\t");
+        basicConstructor(argv);
+    }
+
+    public void basicConstructor (String[] argv) {
+        super.basicConstructor(NAME);
 
         ourInstance = this;
 
@@ -232,6 +247,10 @@ public class Miranda extends Consumer {
         setQueue(queue);
 
         inputStream = System.in;
+    }
+
+    public Miranda (String[] argv) {
+        basicConstructor(argv);
     }
 
     public Miranda () {
@@ -275,6 +294,14 @@ public class Miranda extends Consumer {
         logger.info ("Starting");
         Miranda miranda = new Miranda(argv);
         miranda.start();
+    }
+
+    public void start (String argString) {
+        String[] argv = argString.split(" \t");
+        MirandaCommandLine mirandaCommandLine = new MirandaCommandLine(argv);
+        setCommandLine(mirandaCommandLine);
+
+        start();
     }
 
     public void reset () {

@@ -104,6 +104,10 @@ public class Startup extends State {
     private String keystorePassword;
     private String truststorePassword;
 
+    public String[] getArguments() {
+        return arguments;
+    }
+
     public String getTruststorePassword() {
         return truststorePassword;
     }
@@ -133,7 +137,6 @@ public class Startup extends State {
     }
 
     public PublicKey getPublicKey() {
-
         return publicKey;
     }
 
@@ -177,6 +180,10 @@ public class Startup extends State {
         return commandLine;
     }
 
+    public void setCommandLine (MirandaCommandLine commandLine) {
+        this.commandLine = commandLine;
+    }
+
     public Miranda getMiranda() {
         return (Miranda) getContainer();
     }
@@ -184,11 +191,7 @@ public class Startup extends State {
     public Startup(Miranda miranda, String[] argv) {
         super(miranda);
 
-        this.commandLine = new MirandaCommandLine(argv);
-    }
-
-    public String[] getArguments() {
-        return arguments;
+        this.arguments = argv;
     }
 
     public void setArguments(String[] argv) {
@@ -280,9 +283,14 @@ public class Startup extends State {
             Miranda.getInstance().panic(startupPanic);
         }
 
-        System.out.println("Please enter the keystore password: ");
-        Scanner scanner = new Scanner(Miranda.getInputStream());
-        String password = scanner.nextLine();
+        String password = getCommandLine().getPassword();
+
+        if (null == password) {
+            System.out.println("Please enter the keystore password: ");
+            Scanner scanner = new Scanner(Miranda.getInputStream());
+            password = scanner.nextLine();
+        }
+
         if (password != null) {
             password = password.trim();
         }
@@ -464,8 +472,6 @@ public class Startup extends State {
 
         Miranda.timer = new MirandaTimer();
         Miranda.timer.start();
-
-        Miranda.commandLine = getCommandLine();
     }
 
     private static class LocalRunnable implements Runnable {
@@ -486,7 +492,14 @@ public class Startup extends State {
     }
 
     public void processCommandLine() {
+        MirandaCommandLine commandLine = null;
+        if (getMiranda().getCommandLine() == null) {
+            commandLine = new MirandaCommandLine(getArguments());
+            setCommandLine(commandLine);
+        }
+
         commandLine.parse();
+
         if (commandLine.getError())
             System.exit(-1);
     }

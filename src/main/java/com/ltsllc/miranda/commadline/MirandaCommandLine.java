@@ -158,8 +158,6 @@ public class MirandaCommandLine extends CommandLine {
 
     public MirandaCommandLine(String[] argv) {
         super(argv);
-
-        parse();
     }
 
     public Properties asProperties() {
@@ -185,6 +183,7 @@ public class MirandaCommandLine extends CommandLine {
 
         while (hasMoreArgs() && !getError()) {
             Options option = argumentToOption(getArg());
+
             advance();
 
             switch (option) {
@@ -246,8 +245,6 @@ public class MirandaCommandLine extends CommandLine {
     }
 
     public void processMode() {
-        advance();
-
         String mode = getArgAndAdvance();
 
         if (mode.equalsIgnoreCase("normal"))

@@ -633,7 +633,7 @@ public class TestCase {
     }
 
     public void setupMiranda () {
-        new Miranda();
+        new Miranda("-p whatever");
     }
 
     public static void setupTimer () {

@@ -92,16 +92,25 @@ public abstract class Subsystem implements Runnable,Comparer {
         this.started = started;
     }
 
+    public Subsystem () {}
     public Subsystem (String name) {
-        this(name, new LinkedBlockingQueue<Message>());
+        basicConstructor(name, new LinkedBlockingQueue<Message>());
     }
 
     public Subsystem (String name, BlockingQueue<Message> queue) {
+        basicConstructor(name, queue);
+    }
+
+    public void basicConstructor (String name, BlockingQueue<Message> queue) {
+        if (null == queue)
+            queue = new LinkedBlockingQueue<Message>();
+
         this.started = false;
         this.stopped = false;
         this.name = name;
         this.queue = queue;
     }
+
     /**
      * Start the subsystem.
      *

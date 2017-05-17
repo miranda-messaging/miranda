@@ -60,11 +60,17 @@ public class Consumer extends Subsystem implements Comparer {
     }
 
     public Consumer(String name) {
-        super(name);
+        basicConstructor(name);
     }
 
     public Consumer(String name, BlockingQueue<Message> queue) {
-        super(name, queue);
+        basicConstructor(name, queue);
+    }
+
+    public Consumer () {}
+
+    public void basicConstructor (String name) {
+        super.basicConstructor(name, null);
     }
 
 
