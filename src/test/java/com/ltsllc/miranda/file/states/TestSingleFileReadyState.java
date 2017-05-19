@@ -126,27 +126,6 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessAddSubscriberMessage () {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        Notification notification = new Notification(null, this);
-        AddSubscriberMessage addSubscriberMessage = new AddSubscriberMessage(queue, this, notification);
-
-        getClusterFileReadyState().processMessage(addSubscriberMessage);
-
-        verify(getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class), Matchers.eq(notification));
-    }
-
-    @Test
-    public void testProcessRemoveSubscriber () {
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        RemoveSubscriberMessage removeSubscriberMessage = new RemoveSubscriberMessage(queue, this);
-
-        getClusterFileReadyState().processMessage(removeSubscriberMessage);
-
-        verify(getMockClusterFile(), atLeastOnce()).removeSubscriber(Matchers.eq(queue));
-    }
-
-    @Test
     public void testProcessAddObjectsMessage () {
         SecureRandom secureRandom = new SecureRandom();
         ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);

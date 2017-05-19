@@ -263,12 +263,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
 
     @Override
-    public List<Perishable> getPerishables() {
-        return new ArrayList<Perishable>(getClusterFile().getData());
-    }
-
-
-    @Override
     public String toString() {
         return "ReadyState";
     }

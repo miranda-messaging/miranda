@@ -30,7 +30,6 @@ public class Message implements Perishable {
     public enum Subjects {
         Auction,
         AddObjects,
-        AddSubscriber,
         AddSession,
         Ballot,
         CheckSession,
@@ -71,6 +70,7 @@ public class Message implements Perishable {
         ExceptionDuringScanMessage,
         Expired,
         FileChanged,
+        FileDoesNotExist,
         FileLoaded,
         GarbageCollection,
         GetDeliveries,
@@ -133,7 +133,6 @@ public class Message implements Perishable {
         OwnerQueryResponse,
         Panic,
         RemoveObjects,
-        RemoveSubscriber,
         RemoteVersion,
         Read,
         ReadResponse,

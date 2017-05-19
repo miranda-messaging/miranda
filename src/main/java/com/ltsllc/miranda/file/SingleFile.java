@@ -42,9 +42,7 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
-
     abstract public Type listType();
-
     abstract public void checkForDuplicates();
 
 
@@ -84,6 +82,19 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
 
     public void setData(List<E> list) {
         this.data = list;
+    }
+
+    public void setData (byte[] data) {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+        InputStreamReader inputStreamReader = null;
+
+        try {
+            inputStreamReader = new InputStreamReader(byteArrayInputStream);
+            data = getGson().fromJson(inputStreamReader, listType());
+        } catch (Exception e) {
+            Panic panic = new Panic("Exception loading list", e, Panic.Reasons.ExceptionLoadingFile);
+            Miranda.panicMiranda(panic);
+        }
     }
 
     private boolean execptionOnLoadIsFatal = false;
@@ -150,7 +161,8 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     }
 
 
-    public boolean contains(E e) {
+    public boolean contains(Object o) {
+        E e = (E) o;
         for (E contained : getData()) {
             if (contained.equals(e))
                 return true;
@@ -226,17 +238,8 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         }
     }
 
-    public void sendAddSubscriberMessage(BlockingQueue<Message> senderQueue, Object sender, Notification notification) {
-        AddSubscriberMessage addSubscriberMessage = new AddSubscriberMessage(senderQueue, sender, notification);
-        sendToMe(addSubscriberMessage);
-    }
-
-    public void sendRemoveSubscriberMessage(BlockingQueue<Message> senderQueue, Object sender) {
-        RemoveSubscriberMessage removeSubscriberMessage = new RemoveSubscriberMessage(senderQueue, sender);
-    }
-
-    public void addSubscriber(BlockingQueue<Message> subscriberQueue, Notification notification) {
-        Subscriber subscriber = new Subscriber(subscriberQueue, notification);
+    public void addSubscriber(BlockingQueue<Message> subscriberQueue) {
+        Subscriber subscriber = new Subscriber(subscriberQueue);
         getSubscribers().add(subscriber);
     }
 
@@ -247,10 +250,20 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         }
     }
 
-    public void fireFileLoaded() {
+    public void fireMessage (Message message) {
         for (Subscriber subscriber : getSubscribers()) {
-            subscriber.notifySubscriber(getData());
+            subscriber.notifySubscriber(message);
         }
+    }
+    public void fireFileLoaded() {
+        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(getQueue(), this, getData());
+        fireMessage(fileLoadedMessage);
+    }
+
+    public void fireFileDoesNotExist () {
+        FileDoesNotExistMessage fileDoesNotExistMessage = new FileDoesNotExistMessage(getQueue(), this,
+                getFilename());
+        fireMessage(fileDoesNotExistMessage);
     }
 
     public void start() {

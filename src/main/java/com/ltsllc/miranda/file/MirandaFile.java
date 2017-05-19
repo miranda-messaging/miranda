@@ -102,6 +102,8 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return ourGson;
     }
 
+    public MirandaFile () {}
+
     public MirandaFile(String filename, Reader reader, Writer writer) {
         super("file");
 

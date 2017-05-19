@@ -27,6 +27,7 @@ import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -36,14 +37,9 @@ import java.util.List;
 /**
  * Created by Clark on 2/10/2017.
  */
-abstract public class SingleFileReadyState extends MirandaFileReadyState {
-    abstract public Version getVersion();
+abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     abstract public Type getListType();
-    abstract public void write();
-    abstract public boolean contains(Object o);
-    abstract public void add(Object o);
     abstract public String getName();
-    abstract public List<Perishable> getPerishables();
 
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
     private static Gson ourGson = new Gson();
@@ -97,18 +93,6 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
                 break;
             }
 
-            case AddSubscriber: {
-                AddSubscriberMessage addSubscriberMessage = (AddSubscriberMessage) message;
-                nextState = processAddSubscriberMessage(addSubscriberMessage);
-                break;
-            }
-
-            case RemoveSubscriber: {
-                RemoveSubscriberMessage removeSubscriberMessage = (RemoveSubscriberMessage) message;
-                nextState = processRemoveSubscriberMessage(removeSubscriberMessage);
-                break;
-            }
-
             case AddObjects: {
                 AddObjectsMessage addObjectsMessage = (AddObjectsMessage) message;
                 nextState = processAddObjectsMessage(addObjectsMessage);
@@ -154,9 +138,10 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
     }
 
     public void merge (List list) {
-        for (Object o : list) {
-            if (!contains(o))
-                add(o);
+        List<E> newList = (List<E>) list;
+        for (E e : newList) {
+            if (!contains(e))
+                add(e);
         }
     }
 
@@ -197,18 +182,6 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
         return singleFileStoppingState;
     }
 
-    public State processAddSubscriberMessage (AddSubscriberMessage addSubscriberMessage) {
-        getFile().addSubscriber(addSubscriberMessage.getSender(), addSubscriberMessage.getNotification());
-
-        return getFile().getCurrentState();
-    }
-
-    public State processRemoveSubscriberMessage (RemoveSubscriberMessage removeSubscriberMessage) {
-        getFile().removeSubscriber(removeSubscriberMessage.getSender());
-
-        return getFile().getCurrentState();
-    }
-
     public State processAddObjectsMessage (AddObjectsMessage addObjectsMessage) {
         getFile().addObjects(addObjectsMessage.getObjects());
 
@@ -225,5 +198,24 @@ abstract public class SingleFileReadyState extends MirandaFileReadyState {
         getFile().removeObjects(removeObjectsMessage.getObjects());
 
         return getFile().getCurrentState();
+    }
+
+    public void write() {
+        byte[] buffer = getFile().getBytes();
+        WriteMessage writeMessage = new WriteMessage(getFile().getFilename(), buffer, getFile().getQueue(), this);
+        send(getFile().getWriterQueue(), writeMessage);
+    }
+
+    public Version getVersion () {
+        return getFile().getVersion();
+    }
+
+    public boolean contains (Object o) {
+        E e = (E) o;
+        return getFile().contains(e);
+    }
+
+    public void add (E element) {
+        getFile().getData().add(element);
     }
 }

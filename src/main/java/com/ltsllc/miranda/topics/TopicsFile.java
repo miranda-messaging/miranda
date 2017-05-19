@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.topics.states.TopicsFileReadyState;
+import com.ltsllc.miranda.topics.states.TopicsFileStartingState;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -56,8 +57,9 @@ public class TopicsFile extends SingleFile<Topic> {
 
     public TopicsFile(String filename, Reader reader, Writer writer) {
         super(filename, reader, writer);
-        TopicsFileReadyState topicsFileReadyState = new TopicsFileReadyState(this);
-        setCurrentState(topicsFileReadyState);
+
+        TopicsFileStartingState topicsFileStartingState = new TopicsFileStartingState(this);
+        setCurrentState(topicsFileStartingState);
     }
 
     public TopicsFile () {

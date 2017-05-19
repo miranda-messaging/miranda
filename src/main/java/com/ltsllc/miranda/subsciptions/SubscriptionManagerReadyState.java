@@ -20,6 +20,8 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.manager.ManagerReadyState;
+import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
@@ -29,7 +31,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/12/2017.
  */
-public class SubscriptionManagerReadyState extends State {
+public class SubscriptionManagerReadyState extends StandardManagerReadyState<Subscription> {
     public SubscriptionManager getSubscriptionManager () {
         return (SubscriptionManager) getContainer();
     }
@@ -45,12 +47,6 @@ public class SubscriptionManagerReadyState extends State {
             case OwnerQuery: {
                 OwnerQueryMessage ownerQueryMessage = (OwnerQueryMessage) message;
                 nextState = processOwnerQueryMessage (ownerQueryMessage);
-                break;
-            }
-
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
                 break;
             }
 
@@ -81,12 +77,6 @@ public class SubscriptionManagerReadyState extends State {
             case DeleteSubscription: {
                 DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) message;
                 nextState = processDeleteSubscriptionMessage (deleteSubscriptionMessage);
-                break;
-            }
-
-            case FileLoaded: {
-                FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
-                nextState = processFileLoadedMessage (fileLoadedMessage);
                 break;
             }
 

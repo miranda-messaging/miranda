@@ -14,32 +14,42 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.event;
+package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.file.states.MirandaFileReadyState;
+import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Clark on 2/19/2017.
+ * Created by Clark on 5/18/2017.
  */
-public class EventsFileReadyState extends SingleFileReadyState<Event> {
-    public static final String NAME = "events file";
+public class DeliveriesFileReadyState extends SingleFileReadyState {
+    public static final String NAME = "deliveries file";
 
-    public Type getListType () {
-        return new TypeToken<List<Event>>(){}.getType();
+    public DeliveriesFile getDeliveriesFile () {
+        return (DeliveriesFile) getContainer();
     }
 
     public String getName () {
         return NAME;
     }
 
-    public EventsFileReadyState (EventsFile eventsFile) {
-        super(eventsFile);
+    public DeliveriesFileReadyState (DeliveriesFile deliveriesFile) {
+        super(deliveriesFile);
     }
+
+    public Type getListType () {
+        return new TypeToken<List<Delivery>> () {}.getType();
+    }
+
+    public List<Perishable> getPerishables() {
+        return new ArrayList<Perishable>(getDeliveriesFile().getData());
+    }
+
 
 
 }

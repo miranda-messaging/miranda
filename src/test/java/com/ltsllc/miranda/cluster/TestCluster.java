@@ -135,8 +135,7 @@ public class TestCluster extends TestCase {
     public void testConstructor () {
         assert (null != getCluster().getClusterFile());
         assert (getCluster().getCurrentState() instanceof ClusterStartState);
-        verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class),
-                Matchers.any(Notification.class));
+        verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class));
     }
 
     /**

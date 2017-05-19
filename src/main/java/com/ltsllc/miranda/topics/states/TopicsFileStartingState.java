@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.file.messages;
+package com.ltsllc.miranda.topics.states;
 
-import com.ltsllc.miranda.Message;
-
-import java.util.concurrent.BlockingQueue;
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.states.SingleFileStartingState;
+import com.ltsllc.miranda.topics.TopicsFile;
 
 /**
- * Created by Clark on 3/31/2017.
+ * Created by Clark on 5/18/2017.
  */
-public class RemoveSubscriberMessage extends Message {
-    public RemoveSubscriberMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        super (Subjects.RemoveSubscriber, senderQueue, sender);
+public class TopicsFileStartingState extends SingleFileStartingState {
+    public TopicsFile getTopicsFile () {
+        return (TopicsFile) getContainer();
+    }
+
+    public TopicsFileStartingState (TopicsFile topicsFile) {
+        super(topicsFile);
+    }
+
+    public State getReadyState () {
+        return new TopicsFileReadyState(getTopicsFile());
     }
 }

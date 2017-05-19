@@ -16,30 +16,22 @@
 
 package com.ltsllc.miranda.event;
 
-import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.file.states.MirandaFileReadyState;
-import com.ltsllc.miranda.file.states.SingleFileReadyState;
-
-import java.lang.reflect.Type;
-import java.util.List;
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.states.SingleFileStartingState;
 
 /**
- * Created by Clark on 2/19/2017.
+ * Created by Clark on 5/18/2017.
  */
-public class EventsFileReadyState extends SingleFileReadyState<Event> {
-    public static final String NAME = "events file";
-
-    public Type getListType () {
-        return new TypeToken<List<Event>>(){}.getType();
+public class EventsFileStartingState extends SingleFileStartingState {
+    public EventsFile getEventsFile () {
+        return (EventsFile) getContainer();
     }
 
-    public String getName () {
-        return NAME;
-    }
-
-    public EventsFileReadyState (EventsFile eventsFile) {
+    public EventsFileStartingState (EventsFile eventsFile) {
         super(eventsFile);
     }
 
-
+    public State getReadyState () {
+        return new EventsFileReadyState(getEventsFile());
+    }
 }

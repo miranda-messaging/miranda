@@ -49,6 +49,9 @@ public class SubscriptionManager extends StandardManager<Subscription> {
 
     public SubscriptionManager(String filename) {
         super("subscription manager", filename);
+
+        SubscriptionManagerStartState subscriptionManagerStartState = new SubscriptionManagerStartState(this);
+        setCurrentState(subscriptionManagerStartState);
     }
 
     public SingleFile createFile(String filename) {
@@ -148,11 +151,6 @@ public class SubscriptionManager extends StandardManager<Subscription> {
         }
 
         return result;
-    }
-
-    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
-        sendToMe(garbageCollectionMessage);
     }
 
     public Subscription convert (Subscription subscription) {

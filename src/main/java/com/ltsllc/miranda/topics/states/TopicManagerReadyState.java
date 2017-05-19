@@ -21,6 +21,8 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.ManagerReadyState;
+import com.ltsllc.miranda.manager.StandardManager;
+import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryResponseMessage;
@@ -36,7 +38,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicManagerReadyState extends ManagerReadyState<Topic, Topic> {
+public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
     public TopicManager getTopicManager() {
         return (TopicManager) getContainer();
     }
@@ -49,12 +51,6 @@ public class TopicManagerReadyState extends ManagerReadyState<Topic, Topic> {
         State nextState = getTopicManager().getCurrentState();
 
         switch (message.getSubject()) {
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
-                break;
-            }
-
             case CreateTopic: {
                 CreateTopicMessage createTopicMessage = (CreateTopicMessage) message;
                 nextState = processCreateTopicMessage(createTopicMessage);
@@ -82,12 +78,6 @@ public class TopicManagerReadyState extends ManagerReadyState<Topic, Topic> {
             case GetTopics: {
                 GetTopicsMessage getTopicsMessage = (GetTopicsMessage) message;
                 nextState = processGetTopicsMessage(getTopicsMessage);
-                break;
-            }
-
-            case FileLoaded: {
-                FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
-                nextState = processFileLoadedMessage(fileLoadedMessage);
                 break;
             }
 

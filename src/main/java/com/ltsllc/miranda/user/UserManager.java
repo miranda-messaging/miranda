@@ -64,13 +64,6 @@ public class UserManager extends StandardManager<User> {
         return new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 
-    public void start () {
-        super.start();
-
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this);
-        getUsersFile().sendAddSubscriberMessage(getQueue(), this, fileLoadedMessage);
-    }
-
     public void garbageCollectUsers () {
         List<User> expired = new ArrayList<User>();
 
@@ -197,11 +190,6 @@ public class UserManager extends StandardManager<User> {
     public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
         CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, null, user);
         sendToMe(createUserMessage);
-    }
-
-    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
-        sendToMe(garbageCollectionMessage);
     }
 
     public User convert (User user) {

@@ -124,12 +124,6 @@ public class UsersFileReadyState extends SingleFileReadyState {
         return this;
     }
 
-    public void write() {
-        byte[] buffer = getUsersFile().getBytes();
-        WriteMessage writeMessage = new WriteMessage(getUsersFile().getFilename(), buffer, getUsersFile().getQueue(), this);
-        send(getUsersFile().getWriterQueue(), writeMessage);
-    }
-
 
     public Type getListType() {
         return new TypeToken<List<User>> () {}.getType();
@@ -162,11 +156,5 @@ public class UsersFileReadyState extends SingleFileReadyState {
     @Override
     public String getName() {
         return "users";
-    }
-
-
-    @Override
-    public List<Perishable> getPerishables() {
-        return new ArrayList<Perishable>(getUsersFile().getData());
     }
 }

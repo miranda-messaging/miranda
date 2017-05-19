@@ -28,6 +28,7 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UsersFileReadyState;
+import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
@@ -57,8 +58,8 @@ public class UsersFile extends SingleFile<User> {
     public UsersFile (com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) {
         super(filename, reader, writer);
 
-        UsersFileReadyState usersFileReadyState = new UsersFileReadyState(this);
-        setCurrentState(usersFileReadyState);
+        UsersFileStartingState usersFileStartingState = new UsersFileStartingState(this);
+        setCurrentState(usersFileStartingState);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setPrettyPrinting();

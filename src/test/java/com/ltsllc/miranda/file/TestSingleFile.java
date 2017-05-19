@@ -207,9 +207,9 @@ public class TestSingleFile extends TestCase {
         assert (!getSingleFile().equals(nodeElementList2));
     }
 
-    public boolean contains (List<Subscriber> subscribers, BlockingQueue<Message> queue, Notification notification) {
+    public boolean contains (List<Subscriber> subscribers, BlockingQueue<Message> queue) {
         for (Subscriber subscriber : subscribers) {
-            if (subscriber.getQueue() == queue && subscriber.getNotification() == notification)
+            if (subscriber.getQueue() == queue)
                 return true;
         }
 
@@ -219,21 +219,19 @@ public class TestSingleFile extends TestCase {
     @Test
     public void testAddSubscriber () {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        Notification notification = new Notification(null, this);
 
-        getSingleFile().addSubscriber(queue, notification);
+        getSingleFile().addSubscriber(queue);
 
-        assert (contains(getSingleFile().getSubscribers(), queue, notification));
+        assert (contains(getSingleFile().getSubscribers(), queue));
     }
 
     @Test
     public void testRemoveSubscriber () {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        Notification notification = new Notification(null, this);
 
         getSingleFile().removeSubscriber(queue);
 
-        assert (!contains(getSingleFile().getSubscribers(), queue, notification));
+        assert (!contains(getSingleFile().getSubscribers(), queue));
     }
 
     public static final String TEST_FILENAME3 = "testfile";

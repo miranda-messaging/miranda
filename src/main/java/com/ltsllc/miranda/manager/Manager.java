@@ -17,14 +17,18 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.file.messages.Notification;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 4/26/2017.
@@ -58,7 +62,7 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
 
         if (this.file != null) {
             FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this, null);
-            this.file.addSubscriber(getQueue(), fileLoadedMessage);
+            this.file.addSubscriber(getQueue());
         }
     }
 
@@ -85,8 +89,7 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
         super(name);
 
         SingleFile<F> file = createFile(filename);
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(getQueue(), this, null);
-        file.addSubscriber(getQueue(), fileLoadedMessage);
+        file.addSubscriber(getQueue());
         setFile(file);
         file.start();
 
@@ -105,8 +108,11 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
 
         List<E> newList = new ArrayList<E>();
         this.data = newList;
+    }
 
-
+    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
+        sendToMe(garbageCollectionMessage);
     }
 
     public void performGarbageCollection () {

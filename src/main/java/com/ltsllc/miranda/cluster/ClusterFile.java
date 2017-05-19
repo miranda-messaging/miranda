@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
+import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
@@ -72,8 +73,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
         this.cluster = cluster;
 
-        ClusterFileReadyState clusterFileReadyState = new ClusterFileReadyState(this);
-        setCurrentState(clusterFileReadyState);
+        ClusterFileStartingState clusterFileStartingState = new ClusterFileStartingState(this);
+        setCurrentState(clusterFileStartingState);
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue, List<NodeElement> nodeElementList) {

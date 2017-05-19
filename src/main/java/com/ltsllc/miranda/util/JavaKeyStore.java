@@ -30,6 +30,10 @@ import java.security.cert.Certificate;
 public class JavaKeyStore {
     private KeyStore keyStore;
 
+    public JavaKeyStore (KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
+
     public KeyStore getKeyStore() {
         return keyStore;
     }

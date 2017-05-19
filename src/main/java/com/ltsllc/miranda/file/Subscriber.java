@@ -28,37 +28,18 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Subscriber {
     private BlockingQueue<Message> queue;
-    private Notification notification;
 
     public BlockingQueue<Message> getQueue() {
         return queue;
     }
 
-    public Notification getNotification() {
-        return notification;
-    }
-
-    public Subscriber (BlockingQueue<Message> queue, Notification notification) {
+    public Subscriber (BlockingQueue<Message> queue) {
         this.queue = queue;
-        this.notification = notification;
     }
 
-    public void notifySubscriber () {
-        getNotification().setData(null);
-
+    public void notifySubscriber (Message message) {
         try {
-            getQueue().put(getNotification());
-        } catch (InterruptedException e) {
-            Panic panic = new Panic("Interrupted while trying to notify suscriber", e, Panic.Reasons.ExceptionSendingMessage);
-            Miranda.getInstance().panic(panic);
-        }
-    }
-
-    public void notifySubscriber (Object data) {
-        getNotification().setData(data);
-
-        try {
-            getQueue().put(getNotification());
+            getQueue().put(message);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Interrupted while trying to notify suscriber", e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.getInstance().panic(panic);

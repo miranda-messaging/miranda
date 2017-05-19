@@ -52,8 +52,8 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
     public SubscriptionsFile (Reader reader, Writer writer, String filename) {
         super(filename, reader, writer);
 
-        SubscriptionsFileReadyState subscriptionsFileReadyState = new SubscriptionsFileReadyState(this);
-        setCurrentState(subscriptionsFileReadyState);
+        SubscriptionsFileStartingState subscriptionsFileStartingState = new SubscriptionsFileStartingState(this);
+        setCurrentState(subscriptionsFileStartingState);
     }
 
     public Type getBasicType () {

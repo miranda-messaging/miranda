@@ -38,7 +38,8 @@ public class MirandaCommandLine extends CommandLine {
         Log4j,
         Mode,
         Password,
-        Properties
+        Properties,
+        TrustorePassword
     }
 
     public static final String OPTION_DEBUGGING_MODE_SHORT = "-d";
@@ -59,7 +60,10 @@ public class MirandaCommandLine extends CommandLine {
     public static final String OPTION_LOG4J_SHORT = "-4";
     public static final String OPTION_LOG4J_LONG = "--log4j";
 
-    public static final String USAGE = "miranda [-l <logging level>] [-m <mode>] [-p <password>] [-r <properties file>]";
+    public static final String OPTION_TRUSTORE_PASSWORD_SHORT = "-t";
+    public static final String OPTION_TRUSTORE_PASSWORD_LONG = "--trustorePassword";
+
+    public static final String USAGE = "miranda [-d] [-l <logging level>] [-m <mode>] [-p <keystore password>] [-r <properties file>] [-4 <log4j XML file>] [-t <trustore password>]";
 
     private static Logger logger = Logger.getLogger(MirandaCommandLine.class);
 
@@ -69,6 +73,15 @@ public class MirandaCommandLine extends CommandLine {
     private String mirandaMode;
     private String password;
     private boolean error;
+    private String trustorePassword;
+
+    public String getTrustorePassword() {
+        return trustorePassword;
+    }
+
+    public void setTrustorePassword(String trustorePassword) {
+        this.trustorePassword = trustorePassword;
+    }
 
     public boolean getError () {
         return error;
@@ -107,6 +120,8 @@ public class MirandaCommandLine extends CommandLine {
             option = Options.Properties;
         else if (argument.equals(OPTION_LOG4J_SHORT) || argument.equals(OPTION_LOG4J_LONG))
             option = Options.Log4j;
+        else if (argument.equals(OPTION_TRUSTORE_PASSWORD_SHORT) || argument.equals(OPTION_TRUSTORE_PASSWORD_LONG))
+            option = Options.TrustorePassword;
 
         return option;
     }
@@ -177,10 +192,6 @@ public class MirandaCommandLine extends CommandLine {
         super.parse();
 
 
-        if (null != getArg()) {
-            setPropertiesFilename(getArgAndAdvance());
-        }
-
         while (hasMoreArgs() && !getError()) {
             Options option = argumentToOption(getArg());
 
@@ -214,6 +225,11 @@ public class MirandaCommandLine extends CommandLine {
 
                 case Properties: {
                     processProperties();
+                    break;
+                }
+
+                case TrustorePassword: {
+                    processTrustorePassword();
                     break;
                 }
 
@@ -296,5 +312,12 @@ public class MirandaCommandLine extends CommandLine {
             setPropertiesFilename(getArgAndAdvance());
         else
             error ("Missing properties file argument");
+    }
+
+    public void processTrustorePassword () {
+        if (hasMoreArgs())
+            setTrustorePassword(getArgAndAdvance());
+        else
+            error ("Missing trustore password argument");
     }
 }

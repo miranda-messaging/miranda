@@ -128,9 +128,4 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     public Version getVersion() {
         return getTopicsFile().getVersion();
     }
-
-    @Override
-    public List<Perishable> getPerishables() {
-        return new ArrayList<Perishable>(getTopicsFile().getData());
-    }
 }

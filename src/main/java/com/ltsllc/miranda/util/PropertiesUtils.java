@@ -75,8 +75,8 @@ public class PropertiesUtils {
         Object[] names = p.stringPropertyNames().toArray();
         Arrays.sort(names);
 
-        for (Object o : names) {
-            String name = (String) o;
+        for (int i = 0; i < names.length; i++) {
+            String name = (String) names[i];
             String value = p.getProperty(name);
             logger.info(name + " = " + value);
         }
@@ -91,6 +91,7 @@ public class PropertiesUtils {
      */
     public static Properties load(String filename) throws IOException {
         Properties properties = new Properties();
+
         FileInputStream fileInputStream = null;
 
         try {

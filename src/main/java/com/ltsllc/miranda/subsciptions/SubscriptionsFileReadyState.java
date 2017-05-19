@@ -145,10 +145,4 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     public String getName() {
         return "subscriptions";
     }
-
-
-    @Override
-    public List<Perishable> getPerishables() {
-        return new ArrayList<Perishable>(getSubscriptionsFile().getData());
-    }
 }

@@ -18,7 +18,9 @@ package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 
 import java.util.List;
 
@@ -46,6 +48,18 @@ abstract public class ManagerStartState extends State {
                 break;
             }
 
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage (garbageCollectionMessage);
+                break;
+            }
+
+            case FileDoesNotExist: {
+                FileDoesNotExistMessage fileDoesNotExistMessage = (FileDoesNotExistMessage) message;
+                nextState = processFileDoesNotExistMessage(fileDoesNotExistMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -58,6 +72,22 @@ abstract public class ManagerStartState extends State {
     public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
         List list = (List) fileLoadedMessage.getData();
         getManager().setData(list);
+
+        restoreDeferredMessages();
+
+        return getReadyState();
+    }
+
+    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        defer(garbageCollectionMessage);
+
+        return getManager().getCurrentState();
+    }
+
+    public State processFileDoesNotExistMessage (FileDoesNotExistMessage fileDoesNotExistMessage) {
+        getManager().getData().clear();
+
+        restoreDeferredMessages();
 
         return getReadyState();
     }

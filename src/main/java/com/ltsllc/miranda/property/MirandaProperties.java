@@ -21,10 +21,14 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
+import com.ltsllc.miranda.file.MirandaFile;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.FileOutputStream;
@@ -143,7 +147,6 @@ public class MirandaProperties {
     public static final String PROPERTY_SERVLET_TIMEOUT = SERVLET_PACKAGE + "Timeout";
 
     public static final String PROPERTY_KEYSTORE_FILE = KEYSTORE_PACKAGE + "File";
-    public static final String PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS = KEYSTORE_PACKAGE + "PublicKey";
     public static final String PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS = KEYSTORE_PACKAGE + "PrivateKey";
     public static final String PROPERTY_KEYSTORE_CERTIFICATE_ALIAS = KEYSTORE_PACKAGE + "Certificate";
     public static final String PROPERTY_KEYSTORE_CA_ALIAS = KEYSTORE_PACKAGE + "CA";
@@ -188,7 +191,6 @@ public class MirandaProperties {
     public static final String DEFAULT_SERVLET_TIMEOUT = "1000";
 
     public static final String DEFAULT_KEYSTORE_FILE = "keystore";
-    public static final String DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS = "public";
     public static final String DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS = "private";
     public static final String DEFAULT_KEYSTORE_CERTIFICATE_ALIAS = "certificate";
     public static final String DEFAULT_KEYSTORE_CA_ALIAS = "ca";
@@ -235,7 +237,6 @@ public class MirandaProperties {
             {PROPERTY_SERVLET_TIMEOUT, DEFAULT_SERVLET_TIMEOUT},
 
             {PROPERTY_KEYSTORE_FILE, DEFAULT_KEYSTORE_FILE},
-            {PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, DEFAULT_KEYSTORE_PUBLIC_KEY_ALIAS},
             {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS},
             {PROPERTY_KEYSTORE_CERTIFICATE_ALIAS, DEFAULT_KEYSTORE_CERTIFICATE_ALIAS},
             {PROPERTY_KEYSTORE_CA_ALIAS, DEFAULT_KEYSTORE_CA_ALIAS},
@@ -258,6 +259,7 @@ public class MirandaProperties {
 
     public MirandaProperties (String filename) {
         properties = new Properties();
+        this.filename = filename;
         load();
     }
 
@@ -474,5 +476,9 @@ public class MirandaProperties {
 
     public void remove (String property) {
         getProperties().remove(property);
+    }
+
+    public byte[] getBytes () {
+        return MirandaFile.getGson().toJson(getProperties()).getBytes();
     }
 }

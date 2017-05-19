@@ -37,6 +37,10 @@ public abstract class State {
     private boolean started = false;
     private List<Message> deferredQueue;
 
+    public List<Message> getDeferredQueue() {
+        return deferredQueue;
+    }
+
     public State () {
         this.deferredQueue = new LinkedList<Message>();
     }
@@ -150,8 +154,16 @@ public abstract class State {
     }
 
     public State defer (Message message) {
-        deferredQueue.add(message);
+        getDeferredQueue().add(message);
 
         return getContainer().getCurrentState();
+    }
+
+    public void restoreDeferredMessages () {
+        for (Message message : getDeferredQueue()) {
+            getContainer().getQueue().add(message);
+        }
+
+        getDeferredQueue().clear();
     }
 }

@@ -24,6 +24,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
+import com.ltsllc.miranda.topics.states.TopicManagerReadyState;
 import com.ltsllc.miranda.topics.states.TopicManagerStartState;
 import org.apache.log4j.Logger;
 
@@ -49,6 +50,9 @@ public class TopicManager extends StandardManager <Topic> {
 
     public TopicManager (String filename) {
         super("topics manager", filename);
+
+        TopicManagerStartState topicManagerStartState = new TopicManagerStartState(this);
+        setCurrentState(topicManagerStartState);
     }
 
     public SingleFile<Topic> createFile (String filename) {
@@ -180,11 +184,6 @@ public class TopicManager extends StandardManager <Topic> {
         }
 
         return property;
-    }
-
-    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
-        sendToMe(garbageCollectionMessage);
     }
 
     public Topic convert (Topic topic) {

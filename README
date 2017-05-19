@@ -21,3 +21,13 @@ miranda use maven for builds.  Compile it with the following command:
 mvn package
 
 Assuming everything went OK, you should have
+
+Create a Certificate Authority
+
+openssl req -new -x509 -keyout ca-key.pem.txt -out ca-certificate.pem.txt -days 365
+keytool -import -keystore truststore -file ca-certificate.pem.txt -alias ca -keyalg rsa -storepass whatever
+keytool –keystore keystore –genkey –alias private -keyalg rsa -storepass whatever
+keytool –keystore keystore -storepass whatever –certreq –alias private –keyalg rsa –file server.csr
+openssl x509 -req -CA ca-certificate.pem.txt -CAkey ca-key.pem.txt -in server.csr -out server.cer  -days 365 -CAcreateserial
+keytool -import -keystore keystore -storepass whatever -file ca-certificate.pem.txt -alias ca -keyalg rsa
+keytool -import -keystore keystore -storepass whatever -file server.cer -alias certificate -keyalg rsa

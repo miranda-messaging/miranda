@@ -39,6 +39,7 @@ public class StartupPanic extends Panic {
         MissingProperty, // A Property that the system requires to start up is missing
         NetworkListener, // NetworkListener.startup threw an exception
         NullStartState, // The currentState was null for a Consumer when starting
+        ProblemLoadingFile,
         SendingMessage, // An exception occurred while trying to sendToMe a message
         StartupFailed, // Some sort of error prevented the Startup class from completing
         Test,

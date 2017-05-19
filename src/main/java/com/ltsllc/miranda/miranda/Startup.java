@@ -52,6 +52,7 @@ import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.user.UserManager;
+import com.ltsllc.miranda.util.JavaKeyStore;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -101,23 +102,27 @@ public class Startup extends State {
     private PublicKey publicKey;
     private PrivateKey privateKey;
     private Reader reader;
-    private String keystorePassword;
-    private String truststorePassword;
+    private String keystorePasswordString;
+    private String trustorePasswordString;
+
+    public String getTrustorePasswordString() {
+        return trustorePasswordString;
+    }
+
+    public void setTrustorePasswordString(String trustorePasswordString) {
+        this.trustorePasswordString = trustorePasswordString;
+    }
+
+    public String getKeystorePasswordString() {
+        return keystorePasswordString;
+    }
+
+    public void setKeystorePasswordString(String keystorePasswordString) {
+        this.keystorePasswordString = keystorePasswordString;
+    }
 
     public String[] getArguments() {
         return arguments;
-    }
-
-    public String getTruststorePassword() {
-        return truststorePassword;
-    }
-
-    public String getKeystorePassword() {
-        return keystorePassword;
-    }
-
-    public void setKeystorePassword(String keystorePassword) {
-        this.keystorePassword = keystorePassword;
     }
 
     public Reader getReader() {
@@ -219,8 +224,9 @@ public class Startup extends State {
 
         try {
             processCommandLine();
+            processPasswords();
             setupProperties();
-            getKeys();
+            getKeys(getKeystorePasswordString());
             startLogger();
             startWriter();
             startReader();
@@ -237,12 +243,9 @@ public class Startup extends State {
             startListening();
             getMiranda().performGarbageCollection();
             return new ReadyState(getMiranda());
-        } catch (MirandaException e) {
-            Panic panic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
-            Miranda.getInstance().panic(panic);
         } catch (Exception e) {
-            Panic panic = new StartupPanic("Unchecked exception during startup", e, StartupPanic.StartupReasons.UncheckedException);
-            Miranda.getInstance().panic(panic);
+            StartupPanic startupPanic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
+            Miranda.getInstance().panic(startupPanic);
         }
 
         return StopState.getInstance();
@@ -267,13 +270,13 @@ public class Startup extends State {
         }
     }
 
-    public void checkProperties(String p1, String p2, String p3) {
-        String[] properties = {p1, p2, p3};
+    public void checkProperties(String p1, String p2) {
+        String[] properties = {p1, p2};
         checkProperties(properties);
     }
 
-    public void getKeys() {
-        checkProperties(MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
+    public void getKeys(String password) {
+        checkProperties(MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
         String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
 
         File file = new File(keyStoreFilename);
@@ -283,42 +286,22 @@ public class Startup extends State {
             Miranda.getInstance().panic(startupPanic);
         }
 
-        String password = getCommandLine().getPassword();
-
-        if (null == password) {
-            System.out.println("Please enter the keystore password: ");
-            Scanner scanner = new Scanner(Miranda.getInputStream());
-            password = scanner.nextLine();
-        }
-
-        if (password != null) {
-            password = password.trim();
-        }
-
         KeyStore keyStore = null;
 
         try {
             keyStore = Utils.loadKeyStore(keyStoreFilename, password);
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (Exception e) {
             String message = "Exception trying to open keystore, " + keyStoreFilename + ".";
             StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.ExceptionOpeningKeystore);
             Miranda.getInstance().panic(startupPanic);
         }
 
-        String publicKeyAlias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PUBLIC_KEY_ALIAS);
+        JavaKeyStore javaKeyStore = new JavaKeyStore(keyStore);
+
         String privateKeyAlias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
 
         try {
-            java.security.PublicKey jsPublicKey = (java.security.PublicKey) keyStore.getKey(publicKeyAlias, null);
-            if (null == jsPublicKey) {
-                String message = "Missing public key.  Keystore: " + keyStoreFilename + " alias: " + publicKeyAlias;
-                StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.MissingKey);
-                Miranda.getInstance().panic(startupPanic);
-            }
-            PublicKey publicKey = new PublicKey(jsPublicKey);
-            setPublicKey(publicKey);
-
-            java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey(privateKeyAlias, null);
+            java.security.PrivateKey jsPrivateKey = javaKeyStore.getPrivateKey(privateKeyAlias);
             if (null == jsPrivateKey) {
                 String message = "Missing private key.  Keystore " + keyStoreFilename + " alias: " + privateKeyAlias;
                 StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.MissingKey);
@@ -326,9 +309,13 @@ public class Startup extends State {
             }
             PrivateKey privateKey = new PrivateKey(jsPrivateKey);
             setPrivateKey(privateKey);
+
+            java.security.PublicKey jsPublicKey = javaKeyStore.getPublicKey(privateKeyAlias);
+            PublicKey publicKey = new PublicKey(jsPublicKey);
+            setPublicKey(publicKey);
         } catch (GeneralSecurityException e) {
-            String message = "Caught exception while trying to get keys.  Keystore: " + keyStoreFilename + " public key alias: "
-                    + publicKeyAlias + " private key alias: " + privateKeyAlias;
+            String message = "Caught exception while trying to get keys.  Keystore: " + keyStoreFilename +
+                    " private key alias: " + privateKeyAlias;
 
             StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.ExceptionManipulatingKeystore);
             Miranda.getInstance().panic(startupPanic);
@@ -493,11 +480,14 @@ public class Startup extends State {
 
     public void processCommandLine() {
         MirandaCommandLine commandLine = null;
-        if (getMiranda().getCommandLine() == null) {
+        if (getMiranda().getCommandLine() != null) {
+            commandLine = getMiranda().getCommandLine();
+        } else {
             commandLine = new MirandaCommandLine(getArguments());
             setCommandLine(commandLine);
         }
 
+        getMiranda().setCommandLine(commandLine);
         commandLine.parse();
 
         if (commandLine.getError())
@@ -537,7 +527,7 @@ public class Startup extends State {
      */
     private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
-        MirandaFactory factory = new MirandaFactory(properties, getKeystorePassword(), getTruststorePassword());
+        MirandaFactory factory = new MirandaFactory(properties, getKeystorePasswordString(), getCommandLine().getTrustorePassword());
         Miranda miranda = Miranda.getInstance();
 
         Network network = factory.buildNetwork();
@@ -671,7 +661,7 @@ public class Startup extends State {
     }
 
     public void defineFactory() {
-        Miranda.factory = new MirandaFactory(Miranda.properties, getKeystorePassword(), getTruststorePassword());
+        Miranda.factory = new MirandaFactory(Miranda.properties, getKeystorePasswordString(), getTrustorePasswordString());
 
         setFactory(Miranda.factory);
     }
@@ -716,5 +706,25 @@ public class Startup extends State {
             StartupPanic startupPanic = new StartupPanic("Exception starting network", e, StartupPanic.StartupReasons.ExceptionStartingNetwork);
             Miranda.getInstance().panic(startupPanic);
         }
+    }
+
+    public void processPasswords() {
+        if (null != getCommandLine().getPassword()) {
+            setKeystorePasswordString(getCommandLine().getPassword());
+        } else {
+            Scanner scanner = new Scanner(Miranda.inputStream);
+            String temp = scanner.nextLine();
+            setKeystorePasswordString(temp);
+        }
+
+        if (null != getCommandLine().getTrustorePassword())
+            setTrustorePasswordString(getCommandLine().getTrustorePassword());
+        else {
+            Scanner scanner = new Scanner(Miranda.inputStream);
+            String temp = scanner.nextLine();
+            setTrustorePasswordString(temp);
+        }
+
+
     }
 }

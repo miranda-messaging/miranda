@@ -22,6 +22,7 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.ManagerReadyState;
+import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/1/2017.
  */
-public class UserManagerReadyState extends ManagerReadyState<User, User> {
+public class UserManagerReadyState extends StandardManagerReadyState<User> {
     private Logger logger = Logger.getLogger(UserManagerReadyState.class);
 
     public UserManager getUserManager () {
@@ -54,12 +55,6 @@ public class UserManagerReadyState extends ManagerReadyState<User, User> {
         State nextState = getUserManager().getCurrentState();
 
         switch (message.getSubject()) {
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
-                break;
-            }
-
             case GetUser: {
                 GetUserMessage getUserMessage = (GetUserMessage) message;
                 nextState = processGetUserMessage(getUserMessage);

@@ -31,11 +31,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TestSubscriber extends TestCase {
     private Subscriber subscriber;
     private BlockingQueue<Message> queue;
-    private Notification notification;
-
-    public Notification getNotification() {
-        return notification;
-    }
 
     public BlockingQueue<Message> getQueue() {
 
@@ -59,19 +54,19 @@ public class TestSubscriber extends TestCase {
         super.reset();
 
         this.queue = new LinkedBlockingQueue<Message>();
-        this.notification = new Notification(null, this);
-        this.subscriber = new Subscriber(queue, notification);
+        this.subscriber = new Subscriber(queue);
     }
 
     @Test
     public void testConstuctor () {
-        assert (getSubscriber().getNotification() != null);
         assert (getSubscriber().getQueue() != null);
     }
 
     @Test
     public void testNotifySubscriber () {
-        getSubscriber().notifySubscriber();
+        Message message = new Message(Message.Subjects.Notification, null, null);
+
+        getSubscriber().notifySubscriber(message);
 
         assert (contains(Message.Subjects.Notification, getQueue()));
     }
@@ -86,12 +81,5 @@ public class TestSubscriber extends TestCase {
         }
 
         return false;
-    }
-
-    @Test
-    public void testNotifySubscriberWithData () {
-        getSubscriber().notifySubscriber("whatever");
-
-        assert (contains(getQueue(), "whatever"));
     }
 }
