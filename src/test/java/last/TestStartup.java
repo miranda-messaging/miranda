@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -134,8 +135,10 @@ public class TestStartup extends TestCase {
         setuplog4j();
         long then = System.currentTimeMillis();
 
+        Properties p = new Properties();
+        p.setProperty("com.ltsllc.miranda.SslPort", "15000");
         getMiranda().setPanicPolicy(getMockPanicPolicy());
-        getMiranda().start();
+        getMiranda().start(p);
 
         pause(2000);
 

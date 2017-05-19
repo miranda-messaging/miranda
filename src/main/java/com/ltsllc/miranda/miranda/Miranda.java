@@ -64,6 +64,7 @@ import org.apache.log4j.Logger;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -300,6 +301,13 @@ public class Miranda extends Consumer {
         String[] argv = argString.split(" \t");
         MirandaCommandLine mirandaCommandLine = new MirandaCommandLine(argv);
         setCommandLine(mirandaCommandLine);
+
+        start();
+    }
+
+    public void start (Properties p) {
+        Startup startup = (Startup) getCurrentState();
+        startup.setOverrideProperties(p);
 
         start();
     }

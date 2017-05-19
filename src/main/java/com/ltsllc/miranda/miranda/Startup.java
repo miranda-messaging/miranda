@@ -53,6 +53,7 @@ import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.util.JavaKeyStore;
+import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -64,6 +65,7 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
@@ -104,6 +106,15 @@ public class Startup extends State {
     private Reader reader;
     private String keystorePasswordString;
     private String trustorePasswordString;
+    private Properties overrideProperties;
+
+    public Properties getOverrideProperties() {
+        return overrideProperties;
+    }
+
+    public void setOverrideProperties(Properties overrideProperties) {
+        this.overrideProperties = overrideProperties;
+    }
 
     public String getTrustorePasswordString() {
         return trustorePasswordString;
@@ -510,6 +521,13 @@ public class Startup extends State {
      */
     private void setupProperties() {
         Miranda.properties = new MirandaProperties(getPropertiesFilename());
+
+        if (null != getOverrideProperties()) {
+            Properties p = Miranda.properties.getProperties();
+            PropertiesUtils.overwrite(p, getOverrideProperties());
+            Miranda.properties.setProperties(p);
+        }
+
         Miranda.properties.log();
         Miranda.properties.updateSystemProperties();
 
