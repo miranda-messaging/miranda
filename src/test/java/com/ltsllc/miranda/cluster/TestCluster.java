@@ -119,7 +119,9 @@ public class TestCluster extends TestCase {
         this.mockClusterFile = mock(ClusterFile.class);
         this.mockNode = mock(Node.class);
 
-        this.cluster = new Cluster(getMockNetwork(), "testFile");
+        this.cluster = new Cluster(getMockNetwork(), true);
+
+        getCluster().setFile(getMockClusterFile());
 
         this.mockNode2 = mock(Node.class);
     }
@@ -136,22 +138,6 @@ public class TestCluster extends TestCase {
         assert (getCluster().getCurrentState() instanceof ClusterStartState);
         verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class));
     }
-
-    /**
-     * Ensure that {@link com.ltsllc.miranda.cluster.Cluster} created a
-     * {@link ClusterFile}.
-     */
-    @Test
-    public void testInitialize() {
-        putFile(CLUSTER_FILENAME, CLUSTER_FILE_CONTENTS);
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        this.cluster = Miranda.getInstance().getCluster();
-
-        ClusterFile temp = ClusterFile.getInstance();
-        assert(null != temp);
-        assert(getCluster().getFile().getQueue() != null);
-    }
-
 
     /**
      * Ensure that we create a load message.
