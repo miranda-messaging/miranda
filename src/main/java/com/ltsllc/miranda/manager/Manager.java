@@ -118,4 +118,8 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
     public void performGarbageCollection () {
         getFile().sendGarbageCollectionMessage(getQueue(), this);
     }
+
+    public void load () {
+        getFile().sendLoad(getQueue(), this);
+    }
 }

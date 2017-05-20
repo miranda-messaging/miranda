@@ -152,35 +152,6 @@ public class UsersFile extends SingleFile<User> {
     }
 
 
-    public void basicLoad () {
-        try {
-            String json = readFile(getFilename());
-            Type listType = new TypeToken<ArrayList<UserObject>>() {}.getType();
-            List<UserObject> userObjects = gson.fromJson(json, listType);
-            List<User> users = asUsers(userObjects);
-
-            setData(users);
-        } catch (MirandaException e) {
-            Panic panic = new Panic("Exception trying to load users file", e, Panic.Reasons.ExceptionLoadingFile);
-            Miranda.getInstance().panic(panic);
-            List<User> emptyList = new ArrayList<User>();
-            setData(emptyList);
-        }
-    }
-
-    public void load () {
-        File file = new File(getFilename());
-
-        if (file.exists()) {
-            basicLoad();
-        } else {
-            List<User> emptyList = new ArrayList<User>();
-            setData(emptyList);
-        }
-
-        fireFileLoaded();
-    }
-
     public void checkForDuplicates () {
         List<User> userList = new ArrayList<User>(getData());
         List<User> duplicates = new ArrayList<User>();

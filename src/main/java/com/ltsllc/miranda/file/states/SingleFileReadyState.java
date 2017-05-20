@@ -26,6 +26,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.reader.ReadResponseMessage;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -73,12 +74,6 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
             case GetFile: {
                 GetFileMessage getFileMessage = (GetFileMessage) message;
                 nextState = processGetFileMessage(getFileMessage);
-                break;
-            }
-
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
                 break;
             }
 
@@ -160,11 +155,6 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
         return this;
     }
 
-
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        getFile().performGarbageCollection();
-        return this;
-    }
 
     private State processLoadMessage (LoadMessage loadMessage) {
         getFile().load();

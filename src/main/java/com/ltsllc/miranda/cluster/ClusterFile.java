@@ -69,12 +69,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
-        super(filename, reader, writer);
-
-        this.cluster = cluster;
-
-        ClusterFileStartingState clusterFileStartingState = new ClusterFileStartingState(this);
-        setCurrentState(clusterFileStartingState);
+        basicConstructor (filename, reader, writer, cluster);
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue, List<NodeElement> nodeElementList) {
@@ -88,6 +83,14 @@ public class ClusterFile extends SingleFile<NodeElement> {
         setData(nodeElementList);
     }
 
+    public void basicConstructor (String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
+        super.basicConstructor(filename, reader, writer);
+
+        this.cluster = cluster;
+
+        ClusterFileStartingState clusterFileStartingState = new ClusterFileStartingState(this);
+        setCurrentState(clusterFileStartingState);
+    }
     public void addNode(Node node) {
         if (!containsNode(node)) {
             NodeElement nodeElement = new NodeElement(node);

@@ -16,10 +16,8 @@
 
 package com.ltsllc.miranda.file.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.StartupPanic;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -44,6 +42,12 @@ abstract public class SingleFileStartingState extends State {
         State nextState = getFile().getCurrentState();
 
         switch (message.getSubject()) {
+            case Load: {
+                LoadMessage loadMessage = (LoadMessage) message;
+                nextState = processLoadMessage (loadMessage);
+                break;
+            }
+
             case ReadResponse: {
                 ReadResponseMessage readResponseMessage = (ReadResponseMessage) message;
                 nextState = processReadResponseMessage (readResponseMessage);
@@ -89,5 +93,11 @@ abstract public class SingleFileStartingState extends State {
         defer(garbageCollectionMessage);
 
         return getFile().getCurrentState();
+    }
+
+    private State processLoadMessage (LoadMessage loadMessage) {
+        getFile().load();
+
+        return this;
     }
 }

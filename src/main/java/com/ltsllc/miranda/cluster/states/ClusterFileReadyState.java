@@ -64,12 +64,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case GetVersion: {
-                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
-                nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-
             case WriteSucceeded: {
                 break;
             }
@@ -202,21 +196,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return this;
 
     }
-
-    /**
-     * Send the version of the cluster file to the sender.
-     *
-     * @param getVersionMessage
-     * @return
-     */
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        NameVersion nameVersion = new NameVersion("cluster", getClusterFile().getVersion());
-        VersionMessage versionMessage = new VersionMessage(getClusterFile().getQueue(), this, nameVersion);
-        getVersionMessage.reply(versionMessage);
-
-        return this;
-    }
-
 
     @Override
     public Type getListType() {

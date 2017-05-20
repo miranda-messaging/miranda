@@ -105,7 +105,11 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     public MirandaFile () {}
 
     public MirandaFile(String filename, Reader reader, Writer writer) {
-        super("file");
+        basicConstructor(filename, reader, writer);
+    }
+
+    public void basicConstructor (String filename, Reader reader, Writer writer) {
+        super.basicConstructor("file");
 
         this.filename = filename;
         this.writer = writer;

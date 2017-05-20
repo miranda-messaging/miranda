@@ -40,6 +40,8 @@ import java.util.List;
  * Created by Clark on 2/11/2017.
  */
 public class SubscriptionsFileReadyState extends SingleFileReadyState {
+    public static String NAME = "subscriptions";
+
     private static Logger logger = Logger.getLogger(SubscriptionsFileReadyState.class);
 
     private SubscriptionsFile subscriptionsFile;
@@ -52,54 +54,6 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
 
     public SubscriptionsFile getSubscriptionsFile() {
         return subscriptionsFile;
-    }
-
-    @Override
-    public State processMessage(Message message) {
-        State nextState = this;
-
-        switch (message.getSubject()) {
-            case GetVersion: {
-                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
-                nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-
-            case GetFile: {
-                GetFileMessage getFileMessage = (GetFileMessage) message;
-                nextState = processGetFileMessage (getFileMessage);
-                break;
-            }
-            default:
-                nextState = super.processMessage(message);
-                break;
-
-        }
-
-        return nextState;
-    }
-
-
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        NameVersion nameVersion = new NameVersion("subscriptions", getSubscriptionsFile().getVersion());
-        VersionMessage versionMessage = new VersionMessage(getSubscriptionsFile().getQueue(), getSubscriptionsFile(), nameVersion);
-        send (getVersionMessage.getRequester(), versionMessage);
-
-        return this;
-    }
-
-
-    @Override
-    public Version getVersion() {
-        return getSubscriptionsFile().getVersion();
-    }
-
-    private State processGetFileMessage (GetFileMessage getFileMessage) {
-        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getSubscriptionsFile().getQueue(),
-                this, "subscriptions", getSubscriptionsFile().getBytes());
-        getFileMessage.reply(getFileResponseMessage);
-
-        return this;
     }
 
     @Override
@@ -136,13 +90,7 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     }
 
     @Override
-    public SingleFile getFile() {
-        return getSubscriptionsFile();
-    }
-
-
-    @Override
     public String getName() {
-        return "subscriptions";
+        return NAME;
     }
 }

@@ -41,10 +41,6 @@ public abstract class State {
         return deferredQueue;
     }
 
-    public State () {
-        this.deferredQueue = new LinkedList<Message>();
-    }
-
     public boolean stated () {
         return started;
     }
@@ -59,6 +55,7 @@ public abstract class State {
 
     public State (Consumer container) {
         this.container = container;
+        this.deferredQueue = new LinkedList<Message>();
     }
 
     public State start ()

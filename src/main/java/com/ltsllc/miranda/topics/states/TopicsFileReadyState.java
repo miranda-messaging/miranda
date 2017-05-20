@@ -55,35 +55,6 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     }
 
     @Override
-    public State processMessage(Message message) {
-        State nextState = this;
-
-        switch (message.getSubject()) {
-            case GetVersion: {
-                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
-                nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-
-            default:
-                nextState = super.processMessage(message);
-                break;
-        }
-
-        return nextState;
-    }
-
-
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        NameVersion nameVersion = new NameVersion("topics", getTopicsFile().getVersion());
-        VersionMessage versionMessage = new VersionMessage(getTopicsFile().getQueue(), this, nameVersion);
-        send(getVersionMessage.getRequester(), versionMessage);
-
-        return this;
-    }
-
-
-    @Override
     public void add(Object o) {
         Topic topic = (Topic) o;
         getTopicsFile().getData().add(topic);
@@ -107,7 +78,7 @@ public class TopicsFileReadyState extends SingleFileReadyState {
         return false;
     }
 
-
+    @Override
     public void write() {
         WriteMessage writeMessage = new WriteMessage(getTopicsFile().getFilename(), getTopicsFile().getBytes(), getTopicsFile().getQueue(), this);
         send(getTopicsFile().getWriterQueue(), writeMessage);

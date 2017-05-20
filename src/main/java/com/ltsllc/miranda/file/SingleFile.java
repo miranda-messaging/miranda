@@ -27,6 +27,7 @@ import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.miranda.writer.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -44,7 +45,6 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     abstract public List buildEmptyList();
     abstract public Type listType();
     abstract public void checkForDuplicates();
-
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
 
@@ -67,10 +67,18 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         this.dirty = dirty;
     }
 
+    protected SingleFile () {}
+
     public SingleFile(String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) {
         super(filename, reader, writer);
 
         setDirty(false);
+        subscribers = new ArrayList<Subscriber>();
+    }
+
+    public void basicConstructor (String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) {
+        super.basicConstructor(filename, reader, writer);
+
         subscribers = new ArrayList<Subscriber>();
     }
 

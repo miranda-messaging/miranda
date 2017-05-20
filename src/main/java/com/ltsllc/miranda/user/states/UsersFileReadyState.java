@@ -58,21 +58,9 @@ public class UsersFileReadyState extends SingleFileReadyState {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case GetVersion: {
-                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
-                nextState = processGetVersionMessage(getVersionMessage);
-                break;
-            }
-
             case NewUser: {
                 NewUserMessage newUserMessage = (NewUserMessage) message;
                 nextState = processNewUserMessage(newUserMessage);
-                break;
-            }
-
-            case GetFile: {
-                GetFileMessage getFileMessage = (GetFileMessage) message;
-                nextState = processGetFileMessage (getFileMessage);
                 break;
             }
 
@@ -86,40 +74,6 @@ public class UsersFileReadyState extends SingleFileReadyState {
 
     private State processNewUserMessage (NewUserMessage newUserMessage) {
         getUsersFile().addUser(newUserMessage.getUser());
-
-        return this;
-    }
-
-
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
-        NameVersion nameVersion = new NameVersion("users", getUsersFile().getVersion());
-        VersionMessage versionMessage = new VersionMessage(getUsersFile().getQueue(), this, nameVersion);
-        send(getVersionMessage.getRequester(), versionMessage);
-
-        return this;
-    }
-
-
-    public Message getFileMessage () {
-        GetFileMessage getFileMessage = new GetFileMessage(getUsersFile().getQueue(), this, "users");
-        return getFileMessage;
-    }
-
-
-    public State getSyncingState() {
-        return new UsersFileSyncingState(getUsersFile());
-    }
-
-
-    @Override
-    public Version getVersion() {
-        return getUsersFile().getVersion();
-    }
-
-    private State processGetFileMessage (GetFileMessage getFileMessage) {
-        String hexString = Utils.bytesToString(getUsersFile().getBytes());
-        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getUsersFile().getQueue(), this, "users", hexString);
-        send(getFileMessage.getSender(), getFileResponseMessage);
 
         return this;
     }

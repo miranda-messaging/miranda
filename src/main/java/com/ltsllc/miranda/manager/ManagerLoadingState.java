@@ -18,6 +18,7 @@ package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 
 import java.util.List;
@@ -46,6 +47,12 @@ abstract public class ManagerLoadingState extends State {
                 break;
             }
 
+            case FileDoesNotExist: {
+                FileDoesNotExistMessage fileDoesNotExistMessage = (FileDoesNotExistMessage) message;
+                nextState = processFileDoesNotExistMessage(fileDoesNotExistMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -58,6 +65,12 @@ abstract public class ManagerLoadingState extends State {
     public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
         List list = (List) fileLoadedMessage.getData();
         getManager().setData(list);
+
+        return getReadyState();
+    }
+
+    public State processFileDoesNotExistMessage (FileDoesNotExistMessage fileDoesNotExistMessage) {
+        getManager().getData().clear();
 
         return getReadyState();
     }

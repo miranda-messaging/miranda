@@ -49,7 +49,4 @@ public class DeliveriesFileReadyState extends SingleFileReadyState {
     public List<Perishable> getPerishables() {
         return new ArrayList<Perishable>(getDeliveriesFile().getData());
     }
-
-
-
 }

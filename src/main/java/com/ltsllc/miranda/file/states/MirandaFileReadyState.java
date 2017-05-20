@@ -20,6 +20,11 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.node.NameVersion;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.VersionMessage;
+import com.ltsllc.miranda.reader.ReadResponseMessage;
 
 /**
  * Created by Clark on 2/26/2017.
@@ -44,6 +49,18 @@ public class MirandaFileReadyState extends State {
                 break;
             }
 
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                break;
+            }
+
+            case GetVersion: {
+                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
+                nextState = processGetVersionMessage(getVersionMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -62,4 +79,20 @@ public class MirandaFileReadyState extends State {
 
         return getMirandaFile().getCurrentState();
     }
+
+    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        getMirandaFile().performGarbageCollection();
+        return this;
+    }
+
+    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+        NameVersion nameVersion = new NameVersion(getMirandaFile().getName(), getMirandaFile().getVersion());
+        VersionMessage versionMessage = new VersionMessage(getMirandaFile().getQueue(), this, nameVersion);
+        send(getVersionMessage.getRequester(), versionMessage);
+
+        return getMirandaFile().getCurrentState();
+    }
+
+
+
 }

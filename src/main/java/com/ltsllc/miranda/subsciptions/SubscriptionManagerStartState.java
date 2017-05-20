@@ -22,7 +22,7 @@ import com.ltsllc.miranda.manager.ManagerStartState;
 /**
  * Created by Clark on 5/14/2017.
  */
-public class SubscriptionManagerStartState extends ManagerStartState {
+public class SubscriptionManagerStartState extends ManagerStartState{
     public SubscriptionManager getSubscriptionManager () {
         return (SubscriptionManager) getContainer();
     }

@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -136,7 +137,7 @@ public class TestStartup extends TestCase {
         long then = System.currentTimeMillis();
 
         Properties p = new Properties();
-        p.setProperty("com.ltsllc.miranda.SslPort", "15000");
+        p.setProperty("com.ltsllc.miranda.SslPort", "20000");
         getMiranda().setPanicPolicy(getMockPanicPolicy());
         getMiranda().start(p);
 
@@ -172,6 +173,8 @@ public class TestStartup extends TestCase {
         assert (getMiranda().getUserManager().getUsersFile().getLastCollection() > then);
         assert (getMiranda().getSubscriptionManager().getSubscriptionsFile().getLastCollection() > then);
         assert (getMiranda().getTopicManager().getTopicsFile().getLastCollection() > then);
+
+        verify(getMockPanicPolicy(), never()).panic(Matchers.any(Panic.class));
     }
 
     public boolean containsRootUser (UsersFile usersFile) {

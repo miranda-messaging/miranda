@@ -40,6 +40,4 @@ public class EventsFileReadyState extends SingleFileReadyState<Event> {
     public EventsFileReadyState (EventsFile eventsFile) {
         super(eventsFile);
     }
-
-
 }

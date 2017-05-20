@@ -132,12 +132,6 @@ public class UserManager extends StandardManager<User> {
         sendToMe(getUsersMessage);
     }
 
-    public void sendNewUser (BlockingQueue<Message> senderQueue, Object sender, User user)
-    {
-        NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
-        sendToMe(newUserMessage);
-    }
-
     public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
         UpdateUserMessage updateUserMessage = new UpdateUserMessage (senderQueue, sender, null, user);
         sendToMe(updateUserMessage);
