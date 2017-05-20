@@ -21,7 +21,6 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

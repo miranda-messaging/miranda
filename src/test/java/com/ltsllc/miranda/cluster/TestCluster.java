@@ -19,7 +19,6 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
-import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;

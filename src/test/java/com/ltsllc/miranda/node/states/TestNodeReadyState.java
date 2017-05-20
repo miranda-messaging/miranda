@@ -25,18 +25,21 @@ import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
-import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.node.NameVersion;
-import com.ltsllc.miranda.node.messages.*;
+import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
+import com.ltsllc.miranda.node.messages.GetSubscriptionsFileMessage;
+import com.ltsllc.miranda.node.messages.GetTopicsFileMessage;
+import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.servlet.user.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.User;
-import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import com.ltsllc.miranda.user.UsersFile;
+import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -47,9 +50,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/23/2017.

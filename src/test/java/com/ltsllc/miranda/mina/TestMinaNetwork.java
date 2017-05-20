@@ -17,16 +17,13 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.NetworkReadyState;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
-import com.ltsllc.miranda.network.messages.NetworkErrorMessage;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.mina.core.service.IoAcceptor;

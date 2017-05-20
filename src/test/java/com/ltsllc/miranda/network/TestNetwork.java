@@ -17,11 +17,9 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.mina.MinaNetwork;
 import com.ltsllc.miranda.network.messages.CloseMessage;
 import com.ltsllc.miranda.network.messages.ConnectSucceededMessage;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
-import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -31,9 +29,7 @@ import org.mockito.Mock;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/20/2017.

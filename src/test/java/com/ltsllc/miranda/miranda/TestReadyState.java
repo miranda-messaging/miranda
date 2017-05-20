@@ -16,7 +16,10 @@
 
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.ShutdownMessage;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;

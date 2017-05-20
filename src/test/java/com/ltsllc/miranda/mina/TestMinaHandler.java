@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda.mina;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.test.TestCase;

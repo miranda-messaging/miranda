@@ -17,22 +17,15 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.network.messages.NodeAddedMessage;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 5/14/2017.

@@ -16,10 +16,8 @@
 
 package last;
 
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.mina.core.future.CloseFuture;
@@ -35,8 +33,6 @@ import org.junit.Test;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.security.KeyStore;

@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda.node.states;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.network.messages.DisconnectedMessage;
@@ -25,11 +24,8 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/23/2017.

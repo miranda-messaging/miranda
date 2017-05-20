@@ -21,7 +21,6 @@ import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.NewUserHandler;
 import com.ltsllc.miranda.user.states.NewUserHandlerReadyState;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;

@@ -23,7 +23,6 @@ import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 
 import java.util.ArrayList;

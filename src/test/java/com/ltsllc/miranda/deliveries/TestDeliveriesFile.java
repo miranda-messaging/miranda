@@ -20,10 +20,9 @@ import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.writer.Writer;
+import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.test.TestCase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

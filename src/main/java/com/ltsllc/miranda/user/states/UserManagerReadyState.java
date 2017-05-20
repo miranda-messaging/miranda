@@ -21,7 +21,6 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.manager.ManagerReadyState;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;

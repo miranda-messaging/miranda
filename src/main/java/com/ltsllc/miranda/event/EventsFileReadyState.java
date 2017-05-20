@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
 
 import java.lang.reflect.Type;

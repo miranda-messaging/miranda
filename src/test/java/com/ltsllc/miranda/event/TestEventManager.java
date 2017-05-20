@@ -20,8 +20,6 @@ import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-
 /**
  * Created by Clark on 5/13/2017.
  */

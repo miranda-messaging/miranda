@@ -24,7 +24,6 @@ import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
 
 /**
  * Created by Clark on 2/26/2017.

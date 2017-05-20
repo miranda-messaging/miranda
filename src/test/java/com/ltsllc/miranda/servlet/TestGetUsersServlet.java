@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.servlet.user.GetUsersServlet;
+import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.test.TestServlet;
 import com.ltsllc.miranda.user.User;
 import org.junit.Before;

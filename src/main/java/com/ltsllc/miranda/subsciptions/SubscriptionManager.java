@@ -22,7 +22,6 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.*;
 

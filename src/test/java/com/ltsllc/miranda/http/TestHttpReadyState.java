@@ -23,9 +23,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/17/2017.

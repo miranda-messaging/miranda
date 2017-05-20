@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda;
 
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

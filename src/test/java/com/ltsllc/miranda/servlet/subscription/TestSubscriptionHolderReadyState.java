@@ -18,7 +18,6 @@ package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.subsciptions.messages.*;
 import com.ltsllc.miranda.test.TestCase;

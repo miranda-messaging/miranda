@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda.file.messages;
 
-import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

@@ -20,7 +20,6 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.UserManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

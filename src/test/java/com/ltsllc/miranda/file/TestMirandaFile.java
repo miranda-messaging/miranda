@@ -16,20 +16,16 @@
 
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.writer.Writer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;

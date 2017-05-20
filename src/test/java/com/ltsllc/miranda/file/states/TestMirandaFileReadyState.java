@@ -18,7 +18,6 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
-import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -27,9 +26,7 @@ import org.mockito.Mock;
 
 import java.io.File;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 2/26/2017.

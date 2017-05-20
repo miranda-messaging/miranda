@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda;
 
-import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -29,7 +28,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**

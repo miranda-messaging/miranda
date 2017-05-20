@@ -20,7 +20,6 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
-import com.ltsllc.miranda.miranda.messages.StopMessage;
 
 /**
  * Created by Clark on 5/15/2017.

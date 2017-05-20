@@ -22,14 +22,13 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.writer.Writer;
+import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.ltsllc.miranda.test.TestCase;
 import org.mockito.Matchers;
 
 import java.util.ArrayList;

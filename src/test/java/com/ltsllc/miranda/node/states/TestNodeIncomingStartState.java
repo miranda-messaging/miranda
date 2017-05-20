@@ -20,16 +20,13 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.node.networkMessages.JoinResponseWireMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
-import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.util.concurrent.BlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/22/2017.

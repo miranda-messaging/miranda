@@ -18,14 +18,13 @@ package last;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.PanicPolicy;
-import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.miranda.Startup;
+import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UsersFile;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +33,7 @@ import org.mockito.Matchers;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Clark on 3/5/2017.

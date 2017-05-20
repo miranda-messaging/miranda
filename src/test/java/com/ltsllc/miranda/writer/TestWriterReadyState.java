@@ -28,7 +28,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 3/27/2017.

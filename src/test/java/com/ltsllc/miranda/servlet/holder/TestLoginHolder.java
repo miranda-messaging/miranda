@@ -29,7 +29,6 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeoutException;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**

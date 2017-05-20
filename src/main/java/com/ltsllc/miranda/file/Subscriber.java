@@ -18,7 +18,6 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.miranda.Miranda;
 
 import java.util.concurrent.BlockingQueue;

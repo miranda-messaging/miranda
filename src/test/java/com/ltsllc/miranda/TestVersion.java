@@ -17,7 +17,6 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;

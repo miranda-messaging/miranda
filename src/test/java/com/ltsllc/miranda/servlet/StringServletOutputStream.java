@@ -18,7 +18,6 @@ package com.ltsllc.miranda.servlet;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
-import java.io.OutputStream;
 import java.io.StringWriter;
 
 /**
