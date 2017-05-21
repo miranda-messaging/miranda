@@ -174,6 +174,7 @@ public class TestNodeReadyState extends TesterNodeState {
 
     @Test
     public void testProcessVersionsWireMessage() {
+        setupMockMiranda();
         setupMockCluster();
         Version version = new Version();
         NameVersion nameVersion = new NameVersion("whatever", version);
@@ -183,6 +184,7 @@ public class TestNodeReadyState extends TesterNodeState {
         NetworkMessage networkMessage = new NetworkMessage(null, this, versionsWireMessage);
 
         BlockingQueue<Message> queue = new LinkedBlockingDeque<Message>();
+        when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
         when(getMockCluster().getQueue()).thenReturn(queue);
 
         State nextState = getReadyState().processMessage(networkMessage);
@@ -193,18 +195,27 @@ public class TestNodeReadyState extends TesterNodeState {
 
     public void testProcessGetFileWireMessage(String file) {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        setupMockMiranda();
+
 
         if (file.equalsIgnoreCase(Cluster.NAME)) {
             setupMockCluster();
+            when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
             when(getMockCluster().getQueue()).thenReturn(queue);
         } else if (file.equalsIgnoreCase(UsersFile.FILE_NAME)) {
             setupMockUsersFile();
+            when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
+            when(getMockUserManager().getFile()).thenReturn(getMockUsersFile());
             when(getMockUsersFile().getQueue()).thenReturn(queue);
         } else if (file.equalsIgnoreCase(TopicsFile.FILE_NAME)) {
             setupMockTopicsFile();
+            when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+            when(getMockTopicManager().getFile()).thenReturn(getMockTopicsFile());
             when(getMockTopicsFile().getQueue()).thenReturn(queue);
         } else if (file.equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
             setupMockSubscriptionsFile();
+            when(getMockMiranda().getSubscriptionManager()).thenReturn(getMockSubscriptionManager());
+            when(getMockSubscriptionManager().getFile()).thenReturn(getMockSubscriptionsFile());
             when(getMockSubscriptionsFile().getQueue()).thenReturn(queue);
         } else {
             System.err.println("Unrecognized file: " + file);
@@ -224,6 +235,13 @@ public class TestNodeReadyState extends TesterNodeState {
 
     @Test
     public void testProcessGetFileWireMessageCluster() {
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        setupMockMiranda();
+        setupMockCluster();
+
+        when (getMockMiranda().getCluster()).thenReturn(getMockCluster());
+        when (getMockCluster().getQueue()).thenReturn(queue);
+
         testProcessGetFileWireMessage(Cluster.NAME);
     }
 

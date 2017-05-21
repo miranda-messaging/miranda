@@ -32,6 +32,7 @@ import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
+import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
@@ -140,6 +141,13 @@ public class TestCase {
     @Mock
     private ServletHolder mockServletHolder;
 
+    @Mock
+    private SubscriptionManager mockSubscriptionManager;
+
+    public SubscriptionManager getMockSubscriptionManager() {
+        return mockSubscriptionManager;
+    }
+
     public ServletHolder getMockServletHolder() {
         return mockServletHolder;
     }
@@ -189,12 +197,10 @@ public class TestCase {
     }
 
     public SubscriptionsFile getMockSubscriptionsFile() {
-
         return mockSubscriptionsFile;
     }
 
     public TopicsFile getMockTopicsFile() {
-
         return mockTopicsFile;
     }
 
@@ -346,6 +352,7 @@ public class TestCase {
         this.mockFileWatcherService = null;
         this.mockReader = null;
         this.mockServletHolder = null;
+        this.mockSubscriptionManager = null;
     }
 
     public void setup () {
@@ -376,6 +383,7 @@ public class TestCase {
         this.mockFileWatcherService = mock(FileWatcherService.class);
         this.mockReader = mock(Reader.class);
         this.mockServletHolder = mock(ServletHolder.class);
+        this.mockSubscriptionManager = mock(SubscriptionManager.class);
     }
 
     public void setupMockNetwork () {
