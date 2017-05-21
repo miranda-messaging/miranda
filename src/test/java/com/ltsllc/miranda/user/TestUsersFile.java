@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -147,13 +148,9 @@ public class TestUsersFile extends TestCase {
 
     @Test
     public void testLoad () {
-        createFile(TEST_FILENAME, TEST_LOAD_CONTENTS);
-
         getUsersFile().load();
 
-        User user = getUsersFile().getData().get(0);
-
-        assert (null != user);
-        assert (user.getPublicKey() != null);
+        verify(getMockReader(), atLeastOnce()).sendReadMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
+                Matchers.eq(getUsersFile().getFilename()));
     }
 }
