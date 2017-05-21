@@ -155,11 +155,8 @@ public class TestSingleFile extends TestCase {
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
 
-        setupFile(TEST_FILE, nodeElementList);
-
         this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
-
-        getSingleFile().load();
+        getSingleFile().setData(nodeElementList);
 
         byte[] data = getSingleFile().getBytes();
         String s = Utils.bytesToString(data);

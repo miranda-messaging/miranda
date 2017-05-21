@@ -171,7 +171,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     public boolean contains(Object o) {
         E e = (E) o;
         for (E contained : getData()) {
-            if (contained.equals(e))
+            if (contained.matches(e))
                 return true;
         }
 

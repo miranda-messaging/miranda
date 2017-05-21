@@ -111,7 +111,7 @@ public class TestLoginHolder extends TestCase {
         Thread thread = new Thread(localRunner);
         thread.start();
 
-        pause(1500);
+        pause(2000);
 
         timeoutException = localRunner.timeoutException;
 
