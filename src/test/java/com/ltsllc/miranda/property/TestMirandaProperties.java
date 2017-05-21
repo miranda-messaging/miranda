@@ -161,18 +161,6 @@ public class TestMirandaProperties extends TestCase {
     public static String TEST_LOG4J = "test_log4j";
 
     @Test
-    public void testLoadWithValueOnCommandLine () throws IOException {
-        createFile(TEST_FILENAME, OTHER_CONTENTS);
-
-        String[] argv = { TEST_FILENAME, "-log4j", TEST_LOG4J };
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
-
-        getProperties().load(commandLine);
-
-        assert (getProperties().getProperty(MirandaProperties.PROPERTY_LOG4J_FILE).equals(TEST_LOG4J));
-    }
-
-    @Test
     public void testGetIntProperty () throws IOException {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
