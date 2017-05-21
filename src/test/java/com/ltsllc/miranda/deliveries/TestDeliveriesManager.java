@@ -31,11 +31,20 @@ public class TestDeliveriesManager extends TestCase {
     }
 
     public void reset () {
+        super.reset();
+
         this.deliveryManager = null;
     }
 
     @Before
     public void setup () {
+        reset();
+
+        super.setup();
+
+        setupMockMiranda();
+        setupMockFileWatcher();
+
         this.deliveryManager = new DeliveryManager("testdir", getMockReader(), getMockWriter());
     }
 

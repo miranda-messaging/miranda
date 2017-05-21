@@ -49,6 +49,10 @@ public class Version  {
         this.sha1 = Utils.calculateSha1(content);
     }
 
+    public Version (byte[] data) throws NoSuchAlgorithmException {
+        this.sha1 = Utils.calculateSha1(data);
+    }
+
     public static Version createWithSha1 (String sha1) {
         Version version = new Version ();
         version.sha1 = sha1;

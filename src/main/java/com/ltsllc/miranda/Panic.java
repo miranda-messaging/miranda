@@ -31,6 +31,7 @@ public class Panic extends Exception {
         DoesNotUnderstandNetworkMessage, // A state received a network message it does not know how to process
         EncryptException, // trying to encrypt a file prior to writing failed.  We effectively cannot write anything
         ErrorLoadingFile,
+        ExceptionCalculatingSha1,
         ExceptionCreatingSslContext,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,

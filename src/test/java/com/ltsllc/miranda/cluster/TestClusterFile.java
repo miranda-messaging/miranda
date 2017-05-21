@@ -21,6 +21,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
+import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -92,6 +93,11 @@ public class TestClusterFile extends TestCase {
 
         ClusterFile.initialize(filename, getMockReader(), getMockWriter(), getCluster());
         this.clusterFile = ClusterFile.getInstance();
+
+        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
+        nodeElementList.add(nodeElement);
+        this.clusterFile.setData(nodeElementList);
     }
 
     public void reset () {
@@ -129,7 +135,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testConstructor () {
-        assert (getClusterFile().getCurrentState() instanceof ClusterFileReadyState);
+        assert (getClusterFile().getCurrentState() instanceof ClusterFileStartingState);
     }
 
     @Test

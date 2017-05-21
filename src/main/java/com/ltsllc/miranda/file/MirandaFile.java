@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
@@ -26,6 +27,7 @@ import com.ltsllc.miranda.file.messages.WatchMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
@@ -75,6 +77,10 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
     public Version getVersion() {
+        if (null == version) {
+            version = calculateVersion();
+        }
+
         return version;
     }
 
@@ -196,5 +202,17 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
         sendToMe(garbageCollectionMessage);
+    }
+
+    public Version calculateVersion () {
+        try {
+            byte[] data = getBytes();
+            return new Version(data);
+        } catch (NoSuchAlgorithmException e) {
+            Panic panic = new Panic("Exception trying to calculate sha1", e, Panic.Reasons.ExceptionCalculatingSha1);
+            Miranda.panicMiranda(panic);
+        }
+
+        return null;
     }
 }

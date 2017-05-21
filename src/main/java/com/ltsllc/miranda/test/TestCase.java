@@ -947,4 +947,7 @@ public class TestCase {
         return true;
     }
 
+    public void setupMockFileWatcher () {
+        Miranda.fileWatcher = getMockFileWatcherService();
+    }
 }
