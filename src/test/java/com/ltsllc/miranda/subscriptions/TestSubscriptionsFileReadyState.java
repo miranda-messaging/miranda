@@ -78,6 +78,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
 
         Version version = new Version();
         when(getMockSubscriptionsFile().getVersion()).thenReturn(version);
+        when(getMockSubscriptionsFile().getCurrentState()).thenReturn(getReadyState());
 
         State nextState = getReadyState().processMessage(getVersionMessage);
 
