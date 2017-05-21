@@ -51,6 +51,10 @@ abstract public class Network extends Consumer {
         return truststorePassword;
     }
 
+    public void setTruststorePassword (String truststorePassword) {
+        this.truststorePassword = truststorePassword;
+    }
+
     public Network () {
         super("network");
 

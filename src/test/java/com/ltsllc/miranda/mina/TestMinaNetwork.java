@@ -167,6 +167,8 @@ public class TestMinaNetwork extends TestCase {
 
         SslFilter sslFilter = null;
 
+        getMinaNetwork().setTruststorePassword ("whatever");
+
         try {
             sslFilter = getMinaNetwork().createSslFilter();
         } catch (NetworkException e) {
@@ -192,6 +194,7 @@ public class TestMinaNetwork extends TestCase {
         ConnectToMessage connectToMessage = new ConnectToMessage("localhost", 6789, queue, this);
 
         Handle handle = null;
+        getMinaNetwork().setTruststorePassword("whatever");
 
         try {
             handle = getMinaNetwork().basicConnectTo(connectToMessage);
@@ -226,8 +229,10 @@ public class TestMinaNetwork extends TestCase {
     public void testCreateHandle () {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
+        setupMockMiranda();
         setupMockCluster();
         when(getMockCluster().getQueue()).thenReturn(queue);
+        when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
 
         Handle handle = getMinaNetwork().createHandle(getMockMinaIncomingHadeler());
 
