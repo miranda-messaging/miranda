@@ -21,6 +21,7 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.network.messages.CloseResponseMessage;
+import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import com.ltsllc.miranda.node.Node;
 import org.apache.log4j.Logger;
 
@@ -84,5 +85,12 @@ public class NodeStoppingState extends State {
         logger.warn (getNode() + " is shutting down, discarding a message " + message);
 
         return this;
+    }
+
+    public State processDisconnectedMessage (DisconnectedMessage disconnectedMessage) {
+        String name = getNode().getDns() + ":" + getNode().getPort();
+        getNode().getCluster().sendShutdownResponse(getNode().getQueue(),this, name);
+
+        return StopState.getInstance();
     }
 }

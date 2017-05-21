@@ -16,8 +16,10 @@
 
 package com.ltsllc.miranda.node.states;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.network.messages.CloseResponseMessage;
 import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,21 +51,23 @@ public class TestNodeStoppingState extends TesterNodeState {
 
         super.setup();
 
+        setupMockMiranda();
         nodeStoppingState = new NodeStoppingState(getMockNode());
     }
 
     @Test
-    public void testProcessDiconnectedMessage () {
+    public void testProcessDisconnectedMessage () {
         setupMockCluster();
-        DisconnectedMessage disconnectedMessage = new DisconnectedMessage(null, this, 13);
+        CloseResponseMessage closeResponseMessage = new CloseResponseMessage(null, this, 13,
+                Results.Success);
 
         when(getMockNode().getCluster()).thenReturn(getMockCluster());
 
-        State nextState = getNodeStoppingState().processMessage(disconnectedMessage);
+        State nextState = getNodeStoppingState().processMessage(closeResponseMessage);
 
         assert (nextState instanceof StopState);
 
-        verify(getMockCluster(), atLeastOnce()).sendNodeStopped(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.eq(getMockNode()));
+        verify(getMockCluster(), atLeastOnce()).sendShutdownResponse(Matchers.any(BlockingQueue.class), Matchers.any(),
+                Matchers.anyString());
     }
 }
