@@ -21,6 +21,7 @@ import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.states.UserManagerReadyState;
+import com.ltsllc.miranda.user.states.UserManagerStartState;
 import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
@@ -81,9 +82,10 @@ public class TestUserManager extends TestCase {
 
         setuplog4j();
 
-        setupMockMiranda();
+        setupMiranda();
+        setupMockReader();
+        setupMockWriter();
 
-        when (getMockMiranda().getWriter()).thenReturn(getMockWriter());
         createFile(TEST_FILENAME, TEST_FILE_CONTENTS);
 
         userManager = new UserManager(TEST_FILENAME);
@@ -110,7 +112,7 @@ public class TestUserManager extends TestCase {
 
     @Test
     public void testConstructor () {
-        assert (getUserManager().getCurrentState() instanceof UserManagerReadyState);
+        assert (getUserManager().getCurrentState() instanceof UserManagerStartState);
         assert (getUserManager().getUsers() != null);
         assert (getUserManager().getUsersFile() != null);
     }
@@ -147,18 +149,9 @@ public class TestUserManager extends TestCase {
 
     @Test
     public void testPerformGarbageCollection () {
-        getUserManager().start();
-
-        setupMockMiranda();
-
-        when(getMockMiranda().getWriter()).thenReturn(getMockWriter());
-
-        createFile(TEST_FILENAME, EXPIRED_CONTENTS);
-
-        this.userManager = new UserManager(TEST_FILENAME);
-        this.userManager.start();
-
-        pause(50);
+        User user = new User("whatever", "whatever");
+        user.setStatus(StatusObject.Status.Deleted);
+        getUserManager().getData().add (user);
 
         assert(getUserManager().getUsers().size() > 0);
 
@@ -169,13 +162,11 @@ public class TestUserManager extends TestCase {
 
     @Test
     public void testContains () {
-        User shouldContain = new User ("what", "an expired user");
+        User user = new User("whatever", "whatever");
+        getUserManager().getData().add(user);
+        User shouldContain = new User ("whatever", "whatever");
         shouldContain.setStatus(StatusObject.Status.Deleted);
         User shouldNotContain = new User ("not here", "absent");
-
-        getUserManager().start();
-
-        pause(50);
 
         assert (getUserManager().contains(shouldContain));
         assert (!getUserManager().contains(shouldNotContain));
@@ -201,6 +192,9 @@ public class TestUserManager extends TestCase {
     @Test
     public void testGetUser () {
         User newUser = new User("what", "ever");
+
+        setupMockReader();
+        setupMockWriter();
 
         getUserManager().contains(newUser);
 

@@ -807,6 +807,7 @@ public class TestCase {
 
     public void setupMockWriter () {
         Writer.setInstance(getMockWriter());
+        Miranda.getInstance().setWriter(getMockWriter());
     }
 
     public String loadPublicKey (String filename, String password, String alias) {
