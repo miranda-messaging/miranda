@@ -103,11 +103,13 @@ public class TestNewNodeState extends TesterNodeState {
 
     @Test
     public void testGetFileResponseWireMessageCluster () {
+        setupMockMiranda();
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockCluster();
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(Cluster.NAME, "whatever");
         NetworkMessage networkMessage = new NetworkMessage(null, this, getFileResponseWireMessage);
 
+        when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
         when (getMockCluster().getQueue()).thenReturn(queue);
 
         State nextState = getNewNodeState().processMessage(networkMessage);
