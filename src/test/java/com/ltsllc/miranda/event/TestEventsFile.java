@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.miranda.file.states.LoadingState;
+import com.ltsllc.miranda.file.states.SingleFileLoadingState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class TestEventsFile extends TestCase {
     @Test
     public void testConstructor () {
         assert (getEventsFile().getFilename().equals("testFile"));
-        assert (getEventsFile().getCurrentState() instanceof LoadingState);
+        assert (getEventsFile().getCurrentState() instanceof SingleFileLoadingState);
         assert (getEventsFile().getReader() == getMockReader());
         assert (getEventsFile().getWriter() == getMockWriter());
     }

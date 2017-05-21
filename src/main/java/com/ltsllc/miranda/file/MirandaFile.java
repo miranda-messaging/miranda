@@ -114,6 +114,10 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         basicConstructor(filename, reader, writer);
     }
 
+    public void recalculateVersion () {
+        version = calculateVersion();
+    }
+
     public void basicConstructor (String filename, Reader reader, Writer writer) {
         super.basicConstructor("file");
 
@@ -144,8 +148,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     public void watch() {
         File file = new File(getFilename());
         FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
-        WatchMessage message = new WatchMessage(getQueue(), this, file, fileChangedMessage);
-        send(message, Miranda.fileWatcher.getQueue());
+        Miranda.fileWatcher.sendWatchMessage (getQueue(), this, file, fileChangedMessage);
     }
 
     public void updateVersion() throws NoSuchAlgorithmException {

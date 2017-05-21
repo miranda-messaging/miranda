@@ -18,6 +18,7 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.messages.WatchMessage;
 import com.ltsllc.miranda.file.states.FileWatcherReadyState;
 import org.apache.log4j.Logger;
 
@@ -128,5 +129,8 @@ public class FileWatcherService extends Consumer {
         return null != match;
     }
 
-
+    public void sendWatchMessage (BlockingQueue<Message> senderQueue, Object sender, File file, Message message) {
+        WatchMessage watchMessage = new WatchMessage(senderQueue, sender, file, message);
+        sendToMe(watchMessage);
+    }
 }

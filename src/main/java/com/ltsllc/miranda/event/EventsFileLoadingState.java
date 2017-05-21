@@ -17,12 +17,12 @@
 package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.states.LoadingState;
+import com.ltsllc.miranda.file.states.SingleFileLoadingState;
 
 /**
  * Created by Clark on 5/14/2017.
  */
-public class EventsFileLoadingState extends LoadingState {
+public class EventsFileLoadingState extends SingleFileLoadingState {
     public EventsFile getEventsFile () {
         return (EventsFile) getContainer();
     }

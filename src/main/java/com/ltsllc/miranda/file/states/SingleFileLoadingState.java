@@ -20,7 +20,9 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.ReadMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
 
 import static com.ltsllc.miranda.reader.ReadResponseMessage.Results.Success;
@@ -28,14 +30,14 @@ import static com.ltsllc.miranda.reader.ReadResponseMessage.Results.Success;
 /**
  * Created by Clark on 5/14/2017.
  */
-abstract public class LoadingState extends State {
+abstract public class SingleFileLoadingState extends State {
     abstract public State getReadyState();
 
     public SingleFile getSingleFile() {
         return (SingleFile) getContainer();
     }
 
-    public LoadingState (SingleFile singleFile) {
+    public SingleFileLoadingState(SingleFile singleFile) {
         super(singleFile);
     }
 
@@ -49,6 +51,11 @@ abstract public class LoadingState extends State {
                 break;
             }
 
+            case FileChanged: {
+                FileChangedMessage fileChangedMessage = (FileChangedMessage) message;
+                nextState = processFileChangedMessage (fileChangedMessage);
+                break;
+            }
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -70,5 +77,11 @@ abstract public class LoadingState extends State {
         }
 
         return nextState;
+    }
+
+    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
+        getSingleFile().getReader().sendReadMessage(getSingleFile().getQueue(), this, getSingleFile().getFilename());
+
+        return getSingleFile().getCurrentState();
     }
 }

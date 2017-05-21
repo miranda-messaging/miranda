@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.file;
 
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventsFile;
@@ -26,6 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -67,14 +71,16 @@ public class TestMirandaFile extends TestCase {
         super.setup();
 
         setuplog4j();
+        setupMockFileWatcher();
         setupMirandaProperties();
         setupWriter();
 
-        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
+        Event event = new Event(Event.Methods.POST, "whatever");
+        List<Event> eventList = new ArrayList<Event>();
+        eventList.add(event);
 
-        eventsFile = new EventsFile("testdir/new/20170220-001.msg", getMockReader(), getMockWriter());
-        eventsFile.start();
-        eventsFile.load();
+        eventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());
+        eventsFile.setData(eventList);
     }
 
     @After
@@ -93,12 +99,15 @@ public class TestMirandaFile extends TestCase {
     public void testVersion() {
         Version oldVersion = getEventsFile().getVersion();
 
-        deleteDirectory(ROOT);
-        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
+        assert (oldVersion.equals(oldVersion));
 
-        getEventsFile().fileChanged();
+        Event event = new Event(Event.Methods.POST, "whatever");
+        List<Event> eventList = new ArrayList<Event>();
+        eventList.add(event);
 
-        pause(125);
+        getEventsFile().setData(eventList);
+
+        getEventsFile().recalculateVersion();
 
         Version newVersion = getEventsFile().getVersion();
 
@@ -108,34 +117,19 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testFileChanged() {
-        Event oldEvent = getEventsFile().getData().get(0);
-
-        deleteDirectory(ROOT);
-        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
-
+        File file = new File(getEventsFile().getFilename());
         getEventsFile().fileChanged();
-        Event newEvent = getEventsFile().getData().get(0);
-
-        assert (oldEvent != newEvent);
+        verify(getMockReader(), atLeastOnce()).sendReadMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
+                Matchers.eq(getEventsFile().getFilename()));
     }
 
 
     @Test
     public void testWatch() {
-        long then = System.currentTimeMillis();
-
-        Miranda.fileWatcher = new FileWatcherService(500);
-        Miranda.fileWatcher.start();
-
         getEventsFile().watch();
-
-        pause(125);
-
-        touch(getEventsFile().getFilename());
-
-        pause(1000);
-
-        assert (getEventsFile().getLastLoaded() > then);
+        File file = new File(getEventsFile().getFilename());
+        verify(getMockFileWatcherService(), atLeastOnce()).sendWatchMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.eq(file), Matchers.any(Message.class));
     }
 
     private void changeEvent(Event event) {
@@ -178,17 +172,13 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testEquals() {
-        getEventsFile().load();
-        EventsFile other = new EventsFile(FILENAME, getMockReader(), getMockWriter());
-        other.load();
+        assert (getEventsFile().equals(getEventsFile()));
 
-        assert (other.equals(getEventsFile()));
+        EventsFile newEventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());
+        Event event = Event.createRandom();
+        List<Event> eventList = new ArrayList<Event>();
+        newEventsFile.setData(eventList);
 
-        Event event = other.getData().get(0);
-        changeEvent(event);
-
-        other.updateVersion();
-
-        assert (!other.equals(getEventsFile()));
+        assert (!getEventsFile().equals(newEventsFile));
     }
 }

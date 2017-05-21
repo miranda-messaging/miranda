@@ -91,6 +91,12 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
         return new Event(randomMethods(random),content);
     }
 
+    public static Event createRandom () {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        return createRandom(improvedRandom, 1024);
+    }
+
     public String getContent() {
         return content;
     }
