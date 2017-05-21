@@ -18,6 +18,7 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.states.UsersFileReadyState;
+import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +93,7 @@ public class TestUsersFile extends TestCase {
     public void testConstructor () {
         assert (getUsersFile().getFilename().equals(TEST_FILENAME));
         assert (getUsersFile().getWriter() == getMockWriter());
-        assert (getUsersFile().getCurrentState() instanceof UsersFileReadyState);
+        assert (getUsersFile().getCurrentState() instanceof UsersFileStartingState);
         assert (UsersFile.getInstance() == getUsersFile());
     }
 
