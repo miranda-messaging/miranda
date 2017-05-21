@@ -29,6 +29,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 3/24/2017.
@@ -71,6 +72,8 @@ public class TestTopicsFileReadyState extends TestCase {
     public void testProcessGetVersion () {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetVersionMessage getVersionMessage = new GetVersionMessage(null, this, queue);
+
+        when(getMockTopicsFile().getCurrentState()).thenReturn(getReadyState());
 
         State nextState = getReadyState().processMessage(getVersionMessage);
 
