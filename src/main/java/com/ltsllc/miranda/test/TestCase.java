@@ -40,6 +40,7 @@ import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.util.ImprovedRandom;
+import com.ltsllc.miranda.util.JavaKeyStore;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -810,21 +811,15 @@ public class TestCase {
         Miranda.getInstance().setWriter(getMockWriter());
     }
 
-    public String loadPublicKey (String filename, String password, String alias) {
+    public PublicKey loadPublicKey (String filename, String password, String alias) {
         String hexString = null;
         ByteArrayOutputStream byteArrayOutputStream = null;
 
         try {
             KeyStore keyStore = Utils.loadKeyStore(filename, password);
-            X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
-            PublicKey publicKey = (PublicKey) certificate.getPublicKey();
-            byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(publicKey);
-            objectOutputStream.close();
-            byteArrayOutputStream.close();
-            byte[] data = byteArrayOutputStream.toByteArray();
-            return Utils.bytesToString(data);
+            JavaKeyStore javaKeyStore = new JavaKeyStore(keyStore);
+            java.security.PublicKey publicKey =  javaKeyStore.getPublicKey(alias);
+            return new PublicKey(publicKey);
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         } finally {
