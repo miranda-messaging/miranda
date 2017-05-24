@@ -25,15 +25,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/8/2017.
  */
 public class NewConnectionMessage extends Message {
-    private Node node;
+    private int handleId;
 
-    public Node getNode() {
-        return node;
+    public int getHandleId() {
+        return handleId;
     }
 
-    public NewConnectionMessage (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+    public NewConnectionMessage (BlockingQueue<Message> senderQueue, Object sender, int handleId) {
         super(Subjects.NewConnection, senderQueue, sender);
 
-        this.node = node;
+        this.handleId = handleId;
     }
 }

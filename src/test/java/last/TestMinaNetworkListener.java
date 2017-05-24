@@ -16,6 +16,7 @@
 
 package last;
 
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.test.TestCase;
@@ -30,8 +31,10 @@ import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -39,6 +42,9 @@ import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 3/18/2017.
@@ -68,8 +74,18 @@ public class TestMinaNetworkListener extends TestCase {
         }
     }
 
+    @Mock
+    private SSLContext mockSslContext;
+
+    @Mock
+    private SSLServerSocketFactory mockSslServerSocketFactory;
+
     private MinaNetworkListener minaNetworkListener;
     private ClientHandler clientHandler;
+
+    public SSLServerSocketFactory getMockSslServerSocketFactory() {
+        return mockSslServerSocketFactory;
+    }
 
     public ClientHandler getClientHandler() {
         return clientHandler;
@@ -79,6 +95,10 @@ public class TestMinaNetworkListener extends TestCase {
         this.clientHandler = clientHandler;
     }
 
+    public SSLContext getMockSslContext() {
+        return mockSslContext;
+    }
+
     public MinaNetworkListener getMinaNetworkListener() {
         return minaNetworkListener;
     }
@@ -86,6 +106,8 @@ public class TestMinaNetworkListener extends TestCase {
     public void reset() {
         super.reset();
 
+        mockSslServerSocketFactory = null;
+        mockSslContext = null;
         minaNetworkListener = null;
     }
 
@@ -93,11 +115,16 @@ public class TestMinaNetworkListener extends TestCase {
     public void setup() {
         reset();
 
-        setuplog4j();
         super.setup();
+
+        setupMockProperties();
+        setupMiranda();
+        setuplog4j();
         setupTrustStore();
         setupKeyStore();
 
+        mockSslServerSocketFactory = mock(SSLServerSocketFactory.class);
+        mockSslContext = mock(SSLContext.class);
         minaNetworkListener = new MinaNetworkListener(6789);
     }
 
@@ -133,8 +160,12 @@ public class TestMinaNetworkListener extends TestCase {
             ConnectFuture connectFuture = connector.connect(address);
             connectFuture.awaitUninterruptibly();
 
+            System.out.println ("got connection, seding test message");
+
             IoSession session = connectFuture.getSession();
             session.write(TEST_MESSAGE);
+
+            System.out.println("Sent test message");
 
             pause(250);
 
@@ -153,10 +184,10 @@ public class TestMinaNetworkListener extends TestCase {
      *
      */
     @Test
-    public void testStartup() {
+    public void testStartup() throws MirandaException {
         setuplog4j();
-        setupMockMiranda();
         setupMockPanicPolicy();
+        setupMockFactory();
         BlockingQueue<Handle> handleQueue = new LinkedBlockingQueue<Handle>();
 
         getMinaNetworkListener().setTestMessage(TEST_MESSAGE);
@@ -164,7 +195,7 @@ public class TestMinaNetworkListener extends TestCase {
 
         setupMinaClient("localhost", 6789);
 
-        pause(250);
+        pause(2000);
 
         assert (getMinaNetworkListener().getAcceptor().getFilterChain().contains("tls"));
         assert (getMinaNetworkListener().getAcceptor().getFilterChain().contains("lines"));

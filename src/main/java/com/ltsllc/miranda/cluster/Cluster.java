@@ -26,7 +26,9 @@ import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.messages.NewConnectionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
@@ -337,5 +339,9 @@ public class Cluster extends Manager<Node, NodeElement> {
         for (Node node : getNodes()) {
             node.sendShutdown(getQueue(), this);
         }
+    }
+
+    public void sendNewConnectionMessage (BlockingQueue<Message> senderQueue, Object sender, int handleId) {
+
     }
 }

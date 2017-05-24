@@ -954,4 +954,8 @@ public class TestCase {
     public void setupMockFileWatcher () {
         Miranda.fileWatcher = getMockFileWatcherService();
     }
+
+    public void setupMockFactory () {
+        Miranda.factory = getMockMirandaFactory();
+    }
 }

@@ -333,6 +333,13 @@ public class MirandaFactory {
                 sslContext = buildRemoteCaServerSSLContext();
                 break;
             }
+
+            default: {
+                StartupPanic startupPanic = new StartupPanic("Unrecognized encryption mode: " + mode,
+                        StartupPanic.StartupReasons.UnrecognizedEncryptionMode);
+                Miranda.panicMiranda(startupPanic);
+                break;
+            }
         }
 
         return sslContext;

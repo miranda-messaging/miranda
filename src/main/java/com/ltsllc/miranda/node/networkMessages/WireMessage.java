@@ -76,6 +76,10 @@ public class WireMessage {
         return ourGson.toJson(this);
     }
 
+    public String toJson () {
+        return getJson();
+    }
+
     public boolean equals (Object o) {
         if (o == null || !(o instanceof WireMessage))
             return false;

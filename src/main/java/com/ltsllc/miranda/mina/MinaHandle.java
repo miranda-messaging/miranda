@@ -26,19 +26,12 @@ import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import java.util.concurrent.BlockingQueue;
 
 public class MinaHandle extends Handle {
-    private static Gson ourGson = new Gson();
-
-    private Network network;
     private MinaHandler minaHandler;
 
     public MinaHandle (MinaHandler minaHandler, BlockingQueue<Message> queue) {
         super(queue);
 
         this.minaHandler = minaHandler;
-    }
-
-    public Network getNetwork() {
-        return network;
     }
 
     public MinaHandler getMinaHandler() {
