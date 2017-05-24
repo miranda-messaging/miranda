@@ -41,17 +41,10 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 5/23/2017.
  */
 public class NewMinaNetworkListener {
-    private NetworkListenerHolder holder;
     private NioSocketAcceptor acceptor;
     private int port;
 
-    public NetworkListenerHolder getHolder() {
-        return holder;
-    }
 
-    public void setHolder(NetworkListenerHolder holder) {
-        this.holder = holder;
-    }
 
     public int getPort() {
         return port;
@@ -69,9 +62,6 @@ public class NewMinaNetworkListener {
         this.acceptor = acceptor;
     }
 
-    public NewMinaNetworkListener (NetworkListenerHolder holder) {
-        setHolder(holder);
-    }
 
     public void listen() {
         MirandaFactory factory = Miranda.factory;
