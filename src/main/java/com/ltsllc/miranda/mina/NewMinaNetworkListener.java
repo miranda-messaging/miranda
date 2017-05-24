@@ -94,6 +94,6 @@ public class NewMinaNetworkListener {
     }
 
     public void newConnection (IoSession ioSession) {
-
+// test
     }
 }
