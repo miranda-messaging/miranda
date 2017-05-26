@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.subscriptions;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
+import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
@@ -27,7 +28,9 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/22/2017.
  */
-public class DeleteSubscriptionOperation extends Operation {
+public class DeleteSubscriptionOperation extends UserOperation {
+    public static final String NAME = "delete subscription operation";
+
     private String subscriptionName;
     private Subscription subscription;
 
@@ -44,7 +47,7 @@ public class DeleteSubscriptionOperation extends Operation {
     }
 
     public DeleteSubscriptionOperation (BlockingQueue<Message> requester, Session session, String subscriptionName) {
-        super("delete subscription operations", requester, session);
+        super(NAME, requester, session);
 
         this.subscriptionName = subscriptionName;
 

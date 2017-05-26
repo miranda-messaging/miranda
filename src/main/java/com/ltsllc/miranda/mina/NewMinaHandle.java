@@ -19,6 +19,7 @@ package com.ltsllc.miranda.mina;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.HandleHolder;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -32,14 +33,6 @@ import java.util.concurrent.BlockingQueue;
 public class NewMinaHandle extends IoHandlerAdapter {
     private HandleHolder handleHolder;
     private IoSession ioSession;
-
-    public BlockingQueue<Message> getQueue() {
-        return queue;
-    }
-
-    public void setQueue(BlockingQueue<Message> queue) {
-        this.queue = queue;
-    }
 
     public IoSession getIoSession() {
         return ioSession;

@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
+import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.topics.Topic;
 
@@ -27,7 +28,9 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/23/2017.
  */
-public class UpdateTopicOperation extends Operation {
+public class UpdateTopicOperation extends UserOperation {
+    public static final String NAME = "update topic operation";
+
     private Topic topic;
 
     public Topic getTopic() {
@@ -39,7 +42,7 @@ public class UpdateTopicOperation extends Operation {
     }
 
     public UpdateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) {
-        super("update topic operations", requester, session);
+        super(NAME, requester, session);
 
         UpdateTopicOperationReadyState updateTopicOperationReadyState = new UpdateTopicOperationReadyState(this);
         setCurrentState(updateTopicOperationReadyState);

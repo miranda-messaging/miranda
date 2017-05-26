@@ -48,6 +48,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 1/31/2017.
  */
 public class NettyNetworkListener extends NetworkListener {
+
     public void startup (BlockingQueue<Handle> queue) {
         // TODO: implement this
     }
@@ -113,8 +114,8 @@ public class NettyNetworkListener extends NetworkListener {
             Node node = new Node(handle, Network.getInstance(), Miranda.getInstance().getCluster());
             node.start();
 
-            NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
-            Consumer.staticSend(newConnectionMessage, Miranda.getInstance().getQueue());
+            // NewConnectionMessage newConnectionMessage = new NewConnectionMessage(null, this, node);
+            // Consumer.staticSend(newConnectionMessage, Miranda.getInstance().getQueue());
 
             LocalHandler localHandler = new LocalHandler(node.getQueue());
             socketChannel.pipeline().addLast(localHandler);

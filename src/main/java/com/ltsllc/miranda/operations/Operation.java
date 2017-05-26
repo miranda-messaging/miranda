@@ -27,20 +27,14 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Operation extends Consumer {
     private BlockingQueue<Message> requester;
-    private Session session;
-
-    public Session getSession() {
-        return session;
-    }
 
     public BlockingQueue<Message> getRequester() {
         return requester;
     }
 
-    public Operation (String name, BlockingQueue<Message> requester, Session session) {
+    public Operation (String name, BlockingQueue<Message> requester) {
         super(name);
 
         this.requester = requester;
-        this.session = session;
     }
 }

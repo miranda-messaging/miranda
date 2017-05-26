@@ -18,6 +18,9 @@ package com.ltsllc.miranda.mina;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.ssl.SslFilter;
+
+import javax.net.ssl.SSLSession;
 
 /**
  * Created by Clark on 5/23/2017.
@@ -39,6 +42,13 @@ public class NewMinaIncomingHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        getNetworkListener().newConnection(session);
+        System.out.println("got connection");
+    }
+
+    @Override
+    public void messageReceived(IoSession session, Object message) throws Exception {
+        System.out.println ("got message");
+        System.out.println(message);
+        session.write(message);
     }
 }

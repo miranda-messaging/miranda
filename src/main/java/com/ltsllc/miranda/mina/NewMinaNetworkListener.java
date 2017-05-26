@@ -72,12 +72,12 @@ public class NewMinaNetworkListener {
         SSLContext sslContext = factory.buildServerSSLContext();
 
         SslFilter sslFilter = new SslFilter(sslContext);
-        sslFilter.setNeedClientAuth(true);
-        acceptor.getFilterChain().addLast("tls", sslFilter);
+        // sslFilter.setNeedClientAuth(true);
+        //acceptor.getFilterChain().addLast("tls", sslFilter);
 
         TextLineCodecFactory textLineCodecFactory = new TextLineCodecFactory(Charset.forName("UTF-8"));
         ProtocolCodecFilter protocolCodecFilter = new ProtocolCodecFilter(textLineCodecFactory);
-        acceptor.getFilterChain().addLast("lines", protocolCodecFilter);
+        // acceptor.getFilterChain().addLast("lines", protocolCodecFilter);
         acceptor.setReuseAddress(true);
         NewMinaIncomingHandler newMinaIncomingHandler = new NewMinaIncomingHandler(this);
         acceptor.setHandler(newMinaIncomingHandler);

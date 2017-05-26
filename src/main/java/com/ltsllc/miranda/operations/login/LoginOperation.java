@@ -26,6 +26,8 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/16/2017.
  */
 public class LoginOperation extends Operation {
+    public static final String NAME = "login operation";
+
     private String user;
 
     public String getUser() {
@@ -33,7 +35,7 @@ public class LoginOperation extends Operation {
     }
 
     public LoginOperation (String name, BlockingQueue<Message> requester) {
-        super ("login operations", requester, null);
+        super (NAME, requester);
 
         this.user = name;
 

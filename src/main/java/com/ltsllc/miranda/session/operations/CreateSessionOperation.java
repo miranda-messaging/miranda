@@ -34,7 +34,7 @@ public class CreateSessionOperation extends Operation {
     }
 
     public CreateSessionOperation (BlockingQueue<Message> requester, Session session, String user) {
-        super("create session operations", requester, session);
+        super("create session operations", requester);
 
         CreateSessionOperationReadyState readyState = new CreateSessionOperationReadyState(this);
         setCurrentState(readyState);

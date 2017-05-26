@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.subscriptions;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
+import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
@@ -27,7 +28,9 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/22/2017.
  */
-public class CreateSubscriptionOperation extends Operation {
+public class CreateSubscriptionOperation extends UserOperation {
+    public static final String NAME = "create subscription operation";
+
     private Subscription subscription;
     private boolean userManagerResponded;
     private boolean topicManagerResponded;
@@ -53,7 +56,7 @@ public class CreateSubscriptionOperation extends Operation {
     }
 
     public CreateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) {
-        super("create subscription operations", requester, session);
+        super(NAME, requester, session);
 
         CreateSubscriptionOperationReadyState readyState = new CreateSubscriptionOperationReadyState(this);
         setCurrentState(readyState);

@@ -41,7 +41,9 @@ public class HandleHolder extends Consumer {
     }
 
     public HandleHolder (Handle handle, BlockingQueue<Message> recipient) {
-        super()
+        super();
+        this.handle = handle;
+        this.recipient = recipient;
     }
 
     public void newMessage (WireMessage wireMessage) {

@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
+import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 
 import java.util.concurrent.BlockingQueue;
@@ -26,7 +27,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/23/2017.
  */
-public class DeleteTopicOperation extends Operation {
+public class DeleteTopicOperation extends UserOperation {
     private String topicName;
 
     public String getTopicName() {
