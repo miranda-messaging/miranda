@@ -286,9 +286,14 @@ public class Miranda extends Consumer {
      * @return
      */
     public boolean panic (Panic panic) {
-        boolean continuePanic = getPanicPolicy().panic(panic);
-        panicking = continuePanic;
-        return continuePanic;
+        PanicPolicy panicPolicy = getPanicPolicy();
+        if (null == panicPolicy) {
+            System.err.println("null panic policy in panic");
+            panic.printStackTrace();
+            System.exit(-1);
+        }
+
+        return panicPolicy.panic(panic);
     }
 
     public static void main(String[] argv) {
@@ -538,6 +543,13 @@ public class Miranda extends Consumer {
     }
 
     public static boolean panicMiranda (Panic panic) {
-        return getInstance().panic(panic);
+        Miranda instance = Miranda.getInstance();
+        if (null == instance) {
+            System.err.println("null instance in panicMiranda");
+            panic.printStackTrace();
+            System.exit(-1);
+        }
+
+        return instance.panic(panic);
     }
 }

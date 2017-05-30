@@ -303,7 +303,7 @@ public class TestMirandaProperties extends TestCase {
         MirandaException mirandaException = null;
 
         try {
-            getProperties().getLongProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            getProperties().getLongProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
         } catch (MirandaException e) {
             mirandaException = e;
         }

@@ -523,7 +523,7 @@ public class TestCase {
 
     public void setupTrustStore () {
         MirandaProperties properties = Miranda.properties;
-        properties.setProperty(MirandaProperties.PROPERTY_TRUST_STORE, TEMP_TRUSTSTORE);
+        properties.setProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME, TEMP_TRUSTSTORE);
 
         createFile(TEMP_TRUSTSTORE, TRUST_STORE_CONTENTS);
     }

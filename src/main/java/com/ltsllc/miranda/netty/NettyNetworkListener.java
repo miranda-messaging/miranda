@@ -209,7 +209,7 @@ public class NettyNetworkListener extends NetworkListener {
             String keyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             // String keyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
 
-            String certificateFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            String certificateFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
             String certificateAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
 
             /*

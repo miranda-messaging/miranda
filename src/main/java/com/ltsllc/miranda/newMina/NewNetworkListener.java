@@ -18,6 +18,7 @@ package com.ltsllc.miranda.newMina;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.network.Network;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
@@ -38,13 +39,13 @@ import java.security.SecureRandom;
  */
 public class NewNetworkListener extends Consumer {
     public static final String NAME = "listener";
+    private NewNetwork network;
     private int port;
     private KeyStore keystore;
     private KeyStore truststore;
-    private Cluster cluster;
 
-    public Cluster getCluster() {
-        return cluster;
+    public NewNetwork getNetwork() {
+        return network;
     }
 
     public KeyStore getKeystore() {
@@ -60,12 +61,11 @@ public class NewNetworkListener extends Consumer {
         return port;
     }
 
-    public NewNetworkListener(String name, int port, Cluster cluster, KeyStore keyStore, KeyStore truststore) {
+    public NewNetworkListener(int port, KeyStore keyStore, KeyStore truststore) {
         super(NAME);
         this.port = port;
         this.keystore = keyStore;
         this.truststore = truststore;
-        this.cluster = cluster;
     }
 
     public void stop () {
@@ -82,7 +82,7 @@ public class NewNetworkListener extends Consumer {
         sslFilter.setNeedClientAuth(true);
         nioSocketAcceptor.getFilterChain().addLast("ssl", sslFilter);
 
-        nioSocketAcceptor.setHandler(new NewConnectionHandler(this));
+        nioSocketAcceptor.setHandler(new NewConnectionHandler(getNetwork()));
 
         InetSocketAddress inetSocketAddress = new InetSocketAddress(getPort());
 

@@ -25,6 +25,7 @@ import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.newMina.NewNetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.util.Utils;
 import io.netty.handler.ssl.SslContext;
@@ -53,6 +54,24 @@ public class MirandaFactory {
     private MirandaProperties properties;
     private String keystorePassword;
     private String truststorePassword;
+    private KeyStore keyStore;
+    private KeyStore trustStore;
+
+    public KeyStore getTrustStore() {
+        return trustStore;
+    }
+
+    public void setTrustStore(KeyStore trustStore) {
+        this.trustStore = trustStore;
+    }
+
+    public KeyStore getKeyStore() {
+        return keyStore;
+    }
+
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
 
     public String getTruststorePassword() {
         return truststorePassword;
@@ -70,6 +89,22 @@ public class MirandaFactory {
         this.properties = properties;
         this.keystorePassword = keystorePassword;
         this.truststorePassword = truststorePassword;
+    }
+
+    public void getKeyStores () {
+        try {
+            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+            KeyStore keyStore = Utils.loadKeyStore(filename, getKeystorePassword());
+            setKeyStore(keyStore);
+
+            filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
+            keyStore = Utils.loadKeyStore(filename, getTruststorePassword());
+            setTrustStore(keyStore);
+        } catch (GeneralSecurityException | IOException e) {
+            StartupPanic startupPanic = new StartupPanic("Exception trying to get keystores", e,
+                    StartupPanic.StartupReasons.ExceptionLoadingKeystore);
+            Miranda.panicMiranda(startupPanic);
+        }
     }
 
     public NetworkListener buildNetworkListener () {
@@ -132,7 +167,7 @@ public class MirandaFactory {
     }
 
     public SslContext buildNettyClientSslContext () throws IOException, GeneralSecurityException {
-        String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+        String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
 
         return Utils.createClientSslContext(filename, getTruststorePassword());
     }
@@ -370,7 +405,7 @@ public class MirandaFactory {
         SSLContext sslContext = null;
 
         try {
-            String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
             KeyStore trustKeyStore = Utils.loadKeyStore(trustStoreFilename, getTruststorePassword());
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(trustKeyStore);
@@ -444,11 +479,6 @@ public class MirandaFactory {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
 
         switch (mode) {
-            case LocalCA: {
-                networkListener = new MinaNetworkListener(port);
-                break;
-            }
-
             case None: {
                 networkListener = new MinaNetworkListener(port, false);
                 break;
@@ -461,5 +491,11 @@ public class MirandaFactory {
         }
 
         return networkListener;
+    }
+
+    public NewNetworkListener buildNewNetworkListener () {
+        int port = getProperties().getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
+        return new NewNetworkListener(port, getKeyStore(), getTrustStore());
     }
 }

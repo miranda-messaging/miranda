@@ -29,4 +29,8 @@ public class MirandaException extends Exception {
     public MirandaException (String message, Throwable cause) {
         super (message, cause);
     }
+
+    public MirandaException (Throwable throwable) {
+        super(throwable);
+    }
 }

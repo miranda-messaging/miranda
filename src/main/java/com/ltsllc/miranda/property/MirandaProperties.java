@@ -129,7 +129,7 @@ public class MirandaProperties {
     public static final String PROPERTY_HTTP_BASE = HTTP_PACKAGE_NAME + "Base";
     public static final String PROPERTY_HTTP_SERVER = HTTP_PACKAGE_NAME + "Server";
 
-    public static final String PROPERTY_TRUST_STORE = ENCRYPTION_PACKAGE + "Truststore";
+    public static final String PROPERTY_TRUST_STORE_FILENAME = ENCRYPTION_PACKAGE + "Truststore";
     public static final String PROPERTY_TRUST_STORE_ALIAS = ENCRYPTION_PACKAGE + "TruststoreAlias";
 
     public static final String PROPERTY_MY_DNS = MY_PACKAGE + "Dns";
@@ -207,7 +207,7 @@ public class MirandaProperties {
             {PROPERTY_MAX_WRITE_FAILURES, DEFAULT_MAX_WRITE_FAILURES},
 
             {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPTION_MODE},
-            {PROPERTY_TRUST_STORE, DEFAULT_TRUST_STORE},
+            {PROPERTY_TRUST_STORE_FILENAME, DEFAULT_TRUST_STORE},
             {PROPERTY_TRUST_STORE_ALIAS, DEFAULT_TRUST_STORE_ALIAS},
             {PROPERTY_CERTIFICATE_ALIAS, DEFAULT_CERTIFICATE_ALIAS},
 

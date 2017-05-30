@@ -110,7 +110,7 @@ public class MinaNetwork extends Network {
         try {
             MirandaProperties properties = Miranda.properties;
 
-            String filename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
+            String filename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
 
             KeyStore keyStore = Utils.loadKeyStore(filename, getTruststorePassword());
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

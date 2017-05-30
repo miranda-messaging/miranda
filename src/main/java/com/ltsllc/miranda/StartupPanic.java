@@ -34,6 +34,7 @@ public class StartupPanic extends Panic {
         ExceptionStartingNetworkListener,
         ExceptionListening,
         ExceptionLoadingProperties,
+        ExceptionLoadingKeystore,
         ExceptionWatchingFile,
         MissingKey, // A key that the system needs is missing from the keystore
         MissingProperty, // A Property that the system requires to start up is missing

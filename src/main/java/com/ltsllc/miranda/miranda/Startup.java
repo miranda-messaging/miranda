@@ -47,7 +47,6 @@ import com.ltsllc.miranda.servlet.subscription.*;
 import com.ltsllc.miranda.servlet.topic.*;
 import com.ltsllc.miranda.servlet.user.*;
 import com.ltsllc.miranda.session.SessionManager;
-import com.ltsllc.miranda.socket.SocketNetwork;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;

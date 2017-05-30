@@ -56,7 +56,7 @@ public class NewMinaNetwork extends NewNetwork {
         sslFilter.setUseClientMode(true);
         nioSocketConnector.getFilterChain().addLast("tls", sslFilter);
 
-        nioSocketConnector.setHandler(new NewConnectionHandler());
+        nioSocketConnector.setHandler(new NewConnectionHandler(this));
         ConnectFuture connectFuture = nioSocketConnector.connect();
         connectFuture.awaitUninterruptibly();
 
