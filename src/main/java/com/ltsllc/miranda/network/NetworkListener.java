@@ -35,7 +35,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * </P>
  */
 abstract public class NetworkListener extends Consumer {
-    abstract public void startup (BlockingQueue<Handle> queue) throws NetworkException;
     abstract public void stopListening();
 
     public static final String NAME = "network listener";
@@ -80,18 +79,6 @@ abstract public class NetworkListener extends Consumer {
         setCurrentState(readyState);
     }
 
-    public void performStartup (BlockingQueue<Handle> handleQueue) {
-        try {
-            startup(handleQueue);
-        } catch (NetworkException e) {
-            StartupPanic startupPanic = new StartupPanic ("Exception in the NetworkListener during setup", e, StartupPanic.StartupReasons.NetworkListener);
-            boolean continuePanic = Miranda.getInstance().panic(startupPanic);
-            if (continuePanic) {
-                shutdown();
-            }
-        }
-    }
-
     public void newConnectionLoop (BlockingQueue<Handle> handleQueue) {
         while (keepGoing()) {
             Handle newConnection = null;
@@ -114,14 +101,6 @@ abstract public class NetworkListener extends Consumer {
                 incrementConnectionCount();
             }
         }
-    }
-
-    public void getConnections () {
-        performStartup(getHandleQueue());
-
-        newConnectionLoop(getHandleQueue());
-
-        setCurrentState(StopState.getInstance());
     }
 
     public void shutdown () {

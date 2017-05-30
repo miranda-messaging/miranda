@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.NetworkReadyState;
@@ -145,7 +146,10 @@ public class TestMinaNetwork extends TestCase {
         setuplog4j();
 
         mockMinaIncomingHadeler = mock(MinaIncomingHandler.class);
-        minaNetwork = new MinaNetwork(TEST_KEYSTORE_PASSWORD, TEST_TRUSTSTORE_PASSWORD);
+
+        setupKeyStore();
+        setupTrustStore();
+        minaNetwork = new MinaNetwork(getKeyStore(), getTrustStore());
     }
 
     @After
@@ -160,27 +164,7 @@ public class TestMinaNetwork extends TestCase {
     }
 
     @Test
-    public void testCreateSslFilter() {
-        setupMirandaProperties();
-        setupTrustStore();
-        setupKeyStore();
-
-        SslFilter sslFilter = null;
-
-        getMinaNetwork().setTruststorePassword ("whatever");
-
-        try {
-            sslFilter = getMinaNetwork().createSslFilter();
-        } catch (NetworkException e) {
-            e.printStackTrace();
-        }
-
-        assert (sslFilter != null);
-        assert (sslFilter != null && sslFilter.isUseClientMode());
-    }
-
-    @Test
-    public void testBasicConnectTo() {
+    public void testBasicConnectTo() throws MirandaException {
         setupMirandaProperties();
         setupTrustStore();
         setupKeyStore();
@@ -191,19 +175,7 @@ public class TestMinaNetwork extends TestCase {
 
         setupMinaListener(6789);
 
-        ConnectToMessage connectToMessage = new ConnectToMessage("localhost", 6789, queue, this);
-
-        Handle handle = null;
-        getMinaNetwork().setTruststorePassword("whatever");
-
-        try {
-            handle = getMinaNetwork().basicConnectTo(connectToMessage);
-        } catch (NetworkException e) {
-            e.printStackTrace();
-        }
-
-        assert (getMinaNetwork().getConnector().getFilterChain().contains("line"));
-        assert (getMinaNetwork().getConnector().getFilterChain().contains("tls"));
+        Handle handle = getMinaNetwork().basicConnectTo("localhost", 6789);
 
         pause(250);
 
@@ -238,6 +210,5 @@ public class TestMinaNetwork extends TestCase {
 
         verify(getMockCluster(), atLeastOnce()).getQueue();
         assert (contains(Message.Subjects.NewNode, queue));
-        assert (getMinaNetwork().getNode() != null);
     }
 }

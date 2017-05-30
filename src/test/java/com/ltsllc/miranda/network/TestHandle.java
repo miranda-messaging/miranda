@@ -23,6 +23,7 @@ import com.ltsllc.miranda.mina.MinaHandler;
 import com.ltsllc.miranda.node.networkMessages.ClusterFileWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.test.TestCase;
+import org.apache.mina.core.session.IoSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,6 +37,9 @@ import static org.mockito.Mockito.mock;
  * Created by Clark on 5/15/2017.
  */
 public class TestHandle extends TestCase {
+    @Mock
+    private IoSession mockIoSession;
+
     @Mock
     private MinaHandler mockMinaHandler;
 
@@ -71,7 +75,8 @@ public class TestHandle extends TestCase {
 
         queue = new LinkedBlockingQueue<Message>();
         mockMinaHandler = mock(MinaHandler.class);
-        handle = new MinaHandle(mockMinaHandler, queue);
+        mockIoSession = mock(IoSession.class);
+        handle = new MinaHandle(mockIoSession, queue);
     }
 
     @Test

@@ -21,131 +21,89 @@ import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Handle;
+import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.newMina.NewConnectionHandler;
+import com.ltsllc.miranda.newMina.NewNetwork;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 3/6/2017.
  */
 public class MinaNetworkListener extends NetworkListener {
-    private boolean useEncryption = true;
+    public static final String NAME = "listener";
+    private Network network;
+    private KeyStore keystore;
+    private KeyStore truststore;
 
-    private boolean testMode = true; // for testing
-    private NioSocketAcceptor acceptor; // for testing
-    private String testMessage; // for testing
-    private MinaTestHandler minaTestHandler; // for testing
-
-    public MinaTestHandler getMinaTestHandler() {
-        return minaTestHandler;
+    public Network getNetwork() {
+        return network;
     }
 
-    public void setMinaTestHandler(MinaTestHandler minaTestHandler) {
-        this.minaTestHandler = minaTestHandler;
+    public KeyStore getKeystore() {
+        return keystore;
     }
 
-    public String getTestMessage() {
-        return testMessage;
+    public KeyStore getTruststore() {
+        return truststore;
     }
 
-    public void setTestMessage(String testMessage) {
-        this.testMessage = testMessage;
-
-        if (null != testMessage && testMessage.length() > 0)
-            setTestMode(true);
-    }
-
-    public boolean isTestMode() {
-        return testMode;
-    }
-
-    public void setTestMode(boolean testMode) {
-        this.testMode = testMode;
-    }
-
-    public boolean getUseEncryption() {
-        return useEncryption;
-    }
-
-    public void setUseEncryption(boolean useEncryption) {
-        this.useEncryption = useEncryption;
-    }
-
-    public NioSocketAcceptor getAcceptor() {
-        return acceptor;
-    }
-
-    public void setAcceptor(NioSocketAcceptor acceptor) {
-        this.acceptor = acceptor;
-    }
-
-    public MinaNetworkListener (int port) {
+    public MinaNetworkListener(int port, KeyStore keyStore, KeyStore truststore) {
         super(port);
-    }
-
-    public MinaNetworkListener (int port, boolean useEncryption)
-    {
-        this(port);
-        setUseEncryption(useEncryption);
-    }
-
-    public void startup (BlockingQueue<Handle> queue) {
-        MirandaFactory factory = Miranda.factory;
-
-        NioSocketAcceptor acceptor = new NioSocketAcceptor();
-        setAcceptor(acceptor);
-
-        SSLContext sslContext = factory.buildServerSSLContext();
-
-        if (null != sslContext) {
-            SslFilter sslFilter = new SslFilter(sslContext);
-            acceptor.getFilterChain().addLast("tls", sslFilter);
-        }
-
-        TextLineCodecFactory textLineCodecFactory = new TextLineCodecFactory(Charset.forName("UTF-8"));
-        ProtocolCodecFilter protocolCodecFilter = new ProtocolCodecFilter(textLineCodecFactory);
-        acceptor.getFilterChain().addLast("lines", protocolCodecFilter);
-
-        if (isTestMode()) {
-            MinaTestHandler minaTestHandler = new MinaTestHandler(getTestMessage());
-            setMinaTestHandler(minaTestHandler);
-            acceptor.setHandler(minaTestHandler);
-        } else {
-            MinaIncomingHandler handler = new MinaIncomingHandler(queue);
-            acceptor.setHandler(handler);
-        }
-
-        acceptor.setReuseAddress(true);
-
-        InetSocketAddress address = new InetSocketAddress(getPort());
-
-        try {
-            acceptor.bind(address);
-        } catch (IOException e) {
-            Panic panic = new StartupPanic("Exception trying to listen", e, StartupPanic.StartupReasons.ExceptionListening);
-            Miranda.getInstance().panic(panic);
-        }
+        this.keystore = keyStore;
+        this.truststore = truststore;
     }
 
     public void stopListening () {
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(getPort());
-        getAcceptor().unbind(inetSocketAddress);
-
-        for(IoSession session: getAcceptor().getManagedSessions().values()){
-            if(session.isConnected() && !session.isClosing()){
-                session.closeNow();
-            }
-        }
-
-        getAcceptor().dispose();
+        stop();
     }
+
+    public void stop () {
+        getThread().interrupt();
+    }
+
+    public void basicStart () throws Exception {
+        NioSocketAcceptor nioSocketAcceptor = new NioSocketAcceptor();
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+        SslFilter sslFilter = new SslFilter(sslContext);
+        sslFilter.setNeedClientAuth(true);
+        nioSocketAcceptor.getFilterChain().addLast("ssl", sslFilter);
+
+        ConnectionHandler connectionHandler = new ConnectionHandler(getNetwork());
+        nioSocketAcceptor.setHandler(connectionHandler);
+
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(getPort());
+
+        nioSocketAcceptor.bind(inetSocketAddress);
+    }
+
+    public void start () {
+        try {
+            basicStart();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void newConnection (IoSession session) {
+
+    }
+
 }

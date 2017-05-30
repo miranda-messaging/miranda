@@ -32,9 +32,9 @@ public class NetworkListenerReadyState extends State {
     }
 
     public State start () {
-        getNetworkListener().getConnections();
+        // getNetworkListener().getConnections();
 
-        return this;
+        return getNetworkListener().getCurrentState();
     }
 
     public State processStopMessage (StopMessage stopMessage) {

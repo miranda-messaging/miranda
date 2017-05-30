@@ -20,37 +20,47 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.messages.CloseMessage;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
+import com.sun.xml.internal.stream.util.BufferAllocator;
+import org.apache.mina.core.session.IoSession;
 
 import java.util.concurrent.BlockingQueue;
 
 public class MinaHandle extends Handle {
-    private MinaHandler minaHandler;
+    private static BufferAllocator bufferAllocator = new BufferAllocator();
 
-    public MinaHandle (MinaHandler minaHandler, BlockingQueue<Message> queue) {
+    private IoSession ioSession;
+
+    public IoSession getIoSession() {
+        return ioSession;
+    }
+
+    public static BufferAllocator getBufferAllocator() {
+        return bufferAllocator;
+    }
+
+    public MinaHandle(IoSession ioSession, BlockingQueue<Message> queue) {
         super(queue);
-
-        this.minaHandler = minaHandler;
+        this.ioSession = ioSession;
     }
 
-    public MinaHandler getMinaHandler() {
-        return minaHandler;
+    public void send(SendNetworkMessage sendNetworkMessage) throws NetworkException {
+        char[] jsonArray = sendNetworkMessage.toJson().toCharArray();
+        char[] buffer = getBufferAllocator().getCharBuffer(jsonArray.length);
+        for (int i = 0; i < buffer.length; i++) {
+            buffer[i] = jsonArray[i];
+        }
     }
 
-    public void close () {
-        getMinaHandler().close();
+    public void close() {
+        ioSession.closeNow();
     }
 
-    public void close (CloseMessage closeMessage) {
+    public void panic() {
         close();
     }
 
-    public void send (SendNetworkMessage sendNetworkMessage) {
-        getMinaHandler().sendOnWire(sendNetworkMessage.getWireMessage());
-    }
 
-    public void panic () {
-        close();
-    }
 }

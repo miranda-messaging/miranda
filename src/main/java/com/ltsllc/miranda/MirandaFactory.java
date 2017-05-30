@@ -107,63 +107,15 @@ public class MirandaFactory {
         }
     }
 
-    public NetworkListener buildNetworkListener () {
-        NetworkListener networkListener = null;
-        MirandaProperties.Networks networks = getProperties().getNetworkProperty();
+    public NetworkListener buildNetworkListener (KeyStore keyStore, KeyStore trustStore) {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
 
-        switch (networks) {
-            case Mina: {
-                networkListener = buildMinaNetworkListener();
-                break;
-            }
 
-            case Netty: {
-                networkListener = buildNettyNetworkListener();
-                break;
-            }
-
-            case Socket: {
-                networkListener = buildSocketNetworkListener();
-                break;
-            }
-
-            default: {
-                logger.fatal("Unrecognized network: " + networks);
-                Panic panic = new StartupPanic("Unrecognized network", null, StartupPanic.StartupReasons.NetworkListener);
-                Miranda.getInstance().panic(panic);
-            }
-        }
-
-        return networkListener;
+        return new MinaNetworkListener(port, keyStore, trustStore);
     }
 
-    public Network buildNetwork () throws MirandaException {
-        Network network = null;
-        MirandaProperties.Networks networks = getProperties().getNetworkProperty();
-
-        switch (networks) {
-            case Netty: {
-                network = buildNettyNetwork();
-                break;
-            }
-
-            case Socket: {
-                network = buildSocketNetwork();
-                break;
-            }
-
-            case Mina: {
-                network = buildMinaNetwork();
-                break;
-            }
-
-            default: {
-                throw new IllegalArgumentException("unknown network: " + networks);
-            }
-        }
-
-        return network;
+    public Network buildNetwork (KeyStore keyStore, KeyStore trustStore) throws MirandaException {
+        return new MinaNetwork(keyStore, trustStore);
     }
 
     public SslContext buildNettyClientSslContext () throws IOException, GeneralSecurityException {
@@ -442,27 +394,8 @@ public class MirandaFactory {
         throw new IllegalStateException("not impelmented");
     }
 
-    public Network buildMinaNetwork () {
-        Network network = null;
-        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-
-        switch (mode) {
-            case LocalCA: {
-                network = new MinaNetwork(getKeystorePassword(), getTruststorePassword());
-                break;
-            }
-
-            case None: {
-                network = new MinaNetwork(false);
-                break;
-            }
-
-            default: {
-                Panic panic = new StartupPanic("Unrecogized encrypion mode: " + mode, null, StartupPanic.StartupReasons.UnrecognizedEncryptionMode);
-                Miranda.getInstance().panic(panic);
-            }
-        }
-        return network;
+    public Network buildMinaNetwork (KeyStore keyStore, KeyStore trustStore) {
+        return new MinaNetwork(keyStore, trustStore);
     }
 
     public NetworkListener buildNettyNetworkListener () {
@@ -471,26 +404,6 @@ public class MirandaFactory {
 
     public NetworkListener buildSocketNetworkListener () {
         throw new IllegalStateException("not impelmented");
-    }
-
-    public NetworkListener buildMinaNetworkListener () {
-        NetworkListener networkListener = null;
-        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-        int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-
-        switch (mode) {
-            case None: {
-                networkListener = new MinaNetworkListener(port, false);
-                break;
-            }
-
-            default: {
-                Panic panic = new StartupPanic("Unregognized encryption mode: " + mode, null, StartupPanic.StartupReasons.UnrecognizedEncryptionMode);
-                Miranda.getInstance().panic(panic);
-            }
-        }
-
-        return networkListener;
     }
 
     public NewNetworkListener buildNewNetworkListener () {

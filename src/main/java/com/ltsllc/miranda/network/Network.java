@@ -18,6 +18,7 @@ package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.messages.*;
@@ -32,7 +33,7 @@ import java.util.concurrent.BlockingQueue;
  * This class takes care of mapping from integer handles to Handle objects.
  */
 abstract public class Network extends Consumer {
-    abstract public Handle basicConnectTo (ConnectToMessage connectToMessage) throws NetworkException;
+    abstract public Handle basicConnectTo (String host, int port) throws MirandaException;
     abstract public Handle createHandle (Object o);
 
     private static Logger logger = Logger.getLogger(NetworkListener.class);
@@ -99,7 +100,7 @@ abstract public class Network extends Consumer {
 
     public void connect (ConnectToMessage connectToMessage) {
         try {
-            Handle handle = basicConnectTo(connectToMessage);
+            Handle handle = basicConnectTo(connectToMessage.getHost(), connectToMessage.getPort());
 
             if (null == handle) {
                 ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(getQueue(), this, null);
@@ -111,7 +112,7 @@ abstract public class Network extends Consumer {
                 ConnectSucceededMessage connectSucceededMessage = new ConnectSucceededMessage(getQueue(), this, handleId);
                 connectToMessage.reply(connectSucceededMessage);
             }
-        } catch (NetworkException e) {
+        } catch (MirandaException e) {
             ConnectFailedMessage message = new ConnectFailedMessage(getQueue(), this, e.getCause());
             connectToMessage.reply(message);
         }

@@ -64,11 +64,12 @@ import static org.mockito.Mockito.mock;
  */
 public class TestCase {
     private static Gson ourGson = new Gson();
-
     private static Logger logger;
 
     private BlockingQueue<Message> network = new LinkedBlockingQueue<Message>();
     private BlockingQueue<Message> writerQueue = new LinkedBlockingQueue<Message>();
+    private KeyStore keyStore;
+    private KeyStore trustStore;
 
     @Mock
     private Network mockNetwork;
@@ -144,6 +145,23 @@ public class TestCase {
 
     @Mock
     private SubscriptionManager mockSubscriptionManager;
+
+    public KeyStore getTrustStore() {
+        return trustStore;
+    }
+
+    public void setTrustStore(KeyStore trustStore) {
+        this.trustStore = trustStore;
+    }
+
+    public KeyStore getKeyStore() {
+
+        return keyStore;
+    }
+
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
 
     public SubscriptionManager getMockSubscriptionManager() {
         return mockSubscriptionManager;

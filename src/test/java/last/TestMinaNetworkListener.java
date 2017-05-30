@@ -125,7 +125,7 @@ public class TestMinaNetworkListener extends TestCase {
 
         mockSslServerSocketFactory = mock(SSLServerSocketFactory.class);
         mockSslContext = mock(SSLContext.class);
-        minaNetworkListener = new MinaNetworkListener(6789);
+        minaNetworkListener = new MinaNetworkListener(6789, getKeyStore(), getTrustStore());
     }
 
     public static final String TEST_MESSAGE = "hi there";
@@ -179,26 +179,4 @@ public class TestMinaNetworkListener extends TestCase {
     }
 
 
-    /**
-     * Test the ability of the MinaNetworkListener to accept ne connections.
-     *
-     */
-    @Test
-    public void testStartup() throws MirandaException {
-        setuplog4j();
-        setupMockPanicPolicy();
-        setupMockFactory();
-        BlockingQueue<Handle> handleQueue = new LinkedBlockingQueue<Handle>();
-
-        getMinaNetworkListener().setTestMessage(TEST_MESSAGE);
-        getMinaNetworkListener().startup(handleQueue);
-
-        setupMinaClient("localhost", 6789);
-
-        pause(2000);
-
-        assert (getMinaNetworkListener().getAcceptor().getFilterChain().contains("tls"));
-        assert (getMinaNetworkListener().getAcceptor().getFilterChain().contains("lines"));
-        assert (getMinaNetworkListener().isTestMode() && getMinaNetworkListener().getMinaTestHandler().isSuccessfulTest());
-    }
 }

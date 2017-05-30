@@ -59,22 +59,6 @@ public class TestNetworkListener extends TestCase {
         }
     }
 
-    public static class TestGetConnections implements Runnable {
-        private NetworkListener networkListener;
-
-        public NetworkListener getNetworkListener() {
-            return networkListener;
-        }
-
-        public TestGetConnections (NetworkListener networkListener) {
-            this.networkListener = networkListener;
-        }
-
-        public void run () {
-            getNetworkListener().getConnections();
-        }
-    }
-
     @Mock
     private Handle mockHandle;
 
@@ -121,46 +105,6 @@ public class TestNetworkListener extends TestCase {
         assert (getTestNetworkListener().getCurrentState() instanceof NetworkListenerReadyState);
     }
 
-    @Test
-    public void testPerformStartupSuccess () {
-        BlockingQueue<Handle> handleQueue = new LinkedBlockingQueue<Handle>();
-
-        getTestNetworkListener().performStartup(handleQueue);
-
-        assert (getTestNetworkListener().startupCalled());
-    }
-
-    @Test
-    public void testPerformStartupExceptionDontPanic () {
-        setupMockMiranda();
-        NetworkException networkException = new NetworkException("Test", NetworkException.Errors.Test);
-        getTestNetworkListener().setNetworkException(networkException);
-
-        BlockingQueue<Handle> handleQueue = new LinkedBlockingQueue<Handle>();
-        when(getMockMiranda().panic(Matchers.any(Panic.class))).thenReturn(false);
-
-        getTestNetworkListener().performStartup(handleQueue);
-
-        verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
-        assert (!(getTestNetworkListener().getCurrentState() instanceof StopState));
-    }
-
-    @Test
-    public void testPerformStartupExceptionPanic () {
-        setupMockMiranda();
-        NetworkException networkException = new NetworkException("Test", NetworkException.Errors.Test);
-        getTestNetworkListener().setNetworkException(networkException);
-
-        BlockingQueue<Handle> handleQueue = new LinkedBlockingQueue<Handle>();
-
-        when(getMockMiranda().panic(Matchers.any(Panic.class))).thenReturn(true);
-
-        getTestNetworkListener().performStartup(handleQueue);
-
-        verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
-        assert (getTestNetworkListener().getCurrentState() instanceof StopState);
-    }
-
     public void startNewConnectionLoop (BlockingQueue<Handle> handleQueue) {
         TestNewConnectionLoop testNewConnectionLoop = new TestNewConnectionLoop(getTestNetworkListener(), handleQueue);
         Thread thread = new Thread(testNewConnectionLoop);
@@ -197,33 +141,5 @@ public class TestNetworkListener extends TestCase {
         pause(50);
 
         assert (!getThread().isAlive());
-    }
-
-    public void startGetConnections () {
-        TestGetConnections testGetConnections = new TestGetConnections(getTestNetworkListener());
-        Thread thread = new Thread (testGetConnections);
-        thread.start();
-
-        setThread(thread);
-    }
-
-    @Test
-    public void testGetConnections () {
-        setupMockNetwork();
-
-        startGetConnections();
-
-        getTestNetworkListener().putHandle(getMockHandle());
-
-        pause(50);
-
-        assert (getTestNetworkListener().getConnectionCount() == 1);
-
-        getTestNetworkListener().setKeepGoing(false);
-        getTestNetworkListener().putHandle(getMockHandle());
-
-        pause(50);
-
-        assert (!(getThread().isAlive()));
     }
 }

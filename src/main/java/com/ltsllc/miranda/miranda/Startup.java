@@ -59,6 +59,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -105,6 +106,25 @@ public class Startup extends State {
     private String keystorePasswordString;
     private String trustorePasswordString;
     private Properties overrideProperties;
+    private KeyStore keyStore;
+    private KeyStore trustStore;
+
+    public KeyStore getTrustStore() {
+        return trustStore;
+    }
+
+    public void setTrustStore(KeyStore trustStore) {
+        this.trustStore = trustStore;
+    }
+
+    public KeyStore getKeyStore() {
+
+        return keyStore;
+    }
+
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
 
     public Properties getOverrideProperties() {
         return overrideProperties;
@@ -240,7 +260,7 @@ public class Startup extends State {
             startWriter();
             startReader();
             defineFactory();
-            startNetwork();
+            // startNetwork();
             definePanicPolicy();
             startServices();
             startSubsystems();
@@ -532,21 +552,12 @@ public class Startup extends State {
         this.properties = Miranda.properties;
     }
 
-    /**
-     * Start the Miranda subsystems.
-     * <p>
-     * <p>
-     * This method starts the {@link Writer}, the {@link Cluster} and the
-     * {@link SocketNetwork} object.  The Cluster may start additional subsystems
-     * for the Nodes in the Cluster.
-     * </P>
-     */
     private void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
         MirandaFactory factory = new MirandaFactory(properties, getKeystorePasswordString(), getCommandLine().getTrustorePassword());
         Miranda miranda = Miranda.getInstance();
 
-        Network network = factory.buildNetwork();
+        Network network = factory.buildNetwork(getKeyStore(), getTrustStore());
         network.start();
 
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
@@ -708,12 +719,13 @@ public class Startup extends State {
     }
 
     public void startListening() {
-        NetworkListener networkListener = getFactory().buildNetworkListener();
+        NetworkListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
         networkListener.start();
 
         getMiranda().setNetworkListener(networkListener);
     }
 
+    /*
     public void startNetwork () {
         try {
             Network network = getFactory().buildNetwork();
@@ -723,6 +735,7 @@ public class Startup extends State {
             Miranda.getInstance().panic(startupPanic);
         }
     }
+    */
 
     public void processPasswords() {
         if (null != getCommandLine().getPassword()) {
@@ -741,6 +754,19 @@ public class Startup extends State {
             setTrustorePasswordString(temp);
         }
 
+        try {
+            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+            KeyStore keyStore = Utils.loadKeyStore(filename, getKeystorePasswordString());
+            setKeyStore(keyStore);
+
+            filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
+            keyStore = Utils.loadKeyStore(filename, getTrustorePasswordString());
+            setTrustStore(keyStore);
+        } catch (GeneralSecurityException | IOException e) {
+            StartupPanic startupPanic = new StartupPanic("Exception load keystore",
+                    StartupPanic.StartupReasons.ExceptionLoadingKeystore);
+            Miranda.panicMiranda(startupPanic);
+        }
 
     }
 }
