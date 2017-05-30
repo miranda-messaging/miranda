@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -100,7 +102,7 @@ public class TestFileWatcherService extends TestCase {
      * and {@link FileWatcherService#fireChanged(String)} methods.
      */
     @Test
-    public void testCheckFiles () {
+    public void testCheckFiles () throws IOException{
         File file = new File(FILENAME);
         FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
@@ -108,25 +110,30 @@ public class TestFileWatcherService extends TestCase {
 
         pause(125);
 
-        touch(file);
-
-        pause(250);
-
-        assert (contains(Message.Subjects.FileChanged, getQueue()));
+        String canonicalName = file.getCanonicalPath();
+        List<FileWatcher> list = getFileWatcherService().getWatchers().get(canonicalName);
+        Long value = getFileWatcherService().getWatchedFiles().get(canonicalName);
+        assert (null != list);
+        assert (null != value);
     }
 
     @Test
     public void testStopWatching () {
         File file = new File(FILENAME);
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        FileChangedMessage fileChangedMessage = new FileChangedMessage(queue, this, file);
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
         send(watchMessage, getFileWatcherService().getQueue());
 
         pause(125);
 
-        touch(file);
+        long time = touch(file);
+        time++;
+        touch (file, time);
 
         pause(200);
+
+        getFileWatcherService().checkFiles();
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
 
@@ -136,7 +143,10 @@ public class TestFileWatcherService extends TestCase {
         pause (250);
 
         getQueue().clear();
-        touch(file);
+
+        time = touch(file);
+        time++;
+        touch(file, time);
 
         pause(250);
 

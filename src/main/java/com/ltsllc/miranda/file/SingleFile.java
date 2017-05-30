@@ -115,25 +115,8 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         return ret;
     }
 
-    public static String readFile(String filename) {
-        FileReader fileReader = null;
-
-        try {
-            fileReader = new FileReader(filename);
-            StringWriter stringWriter = new StringWriter();
-            for (int c = fileReader.read(); c != -1; c = fileReader.read()) {
-                stringWriter.append((char) c);
-            }
-
-            return stringWriter.toString();
-        } catch (IOException e) {
-            Panic panic = new Panic("Exception reading file", e, Panic.Reasons.ExceptionReadingFile);
-            Miranda.getInstance().panic(panic);
-        } finally {
-            Utils.closeIgnoreExceptions(fileReader);
-        }
-
-        return null;
+    public void readFile(String filename) {
+        getReader().sendReadMessage(getQueue(), this, filename);
     }
 
     public void load() {

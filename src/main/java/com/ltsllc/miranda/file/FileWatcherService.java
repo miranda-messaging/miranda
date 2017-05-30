@@ -39,6 +39,14 @@ public class FileWatcherService extends Consumer {
     private Map<String, Long> watchedFiles;
     private Map<String, List<FileWatcher>> watchers = new HashMap<String, List<FileWatcher>>();
 
+    public Map<String, Long> getWatchedFiles() {
+        return watchedFiles;
+    }
+
+    public Map<String, List<FileWatcher>> getWatchers() {
+        return watchers;
+    }
+
     public long getPeriod() {
         return period;
     }

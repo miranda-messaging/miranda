@@ -83,7 +83,7 @@ public class TestSingleFile extends TestCase {
         this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
     }
 
-    @After
+
     public void cleanup () {
         deleteDirectory(TEST_DIRECTORY);
     }
@@ -234,22 +234,11 @@ public class TestSingleFile extends TestCase {
 
     @Test
     public void testReadFileSuccess () {
-        createFile(TEST_FILENAME3, TEST_FILE_CONTENTS3);
-
-        String contents = SingleFile.readFile(TEST_FILENAME3);
-
-        assert (contents.equals("hello, world!\r\n"));
+        getSingleFile().readFile(TEST_FILENAME3);
+        verify(getMockReader(), atLeastOnce()).sendReadMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.eq(TEST_FILENAME3));
     }
 
-    @Test
-    public void testReadFileIOException () {
-        setupMockMiranda();
-
-        String contents = SingleFile.readFile("wrong");
-
-        assert (null == contents);
-        verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
-    }
 
     @Test
     public void testAddObjects () {
