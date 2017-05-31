@@ -374,7 +374,7 @@ public class TestCase {
         this.mockSubscriptionManager = null;
     }
 
-    public void setup() throws Exception {
+    public void setup() {
         network = new LinkedBlockingQueue<Message>();
         writerQueue = new LinkedBlockingQueue<Message>();
 

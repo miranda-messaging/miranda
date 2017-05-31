@@ -113,19 +113,23 @@ public class TestMinaNetworkListener extends TestCase {
 
     @Before
     public void setup() {
-        reset();
+        try {
+            reset();
 
-        super.setup();
+            super.setup();
 
-        setupMockProperties();
-        setupMiranda();
-        setuplog4j();
-        setupTrustStore();
-        setupKeyStore();
+            setupMockProperties();
+            setupMiranda();
+            setuplog4j();
+            setupTrustStore();
+            setupKeyStore();
 
-        mockSslServerSocketFactory = mock(SSLServerSocketFactory.class);
-        mockSslContext = mock(SSLContext.class);
-        minaNetworkListener = new MinaNetworkListener(6789, getKeyStore(), getTrustStore());
+            mockSslServerSocketFactory = mock(SSLServerSocketFactory.class);
+            mockSslContext = mock(SSLContext.class);
+            minaNetworkListener = new MinaNetworkListener(6789, getKeyStore(), getTrustStore());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static final String TEST_MESSAGE = "hi there";

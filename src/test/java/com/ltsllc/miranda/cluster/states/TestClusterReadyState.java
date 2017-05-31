@@ -89,19 +89,23 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Before
-    public void setup() throws Exception {
-        reset();
+    public void setup() {
+        try {
+            reset();
 
-        super.setup();
+            super.setup();
 
-        setuplog4j();
-        setupMirandaProperties();
-        setupKeyStore();
-        setupTrustStore();
+            setuplog4j();
+            setupMirandaProperties();
+            setupKeyStore();
+            setupTrustStore();
 
-        this.mockClusterFile = mock(ClusterFile.class);
-        this.mockNode = mock(Node.class);
-        this.clusterReadyState = new ClusterReadyState(getMockCluster());
+            this.mockClusterFile = mock(ClusterFile.class);
+            this.mockNode = mock(Node.class);
+            this.clusterReadyState = new ClusterReadyState(getMockCluster());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @After
