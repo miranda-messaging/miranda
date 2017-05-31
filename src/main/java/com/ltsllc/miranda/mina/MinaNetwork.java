@@ -41,6 +41,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MinaNetwork extends Network {
     private KeyStore keyStore;
     private KeyStore truststore;
+    private String keyStorePassword;
+
+    public String getKeyStorePassword() {
+        return keyStorePassword;
+    }
 
     public KeyStore getTruststore() {
         return truststore;
@@ -61,6 +66,12 @@ public class MinaNetwork extends Network {
     public MinaNetwork (KeyStore keyStore, KeyStore truststore) {
         this.keyStore = keyStore;
         this.truststore = truststore;
+    }
+
+    public MinaNetwork (KeyStore keyStore, KeyStore truststore, String keyStorePassword) {
+        this.keyStore = keyStore;
+        this.truststore = truststore;
+        this.keyStorePassword = keyStorePassword;
     }
 
     public Handle createHandle(Object o) {
