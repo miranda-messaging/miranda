@@ -59,11 +59,11 @@ public class TestMinaNetwork extends TestCase {
     public static class ServerHandler extends IoHandlerAdapter {
         @Override
         public void sessionCreated(IoSession session) throws Exception {
-            System.out.println ("Got connection");
+            System.out.println("Got connection");
         }
 
         @Override
-        public void messageReceived(IoSession session, Object message ) throws Exception {
+        public void messageReceived(IoSession session, Object message) throws Exception {
             String s = message.toString();
             s.trim();
             System.out.println("Got " + s);
@@ -74,16 +74,41 @@ public class TestMinaNetwork extends TestCase {
     @Mock
     private MinaIncomingHandler mockMinaIncomingHadeler;
 
+    @Mock
+    private KeyStore mockKeyStore;
+
+    @Mock
+    private KeyStore mockTrustStore;
+
+    @Mock
+    private IoSession mockIoSession;
+
     private MinaNetwork minaNetwork;
+
+    public IoSession getMockIoSession() {
+        return mockIoSession;
+    }
 
     public MinaIncomingHandler getMockMinaIncomingHadeler() {
         return mockMinaIncomingHadeler;
     }
 
+    public KeyStore getMockTrustStore() {
+        return mockTrustStore;
+    }
+
+    public KeyStore getMockKeyStore() {
+
+        return mockKeyStore;
+    }
+
     public void reset() {
         super.reset();
 
+        mockKeyStore = null;
+        mockTrustStore = null;
         mockMinaIncomingHadeler = null;
+        mockIoSession = null;
         minaNetwork = null;
     }
 
@@ -92,46 +117,33 @@ public class TestMinaNetwork extends TestCase {
         return minaNetwork;
     }
 
-    public void setupMinaListener(int port) {
-        try {
-            String trustStoreFilename = TEMP_TRUSTSTORE;
-            String trustStorePassword = TEMP_TRUSTSTORE_PASSWORD;
+    public void setupMinaListener(int port, KeyStore keyStore, KeyStore trustStore) throws Exception {
 
-            String keyStoreFilename = TEMP_KEYSTORE;
-            String keyStorePassword = TEMP_KEYSTORE_PASSWORD;
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
 
-            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, keyStorePassword);
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, TEMP_KEYSTORE_PASSWORD.toCharArray());
 
-            KeyStore trustStore = Utils.loadKeyStore(trustStoreFilename, trustStorePassword);
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(trustStore);
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
 
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+        IoAcceptor acceptor = new NioSocketAcceptor();
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
-
-            IoAcceptor acceptor = new NioSocketAcceptor();
-
-            SslFilter sslFilter = new SslFilter(sslContext);
-            acceptor.getFilterChain().addLast("tls", sslFilter);
+        SslFilter sslFilter = new SslFilter(sslContext);
+        acceptor.getFilterChain().addLast("tls", sslFilter);
 
 
-            acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+        // acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
 
-            IoHandler serverHandler = new ServerHandler();
-            acceptor.setHandler(serverHandler);
+        IoHandler serverHandler = new ServerHandler();
+        acceptor.setHandler(serverHandler);
 
-            InetSocketAddress socketAddress = new InetSocketAddress(port);
+        InetSocketAddress socketAddress = new InetSocketAddress(port);
 
-            System.out.println("listening on port " + port);
+        System.out.println("listening on port " + port);
 
-            acceptor.bind(socketAddress);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        acceptor.bind(socketAddress);
     }
 
     public static final String TEST_KEYSTORE_PASSWORD = "hi there";
@@ -146,14 +158,15 @@ public class TestMinaNetwork extends TestCase {
         setuplog4j();
 
         mockMinaIncomingHadeler = mock(MinaIncomingHandler.class);
+        mockKeyStore = mock(KeyStore.class);
+        mockTrustStore = mock(KeyStore.class);
+        mockIoSession = mock(IoSession.class);
 
-        setupKeyStore();
-        setupTrustStore();
-        minaNetwork = new MinaNetwork(getKeyStore(), getTrustStore());
+        minaNetwork = new MinaNetwork(getMockKeyStore(), getMockTrustStore());
     }
 
     @After
-    public void cleanup () {
+    public void cleanup() {
         cleanupTrustStore();
         cleanupKeyStore();
     }
@@ -164,20 +177,18 @@ public class TestMinaNetwork extends TestCase {
     }
 
     @Test
-    public void testBasicConnectTo() throws MirandaException {
-        setupMirandaProperties();
-        setupTrustStore();
-        setupKeyStore();
+    public void testBasicConnectTo() throws Exception {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
-        setupMirandaProperties();
+        setupKeyStore();
         setupTrustStore();
+        setupMinaListener(6789, getKeyStore(), getTrustStore());
 
-        setupMinaListener(6789);
-
+        getMinaNetwork().setKeyStore(getKeyStore());
+        getMinaNetwork().setTruststore(getTrustStore());
         Handle handle = getMinaNetwork().basicConnectTo("localhost", 6789);
 
-        pause(250);
+        pause(1000);
 
         assert (contains(Message.Subjects.ConnectSucceeded, queue));
 
@@ -198,7 +209,7 @@ public class TestMinaNetwork extends TestCase {
     }
 
     @Test
-    public void testCreateHandle () {
+    public void testCreateHandle() {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
         setupMockMiranda();
@@ -206,9 +217,8 @@ public class TestMinaNetwork extends TestCase {
         when(getMockCluster().getQueue()).thenReturn(queue);
         when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
 
-        Handle handle = getMinaNetwork().createHandle(getMockMinaIncomingHadeler());
+        Handle handle = getMinaNetwork().createHandle(getMockIoSession());
 
-        verify(getMockCluster(), atLeastOnce()).getQueue();
-        assert (contains(Message.Subjects.NewNode, queue));
+        assert (handle instanceof MinaHandle);
     }
 }

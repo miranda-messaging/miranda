@@ -89,7 +89,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         reset();
 
         super.setup();

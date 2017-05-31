@@ -128,7 +128,7 @@ public class TestLoginHolder extends TestCase {
         LoginRunner loginRunner = new LoginRunner(getLoginHolder());
         loginRunner.start();
 
-        pause (5000);
+        pause (2000);
 
         assert (loginRunner.getResult().session == null);
         assert (loginRunner.getResult().result == Results.Timeout);

@@ -46,6 +46,14 @@ public class MinaNetwork extends Network {
         return truststore;
     }
 
+    public void setTruststore(KeyStore truststore) {
+        this.truststore = truststore;
+    }
+
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
+
     public KeyStore getKeyStore() {
         return keyStore;
     }
@@ -59,23 +67,27 @@ public class MinaNetwork extends Network {
         IoSession ioSession = (IoSession) o;
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
-        return new com.ltsllc.miranda.newMina.NewMinaHandle(ioSession, queue);
+        return new MinaHandle(ioSession, queue);
     }
 
     public Handle basicConnectTo(String host, int port) throws MirandaException {
         try {
             NioSocketConnector nioSocketConnector = new NioSocketConnector();
-            InetSocketAddress inetSocketAddress = new InetSocketAddress(host, port);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(getKeyStore(), "whatever".toCharArray());
+
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(getTruststore());
+
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
             SslFilter sslFilter = new SslFilter(sslContext);
             sslFilter.setUseClientMode(true);
             nioSocketConnector.getFilterChain().addLast("tls", sslFilter);
 
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(host, port);
             nioSocketConnector.setHandler(new ConnectionHandler(this));
-            ConnectFuture connectFuture = nioSocketConnector.connect();
+            ConnectFuture connectFuture = nioSocketConnector.connect(inetSocketAddress);
             connectFuture.awaitUninterruptibly();
 
             LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();

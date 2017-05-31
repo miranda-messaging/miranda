@@ -112,8 +112,6 @@ public class TestCluster extends TestCase {
         setupMockMiranda();
         setupMockTimer();
 
-        setupTrustStore();
-
         deleteFile(CLUSTER_FILENAME);
 
         this.mockClusterFile = mock(ClusterFile.class);

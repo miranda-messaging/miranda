@@ -47,7 +47,7 @@ public class TestServlet extends TestCase {
         mockHttpServletResponse = null;
     }
 
-    public void setup () {
+    public void setup () throws Exception {
         super.setup();
 
         mockHttpServletRequest = mock(HttpServletRequest.class);
