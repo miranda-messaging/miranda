@@ -32,6 +32,7 @@ import java.net.InetSocketAddress;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -63,11 +64,6 @@ public class MinaNetwork extends Network {
         return keyStore;
     }
 
-    public MinaNetwork (KeyStore keyStore, KeyStore truststore) {
-        this.keyStore = keyStore;
-        this.truststore = truststore;
-    }
-
     public MinaNetwork (KeyStore keyStore, KeyStore truststore, String keyStorePassword) {
         this.keyStore = keyStore;
         this.truststore = truststore;
@@ -85,7 +81,7 @@ public class MinaNetwork extends Network {
         try {
             NioSocketConnector nioSocketConnector = new NioSocketConnector();
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(getKeyStore(), "whatever".toCharArray());
+            keyManagerFactory.init(getKeyStore(), getKeyStorePassword().toCharArray());
 
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(getTruststore());
@@ -97,12 +93,15 @@ public class MinaNetwork extends Network {
             nioSocketConnector.getFilterChain().addLast("tls", sslFilter);
 
             InetSocketAddress inetSocketAddress = new InetSocketAddress(host, port);
-            nioSocketConnector.setHandler(new ConnectionHandler(this));
+
+            Certificate certificate = getTruststore().getCertificate("ca");
+
+            nioSocketConnector.setHandler(new ConnectionHandler(this, certificate));
             ConnectFuture connectFuture = nioSocketConnector.connect(inetSocketAddress);
             connectFuture.awaitUninterruptibly();
 
             LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-            return new com.ltsllc.miranda.newMina.NewMinaHandle(connectFuture.getSession(), queue);
+            return new MinaHandle(connectFuture.getSession(), queue);
         } catch (GeneralSecurityException e) {
             throw new MirandaException("Exception trying to connect", e);
         }

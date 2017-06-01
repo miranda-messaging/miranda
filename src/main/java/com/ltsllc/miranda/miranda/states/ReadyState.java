@@ -257,10 +257,7 @@ public class ReadyState extends State {
     }
 
     private State processNewConnectionMessage (NewConnectionMessage newConnectionMessage) {
-        // GetVersionMessage getVersionMessage = new GetVersionMessage(getMiranda().getQueue(), this, getMiranda().getQueue());
-        // send(newConnectionMessage.getNode().getQueue(), getVersionMessage);
-
-        return this;
+        return getMiranda().getCurrentState();
     }
 
 

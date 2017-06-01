@@ -16,30 +16,19 @@
 
 package com.ltsllc.miranda.mina;
 
-import com.ltsllc.miranda.MirandaFactory;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.StartupPanic;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
-import com.ltsllc.miranda.newMina.NewConnectionHandler;
-import com.ltsllc.miranda.newMina.NewNetwork;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.concurrent.BlockingQueue;
+import java.security.cert.Certificate;
 
 /**
  * Created by Clark on 3/6/2017.
@@ -86,7 +75,8 @@ public class MinaNetworkListener extends NetworkListener {
         sslFilter.setNeedClientAuth(true);
         nioSocketAcceptor.getFilterChain().addLast("ssl", sslFilter);
 
-        ConnectionHandler connectionHandler = new ConnectionHandler(getNetwork());
+        Certificate certificate = getTruststore().getCertificate("ca");
+        ConnectionHandler connectionHandler = new ConnectionHandler(getNetwork(), certificate);
         nioSocketAcceptor.setHandler(connectionHandler);
 
         InetSocketAddress inetSocketAddress = new InetSocketAddress(getPort());

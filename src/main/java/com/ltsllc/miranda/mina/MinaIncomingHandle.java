@@ -19,6 +19,7 @@ package com.ltsllc.miranda.mina;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -52,7 +53,7 @@ public class MinaIncomingHandle extends Handle {
         close();
     }
 
-    public void send (SendNetworkMessage sendNetworkMessage) {
-        getHandler().send(sendNetworkMessage.getWireMessage());
+    public void send (WireMessage wireMessage) {
+        getHandler().send(wireMessage);
     }
 }

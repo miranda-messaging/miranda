@@ -28,6 +28,9 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.holder.TestLoginHolder;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
+import org.apache.mina.core.buffer.IoBuffer;
+import org.apache.mina.core.future.ConnectFuture;
+import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -37,6 +40,7 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.KeyStoreFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +50,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -58,6 +63,77 @@ import static org.mockito.Mockito.*;
  * Created by Clark on 3/18/2017.
  */
 public class TestMinaNetwork extends TestCase {
+    public static final String TEST_MESSAGE = "hi there";
+
+    public static class EchoHandler extends IoHandlerAdapter {
+        private Charset charset;
+
+        public EchoHandler () {
+            this.charset = Charset.defaultCharset();
+        }
+
+        public Charset getCharset() {
+            return charset;
+        }
+
+        @Override
+        public void messageReceived(IoSession session, Object message) throws Exception {
+            super.messageReceived(session, message);
+
+            IoBuffer ioBuffer = (IoBuffer) message;
+            String s = ioBuffer.getString(getCharset().newDecoder());
+
+            System.out.println("Received: " + s);
+
+            ioBuffer.flip();
+
+            session.write(message);
+        }
+    }
+
+    public static class LocalTalkerHandler extends IoHandlerAdapter {
+        public LocalTalkerHandler () {
+            charset = Charset.defaultCharset();
+        }
+
+        private Charset charset;
+
+        public Charset getCharset() {
+            return charset;
+        }
+
+        public void sendMessage (IoSession ioSession) {
+            try {
+                IoBuffer ioBuffer = IoBuffer.allocate(TEST_MESSAGE.length());
+                Charset charset = Charset.defaultCharset();
+                ioBuffer.putString(TEST_MESSAGE, charset.newEncoder());
+                ioBuffer.flip();
+                ioSession.write(ioBuffer);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void sessionCreated(IoSession session) throws Exception {
+            super.sessionCreated(session);
+            sendMessage(session);
+        }
+
+        @Override
+        public void sessionOpened(IoSession session) throws Exception {
+            super.sessionOpened(session);
+            sendMessage(session);
+        }
+
+        @Override
+        public void messageReceived(IoSession session, Object message) throws Exception {
+            super.messageReceived(session, message);
+
+            System.out.println("message: " + message);
+        }
+    }
+
     public static class LocalHandler extends IoHandlerAdapter {
         @Override
         public void sessionCreated(IoSession session) throws Exception {
@@ -65,17 +141,48 @@ public class TestMinaNetwork extends TestCase {
 
             System.out.println ("Session created");
         }
+
+        @Override
+        public void messageReceived(IoSession session, Object message) throws Exception {
+            super.messageReceived(session, message);
+
+            System.out.println("message: " + message);
+        }
     }
 
-    public static class LocalListener implements Runnable {
+    public static class LocalTalker implements Runnable {
         private Thread thread;
+        private KeyStore keyStore;
+        private KeyStore trustStore;
+        private String keyStorePassword;
+        private InetSocketAddress inetSocketAddress;
+
+        public InetSocketAddress getInetSocketAddress() {
+            return inetSocketAddress;
+        }
+
+        public String getKeyStorePassword() {
+            return keyStorePassword;
+        }
+
+        public KeyStore getTrustStore() {
+            return trustStore;
+        }
+
+        public KeyStore getKeyStore() {
+            return keyStore;
+        }
 
         public Thread getThread() {
             return thread;
         }
 
-        public LocalListener () {
+        public LocalTalker (KeyStore keyStore, String keyStorePassword, KeyStore trustStore, String host, int port) {
             thread = new Thread(this);
+            this.keyStore = keyStore;
+            this.trustStore = trustStore;
+            this.keyStorePassword = keyStorePassword;
+            this.inetSocketAddress = new InetSocketAddress(host, port);
         }
 
         public void start () {
@@ -90,32 +197,66 @@ public class TestMinaNetwork extends TestCase {
             }
         }
 
-        public SslFilter createSslFilter () throws Exception {
-            createFile(TEMP_KEYSTORE, TEMP_KEY_STORE_CONTENTS);
-            KeyStore keyStore = Utils.loadKeyStore(TEMP_KEYSTORE, TEMP_KEYSTORE_PASSWORD);
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, TEMP_KEYSTORE_PASSWORD.toCharArray());
+        public void basicRun () throws Exception {
+            NioSocketConnector nioSocketConnector = new NioSocketConnector();
+            SslFilter sslFilter = createSslFilter(getKeyStore(), getKeyStorePassword(), getTrustStore());
+            sslFilter.setNeedClientAuth(false);
+            sslFilter.setUseClientMode(true);
+            nioSocketConnector.getFilterChain().addLast("tls", sslFilter);
+            LocalTalkerHandler talkerHandler = new LocalTalkerHandler();
+            nioSocketConnector.setHandler(talkerHandler);
+            ConnectFuture connectFuture = nioSocketConnector.connect(getInetSocketAddress());
+            connectFuture.awaitUninterruptibly();
+        }
+    }
 
-            createFile(TEMP_TRUSTSTORE, TRUST_STORE_CONTENTS);
-            KeyStore trustStore = Utils.loadKeyStore(TEMP_TRUSTSTORE, TEMP_TRUSTSTORE_PASSWORD);
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(trustStore);
+    public static class LocalListener implements Runnable {
+        private Thread thread;
+        private KeyStore keyStore;
+        private KeyStore trustStore;
+        private String keyStorePassword;
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
-                    new SecureRandom());
-
-            SslFilter sslFilter = new SslFilter(sslContext);
-
-            return sslFilter;
+        public String getKeyStorePassword() {
+            return keyStorePassword;
         }
 
+        public KeyStore getTrustStore() {
+            return trustStore;
+        }
+
+        public KeyStore getKeyStore() {
+            return keyStore;
+        }
+
+        public Thread getThread() {
+            return thread;
+        }
+
+        public LocalListener (KeyStore keyStore, String keyStorePassword, KeyStore trustStore) {
+            thread = new Thread(this);
+            this.keyStore = keyStore;
+            this.trustStore = trustStore;
+            this.keyStorePassword = keyStorePassword;
+        }
+
+        public void start () {
+            thread.start();
+        }
+
+        public void run () {
+            try {
+                basicRun();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         public NioSocketAcceptor createAcceptor () throws Exception {
             NioSocketAcceptor nioSocketAcceptor = new NioSocketAcceptor();
-            nioSocketAcceptor.getFilterChain().addLast("tls", createSslFilter());
+            SslFilter sslFilter = createSslFilter(getKeyStore(), getKeyStorePassword(), getTrustStore());
+            nioSocketAcceptor.getFilterChain().addLast("tls", sslFilter);
 
-            LocalHandler handler = new LocalHandler();
+            EchoHandler handler = new EchoHandler();
             nioSocketAcceptor.setHandler(handler);
 
             return nioSocketAcceptor;
@@ -162,18 +303,24 @@ public class TestMinaNetwork extends TestCase {
         return mockIoSession;
     }
 
-    public MinaIncomingHandler getMockMinaIncomingHadeler() {
-        return mockMinaIncomingHadeler;
+    public static SslFilter createSslFilter (KeyStore keyStore, String keyStorePassword, KeyStore trustStore) throws Exception {
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
+
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
+                new SecureRandom());
+
+        SslFilter sslFilter = new SslFilter(sslContext);
+        sslFilter.setNeedClientAuth(true);
+
+        return sslFilter;
     }
 
-    public KeyStore getMockTrustStore() {
-        return mockTrustStore;
-    }
 
-    public KeyStore getMockKeyStore() {
-
-        return mockKeyStore;
-    }
 
     public void reset() {
         super.reset();
@@ -190,15 +337,10 @@ public class TestMinaNetwork extends TestCase {
         return minaNetwork;
     }
 
-    public void setupMinaListener(int port, KeyStore keyStore, KeyStore trustStore) throws Exception {
-        LocalListener listener = new LocalListener();
+    public void setupMinaListener(int port, KeyStore keyStore, KeyStore trustStore, String password) throws Exception {
+        LocalListener listener = new LocalListener(keyStore, password, trustStore);
         listener.start();
-
-
     }
-
-    public static final String TEST_KEYSTORE_PASSWORD = "hi there";
-    public static final String TEST_TRUSTSTORE_PASSWORD = "hi there";
 
     @Before
     public void setup() {
@@ -213,7 +355,7 @@ public class TestMinaNetwork extends TestCase {
             setupKeyStore();
             setupTrustStore();
             setupMirandaProperties();
-            minaNetwork = new MinaNetwork(getKeyStore(), getTrustStore());
+            minaNetwork = new MinaNetwork(getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,28 +376,15 @@ public class TestMinaNetwork extends TestCase {
     public void testBasicConnectTo() throws Exception {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
-        setupMinaListener(6789, getKeyStore(), getTrustStore());
+        setupMinaListener(6789, getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
 
         Handle handle = getMinaNetwork().basicConnectTo("localhost", 6789);
+        WireMessage miscMessage = new MiscMessage ("hi there");
+        handle.send(miscMessage);
 
-        pause(1000);
+        pause(5000);
 
-        assert (contains(Message.Subjects.ConnectSucceeded, queue));
-
-        int theHandle = getMinaNetwork().getHandleCount();
-        WireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
-        SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(queue, this, joinWireMessage, theHandle);
-
-        try {
-            if (null != handle)
-                handle.send(sendNetworkMessage);
-        } catch (NetworkException e) {
-            e.printStackTrace();
-        }
-
-        pause(250);
-
-        assert (containsNetworkMessage(joinWireMessage, queue));
+        assert (handle != null);
     }
 
     @Test

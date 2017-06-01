@@ -28,8 +28,8 @@ openssl req -new -x509 -keyout ca-key.pem.txt -out ca-certificate.pem.txt -days 
 keytool -import -keystore truststore -file ca-certificate.pem.txt -alias ca -keyalg rsa -storepass whatever
 keytool -genkeypair -keystore keystore -storepass whatever -alias private -keyalg rsa
 
-keytool -certreq -keystore keystore -storepass whatever -alias private -file server.csr
+keytool -certreq -keystore keystore -storepass whatever -alias private -file private.csr
 
 openssl x509 -req -CA ca-certificate.pem.txt -CAkey ca-key.pem.txt -in server.csr -out server.cer  -days 365 -CAcreateserial
-keytool -import -keystore keystore -storepass whatever -file ca-certificate.pem.txt -alias ca -keyalg rsa
-keytool -import -keystore keystore -storepass whatever -file server.cer -alias certificate -keyalg rsa
+keytool -import -keystore keystore -storepass whatever -file ca-certificate.pem.txt -alias ca
+keytool -import -keystore keystore -storepass whatever -file private.cer -alias certificate

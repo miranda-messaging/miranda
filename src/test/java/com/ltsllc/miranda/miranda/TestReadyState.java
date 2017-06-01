@@ -79,13 +79,13 @@ public class TestReadyState extends TestCase {
     @Test
     public void testProcessNewConnectionMessage () {
         Node node = new Node(-1, getMockNetwork(), getMockCluster());
-        // NewConnectionMessage message = new NewConnectionMessage(null, this, node);
+        NewConnectionMessage message = new NewConnectionMessage(null, this, 13);
 
-        // State nextState = getReadyState().processMessage(message);
+        when (getMockMiranda().getCurrentState()).thenReturn(getReadyState());
 
-        State nextState = null;
+        State nextState = getReadyState().processMessage(message);
+
         assert (nextState instanceof ReadyState);
-        assert (contains(Message.Subjects.GetVersion, node.getQueue()));
     }
 
     @Test

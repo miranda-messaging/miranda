@@ -3,9 +3,6 @@ package com.ltsllc.miranda.mina;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.newMina.NewMinaHandle;
-import com.ltsllc.miranda.newMina.NewNetwork;
-import com.ltsllc.miranda.newMina.SslException;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.ssl.SslFilter;
@@ -26,6 +23,12 @@ public class ConnectionHandler extends IoHandlerAdapter {
     private IoSession session;
     private boolean verified;
 
+    public ConnectionHandler(Network network, Certificate certificate) {
+        this.network = network;
+        this.certificate = certificate;
+        this.verified = false;
+    }
+
     public boolean getVerified() {
         return verified;
     }
@@ -36,6 +39,10 @@ public class ConnectionHandler extends IoHandlerAdapter {
 
     public IoSession getSession() {
         return session;
+    }
+
+    public void setSession(IoSession session) {
+        this.session = session;
     }
 
     public Certificate getCertificate() {
@@ -52,11 +59,6 @@ public class ConnectionHandler extends IoHandlerAdapter {
 
     public void setHandle(Handle handle) {
         this.handle = handle;
-    }
-
-    public ConnectionHandler(Network network) {
-        this.network = network;
-        this.verified = false;
     }
 
     public void verifyConnection () throws SslException {
@@ -88,9 +90,10 @@ public class ConnectionHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+        setSession(session);
         verifyConnection();
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        com.ltsllc.miranda.newMina.NewMinaHandle handle = new NewMinaHandle(session, queue);
+        MinaHandle handle = new MinaHandle(session, queue);
         getNetwork().newConnection(handle);
     }
 }

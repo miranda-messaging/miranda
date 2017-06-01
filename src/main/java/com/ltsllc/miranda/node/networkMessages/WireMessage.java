@@ -41,6 +41,7 @@ public class WireMessage {
         GetVersions,
         Join,
         JoinResponse,
+        Misc,
         NewSession,
         NewSubscription,
         NewTopic,

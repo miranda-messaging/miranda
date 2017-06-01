@@ -32,7 +32,7 @@ import java.util.concurrent.BlockingQueue;
  * An abstract class to make switching between netty, mina and sockets easier
  */
 abstract public class Handle {
-    abstract public void send (SendNetworkMessage sendNetworkMessage) throws NetworkException;
+    abstract public void send (WireMessage wireMessage) throws NetworkException;
     abstract public void close ();
     abstract public void panic ();
 

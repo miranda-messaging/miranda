@@ -204,7 +204,7 @@ abstract public class Network extends Consumer {
             throw new NetworkException("Unrecognized handle: " + sendNetworkMessage.getHandle(), NetworkException.Errors.UnrecognizedHandle);
         }
 
-        handle.send(sendNetworkMessage);
+        handle.send(sendNetworkMessage.getWireMessage());
     }
 
     /**
