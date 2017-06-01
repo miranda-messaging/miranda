@@ -26,6 +26,7 @@ import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,6 +35,8 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.concurrent.BlockingQueue;
 
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -56,7 +59,7 @@ public class TestUserManager extends TestCase {
         return userManager;
     }
 
-    public void reset () {
+    public void reset() {
         super.reset();
 
         userManager = null;
@@ -75,7 +78,7 @@ public class TestUserManager extends TestCase {
     };
 
     @Before
-    public void setup () {
+    public void setup() {
         reset();
 
         super.setup();
@@ -85,6 +88,7 @@ public class TestUserManager extends TestCase {
         setupMiranda();
         setupMockReader();
         setupMockWriter();
+        setupMockUsersFile();
 
         createFile(TEST_FILENAME, TEST_FILE_CONTENTS);
 
@@ -92,11 +96,11 @@ public class TestUserManager extends TestCase {
     }
 
     @After
-    public void cleanup () {
+    public void cleanup() {
         deleteFile(TEST_FILENAME);
     }
 
-    public void testConstructor_original () {
+    public void testConstructor_original() {
         try {
             Key key = Utils.loadKey("root.keystore", "whatever", "root");
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -111,13 +115,13 @@ public class TestUserManager extends TestCase {
     }
 
     @Test
-    public void testConstructor () {
+    public void testConstructor() {
         assert (getUserManager().getCurrentState() instanceof UserManagerStartState);
         assert (getUserManager().getUsers() != null);
         assert (getUserManager().getUsersFile() != null);
     }
 
-    public boolean isSubscriber (BlockingQueue<Message> queue, UsersFile usersFile) {
+    public boolean isSubscriber(BlockingQueue<Message> queue, UsersFile usersFile) {
         for (Subscriber subscriber : usersFile.getSubscribers()) {
             if (subscriber.getQueue() == queue)
                 return true;
@@ -148,12 +152,12 @@ public class TestUserManager extends TestCase {
     };
 
     @Test
-    public void testPerformGarbageCollection () {
+    public void testPerformGarbageCollection() {
         User user = new User("whatever", "whatever");
         user.setStatus(StatusObject.Status.Deleted);
-        getUserManager().getData().add (user);
+        getUserManager().getData().add(user);
 
-        assert(getUserManager().getUsers().size() > 0);
+        assert (getUserManager().getUsers().size() > 0);
 
         getUserManager().performGarbageCollection();
 
@@ -161,36 +165,37 @@ public class TestUserManager extends TestCase {
     }
 
     @Test
-    public void testContains () {
+    public void testContains() {
         User user = new User("whatever", "whatever");
         getUserManager().getData().add(user);
-        User shouldContain = new User ("whatever", "whatever");
+        User shouldContain = new User("whatever", "whatever");
         shouldContain.setStatus(StatusObject.Status.Deleted);
-        User shouldNotContain = new User ("not here", "absent");
+        User shouldNotContain = new User("not here", "absent");
 
         assert (getUserManager().contains(shouldContain));
         assert (!getUserManager().contains(shouldNotContain));
     }
 
     @Test
-    public void testAddUser () {
+    public void testAddUser() throws DuplicateUserException {
+        getUserManager().setFile(getMockUsersFile());
         User newUser = null;
 
-        try {
-            newUser = new User("what", "Publisher","ever", TEST_PUBLIC_KEY_PEM);
+        newUser = new User("what", "Publisher", "ever", TEST_PUBLIC_KEY_PEM);
 
-            assert (!getUserManager().contains(newUser));
+        assert (!getUserManager().contains(newUser));
 
-            getUserManager().addUser(newUser);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getUserManager().addUser(newUser);
 
         assert (getUserManager().contains(newUser));
+        verify(getMockUsersFile(), atLeastOnce()).sendNewUserMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.any(User.class));
     }
 
     @Test
-    public void testGetUser () {
+    public void testGetUser() throws DuplicateUserException {
+        getUserManager().setFile(getMockUsersFile());
+
         User newUser = new User("what", "ever");
 
         setupMockReader();
@@ -198,11 +203,7 @@ public class TestUserManager extends TestCase {
 
         getUserManager().contains(newUser);
 
-        try {
-            getUserManager().addUser(newUser);
-        } catch (DuplicateUserException e) {
-            e.printStackTrace();
-        }
+        getUserManager().addUser(newUser);
 
         User user = getUserManager().getUser("what");
 
