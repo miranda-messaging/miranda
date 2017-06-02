@@ -83,8 +83,9 @@ public class TestSingleFile extends TestCase {
         this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
     }
 
-
+    @After
     public void cleanup () {
+        deleteFile(TEST_FILE);
         deleteDirectory(TEST_DIRECTORY);
     }
 

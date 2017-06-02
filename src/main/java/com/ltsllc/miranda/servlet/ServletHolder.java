@@ -83,8 +83,6 @@ public class ServletHolder extends Consumer {
      * @return See above.
      */
     public synchronized void waitFor (long timeout) throws TimeoutException {
-        logger.info("Sleeping");
-
         setAwakened(false);
 
         try  {
@@ -92,8 +90,6 @@ public class ServletHolder extends Consumer {
         } catch (InterruptedException e) {
             logger.error ("Interrupted while waiting", e);
         }
-
-        logger.info ("Woke up! Awakened: " + getAwakened());
 
         if (!getAwakened()) {
             throw new TimeoutException("A timeout occurred");

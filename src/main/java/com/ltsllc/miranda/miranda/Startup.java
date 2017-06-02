@@ -259,6 +259,7 @@ public class Startup extends State {
             setupKeyStores();
             getKeys(getKeystorePasswordString());
             startLogger();
+            logProperties();
             startWriter();
             startReader();
             defineFactory();
@@ -273,8 +274,6 @@ public class Startup extends State {
             startListening();
             Miranda.getInstance().performGarbageCollection();
             return new ReadyState(getMiranda());
-        } catch (StartupPanic e) {
-            e.printStackTrace();
         } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
             Miranda.getInstance().panic(startupPanic);
@@ -505,6 +504,7 @@ public class Startup extends State {
 
     private void startLogger() {
         DOMConfigurator.configure(getLogConfigurationFile());
+        logger = Logger.getLogger(Startup.class);
     }
 
     public void processCommandLine() {
@@ -546,7 +546,6 @@ public class Startup extends State {
             Miranda.properties.setProperties(p);
         }
 
-        Miranda.properties.log();
         Miranda.properties.updateSystemProperties();
 
         this.properties = Miranda.properties;
@@ -572,6 +571,8 @@ public class Startup extends State {
     public void startWriter() {
         Writer writer = new Writer(getPublicKey());
         writer.start();
+
+        logger.info(getMiranda());
 
         getMiranda().setWriter(writer);
     }
@@ -756,7 +757,7 @@ public class Startup extends State {
 
     public KeyStore loadKeyStore (String filename, String password) {
         try {
-            KeyStore keyStore = Utils.loadKeyStore(filename, password);
+            return Utils.loadKeyStore(filename, password);
         } catch (GeneralSecurityException | IOException e) {
             StartupPanic startupPanic = new StartupPanic("Exception loading keystoeb from " + filename,e,
                     StartupPanic.StartupReasons.ExceptionLoadingKeystore);
@@ -776,5 +777,10 @@ public class Startup extends State {
             String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
             this.trustStore = loadKeyStore(filename, getTrustorePasswordString());
         }
+    }
+
+
+    public void logProperties () {
+        Miranda.properties.log();
     }
 }

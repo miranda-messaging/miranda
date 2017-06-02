@@ -64,7 +64,7 @@ import static org.mockito.Mockito.mock;
  */
 public class TestCase {
     private static Gson ourGson = new Gson();
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger(TestCase.class);
 
     private BlockingQueue<Message> network = new LinkedBlockingQueue<Message>();
     private BlockingQueue<Message> writerQueue = new LinkedBlockingQueue<Message>();
@@ -613,10 +613,12 @@ public class TestCase {
 
     public static void deleteFile(String filename) {
         File f = new File(filename);
-        if (f.exists()) {
-            boolean failed = !f.delete();
 
-            if (failed) {
+        if (f.exists()) {
+            f.delete();
+
+            if (f.exists()) {
+                logger.error("Failed to delete " + f.getName());
                 Exception e = new Exception();
                 e.printStackTrace();
                 System.exit(1);

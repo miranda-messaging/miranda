@@ -19,6 +19,7 @@ package com.ltsllc.miranda.writer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.test.TestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -53,6 +54,12 @@ public class TestWriterReadyState extends TestCase {
 
         writerReadyState = new WriterReadyState(getMockWriter());
     }
+
+    @After
+    public void cleanup () {
+        deleteFile(TEST_FILE_NAME);
+    }
+
 
     public static final String TEST_FILE_NAME = "testfile";
     public static final byte[] TEST_DATA = { 1, 2, 3, 4 };

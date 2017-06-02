@@ -74,28 +74,32 @@ public class Reader extends Consumer {
         result.filename = filename;
 
         File file = new File (filename);
-        long size = file.length();
-        if (size > Integer.MAX_VALUE) {
-            result.result = Results.FileTooLarge;
-            result.additionalInfo = "File " + filename + " is too large.  Max size:" + Integer.MAX_VALUE + " file size " + size;
-        } else if (!file.exists()) {
+        if (!file.exists()) {
             result.result = Results.FileNotFound;
         } else {
-            try {
-                fileInputStream = new FileInputStream(file);
-                int intSize = (int) size;
-                byte[] ciphertext = new byte[intSize];
-                int bytesRead = fileInputStream.read(ciphertext);
+            long size = file.length();
+            if (size > Integer.MAX_VALUE) {
+                result.result = Results.FileTooLarge;
+                result.additionalInfo = "File " + filename + " is too large.  Max size:" + Integer.MAX_VALUE + " file size " + size;
+            } else if (!file.exists()) {
+                result.result = Results.FileNotFound;
+            } else {
+                try {
+                    fileInputStream = new FileInputStream(file);
+                    int intSize = (int) size;
+                    byte[] ciphertext = new byte[intSize];
+                    int bytesRead = fileInputStream.read(ciphertext);
 
-                if (bytesRead < intSize) {
-                    result.result = Results.ShortRead;
-                } else {
-                    result.data = decrypt(ciphertext);
-                    result.result = Results.Success;
+                    if (bytesRead < intSize) {
+                        result.result = Results.ShortRead;
+                    } else {
+                        result.data = decrypt(ciphertext);
+                        result.result = Results.Success;
+                    }
+                } catch (IOException | GeneralSecurityException e) {
+                    result.result = Results.Exception;
+                    result.setAdditionalInfo(e);
                 }
-            } catch (IOException | GeneralSecurityException e) {
-                result.result = Results.Exception;
-                result.setAdditionalInfo(e);
             }
         }
 

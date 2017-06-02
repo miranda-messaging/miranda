@@ -16,34 +16,21 @@
 
 package com.ltsllc.miranda.mina;
 
-import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkException;
-import com.ltsllc.miranda.network.messages.CloseMessage;
-import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.sun.xml.internal.stream.util.BufferAllocator;
 import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
-
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.util.concurrent.BlockingQueue;
 
 public class MinaHandle extends Handle {
-    private static BufferAllocator bufferAllocator = new BufferAllocator();
-
     private IoSession ioSession;
 
     public IoSession getIoSession() {
         return ioSession;
-    }
-
-    public static BufferAllocator getBufferAllocator() {
-        return bufferAllocator;
     }
 
     public MinaHandle(IoSession ioSession, BlockingQueue<Message> queue) {

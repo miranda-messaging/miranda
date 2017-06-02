@@ -26,6 +26,7 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UsersFile;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -44,6 +45,8 @@ public class TestStartup extends TestCase {
             throw new ShutdownException("shutdown");
         }
     }
+
+    public static Logger logger = Logger.getLogger(TestStartup.class);
 
     public static class ShutdownException extends Error {
         public ShutdownException(String message) {
@@ -89,6 +92,7 @@ public class TestStartup extends TestCase {
             miranda.stop();
         }
 
+        Miranda.setInstance(null);
         this.startup = null;
     }
 
@@ -138,7 +142,6 @@ public class TestStartup extends TestCase {
         setupMiranda();
         setupMirandaProperties();
         setupMockPanicPolicy();
-        Miranda.setInstance(new Miranda(commandLine));
         this.startup = new Startup(getMiranda(), args);
     }
 
@@ -156,23 +159,28 @@ public class TestStartup extends TestCase {
 
     @Test
     public void testStart() {
-        setupKeyStore();
-        setupTrustStore();
         Miranda.getInstance().setKeyStore(getKeyStore());
         Miranda.getInstance().setTrustStore(getTrustStore());
         setuplog4j();
-        setupMiranda();
+
         setupMockReader();
         setupMockHttpServer();
 
 
         long then = System.currentTimeMillis();
 
-        Properties p = new Properties();
-        MirandaProperties mirandaProperties = new MirandaProperties(p);
+        MirandaProperties mirandaProperties = new MirandaProperties();
         mirandaProperties.setProperty(MirandaProperties.PROPERTY_HTTP_SSL_PORT, "20000");
         Miranda.properties = mirandaProperties;
         Miranda.getInstance().setPanicPolicy(getMockPanicPolicy());
+        setupKeyStore();
+        setupTrustStore();
+
+        Properties properties = new Properties();
+        properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, TEMP_KEYSTORE);
+        properties.setProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME, TEMP_TRUSTSTORE);
+        getStartup().setOverrideProperties(properties);
+        getMiranda().setCurrentState(getStartup());
 
         getMiranda().start("-p whatever -t whatever", getKeyStore(), getTrustStore());
 

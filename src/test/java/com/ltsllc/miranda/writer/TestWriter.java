@@ -19,6 +19,7 @@ package com.ltsllc.miranda.writer;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,8 @@ import static org.mockito.Mockito.when;
  * Created by Clark on 3/27/2017.
  */
 public class TestWriter extends TestCase {
+    private static Logger logger;
+
     private Writer writer;
 
     public Writer getWriter() {

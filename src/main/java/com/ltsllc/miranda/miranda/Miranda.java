@@ -161,7 +161,7 @@ public class Miranda extends Consumer {
     }
 
     public Writer getWriter() {
-        return writer;
+        return this.writer;
     }
 
     public void setWriter(Writer writer) {
@@ -280,18 +280,7 @@ public class Miranda extends Consumer {
     }
 
     public Miranda () {
-        super("miranda");
-        ourInstance = this;
-
-        String[] emptyArgv = new String[0];
-        State s = new Startup(this, emptyArgv);
-        setCurrentStateWithoutStart(s);
-
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        setQueue(queue);
-
-        inputStream = System.in;
-
+        basicConstructor(new String[0]);
     }
 
     public static Miranda getInstance() {

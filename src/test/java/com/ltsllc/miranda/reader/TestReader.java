@@ -21,6 +21,7 @@ import com.ltsllc.miranda.PrivateKey;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -48,7 +49,7 @@ public class TestReader extends TestCase {
         return mockPrivateKey;
     }
 
-    public void reset () {
+    public void reset() {
         super.reset();
 
         mockPrivateKey = null;
@@ -56,31 +57,35 @@ public class TestReader extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup() {
         reset();
 
         super.setup();
 
+        setuplog4j();
         mockPrivateKey = mock(PrivateKey.class);
         reader = new Reader(mockPrivateKey);
+    }
+
+    @After
+    public void cleanup () {
+        System.gc();
+        deleteFile(TEST_FILENAME);
     }
 
     public static final String TEST_FILENAME = "testfile";
     public static final String TEST_FILE_CONTENTS = "whatever";
 
     @Test
-    public void testReadSuccess () {
+    public void testReadSuccess() throws GeneralSecurityException {
         GeneralSecurityException generalSecurityException = null;
         Reader.ReadResult result = null;
 
         String hexString = Utils.bytesToString(TEST_FILE_CONTENTS.getBytes());
         createFile(TEST_FILENAME, hexString);
-        try {
-            when(getMockPrivateKey().decrypt(Matchers.any(byte[].class))).thenReturn(TEST_FILE_CONTENTS.getBytes());
-            result = getReader().read(TEST_FILENAME);
-        } catch (GeneralSecurityException e) {
-            generalSecurityException = e;
-        }
+
+        when(getMockPrivateKey().decrypt(Matchers.any(byte[].class))).thenReturn(TEST_FILE_CONTENTS.getBytes());
+        result = getReader().read(TEST_FILENAME);
 
         assert (result.result == Results.Success);
         assert (arraysAreEquivalent(result.data, TEST_FILE_CONTENTS.getBytes()));
@@ -88,14 +93,14 @@ public class TestReader extends TestCase {
     }
 
     @Test
-    public void testReadFileDoesNotExist () {
+    public void testReadFileDoesNotExist() {
         Reader.ReadResult result = getReader().read("I don't exist");
 
         assert (result.result == Results.FileNotFound);
     }
 
     @Test
-    public void testReadGeneralSecurityException () {
+    public void testReadGeneralSecurityException() {
         GeneralSecurityException generalSecurityException = null;
         Reader.ReadResult result = null;
 
@@ -113,7 +118,7 @@ public class TestReader extends TestCase {
     }
 
     @Test
-    public void testSendRead () {
+    public void testSendRead() {
         getReader().sendReadMessage(null, this, "whatever");
 
         assert (contains(Message.Subjects.Read, getReader().getQueue()));

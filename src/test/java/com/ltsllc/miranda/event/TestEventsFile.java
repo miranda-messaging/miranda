@@ -18,6 +18,7 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.file.states.SingleFileLoadingState;
 import com.ltsllc.miranda.test.TestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +38,8 @@ public class TestEventsFile extends TestCase {
         eventsFile = null;
     }
 
+    public static final String TEST_FILE = "testFile";
+
     @Before
     public void setup () {
         reset();
@@ -44,7 +47,12 @@ public class TestEventsFile extends TestCase {
         super.setup();
 
         setuplog4j();
-        eventsFile = new EventsFile("testFile", getMockReader(), getMockWriter());
+        eventsFile = new EventsFile(TEST_FILE, getMockReader(), getMockWriter());
+    }
+
+    @After
+    public void cleanup () {
+        deleteFile(TEST_FILE);
     }
 
     @Test
