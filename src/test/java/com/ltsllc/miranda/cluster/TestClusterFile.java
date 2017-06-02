@@ -117,7 +117,9 @@ public class TestClusterFile extends TestCase {
         setuplog4j();
         setupWriter();
         setupTimer();
+        setupMiranda();
         setupMirandaProperties();
+        setupMockReader();
         setupClusterFile();
     }
 

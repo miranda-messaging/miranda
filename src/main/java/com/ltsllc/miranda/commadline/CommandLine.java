@@ -45,7 +45,7 @@ public class CommandLine {
 
     public String getArgAndAdvance () {
         String value = argv[argIndex];
-        argIndex++;
+        advance();
         return value;
     }
 

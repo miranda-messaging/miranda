@@ -110,7 +110,7 @@ public class MirandaFactory {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
 
 
-        return new MinaNetworkListener(port, keyStore, trustStore);
+        return new MinaNetworkListener(port, keyStore, getKeystorePassword(), trustStore);
     }
 
     public Network buildNetwork (KeyStore keyStore, KeyStore trustStore) throws MirandaException {
@@ -404,6 +404,6 @@ public class MirandaFactory {
     public NetworkListener buildNewNetworkListener () {
         int port = getProperties().getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-        return new MinaNetworkListener(port, getKeyStore(), getTrustStore());
+        return new MinaNetworkListener(port, getKeyStore(), getKeystorePassword(), getTrustStore());
     }
 }

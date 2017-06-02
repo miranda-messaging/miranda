@@ -120,7 +120,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     }
 
     public void load() {
-        getReader().sendReadMessage(getQueue(), this, getFilename());
+        Miranda.getInstance().getReader().sendReadMessage(getQueue(), this, getFilename());
     }
 
     public void processData(byte[] data) {

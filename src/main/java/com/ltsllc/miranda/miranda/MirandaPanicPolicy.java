@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.ShutdownException;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
@@ -28,11 +29,13 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
         super("panic policy", maxPanicCount, miranda, timeout, timer);
     }
 
-    public boolean panic (Panic panic) {
+    public void panic (Panic panic) throws ShutdownException {
         String fatalMessage = "The system is terminating due to a panic";
         boolean continuePanic = false;
 
         if (panic instanceof StartupPanic) {
+            continuePanic = true;
+        } else if (panic.getReason() == Panic.Reasons.OutOfMemory) {
             continuePanic = true;
         } else if (
                 panic.getReason() == Panic.Reasons.DoesNotUnderstand ||
@@ -50,11 +53,8 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
 
         if (continuePanic) {
             logger.fatal(fatalMessage, panic);
-            if (!getTestMode())
-                System.exit(1);
+            throw new ShutdownException("panic");
         }
-
-        return continuePanic;
     }
 
 }

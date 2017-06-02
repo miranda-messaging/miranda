@@ -41,4 +41,10 @@ abstract public class HttpServer extends Consumer {
         StartHttpServerMessage startHttpServerMessage = new StartHttpServerMessage(senderQueue, this);
         sendToMe(startHttpServerMessage);
     }
+
+    public void sendSetupServletsMessage (BlockingQueue<Message> senderQueue, Object sender,
+                                          List<ServletMapping> servletMappings) {
+        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(senderQueue, sender, servletMappings);
+        sendToMe(setupServletsMessage);
+    }
 }

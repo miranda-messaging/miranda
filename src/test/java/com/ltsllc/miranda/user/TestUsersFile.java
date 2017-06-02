@@ -149,6 +149,9 @@ public class TestUsersFile extends TestCase {
 
     @Test
     public void testLoad () {
+        setupMiranda();
+        setupMockReader();
+
         getUsersFile().load();
 
         verify(getMockReader(), atLeastOnce()).sendReadMessage(Matchers.any(BlockingQueue.class), Matchers.any(),

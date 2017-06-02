@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
  */
 public class TestStartup extends TestCase {
     public static class LocalPanicPolicy implements PanicPolicy {
-        public boolean panic (Panic panic) {
+        public void panic(Panic panic) {
             throw new ShutdownException("shutdown");
         }
     }
@@ -71,15 +71,11 @@ public class TestStartup extends TestCase {
     private BlockingQueue<Message> messages;
     private BlockingQueue<Message> deliveries;
     private BlockingQueue<Message> startupQueue;
-    private Miranda miranda;
 
     public Miranda getMiranda() {
-        return miranda;
+        return Miranda.getInstance();
     }
 
-    public void setMiranda(Miranda miranda) {
-        this.miranda = miranda;
-    }
 
     public Startup getStartup() {
         return startup;
@@ -88,8 +84,10 @@ public class TestStartup extends TestCase {
     public void reset() {
         super.reset();
 
-        if (null != miranda)
+        Miranda miranda = Miranda.getInstance();
+        if (null != miranda) {
             miranda.stop();
+        }
 
         this.startup = null;
     }
@@ -130,20 +128,53 @@ public class TestStartup extends TestCase {
 
         setuplog4j();
 
-        String[] empty = new String[0];
-        this.miranda = new Miranda("-p whatever -t whatever");
-        this.startup = new Startup(miranda, empty);
+        String commandLine = "-p whatever -t whatever";
+        String[] args = {
+                "-p",
+                "whatever",
+                "-t",
+                "whatever"
+        };
+        setupMiranda();
+        setupMirandaProperties();
+        setupMockPanicPolicy();
+        Miranda.setInstance(new Miranda(commandLine));
+        this.startup = new Startup(getMiranda(), args);
+    }
+
+    @Test
+    public void testStartMethod () {
+        try {
+            setupMiranda();
+            setupMockReader();
+            setupMockHttpServer();
+            getStartup().start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testStart() {
+        setupKeyStore();
+        setupTrustStore();
+        Miranda.getInstance().setKeyStore(getKeyStore());
+        Miranda.getInstance().setTrustStore(getTrustStore());
         setuplog4j();
+        setupMiranda();
+        setupMockReader();
+        setupMockHttpServer();
+
+
         long then = System.currentTimeMillis();
 
         Properties p = new Properties();
-        p.setProperty("com.ltsllc.miranda.SslPort", "20000");
-        getMiranda().setPanicPolicy(getMockPanicPolicy());
-        getMiranda().start(p);
+        MirandaProperties mirandaProperties = new MirandaProperties(p);
+        mirandaProperties.setProperty(MirandaProperties.PROPERTY_HTTP_SSL_PORT, "20000");
+        Miranda.properties = mirandaProperties;
+        Miranda.getInstance().setPanicPolicy(getMockPanicPolicy());
+
+        getMiranda().start("-p whatever -t whatever", getKeyStore(), getTrustStore());
 
         pause(2000);
 
@@ -157,7 +188,7 @@ public class TestStartup extends TestCase {
         assert (getMiranda().getEventManager() != null);
         assert (getMiranda().getDeliveryManager() != null);
         assert (getMiranda().getTopicManager() != null);
-        assert (getMiranda().getHttp() != null);
+        assert (getMiranda().getHttpServer() != null);
         assert (getMiranda().getSubscriptionManager() != null);
         assert (getMiranda().getSessionManager() != null);
         assert (getMiranda().getWriter() != null);
@@ -174,7 +205,6 @@ public class TestStartup extends TestCase {
         //
         // test that initial garbage collection got done
         //
-        assert (getMiranda().getUserManager().getUsersFile().getLastCollection() > then);
         assert (getMiranda().getSubscriptionManager().getSubscriptionsFile().getLastCollection() > then);
         assert (getMiranda().getTopicManager().getTopicsFile().getLastCollection() > then);
 
@@ -194,14 +224,12 @@ public class TestStartup extends TestCase {
     @Test
     public void testGetKeysKeystoreUndefined() {
         ShutdownException shutdownException = null;
-
-        setupMiranda();
-        Miranda.getInstance().setPanicPolicy(new LocalPanicPolicy());
-        MirandaProperties mirandaProperties = new MirandaProperties();
-        mirandaProperties.remove(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-        getStartup().setProperties(mirandaProperties);
-
         try {
+            setupMiranda();
+            Miranda.getInstance().setPanicPolicy(new LocalPanicPolicy());
+            MirandaProperties mirandaProperties = new MirandaProperties();
+            mirandaProperties.remove(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+            getStartup().setProperties(mirandaProperties);
             getStartup().getKeys("whatever");
         } catch (ShutdownException e) {
             shutdownException = e;
@@ -232,12 +260,13 @@ public class TestStartup extends TestCase {
     public void testGetKeysKeystoreDoesNotExist() {
         ShutdownException shutdownException = null;
 
-        setupMiranda();
-        Miranda.getInstance().setPanicPolicy(new LocalPanicPolicy());
-        MirandaProperties mirandaProperties = new MirandaProperties();
-        mirandaProperties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, "wrong");
-        getStartup().setProperties(mirandaProperties);
         try {
+            setupMiranda();
+            Miranda.getInstance().setPanicPolicy(new LocalPanicPolicy());
+            MirandaProperties mirandaProperties = new MirandaProperties();
+            mirandaProperties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, "wrong");
+            getStartup().setProperties(mirandaProperties);
+
             getStartup().getKeys(getStartup().getKeystorePasswordString());
         } catch (ShutdownException e) {
             shutdownException = e;
@@ -250,7 +279,6 @@ public class TestStartup extends TestCase {
     public void testGetKeysWrongPassword() {
         Miranda miranda = new Miranda("-p wrong -t wrong");
         Miranda.setInstance(miranda);
-        setMiranda(miranda);
 
         Miranda.getInstance().setPanicPolicy(getMockPanicPolicy());
         MirandaProperties mirandaProperties = new MirandaProperties();
@@ -258,7 +286,6 @@ public class TestStartup extends TestCase {
         startup.setProperties(mirandaProperties);
 
         getMiranda().start();
-
 
         pause(50);
 

@@ -22,6 +22,7 @@ import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
@@ -62,6 +63,7 @@ import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -87,7 +89,7 @@ public class Miranda extends Consumer {
     public static boolean panicking = false;
     public static InputStream inputStream;
 
-    private BlockingQueue<Message> httpServer;
+    private HttpServer httpServer;
     private UserManager userManager;
     private TopicManager topicManager;
     private SubscriptionManager subscriptionManager;
@@ -102,6 +104,25 @@ public class Miranda extends Consumer {
     private List<String> waitingOn;
     private Network network;
     public MirandaCommandLine commandLine;
+    private KeyStore keyStore;
+    private KeyStore trustStore;
+
+    public KeyStore getTrustStore() {
+        return trustStore;
+    }
+
+    public void setTrustStore(KeyStore trustStore) {
+        this.trustStore = trustStore;
+    }
+
+    public KeyStore getKeyStore() {
+
+        return keyStore;
+    }
+
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore = keyStore;
+    }
 
     public MirandaCommandLine getCommandLine() {
         return commandLine;
@@ -175,11 +196,11 @@ public class Miranda extends Consumer {
         return logger;
     }
 
-    public BlockingQueue<Message> getHttp() {
+    public HttpServer getHttpServer() {
         return httpServer;
     }
 
-    public void setHttp(BlockingQueue<Message> httpServer) {
+    public void setHttpServer(HttpServer httpServer) {
         this.httpServer = httpServer;
     }
 
@@ -236,6 +257,10 @@ public class Miranda extends Consumer {
         basicConstructor(argv);
     }
 
+    public static void setOurInstance(Miranda ourInstance) {
+        Miranda.ourInstance = ourInstance;
+    }
+
     public void basicConstructor (String[] argv) {
         super.basicConstructor(NAME);
 
@@ -285,15 +310,13 @@ public class Miranda extends Consumer {
      * @param panic
      * @return
      */
-    public boolean panic (Panic panic) {
+    public void panic (Panic panic) {
         PanicPolicy panicPolicy = getPanicPolicy();
         if (null == panicPolicy) {
-            System.err.println("null panic policy in panic");
-            panic.printStackTrace();
-            System.exit(-1);
+            throw new ShutdownException("null panic policy in panic", panic);
         }
 
-        return panicPolicy.panic(panic);
+        panicPolicy.panic(panic);
     }
 
     public static void main(String[] argv) {
@@ -302,10 +325,17 @@ public class Miranda extends Consumer {
         miranda.start();
     }
 
-    public void start (String argString) {
-        String[] argv = argString.split(" \t");
+    public void start (String argString, KeyStore keyStore, KeyStore trustStore) {
+        String[] argv = argString.split(" |\t");
         MirandaCommandLine mirandaCommandLine = new MirandaCommandLine(argv);
         setCommandLine(mirandaCommandLine);
+
+        Startup startup = (Startup) getCurrentState();
+        if (null != startup) {
+            startup.setCommandLine(mirandaCommandLine);
+            startup.setKeyStore(getKeyStore());
+            startup.setTrustStore(getTrustStore());
+        }
 
         start();
     }
@@ -339,13 +369,17 @@ public class Miranda extends Consumer {
     }
 
     public void stop () {
+        HttpServer httpServer = getHttpServer();
+        if (null != httpServer)
+            httpServer.sendStop(getQueue(), this);
+
+
         StopState stop = StopState.getInstance();
         setCurrentState(stop);
 
         StopMessage message = new StopMessage(getQueue(), this);
 
         sendIfNotNull(message, getCluster());
-        sendIfNotNull(message, getHttp());
 
         sendIfNotNull(message, fileWatcher);
         sendIfNotNull(message, timer);
@@ -542,14 +576,17 @@ public class Miranda extends Consumer {
         return getWaitingOn().size() < 1;
     }
 
-    public static boolean panicMiranda (Panic panic) {
+    public static void panicMiranda (Panic panic) {
         Miranda instance = Miranda.getInstance();
         if (null == instance) {
-            System.err.println("null instance in panicMiranda");
-            panic.printStackTrace();
-            System.exit(-1);
+            throw new ShutdownException("null instance in panicMiranda", panic);
         }
 
-        return instance.panic(panic);
+        instance.panic(panic);
+    }
+
+
+    public void run () {
+        super.run();
     }
 }

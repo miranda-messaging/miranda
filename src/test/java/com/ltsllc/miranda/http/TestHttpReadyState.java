@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -63,8 +66,8 @@ public class TestHttpReadyState extends TestCase {
 
     @Test
     public void testProcessSetupServletsMessage () {
-        ServletMapping[] servletMappings = new ServletMapping[1];
-        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(null, this, servletMappings);
+        List<ServletMapping> mappings = new ArrayList<ServletMapping>();
+        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(null, this, mappings);
 
         getHttpReadyState().processMessage(setupServletsMessage);
 

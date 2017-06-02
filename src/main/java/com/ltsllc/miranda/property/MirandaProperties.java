@@ -260,6 +260,10 @@ public class MirandaProperties {
         load();
     }
 
+    public MirandaProperties (Properties p) {
+        properties = p;
+    }
+
     public MirandaProperties()
     {
         properties = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);

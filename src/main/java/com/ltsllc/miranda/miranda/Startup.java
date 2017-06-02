@@ -57,6 +57,7 @@ import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -255,6 +256,7 @@ public class Startup extends State {
             processCommandLine();
             processPasswords();
             setupProperties();
+            setupKeyStores();
             getKeys(getKeystorePasswordString());
             startLogger();
             startWriter();
@@ -266,12 +268,13 @@ public class Startup extends State {
             startSubsystems();
             loadFiles();
             setupSchedule();
-            setupHttpServer();
             setupServlets();
             startHttpServer();
             startListening();
-            getMiranda().performGarbageCollection();
+            Miranda.getInstance().performGarbageCollection();
             return new ReadyState(getMiranda());
+        } catch (StartupPanic e) {
+            e.printStackTrace();
         } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
             Miranda.getInstance().panic(startupPanic);
@@ -455,10 +458,7 @@ public class Startup extends State {
         ShutdownHolder.initialize(timeoutPeriod);
         ShutdownHolder.getInstance().start();
 
-        SetupServletsMessage setupServletsMessage = new SetupServletsMessage(getMiranda().getQueue(), this,
-                convertToArray(mappings));
-
-        send(getMiranda().getHttp(), setupServletsMessage);
+        Miranda.getInstance().getHttpServer().sendSetupServletsMessage(getMiranda().getQueue(), this, mappings);
     }
 
 
@@ -552,7 +552,7 @@ public class Startup extends State {
         this.properties = Miranda.properties;
     }
 
-    private void startSubsystems() throws MirandaException {
+    public void startSubsystems() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
         MirandaFactory factory = new MirandaFactory(properties, getKeystorePasswordString(), getCommandLine().getTrustorePassword());
         Miranda miranda = Miranda.getInstance();
@@ -587,7 +587,7 @@ public class Startup extends State {
         try {
             MirandaFactory factory = getMiranda().factory;
             HttpServer httpServer = factory.buildHttpServer();
-            Miranda.getInstance().setHttp(httpServer.getQueue());
+            Miranda.getInstance().setHttpServer(httpServer);
             setHttpServer(httpServer);
         } catch (MirandaException e) {
             Panic panic = new StartupPanic("Exception trying to create http server", e, StartupPanic.StartupReasons.ExceptionCreatingHttpServer);
@@ -679,7 +679,7 @@ public class Startup extends State {
     }
 
     public void startHttpServer() {
-        getHttpServer().sendStart(getMiranda().getQueue());
+        Miranda.getInstance().getHttpServer().sendStart(getMiranda().getQueue());
     }
 
     public void definePanicPolicy() {
@@ -720,9 +720,8 @@ public class Startup extends State {
 
     public void startListening() {
         NetworkListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
-        networkListener.start();
-
         getMiranda().setNetworkListener(networkListener);
+        networkListener.start();
     }
 
     /*
@@ -753,20 +752,29 @@ public class Startup extends State {
             String temp = scanner.nextLine();
             setTrustorePasswordString(temp);
         }
+    }
 
+    public KeyStore loadKeyStore (String filename, String password) {
         try {
-            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            KeyStore keyStore = Utils.loadKeyStore(filename, getKeystorePasswordString());
-            setKeyStore(keyStore);
-
-            filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-            keyStore = Utils.loadKeyStore(filename, getTrustorePasswordString());
-            setTrustStore(keyStore);
+            KeyStore keyStore = Utils.loadKeyStore(filename, password);
         } catch (GeneralSecurityException | IOException e) {
-            StartupPanic startupPanic = new StartupPanic("Exception load keystore",
+            StartupPanic startupPanic = new StartupPanic("Exception loading keystoeb from " + filename,e,
                     StartupPanic.StartupReasons.ExceptionLoadingKeystore);
             Miranda.panicMiranda(startupPanic);
         }
 
+        return null;
+    }
+
+    public void setupKeyStores () throws Panic {
+        if (null == getKeyStore()) {
+            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+            this.keyStore = loadKeyStore(filename, getKeystorePasswordString());
+        }
+
+        if (null == getTrustStore()) {
+            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
+            this.trustStore = loadKeyStore(filename, getTrustorePasswordString());
+        }
     }
 }

@@ -17,10 +17,11 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.ShutdownException;
 
 /**
  * Created by Clark on 3/7/2017.
  */
 public interface PanicPolicy {
-    public boolean panic (Panic panic);
+    public void panic (Panic panic) throws ShutdownException;
 }

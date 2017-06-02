@@ -16,6 +16,10 @@
 
 package com.ltsllc.miranda;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * A request to shutdown.
  *
@@ -51,6 +55,7 @@ public class Panic extends Exception {
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone
         NullCurrentState, // The currentState is null for a consumer
+        OutOfMemory,
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
         Test,
@@ -72,20 +77,17 @@ public class Panic extends Exception {
 
     public Panic (String message, Throwable cause, Reasons reason) {
         super(message, cause);
-
-        this.reason = reason;
+        basicConstructor(reason, cause);
     }
 
     public Panic (Throwable cause, Reasons reason) {
         super(cause);
-
-        this.reason = reason;
+        basicConstructor(reason, cause);
     }
 
     public Panic (String message, Reasons reason) {
         super (message);
-
-        this.reason = reason;
+        basicConstructor(reason, null);
     }
 
     public Panic (String message, Reasons reason, String additionalInfo) {
@@ -93,5 +95,24 @@ public class Panic extends Exception {
 
         this.reason = reason;
         this.additionalInfo = additionalInfo;
+    }
+
+    public void basicConstructor (Reasons reason, Throwable throwable) {
+        this.reason = reason;
+
+        if (throwable instanceof OutOfMemoryError) {
+            reason = Reasons.OutOfMemory;
+        }
+
+        if (throwable != null) {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            throwable.printStackTrace(printWriter);
+            printWriter.close();
+            try {
+                stringWriter.close();
+            } catch (IOException e) {}
+            this.additionalInfo = stringWriter.toString();
+        }
     }
 }

@@ -67,6 +67,7 @@ public class TestMiranda extends TestCase {
 
         mockSession = mock(Session.class);
         miranda = new Miranda(empty);
+        setupMockHttpServer();
     }
 
     @Test

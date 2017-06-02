@@ -38,6 +38,11 @@ public class MinaNetworkListener extends NetworkListener {
     private Network network;
     private KeyStore keystore;
     private KeyStore truststore;
+    private String keyStorePassword;
+
+    public String getKeyStorePassword() {
+        return keyStorePassword;
+    }
 
     public Network getNetwork() {
         return network;
@@ -51,9 +56,10 @@ public class MinaNetworkListener extends NetworkListener {
         return truststore;
     }
 
-    public MinaNetworkListener(int port, KeyStore keyStore, KeyStore truststore) {
+    public MinaNetworkListener(int port, KeyStore keyStore, String getKeyStorePassword, KeyStore truststore) {
         super(port);
         this.keystore = keyStore;
+        this.keyStorePassword = getKeyStorePassword;
         this.truststore = truststore;
     }
 
@@ -69,7 +75,11 @@ public class MinaNetworkListener extends NetworkListener {
         NioSocketAcceptor nioSocketAcceptor = new NioSocketAcceptor();
         SSLContext sslContext = SSLContext.getInstance("TLS");
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(getKeystore(), getKeyStorePassword().toCharArray());
+
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init (getTruststore());
+
         sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
         SslFilter sslFilter = new SslFilter(sslContext);
         sslFilter.setNeedClientAuth(true);

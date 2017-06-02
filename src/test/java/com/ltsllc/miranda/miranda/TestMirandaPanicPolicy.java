@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.ShutdownException;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -54,22 +55,29 @@ public class TestMirandaPanicPolicy extends TestCase {
     @Test
     public void testPanicStartupPanic () {
         StartupPanic startupPanic = new StartupPanic("a test", null, StartupPanic.StartupReasons.Test);
+        ShutdownException shutdownException = null;
 
-        boolean result = getMirandaPanicPolicy().panic(startupPanic);
+        try {
+            getMirandaPanicPolicy().panic(startupPanic);
+        } catch (ShutdownException e) {
+            shutdownException = e;
+        }
 
-        assert (result);
+        assert (shutdownException != null);
     }
 
     @Test
     public void testPanicDoesNotUnderstand () {
+        ShutdownException shutdownException = null;
+
         assert (getMirandaPanicPolicy().getPanicCount() == 0);
 
         Panic panic = new Panic ("a test", null, Panic.Reasons.DoesNotUnderstand);
 
-        boolean result = getMirandaPanicPolicy().panic(panic);
+        getMirandaPanicPolicy().panic(panic);
 
-        assert (!result);
         assert (getMirandaPanicPolicy().getPanicCount() == 1);
+        assert (shutdownException == null);
     }
 
     @Test
@@ -78,9 +86,8 @@ public class TestMirandaPanicPolicy extends TestCase {
 
         int before = getMirandaPanicPolicy().getPanicCount();
 
-        boolean result = getMirandaPanicPolicy().panic(panic);
+        getMirandaPanicPolicy().panic(panic);
 
-        assert (!result);
         assert (before == getMirandaPanicPolicy().getPanicCount());
     }
 

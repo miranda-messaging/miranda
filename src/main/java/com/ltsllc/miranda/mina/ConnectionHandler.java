@@ -1,14 +1,18 @@
 package com.ltsllc.miranda.mina;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.node.networkMessages.WireMessage;
+import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.ssl.SslFilter;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
+import java.nio.charset.Charset;
 import java.security.cert.Certificate;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,16 +21,28 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by clarkhobbie on 5/30/17.
  */
 public class ConnectionHandler extends IoHandlerAdapter {
+    private static Gson gson = new Gson();
+
     private Certificate certificate;
-    private Handle handle;
     private Network network;
     private IoSession session;
     private boolean verified;
+    private Charset charset;
+    private Handle handle;
 
     public ConnectionHandler(Network network, Certificate certificate) {
         this.network = network;
         this.certificate = certificate;
         this.verified = false;
+        this.charset = Charset.defaultCharset();
+    }
+
+    public static Gson getGson() {
+        return gson;
+    }
+
+    public Charset getCharset() {
+        return charset;
     }
 
     public boolean getVerified() {
@@ -89,11 +105,20 @@ public class ConnectionHandler extends IoHandlerAdapter {
     }
 
     @Override
+    public void sessionCreated(IoSession session) throws Exception {
+        super.sessionCreated(session);
+        this.handle = getNetwork().createHandle(session);
+    }
+
+    @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
         setSession(session);
         verifyConnection();
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        MinaHandle handle = new MinaHandle(session, queue);
-        getNetwork().newConnection(handle);
+        IoBuffer ioBuffer = (IoBuffer) message;
+        String json = ioBuffer.getString(getCharset().newDecoder());
+        WireMessage wireMessage = getGson().fromJson(json, WireMessage.class);
+        Class clazz = Class.forName(wireMessage.getClassName());
+        WireMessage pass2 = (WireMessage) getGson().fromJson(json, clazz);
+        getHandle().deliver(wireMessage);
     }
 }

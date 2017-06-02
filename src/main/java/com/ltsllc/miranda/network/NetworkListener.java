@@ -87,8 +87,7 @@ abstract public class NetworkListener extends Consumer {
                 newConnection = handleQueue.take();
             } catch (InterruptedException e) {
                 Panic panic = new Panic("Exception getting new connection", e, Panic.Reasons.ExceptionWaitingForNextConnection);
-                if (Miranda.getInstance().panic(panic))
-                    setKeepGoing(false);
+                Miranda.getInstance().panic(panic);
             }
 
             if (null != newConnection) {

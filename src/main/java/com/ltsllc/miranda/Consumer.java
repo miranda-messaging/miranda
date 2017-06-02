@@ -85,7 +85,7 @@ public class Consumer extends Subsystem implements Comparer {
                 State nextState = current.start();
                 return nextState;
             } catch (Throwable t) {
-                Panic panic = new StartupPanic("Unchececked exception in start", t, StartupPanic.StartupReasons.ExceptionInStart);
+                Panic panic = new StartupPanic("Exception in start", t, StartupPanic.StartupReasons.ExceptionInStart);
                 Miranda.getInstance().panic(panic);
             }
         }
@@ -156,8 +156,7 @@ public class Consumer extends Subsystem implements Comparer {
                 logger.warn(message, e);
 
                 Panic panic = new Panic(message, e, Panic.Reasons.ExceptionGettingNextMessage);
-                if (Miranda.getInstance().panic(panic))
-                    keepWaiting = false;
+                Miranda.panicMiranda(panic);
             }
         }
 

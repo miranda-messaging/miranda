@@ -33,9 +33,8 @@ public class SetupServletsMessage extends Message {
         return mappings;
     }
 
-    public SetupServletsMessage(BlockingQueue<Message> senderQueue, Object sender, ServletMapping[] mappings) {
+    public SetupServletsMessage(BlockingQueue<Message> senderQueue, Object sender, List<ServletMapping> mappings) {
         super(Subjects.SetupServlets, senderQueue, sender);
-
-        this.mappings = Arrays.asList(mappings);
+        this.mappings = mappings;
     }
 }

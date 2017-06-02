@@ -117,6 +117,8 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testFileChanged() {
+        setupMiranda();
+        setupMockReader();
         File file = new File(getEventsFile().getFilename());
         getEventsFile().fileChanged();
         verify(getMockReader(), atLeastOnce()).sendReadMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
@@ -158,6 +160,8 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testUpdateVersion() {
+        setupMiranda();
+        setupMockReader();
         getEventsFile().load();
         Version oldVersion = getEventsFile().getVersion();
 
