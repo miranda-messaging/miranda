@@ -16,17 +16,12 @@
 
 package com.ltsllc.miranda.writer;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.PublicKey;
+import com.google.gson.Gson;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 12/31/2016.
  */
 public class Writer extends Consumer {
-    private static Writer ourInstance;
+    private static Gson gson = new Gson();
 
     private PublicKey publicKey;
 
@@ -43,48 +38,34 @@ public class Writer extends Consumer {
         return publicKey;
     }
 
-    public static synchronized void setInstance (Writer writer) {
-        if (null == ourInstance)
-            ourInstance = writer;
-    }
-
-    public static Writer getInstance () {
-        return ourInstance;
-    }
 
     public Writer (PublicKey publicKey) {
         super("writer");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
-        setCurrentState(new WriterReadyState(this));
 
-        setInstance(this);
+        WriterReadyState writerReadyState = new WriterReadyState(this);
+        setCurrentState(writerReadyState);
 
         this.publicKey = publicKey;
     }
 
-    public void write (String filename, byte[] data) throws IOException {
+    public void write (String filename, byte[] data) throws IOException, GeneralSecurityException {
         File file = new File(filename);
 
         if (file.exists())
             backup(file);
 
-        FileOutputStream fos = null;
+        EncryptedMessage encryptedMessage = encrypt(data);
 
-        byte[] ciphertext = null;
-
-        try {
-            ciphertext = encrypt(data);
-        } catch (GeneralSecurityException e) {
-            Panic panic = new Panic("Attempt to encrypt " + filename + " failed", e, Panic.Reasons.EncryptException);
-            Miranda.getInstance().panic(panic);
-        }
+        FileWriter fileWriter = null;
 
         try {
-            fos = new FileOutputStream(filename);
-            fos.write(ciphertext);
+            fileWriter = new FileWriter(filename);
+            String json = gson.toJson(encryptedMessage);
+            fileWriter.write(json);
         } finally {
-            Utils.closeIgnoreExceptions(fos);
+            Utils.closeIgnoreExceptions(fileWriter);
         }
     }
 
@@ -124,7 +105,7 @@ public class Writer extends Consumer {
         sendToMe(writeMessage);
     }
 
-    public byte[] encrypt (byte[] plaintext) throws GeneralSecurityException {
+    public EncryptedMessage encrypt (byte[] plaintext) throws GeneralSecurityException {
         return getPublicKey().encrypt(plaintext);
     }
 }

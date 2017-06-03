@@ -16,10 +16,9 @@
 
 package com.ltsllc.miranda.reader;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.PrivateKey;
-import com.ltsllc.miranda.Results;
+import com.google.gson.Gson;
+import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -47,6 +46,7 @@ public class Reader extends Consumer {
     public static String NAME = "reader";
 
     private static Logger logger = Logger.getLogger(Reader.class);
+    private static Gson gson = new Gson();
 
     private PrivateKey privateKey;
 
@@ -67,8 +67,9 @@ public class Reader extends Consumer {
         setCurrentState(readerReadyState);
     }
 
-    public ReadResult read (String filename) {
+    public ReadResult read (String filename) throws IOException, GeneralSecurityException {
         ReadResult result = new ReadResult();
+        FileReader fileReader = null;
         FileInputStream fileInputStream = null;
         result.result = Results.Unknown;
         result.filename = filename;
@@ -77,37 +78,22 @@ public class Reader extends Consumer {
         if (!file.exists()) {
             result.result = Results.FileNotFound;
         } else {
-            long size = file.length();
-            if (size > Integer.MAX_VALUE) {
-                result.result = Results.FileTooLarge;
-                result.additionalInfo = "File " + filename + " is too large.  Max size:" + Integer.MAX_VALUE + " file size " + size;
-            } else if (!file.exists()) {
-                result.result = Results.FileNotFound;
-            } else {
-                try {
-                    fileInputStream = new FileInputStream(file);
-                    int intSize = (int) size;
-                    byte[] ciphertext = new byte[intSize];
-                    int bytesRead = fileInputStream.read(ciphertext);
-
-                    if (bytesRead < intSize) {
-                        result.result = Results.ShortRead;
-                    } else {
-                        result.data = decrypt(ciphertext);
-                        result.result = Results.Success;
-                    }
-                } catch (IOException | GeneralSecurityException e) {
-                    result.result = Results.Exception;
-                    result.setAdditionalInfo(e);
-                }
+            try {
+                fileReader = new FileReader(file);
+                EncryptedMessage encryptedMessage = gson.fromJson(fileReader, EncryptedMessage.class);
+                byte[] plainText = getPrivateKey().decrypt(encryptedMessage);
+                result.result = Results.Success;
+                result.data = plainText;
+            } finally {
+                Utils.closeIgnoreExceptions(fileReader);
             }
         }
 
         return result;
     }
 
-    public byte[] decrypt (byte[] ciphertext) throws GeneralSecurityException{
-        return getPrivateKey().decrypt(ciphertext);
+    public byte[] decrypt (EncryptedMessage encryptedMessage) throws GeneralSecurityException, IOException {
+        return getPrivateKey().decrypt(encryptedMessage);
     }
 
     public void sendReadMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {

@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -83,7 +84,7 @@ public class TestWriterReadyState extends TestCase {
         IOException ioException = new IOException("test");
         try {
             doThrow(ioException).when(getMockWriter()).write(Matchers.anyString(), Matchers.any(byte[].class));
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
 

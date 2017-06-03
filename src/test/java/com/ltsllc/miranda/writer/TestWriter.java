@@ -16,7 +16,11 @@
 
 package com.ltsllc.miranda.writer;
 
+import com.google.gson.Gson;
+import com.ltsllc.miranda.EncryptedMessage;
+import com.ltsllc.miranda.PrivateKey;
 import com.ltsllc.miranda.PublicKey;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
@@ -27,8 +31,12 @@ import org.mockito.Matchers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 
+import static org.mockito.Matchers.byteThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -70,7 +78,6 @@ public class TestWriter extends TestCase {
     public void testConstructor () {
         assert (getWriter().getQueue() != null);
         assert (getWriter().getCurrentState() instanceof WriterReadyState);
-        assert (Writer.getInstance() != null);
     }
 
     public static final String TEST_FILE_NAME = "testfile";
@@ -124,24 +131,89 @@ public class TestWriter extends TestCase {
         return false;
     }
 
-    public static final String TEST_CIPHER_TEXT = "4123983514D0DB213E5CE7AEBAF3BBD4DB78676D74B2F7AD5885818773F2467335F0671CD039B35A732BDE66DA2FFF93DFA62CFACBD5B6AC2A900E1C8E0C4C1BD31B2D0A5BA2F476F157100EDDF8C9BF62971AF0213FEBA1125C3622A15B872111D1D817AF5DD500D7B59405CC62CD5065AF1C5CB227133B7D29A11AD9C4DA7EC2BDAF6EE0A23C694D780068FA74D20081BFF4C77B449433E79920B2184796D40CEF972BA3794E060AB4BCCD36B0463621215B6672D0497CE835F60CBAD04B613C000E62ED9C402709DB83A5AA28E2ACE3CF701168B02A09C87CE02060E42B48E7EC2B78F975C9A9F1CB68940C7B7686A9A82DE9567031003C3E76A2EC6F5EEB";
+    public boolean fileIsEquivalentToText (String filename, String text) {
+        char[] textArray = text.toCharArray();
+        FileReader fileReader = null;
+
+        try {
+            File file = new File(filename);
+            if (file.length() != textArray.length)
+                return false;
+
+            fileReader = new FileReader(filename);
+
+            for (int i = 0; i < textArray.length; i++) {
+                int b = fileReader.read();
+                if (textArray[i] != b)
+                    return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            Utils.closeIgnoreExceptions(fileReader);
+        }
+
+        return true;
+    }
+
+    public static final String TEST_TEXT = "{\"key\":\"hi there\",\"message\":\"4123983514D0DB213E5CE7AEBAF3BBD4DB78676D74B2F7AD5885818773F2467335F0671CD039B35A732BDE66DA2FFF93DFA62CFACBD5B6AC2A900E1C8E0C4C1BD31B2D0A5BA2F476F157100EDDF8C9BF62971AF0213FEBA1125C3622A15B872111D1D817AF5DD500D7B59405CC62CD5065AF1C5CB227133B7D29A11AD9C4DA7EC2BDAF6EE0A23C694D780068FA74D20081BFF4C77B449433E79920B2184796D40CEF972BA3794E060AB4BCCD36B0463621215B6672D0497CE835F60CBAD04B613C000E62ED9C402709DB83A5AA28E2ACE3CF701168B02A09C87CE02060E42B48E7EC2B78F975C9A9F1CB68940C7B7686A9A82DE9567031003C3E76A2EC6F5EEB\",\"length\":512}";
 
     @Test
-    public void testWrite () {
+    public void testWrite () throws Exception {
+        EncryptedMessage encryptedMessage = new EncryptedMessage();
+        encryptedMessage.setLength(TEST_TEXT.length());
+        encryptedMessage.setKey("hi there");
+        encryptedMessage.setMessage(TEST_TEXT);
+
         try {
-            when(getMockPublicKey().encrypt(Matchers.any(byte[].class))).thenReturn(Utils.hexStringToBytes(TEST_CIPHER_TEXT));
+            when(getMockPublicKey().encrypt(Matchers.any(byte[].class))).thenReturn(encryptedMessage);
         } catch (Exception e) {
             System.err.println("Exception");
             e.printStackTrace();
         }
 
         try {
-            getWriter().write(TEST_FILE_NAME, TEST_DATA);
-        } catch (IOException e) {
+            getWriter().write(TEST_FILE_NAME, TEST_TEXT.getBytes());
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
 
-        assert (fileIsEquivalentTo(TEST_FILE_NAME, TEST_CIPHER_TEXT));
+        Gson gson = new Gson();
+        String json = gson.toJson(encryptedMessage);
+        assert (fileIsEquivalentToText(TEST_FILE_NAME, json));
+    }
+
+    public static final String TEST_PASSWORD = "whatever";
+    public static final String TEST_KEY_ALIAS = "private";
+
+
+    public EncryptedMessage loadEncryptedMessage (String filename) {
+        FileReader fileReader = null;
+        char[] buffer = null;
+
+        try {
+            File file = new File(filename);
+            int fileLength = (int) file.length();
+            buffer = new char[fileLength];
+            fileReader = new FileReader(filename);
+            Gson gson = new Gson();
+            return gson.fromJson(fileReader, EncryptedMessage.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeIgnoreExceptions(fileReader);
+        }
+
+        return null;
+    }
+
+    public PrivateKey loadPrivateKey () throws Exception {
+        MirandaProperties mirandaProperties = new MirandaProperties();
+        String keyStoreFilename = mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+        KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, TEST_PASSWORD);
+        java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey(TEST_KEY_ALIAS, TEST_PASSWORD.toCharArray());
+        return new PrivateKey(jsPrivateKey);
     }
 
     public static final String TEST_FILE_CONTENTS = "01020304";

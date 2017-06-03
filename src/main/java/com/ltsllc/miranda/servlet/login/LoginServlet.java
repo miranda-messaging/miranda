@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.login;
 
+import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
@@ -53,9 +54,8 @@ public class LoginServlet extends MirandaServlet {
                 result.setCategory(loginResult.session.getUser().getCategory().toString());
                 String sessionIdString = Long.toString(loginResult.session.getId());
                 byte[] plainText = sessionIdString.getBytes();
-                byte[] cipherText = loginResult.session.getUser().getPublicKey().encrypt(plainText);
-                String string = new String(Base64.getEncoder().encode(cipherText));
-                result.setSession(string);
+                EncryptedMessage encryptedMessage = loginResult.session.getUser().getPublicKey().encrypt(plainText);
+                result.setEncryptedMessage(encryptedMessage);
             }
         } catch (MirandaException | GeneralSecurityException e) {
             result.setResult(Results.Exception);

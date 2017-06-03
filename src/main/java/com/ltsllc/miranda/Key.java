@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.GeneralSecurityException;
 
@@ -23,10 +24,67 @@ import java.security.GeneralSecurityException;
  * Created by Clark on 4/2/2017.
  */
 abstract public class Key implements Serializable {
-    public byte[] encrypt (String clearText) throws GeneralSecurityException{
-        return encrypt(clearText.getBytes());
+    abstract EncryptedMessage encrypt (byte[] clearText) throws GeneralSecurityException;
+    abstract byte[] decrypt (EncryptedMessage encryptedMessage) throws GeneralSecurityException, IOException;
+
+    public byte[][] toBlocks (byte[] buffer, int blockSize) {
+        int numBlocks = calculateNumberOfBlocks(buffer.length, blockSize);
+
+        byte blocks[][] = new byte[numBlocks][];
+
+        for (int i = 0; i < numBlocks; i++) {
+            blocks[i] = new byte[blockSize];
+        }
+
+        for (int i = 0; i < numBlocks; i++) {
+            copyBlock(i, blockSize, buffer, blocks[i]);
+        }
+
+        copyToBlocks (buffer, blocks, blockSize);
+
+        return blocks;
     }
 
-    abstract byte[] encrypt (byte[] clearText) throws GeneralSecurityException;
-    abstract byte[] decrypt (byte[] cipherText) throws GeneralSecurityException;
+
+    public void copyBlock (int blockIndex, int blockSize, byte[] source, byte[] destination) {
+        int offset = (blockIndex * blockSize);
+
+        for (int i = 0; i < blockSize; i++) {
+            int index = i + offset;
+            if (index < source.length) {
+                destination[i] = source[index];
+            } else {
+                destination[i] = 0;
+            }
+        }
+    }
+
+    public int calculateNumberOfBlocks (int totalSize, int blockSize) {
+        int numberOfBlocks = totalSize / blockSize;
+        if (numberOfBlocks < 1) {
+            numberOfBlocks = 1;
+        }
+
+        return numberOfBlocks;
+    }
+
+    public byte[] toSingleBuffer (byte[][] source, int blockSize, int numberOfBlocks) {
+        byte[] result = new byte[(numberOfBlocks * blockSize)];
+
+        for (int i = 0; i < numberOfBlocks; i++) {
+            for (int j = 0; j < blockSize; j++) {
+                result[(i * blockSize) + j] = source[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    public void copyToBlocks (byte[] source, byte[][] destination, int blockSize) {
+        int numberOfBlocks = calculateNumberOfBlocks(source.length, blockSize);
+
+        for (int i = 0; i < numberOfBlocks; i++) {
+            copyBlock(i, blockSize, source, destination[i]);
+        }
+    }
 }

@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -55,7 +57,7 @@ public class TestReaderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessReadMessage () {
+    public void testProcessReadMessage () throws GeneralSecurityException, IOException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         ReadMessage readMessage = new ReadMessage(queue, this, "whatever");
         Reader.ReadResult result = new Reader.ReadResult();

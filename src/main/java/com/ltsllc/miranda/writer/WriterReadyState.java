@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * Created by Clark on 1/3/2017.
@@ -58,7 +59,7 @@ public class WriterReadyState extends State {
             getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
             WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getWriter().getQueue(), writeMessage.getFilename(), this);
             writeMessage.reply(writeSucceededMessage);
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             WriteFailedMessage writeFailedMessage = new WriteFailedMessage(getWriter().getQueue(), writeMessage.getFilename(), e, this);
             writeMessage.reply(writeFailedMessage);
         }

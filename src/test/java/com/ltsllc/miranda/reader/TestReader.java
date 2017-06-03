@@ -16,6 +16,8 @@
 
 package com.ltsllc.miranda.reader;
 
+import com.google.gson.Gson;
+import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.PrivateKey;
 import com.ltsllc.miranda.Results;
@@ -27,6 +29,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import static org.mockito.Mockito.mock;
@@ -75,16 +78,28 @@ public class TestReader extends TestCase {
 
     public static final String TEST_FILENAME = "testfile";
     public static final String TEST_FILE_CONTENTS = "whatever";
+    public static final String TEST_STRING = "hi there";
+
+    public void createTestFile (String filename) {
+        EncryptedMessage encryptedMessage = new EncryptedMessage();
+        encryptedMessage.setMessage(TEST_STRING);
+        encryptedMessage.setKey(TEST_STRING);
+        encryptedMessage.setLength(TEST_STRING.length());
+        Gson gson = new Gson();
+        String json = gson.toJson(encryptedMessage);
+        String hexString = Utils.bytesToString(json.getBytes());
+        createFile(filename, hexString);
+    }
 
     @Test
-    public void testReadSuccess() throws GeneralSecurityException {
+    public void testReadSuccess() throws GeneralSecurityException, IOException {
         GeneralSecurityException generalSecurityException = null;
         Reader.ReadResult result = null;
 
-        String hexString = Utils.bytesToString(TEST_FILE_CONTENTS.getBytes());
-        createFile(TEST_FILENAME, hexString);
+        createTestFile(TEST_FILENAME);
 
-        when(getMockPrivateKey().decrypt(Matchers.any(byte[].class))).thenReturn(TEST_FILE_CONTENTS.getBytes());
+        when(getMockPrivateKey().decrypt(Matchers.any(EncryptedMessage.class))).thenReturn(TEST_FILE_CONTENTS.getBytes());
+
         result = getReader().read(TEST_FILENAME);
 
         assert (result.result == Results.Success);
@@ -93,7 +108,7 @@ public class TestReader extends TestCase {
     }
 
     @Test
-    public void testReadFileDoesNotExist() {
+    public void testReadFileDoesNotExist() throws GeneralSecurityException, IOException {
         Reader.ReadResult result = getReader().read("I don't exist");
 
         assert (result.result == Results.FileNotFound);
@@ -101,20 +116,20 @@ public class TestReader extends TestCase {
 
     @Test
     public void testReadGeneralSecurityException() {
-        GeneralSecurityException generalSecurityException = null;
+        Exception exception = null;
         Reader.ReadResult result = null;
 
-        String hexString = Utils.bytesToString(TEST_FILE_CONTENTS.getBytes());
-        createFile(TEST_FILENAME, hexString);
+        createTestFile(TEST_FILENAME);
+
         try {
-            GeneralSecurityException exception = new GeneralSecurityException("a test");
-            when(getMockPrivateKey().decrypt(Matchers.any(byte[].class))).thenThrow(exception);
+            GeneralSecurityException generalSecurityException = new GeneralSecurityException("a test");
+            when(getMockPrivateKey().decrypt(Matchers.any(EncryptedMessage.class))).thenThrow(generalSecurityException);
             result = getReader().read(TEST_FILENAME);
-        } catch (GeneralSecurityException e) {
-            generalSecurityException = e;
+        } catch (GeneralSecurityException | IOException e) {
+            exception = e;
         }
 
-        assert (result.result == Results.Exception);
+        assert (exception != null);
     }
 
     @Test

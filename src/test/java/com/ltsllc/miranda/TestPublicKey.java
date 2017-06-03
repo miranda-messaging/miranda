@@ -104,8 +104,8 @@ public class TestPublicKey extends TestCase {
     public void testEncrypt () {
         try {
             byte[] plainText = {1, 2, 3};
-            byte[] cipherText = getPublicKey().encrypt(plainText);
-            byte[] clearText = getPrivateKey(SERIALIZED_PRIVATE_KEY).decrypt(cipherText);
+            EncryptedMessage encryptedMessage = getPublicKey().encrypt(plainText);
+            byte[] clearText = getPrivateKey(SERIALIZED_PRIVATE_KEY).decrypt(encryptedMessage);
 
             assert (equivalent(clearText, plainText));
         } catch (Exception e) {
