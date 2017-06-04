@@ -270,7 +270,7 @@ public class MirandaFactory {
             resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
             resourceHandler.setResourceBase(base);
 
-            HandlerCollection handlerCollection = new HandlerCollection();
+            HandlerCollection handlerCollection = new HandlerCollection(true);
             handlerCollection.addHandler(resourceHandler);
 
             jetty.setHandler(handlerCollection);

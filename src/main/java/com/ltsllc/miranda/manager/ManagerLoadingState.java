@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 
 import java.util.List;
 
@@ -53,6 +54,12 @@ abstract public class ManagerLoadingState extends State {
                 break;
             }
 
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage (garbageCollectionMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -73,5 +80,11 @@ abstract public class ManagerLoadingState extends State {
         getManager().getData().clear();
 
         return getReadyState();
+    }
+
+    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+        defer(garbageCollectionMessage);
+
+        return getManager().getCurrentState();
     }
 }

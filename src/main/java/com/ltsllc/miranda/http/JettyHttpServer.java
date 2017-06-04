@@ -19,11 +19,15 @@ package com.ltsllc.miranda.http;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.servlet.catchall.CatchallServlet;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletHandler;
 
+import javax.servlet.Servlet;
 import java.util.List;
 
 /**
@@ -32,6 +36,7 @@ import java.util.List;
 public class JettyHttpServer extends HttpServer {
     private static HandlerCollection ourHandlerCollection;
     private static ServletHandler ourServletHandler;
+    private static Logger logger = Logger.getLogger(JettyHttpServer.class);
 
     private Server jetty;
 
@@ -71,8 +76,12 @@ public class JettyHttpServer extends HttpServer {
     @Override
     public void startServer() {
         try {
+            ServletHandler servletHandler = new ServletHandler();
+            servletHandler.addServletWithMapping(CatchallServlet.class, "/");
+            // getHandlerCollection().addHandler(servletHandler);
             getJetty().setHandler(getHandlerCollection());
             getJetty().start();
+            logger.info("Jetty started");
         } catch (Exception e) {
             Panic panic = new StartupPanic("Excepion trying to start HttpServer", e, StartupPanic.StartupReasons.ExceptionStartingHttpServer);
             Miranda.getInstance().panic(panic);

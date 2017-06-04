@@ -311,6 +311,7 @@ public class Miranda extends Consumer {
     public static void main(String[] argv) {
         logger.info ("Starting");
         Miranda miranda = new Miranda(argv);
+        Miranda.ourInstance = miranda;
         miranda.start();
     }
 

@@ -44,6 +44,7 @@ public class StartupPanic extends Panic {
         SendingMessage, // An exception occurred while trying to sendToMe a message
         StartupFailed, // Some sort of error prevented the Startup class from completing
         Test,
+        TrustStoreMissing,
         UncheckedException, // an unchecked exception was thrown during startup
         UndefinedKeystore, // The keystore property was null or empty
         UnrecognizedEncryptionMode,

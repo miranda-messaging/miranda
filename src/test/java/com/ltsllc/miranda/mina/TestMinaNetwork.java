@@ -352,9 +352,9 @@ public class TestMinaNetwork extends TestCase {
 
             setuplog4j();
 
-            setupKeyStore();
-            setupTrustStore();
             setupMirandaProperties();
+            setupTrustStore();
+            setupKeyStore();
             minaNetwork = new MinaNetwork(getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
         } catch (Exception e) {
             e.printStackTrace();
@@ -378,7 +378,8 @@ public class TestMinaNetwork extends TestCase {
 
         setupMinaListener(6789, getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
 
-        Handle handle = getMinaNetwork().basicConnectTo("localhost", 6789);
+        Handle handle = getMinaNetwork().
+        ("localhost", 6789);
         WireMessage miscMessage = new MiscMessage ("hi there");
         handle.send(miscMessage);
 
