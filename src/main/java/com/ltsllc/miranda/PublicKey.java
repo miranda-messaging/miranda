@@ -24,6 +24,7 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 /**
@@ -59,13 +60,18 @@ public class PublicKey extends Key {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         CipherOutputStream cipherOutputStream = new CipherOutputStream(byteArrayOutputStream, cipher);
 
+        try {
+            cipherOutputStream.write(plainText);
+            cipherOutputStream.close();
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception encrypting data", e, Panic.Reasons.ExceptionEncrypting);
+        }
+
+        byte[] cipherText = byteArrayOutputStream.toByteArray();
+        String cipherTextString = Utils.bytesToString(cipherText);
         EncryptedMessage encryptedMessage = new EncryptedMessage();
         encryptedMessage.setKey(encryptedKeyHexString);
-
-        String hexString = Utils.bytesToString(plainText);
-
-        encryptedMessage.setMessage(hexString);
-        encryptedMessage.setLength(hexString.length());
+        encryptedMessage.setMessage(cipherTextString);
 
         String json = gson.toJson(encryptedMessage);
 

@@ -68,13 +68,22 @@ abstract public class Key implements Serializable {
         return numberOfBlocks;
     }
 
-    public byte[] toSingleBuffer (byte[][] source, int blockSize, int numberOfBlocks) {
-        byte[] result = new byte[(numberOfBlocks * blockSize)];
+    public byte[] toSingleBuffer (byte[][] source) {
+        int totalSize = 0;
+        for (int i = 0; i < source.length; i++) {
+            totalSize += source[i].length;
+        }
 
-        for (int i = 0; i < numberOfBlocks; i++) {
-            for (int j = 0; j < blockSize; j++) {
-                result[(i * blockSize) + j] = source[i][j];
+        byte[] result = new byte[totalSize];
+
+        int offset = 0;
+
+        for (int i = 0; i < source.length; i++) {
+            for (int j = 0; j < source[i].length; j++) {
+                result[j + offset] = source[i][j];
             }
+
+            offset += source[i].length;
         }
 
         return result;

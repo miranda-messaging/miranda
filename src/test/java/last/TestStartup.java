@@ -205,7 +205,7 @@ public class TestStartup extends TestCase {
         //
         // test that static variables got set
         //
-        assert (getMiranda().getLogger() != null);
+        assert (Miranda.getLogger() != null);
         assert (Miranda.timer != null);
         assert (Miranda.fileWatcher != null);
         assert (Miranda.properties != null);

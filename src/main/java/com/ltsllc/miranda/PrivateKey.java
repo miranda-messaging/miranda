@@ -16,16 +16,17 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
 import java.security.spec.KeySpec;
 
 /**
@@ -64,31 +65,52 @@ public class PrivateKey extends Key {
 
         cipherTextBlocks[finalIndex] = cipher.doFinal(finalBlock);
 
-        return toSingleBuffer(cipherTextBlocks, blockSize, numBlocks);
+        return toSingleBuffer(cipherTextBlocks);
+    }
+
+
+    public byte[][] createBlocks (byte[][] source) {
+        byte[][] buffer = new byte[source.length][];
+
+        for (int i = 0; i < source.length; i++) {
+            buffer[i] = new byte [source[i].length];
+        }
+
+        return buffer;
+    }
+
+    public byte[] copyBytes (byte[] source) {
+        byte[] buffer = new byte[source.length];
+
+        for (int i = 0; i < source.length; i++) {
+            buffer[i] = source[i];
+        }
+
+        return buffer;
     }
 
     public byte[] decrypt (EncryptedMessage encryptedMessage) throws GeneralSecurityException, IOException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, getSecurityPrivateKey());
+        byte[] cipherText = Utils.hexStringToBytes(encryptedMessage.getMessage());
         byte[] encryptedKey = Utils.hexStringToBytes(encryptedMessage.getKey());
         byte[] plainTextKey = cipher.doFinal(encryptedKey);
-        KeySpec keySpec = new SecretKeySpec(plainTextKey, "AES");
+
         cipher = Cipher.getInstance("AES");
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("AES");
-        SecretKey secretKey = secretKeyFactory.generateSecret(keySpec);
-        AlgorithmParameters algorithmParameters = cipher.getParameters();
-        byte[] iv = algorithmParameters.getParameterSpec(IvParameterSpec.class).getIV();
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.generateKey();
+        SecretKeySpec secretKeySpec = new SecretKeySpec(plainTextKey, "AES");
 
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] cipherTextMessage = Utils.hexStringToBytes(encryptedMessage.getMessage());
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(cipherTextMessage);
-        CipherInputStream cipherInputStream = new CipherInputStream(byteArrayInputStream, cipher);
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        CipherOutputStream cipherOutputStream = new CipherOutputStream(byteArrayOutputStream, cipher);
 
-        byte[] buffer = new byte[cipherTextMessage.length];
-        cipherInputStream.read(buffer);
+        try {
+            cipherOutputStream.write(cipherText);
+            cipherOutputStream.close();
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception decrypting", e, Panic.Reasons.ExceptionDecrypting);
+            Miranda.panicMiranda(panic);
+        }
 
-        return buffer;
+        return byteArrayOutputStream.toByteArray();
     }
 }

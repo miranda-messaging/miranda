@@ -215,6 +215,11 @@ public class TestMinaNetwork extends TestCase {
         private KeyStore keyStore;
         private KeyStore trustStore;
         private String keyStorePassword;
+        private NioSocketAcceptor nioSocketAcceptor;
+
+        public NioSocketAcceptor getNioSocketAcceptor() {
+            return nioSocketAcceptor;
+        }
 
         public String getKeyStorePassword() {
             return keyStorePassword;
@@ -267,6 +272,12 @@ public class TestMinaNetwork extends TestCase {
 
             InetSocketAddress inetSocketAddress = new InetSocketAddress(6789);
             nioSocketAcceptor.bind(inetSocketAddress);
+            this.nioSocketAcceptor = nioSocketAcceptor;
+        }
+
+        public void stop () {
+            getThread().interrupt();
+            getNioSocketAcceptor().unbind();
         }
     }
 
@@ -285,6 +296,8 @@ public class TestMinaNetwork extends TestCase {
         }
     }
 
+    private LocalListener localListener;
+
     @Mock
     private MinaIncomingHandler mockMinaIncomingHadeler;
 
@@ -301,6 +314,14 @@ public class TestMinaNetwork extends TestCase {
 
     public IoSession getMockIoSession() {
         return mockIoSession;
+    }
+
+    public LocalListener getLocalListener() {
+        return localListener;
+    }
+
+    public void setLocalListener(LocalListener localListener) {
+        this.localListener = localListener;
     }
 
     public static SslFilter createSslFilter (KeyStore keyStore, String keyStorePassword, KeyStore trustStore) throws Exception {
@@ -340,6 +361,7 @@ public class TestMinaNetwork extends TestCase {
     public void setupMinaListener(int port, KeyStore keyStore, KeyStore trustStore, String password) throws Exception {
         LocalListener listener = new LocalListener(keyStore, password, trustStore);
         listener.start();
+        setLocalListener(listener);
     }
 
     @Before
@@ -361,10 +383,16 @@ public class TestMinaNetwork extends TestCase {
         }
     }
 
+    public void cleanupListener () {
+        if (null != getLocalListener())
+            getLocalListener().stop();
+    }
+
     @After
     public void cleanup() {
         cleanupTrustStore();
         cleanupKeyStore();
+        cleanupListener();
     }
 
     @Test
@@ -378,12 +406,9 @@ public class TestMinaNetwork extends TestCase {
 
         setupMinaListener(6789, getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
 
-        Handle handle = getMinaNetwork().
-        ("localhost", 6789);
-        WireMessage miscMessage = new MiscMessage ("hi there");
-        handle.send(miscMessage);
+        Handle handle = getMinaNetwork().basicConnectTo("localhost", 6789);
 
-        pause(5000);
+        pause(1000);
 
         assert (handle != null);
     }

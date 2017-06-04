@@ -35,6 +35,10 @@ public class Consumer extends Subsystem implements Comparer {
         Consumer.logger = logger;
     }
 
+    public static Logger getLogger () {
+        return Consumer.logger;
+    }
+
     private State currentState;
 
     public State getCurrentState() {

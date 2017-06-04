@@ -506,6 +506,7 @@ public class Startup extends State {
     private void startLogger() {
         DOMConfigurator.configure(getLogConfigurationFile());
         logger = Logger.getLogger(Startup.class);
+        Miranda.setLogger(logger);
     }
 
     public void processCommandLine() {

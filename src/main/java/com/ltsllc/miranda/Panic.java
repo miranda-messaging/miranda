@@ -37,8 +37,10 @@ public class Panic extends Exception {
         ErrorLoadingFile,
         ExceptionCalculatingSha1,
         ExceptionCreatingSslContext,
+        ExceptionDecrypting,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
+        ExceptionEncrypting,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionInProcessMessage, // an unchecked exception was thrown in processMessage
         ExceptionInRun, // an unchecked exception was thrown in a Consumers run method

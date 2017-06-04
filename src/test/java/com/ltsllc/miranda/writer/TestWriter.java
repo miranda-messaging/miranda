@@ -162,7 +162,6 @@ public class TestWriter extends TestCase {
     @Test
     public void testWrite () throws Exception {
         EncryptedMessage encryptedMessage = new EncryptedMessage();
-        encryptedMessage.setLength(TEST_TEXT.length());
         encryptedMessage.setKey("hi there");
         encryptedMessage.setMessage(TEST_TEXT);
 

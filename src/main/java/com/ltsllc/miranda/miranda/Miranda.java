@@ -193,7 +193,11 @@ public class Miranda extends Consumer {
     }
 
     public static Logger getLogger () {
-        return logger;
+        return Miranda.logger;
+    }
+
+    public static void setLogger (Logger logger) {
+        Miranda.logger = logger;
     }
 
     public HttpServer getHttpServer() {

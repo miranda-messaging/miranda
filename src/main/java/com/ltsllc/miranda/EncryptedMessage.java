@@ -6,15 +6,6 @@ package com.ltsllc.miranda;
 public class EncryptedMessage {
     private String key;
     private String message;
-    private int length;
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
 
     public String getMessage() {
         return message;

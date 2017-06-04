@@ -84,7 +84,6 @@ public class TestReader extends TestCase {
         EncryptedMessage encryptedMessage = new EncryptedMessage();
         encryptedMessage.setMessage(TEST_STRING);
         encryptedMessage.setKey(TEST_STRING);
-        encryptedMessage.setLength(TEST_STRING.length());
         Gson gson = new Gson();
         String json = gson.toJson(encryptedMessage);
         String hexString = Utils.bytesToString(json.getBytes());
