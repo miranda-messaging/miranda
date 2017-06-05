@@ -16,7 +16,9 @@
 
 package com.ltsllc.miranda.operations.login;
 
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
 
@@ -25,18 +27,24 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class LoginOperation extends Operation {
+public class LoginOperation extends Consumer {
     public static final String NAME = "login operation";
 
+    private BlockingQueue<Message> requester;
     private String user;
 
     public String getUser() {
         return user;
     }
 
-    public LoginOperation (String name, BlockingQueue<Message> requester) {
-        super (NAME, requester);
+    public BlockingQueue<Message> getRequester() {
+        return requester;
+    }
 
+    public LoginOperation (String name, BlockingQueue<Message> requester) {
+        super (NAME);
+
+        this.requester = requester;
         this.user = name;
 
         LoginOperationReadyState readyState = new LoginOperationReadyState(this);

@@ -26,15 +26,22 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/16/2017.
  */
 public class Operation extends Consumer {
+    protected Session session;
     private BlockingQueue<Message> requester;
+
 
     public BlockingQueue<Message> getRequester() {
         return requester;
     }
 
-    public Operation (String name, BlockingQueue<Message> requester) {
+    public Operation(String name, BlockingQueue<Message> requester, Session session) {
         super(name);
 
         this.requester = requester;
+        this.session = session;
+    }
+
+    public Session getSession() {
+        return session;
     }
 }

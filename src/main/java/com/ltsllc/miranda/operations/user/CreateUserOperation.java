@@ -19,7 +19,6 @@ package com.ltsllc.miranda.operations.user;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
-import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.user.User;
 
@@ -28,7 +27,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class CreateUserOperation extends UserOperation {
+public class CreateUserOperation extends Operation {
     public static final String NAME = "create user operation";
 
 

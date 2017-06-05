@@ -19,7 +19,6 @@ package com.ltsllc.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
-import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.topics.Topic;
 
@@ -28,7 +27,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class CreateTopicOperation extends UserOperation {
+public class CreateTopicOperation extends Operation {
     public static final String NAME = "create topic operation";
 
     private Topic topic;

@@ -17,17 +17,18 @@
 package com.ltsllc.miranda.operations.topic;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
-import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.topics.messages.DeleteTopicResponseMessage;
 
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 4/23/2017.
  */
-public class DeleteTopicOperation extends UserOperation {
+public class DeleteTopicOperation extends Operation {
     private String topicName;
 
     public String getTopicName() {
@@ -37,10 +38,15 @@ public class DeleteTopicOperation extends UserOperation {
     public DeleteTopicOperation (BlockingQueue<Message> requester, Session session, String topicName) {
         super("delete topic operations", requester, session);
 
+        DeleteTopicOperationReadyState deleteTopicOperationReadyState = new DeleteTopicOperationReadyState(this);
+        setCurrentState(deleteTopicOperationReadyState);
+
         this.topicName = topicName;
     }
 
     public void start () {
+        super.start();
+
         Miranda.getInstance().getTopicManager().sendDeleteTopicMessage(getQueue(), this, getTopicName());
     }
 }

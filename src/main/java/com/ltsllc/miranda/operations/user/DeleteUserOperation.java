@@ -19,7 +19,6 @@ package com.ltsllc.miranda.operations.user;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
-import com.ltsllc.miranda.operations.UserOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.topics.TopicManager;
@@ -31,7 +30,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/16/2017.
  */
-public class DeleteUserOperation extends UserOperation {
+public class DeleteUserOperation extends Operation {
     public static final String NAME = "delete user operation";
 
     private String user;

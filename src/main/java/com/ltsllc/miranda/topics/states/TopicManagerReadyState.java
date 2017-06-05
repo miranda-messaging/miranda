@@ -159,6 +159,8 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         DeleteTopicResponseMessage deleteTopicResponseMessage = new DeleteTopicResponseMessage(getTopicManager().getQueue(),
                 this, Results.Success);
 
+        deleteTopicMessage.reply(deleteTopicResponseMessage);
+
         return getTopicManager().getCurrentState();
     }
 
