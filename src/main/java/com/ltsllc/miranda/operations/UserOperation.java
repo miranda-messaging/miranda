@@ -17,5 +17,7 @@ public class UserOperation extends Operation {
 
     public UserOperation (String name, BlockingQueue<Message> requester, Session session) {
         super (name, requester);
+
+        this.session = session;
     }
 }

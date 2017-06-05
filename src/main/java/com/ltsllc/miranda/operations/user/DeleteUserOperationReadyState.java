@@ -72,7 +72,8 @@ public class DeleteUserOperationReadyState extends State {
                 result = Results.UserOwnsSubscriptions;
 
             DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(getDeleteUserOperation().getQueue(),
-                    this, getDeleteUserOperation().getUser(), result);
+                    this, getDeleteUserOperation().getName());
+            deleteUserResponseMessage.setResult(Results.UserOwnsProperty);
 
             send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
             return StopState.getInstance();
@@ -91,8 +92,9 @@ public class DeleteUserOperationReadyState extends State {
     public State processDeleteUserResponseMessage (DeleteUserResponseMessage message) {
         if (message.getResult() == Results.Success) {
             DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(
-                    getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser(),
-                    message.getResult());
+                    getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getName());
+
+            deleteUserResponseMessage.setResult(Results.Success);
 
             send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
 
@@ -101,9 +103,9 @@ public class DeleteUserOperationReadyState extends State {
                     getDeleteUserOperation().getUser());
         } else {
             DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(
-                    getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getUser(),
-                    message.getResult());
+                    getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getName());
 
+            deleteUserResponseMessage.setResult(message.getResult());
             send(getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
         }
 

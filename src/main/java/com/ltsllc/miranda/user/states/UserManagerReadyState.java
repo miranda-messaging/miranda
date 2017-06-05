@@ -197,11 +197,15 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
 
     public State processDeleteUserMessage(DeleteUserMessage deleteUserMessage) {
         User existingUser = getUserManager().getUser(deleteUserMessage.getName());
-
-        getUserManager().deleteUser(deleteUserMessage.getName());
-
         DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(getUserManager().getQueue(),
-                this, deleteUserMessage.getName(), Results.Success);
+                this, deleteUserMessage.getName());
+
+        if (null == existingUser) {
+            deleteUserResponseMessage.setResult (Results.UserNotFound);
+        } else {
+            getUserManager().deleteUser(deleteUserMessage.getName());
+            deleteUserResponseMessage.setResult(Results.Success);
+        }
 
         deleteUserMessage.reply(deleteUserResponseMessage);
 

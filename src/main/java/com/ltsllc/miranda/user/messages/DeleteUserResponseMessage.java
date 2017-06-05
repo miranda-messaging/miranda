@@ -32,14 +32,21 @@ public class DeleteUserResponseMessage extends Message {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Results getResult() {
         return result;
     }
 
-    public DeleteUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String name, Results result) {
+    public void setResult(Results result) {
+        this.result = result;
+    }
+
+    public DeleteUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.DeleteUserResponse, senderQueue, sender);
 
         this.name = name;
-        this.result = result;
     }
 }
