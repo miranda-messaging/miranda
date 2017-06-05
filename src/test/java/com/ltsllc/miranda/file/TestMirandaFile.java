@@ -71,7 +71,9 @@ public class TestMirandaFile extends TestCase {
         super.setup();
 
         setuplog4j();
+        setupMiranda();
         setupMockFileWatcher();
+        setupMockReader();
         setupMirandaProperties();
         setupWriter();
 

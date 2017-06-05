@@ -125,6 +125,8 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         this.writer = writer;
         this.reader = reader;
         this.lastCollection = -1;
+
+        load();
     }
 
 

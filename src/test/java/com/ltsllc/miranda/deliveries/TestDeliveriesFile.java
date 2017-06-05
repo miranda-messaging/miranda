@@ -44,6 +44,7 @@ public class TestDeliveriesFile extends TestCase {
 
         super.setup();
 
+        setupMiranda();
         setupMockReader();
         setupMockWriter();
         setupMirandaProperties();
@@ -68,6 +69,8 @@ public class TestDeliveriesFile extends TestCase {
 
     @Test
     public void testBuildEmptyList () {
+        setupMiranda();
+        setupMockReader();
         List<Delivery> local = new ArrayList<Delivery>();
         List theirs = getDeliveriesFile().buildEmptyList();
 

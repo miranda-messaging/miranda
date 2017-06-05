@@ -34,7 +34,7 @@ public class ReadResponseMessage extends Message {
         Unknown
     }
 
-    private String additionalInfo;
+    private Throwable exception;
     private String filename;
     private Results result;
     private byte[] data;
@@ -51,13 +51,11 @@ public class ReadResponseMessage extends Message {
         return data;
     }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
+    public ReadResponseMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        super(Subjects.ReadResponse, senderQueue, sender);
     }
 
-    public ReadResponseMessage (BlockingQueue<Message> senderQueue, Object sender, com.ltsllc.miranda.Results result, byte[] data) {
-        super(Subjects.ReadResponse, senderQueue, sender);
-
+    public void setResult (com.ltsllc.miranda.Results result) {
         switch (result) {
             case Success: {
                 this.result = Results.Success;
@@ -79,22 +77,21 @@ public class ReadResponseMessage extends Message {
                 break;
             }
         }
+    }
 
+    public void setData (byte[] data) {
         this.data = data;
     }
 
-    public ReadResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Throwable throwable) {
-        super(Subjects.ReadResponse, senderQueue, sender);
+    public void setFilename (String filename) {
+        this.filename = filename;
+    }
 
-        StringWriter stringWriter = null;
+    public Throwable getException() {
+        return exception;
+    }
 
-        try {
-            stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-            throwable.printStackTrace(printWriter);
-            this.additionalInfo = stringWriter.toString();
-        } finally {
-            Utils.closeIgnoreExceptions(stringWriter);
-        }
+    public void setException(Throwable exception) {
+        this.exception = exception;
     }
 }

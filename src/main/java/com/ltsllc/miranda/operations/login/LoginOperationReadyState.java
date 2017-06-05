@@ -47,6 +47,12 @@ public class LoginOperationReadyState extends State {
                 break;
             }
 
+            case CreateSessionResponse: {
+                CreateSessionResponseMessage createSessionResponseMessage = (CreateSessionResponseMessage) message;
+                nextState = processCreateSessionResponseMessage(createSessionResponseMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
             }

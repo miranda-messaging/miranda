@@ -18,6 +18,7 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
@@ -68,12 +69,15 @@ abstract public class SingleFileLoadingState extends State {
     public State processReadResponseMessage (ReadResponseMessage readResponseMessage) {
         State nextState = getSingleFile().getCurrentState();
 
-        if (readResponseMessage.getResult() == Success) {
+        if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
             getSingleFile().processData(readResponseMessage.getData());
             nextState = getReadyState();
-        } else {
-            Panic panic = new Panic ("Error trying to load file", Panic.Reasons.ErrorLoadingFile, readResponseMessage.getAdditionalInfo());
+        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile){
+            Panic panic = new Panic ("Error trying to load file", readResponseMessage.getException(), Panic.Reasons.ErrorLoadingFile);
             Miranda.getInstance().panic(panic);
+        } else {
+            Panic panic = new Panic("Unrecogized result from reading " + readResponseMessage.getFilename(), Panic.Reasons.UnrecognizedResult);
+            Miranda.panicMiranda(panic);
         }
 
         return nextState;

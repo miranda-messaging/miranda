@@ -24,10 +24,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.*;
 
 /**
  * Created by Clark on 4/7/2017.
@@ -61,9 +58,21 @@ public class MirandaServlet extends HttpServlet {
         return stringWriter.toString();
     }
 
+    public String inputStreamToString (InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int b = inputStream.read();
+        while (-1 != b) {
+            byteArrayOutputStream.write(b);
+            b = inputStream.read();
+        }
+
+        String s = new String(byteArrayOutputStream.toByteArray());
+        return s;
+    }
+
     public <T> T fromJson(InputStream inputStream, Class<T> type) throws MirandaException {
         try {
-            String json = read(inputStream);
+            String json = inputStreamToString(inputStream);
             return gson.fromJson(json, type);
         } catch (IOException | JsonSyntaxException e) {
             throw new MirandaException("Exception trying to get object", e);

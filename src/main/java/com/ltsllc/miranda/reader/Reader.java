@@ -34,12 +34,10 @@ public class Reader extends Consumer {
         public Results result;
         public String filename;
         public byte[] data;
-        public String additionalInfo;
+        public Throwable exception;
 
         public void setAdditionalInfo (Throwable t) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-            t.printStackTrace(printWriter);
+            this.exception = t;
         }
     }
 
@@ -84,6 +82,9 @@ public class Reader extends Consumer {
                 byte[] plainText = getPrivateKey().decrypt(encryptedMessage);
                 result.result = Results.Success;
                 result.data = plainText;
+            } catch (Exception e) {
+                result.result = Results.Exception;
+                result.exception = e;
             } finally {
                 Utils.closeIgnoreExceptions(fileReader);
             }

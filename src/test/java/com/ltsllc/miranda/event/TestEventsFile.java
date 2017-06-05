@@ -46,6 +46,8 @@ public class TestEventsFile extends TestCase {
 
         super.setup();
 
+        setupMiranda();
+        setupMockReader();
         setuplog4j();
         eventsFile = new EventsFile(TEST_FILE, getMockReader(), getMockWriter());
     }

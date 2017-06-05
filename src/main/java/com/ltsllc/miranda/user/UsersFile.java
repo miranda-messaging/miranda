@@ -21,6 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.user.UserObject;
@@ -28,6 +29,10 @@ import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,5 +175,21 @@ public class UsersFile extends SingleFile<User> {
         }
 
         return null;
+    }
+
+    public void setData (byte[] data) {
+        if (null == data) {
+            setData(new ArrayList<User>());
+        } else {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(java.security.PublicKey.class, new JSPublicKeyCreator());
+            gson = gsonBuilder.create();
+
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+            InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
+            List<User> users = gson.fromJson(inputStreamReader, listType());
+
+            setData(users);
+        }
     }
 }

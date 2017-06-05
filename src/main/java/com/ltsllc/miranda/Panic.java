@@ -38,6 +38,7 @@ public class Panic extends Exception {
         ExceptionCalculatingSha1,
         ExceptionCreatingSslContext,
         ExceptionDecrypting,
+        ExceptionDuringInstantiation,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
         ExceptionEncrypting,
@@ -64,7 +65,8 @@ public class Panic extends Exception {
         Test,
         UncheckedException, // an unchecked exception was thrown
         UnknownUser, // we were told to update a user that doesn't exist
-        UnrecognizedNode // a node shut down that we don't have a record of
+        UnrecognizedNode, // a node shut down that we don't have a record of
+        UnrecognizedResult
     }
 
     private Reasons reason;

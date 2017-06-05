@@ -27,6 +27,7 @@ import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.reader.ReadResponseMessage;
 import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
@@ -62,6 +63,12 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
             case Load: {
                 LoadMessage loadMessage = (LoadMessage) message;
                 nextState = processLoadMessage(loadMessage);
+                break;
+            }
+
+            case ReadResponse: {
+                ReadResponseMessage readResponseMessage = (ReadResponseMessage) message;
+                nextState = processReadResponseMessage(readResponseMessage);
                 break;
             }
 
@@ -207,5 +214,49 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
 
     public void add (E element) {
         getFile().getData().add(element);
+    }
+
+    public State processReadResponseMessage (ReadResponseMessage readResponseMessage) {
+        switch (readResponseMessage.getResult()) {
+            case Success: {
+                processReadSuccess (readResponseMessage.getData());
+                break;
+            }
+
+            case FileDoesNotExist: {
+                processFileDoesNotExist();
+                break;
+            }
+
+            case ExceptionReadingFile: {
+                processExceptionReadingFile();
+                break;
+            }
+
+            default: {
+                Panic panic = new Panic("Unrecognized result reading file", Panic.Reasons.UnrecognizedResult);
+                Miranda.panicMiranda(panic);
+            }
+        }
+
+        return getFile().getCurrentState();
+    }
+
+
+    public void processReadSuccess (byte[] data) {
+        getFile().setData(data);
+        fireFileLoaded();
+    }
+
+    public void processFileDoesNotExist  () {
+        byte[] data = null;
+        getFile().setData(data);
+        fireFileLoaded();
+    }
+
+    public void processExceptionReadingFile () {
+        byte[] data = null;
+        getFile().setData(data);
+        fireFileLoaded();
     }
 }

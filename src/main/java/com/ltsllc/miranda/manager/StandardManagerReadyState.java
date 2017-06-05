@@ -23,8 +23,6 @@ import com.ltsllc.miranda.file.Updateable;
  * Created by Clark on 5/18/2017.
  */
 public class StandardManagerReadyState<E extends Updateable<E> & Matchable<E>> extends ManagerReadyState<E, E> {
-    private StandardManager<E> manager;
-
     public StandardManager<E> getManager () {
         return (StandardManager) getContainer();
     }

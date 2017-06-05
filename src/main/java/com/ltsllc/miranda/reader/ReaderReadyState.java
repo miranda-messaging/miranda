@@ -55,19 +55,24 @@ public class ReaderReadyState extends State {
     }
 
     public State processReadMessage (ReadMessage readMessage) {
-        Reader.ReadResult result = new Reader.ReadResult();
+        ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this);
+        response.setFilename(readMessage.getFilename());
 
         try {
             Reader.ReadResult readResult = getReader().read(readMessage.getFilename());
+            response.setResult(readResult.result);
 
-            ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this, readResult.result,
-                    result.data);
-            readMessage.reply(response);
+            if (readResult.result == Results.Success) {
+                response.setData(readResult.data);
+            } else if (readResult.result == Results.Exception) {
+                response.setException(readResult.exception);
+            }
         } catch (GeneralSecurityException | IOException e) {
-            result.result = Results.Exception;
-            result.setAdditionalInfo(e);
-            ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this, e);
+            response.setResult(Results.Exception);
+            response.setException(e);
         }
+
+        readMessage.reply(response);
 
         return getReader().getCurrentState();
     }

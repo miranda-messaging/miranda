@@ -92,15 +92,21 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
     }
 
     public void setData (byte[] data) {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
-        InputStreamReader inputStreamReader = null;
+        if (null == data) {
+            this.data = new ArrayList();
+        } else {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+            InputStreamReader inputStreamReader = null;
 
-        try {
-            inputStreamReader = new InputStreamReader(byteArrayInputStream);
-            data = getGson().fromJson(inputStreamReader, listType());
-        } catch (Exception e) {
-            Panic panic = new Panic("Exception loading list", e, Panic.Reasons.ExceptionLoadingFile);
-            Miranda.panicMiranda(panic);
+            try {
+                inputStreamReader = new InputStreamReader(byteArrayInputStream);
+                this.data = getGson().fromJson(inputStreamReader, listType());
+            } catch (Exception e) {
+                Panic panic = new Panic("Exception loading list", e, Panic.Reasons.ExceptionLoadingFile);
+                Miranda.panicMiranda(panic);
+            } finally {
+                Utils.closeIgnoreExceptions(inputStreamReader);
+            }
         }
     }
 
