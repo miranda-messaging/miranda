@@ -24,6 +24,11 @@ import com.ltsllc.miranda.servlet.objects.RequestObject;
 public class UserRequestObject extends RequestObject {
     private UserObject userObject;
 
+    public UserRequestObject(String sessionIdString, UserObject userObject) {
+        super(sessionIdString);
+        this.userObject = userObject;
+    }
+
     public UserObject getUserObject() {
         return userObject;
     }

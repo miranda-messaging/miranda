@@ -26,10 +26,10 @@ import java.io.Serializable;
  * Created by Clark on 1/5/2017.
  */
 public class Subscription extends StatusObject<Subscription> implements Perishable, Serializable {
-    public enum RemotePolicies {
-        None,
-        AcknowledgeReceipt,
-        Written
+    public enum ErrorPolicies {
+        Drop,
+        Retry,
+        Deadletter
     }
     private static Gson ourGson = new Gson();
 
@@ -39,7 +39,7 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
     private String topic;
     private String dataUrl;
     private String livelinessUrl;
-    private RemotePolicies remotePolicy;
+    private ErrorPolicies errorPolicy;
 
     public String getTopic() {
         return topic;
@@ -59,12 +59,24 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
         this.name = name;
     }
 
-    public RemotePolicies getRemotePolicy() {
-        return remotePolicy;
+    public Subscription (String name, String owner, String topic, String dataUrl, String livelinessUrl,
+                         ErrorPolicies errorPolicy) {
+        super(Status.New);
+
+        this.name = name;
+        this.owner = owner;
+        this.topic = topic;
+        this.dataUrl = dataUrl;
+        this.livelinessUrl = livelinessUrl;
+        this.errorPolicy = errorPolicy;
     }
 
-    public void setRemotePolicy(RemotePolicies remotePolicy) {
-        this.remotePolicy = remotePolicy;
+    public ErrorPolicies getErrorPolicy() {
+        return errorPolicy;
+    }
+
+    public void setErrorPolicy(ErrorPolicies errorPolicy) {
+        this.errorPolicy = errorPolicy;
     }
 
     public String getName() {
@@ -124,7 +136,7 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
         setOwner(other.getOwner());
         setDataUrl(other.getDataUrl());
         setLivelinessUrl(other.getLivelinessUrl());
-        setRemotePolicy(other.getRemotePolicy());
+        setErrorPolicy(other.getErrorPolicy());
     }
 
     public boolean matches (Subscription other) {

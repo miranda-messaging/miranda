@@ -22,6 +22,10 @@ package com.ltsllc.miranda.servlet.objects;
 public class RequestObject {
     private String sessionIdString;
 
+    public RequestObject(String sessionIdString) {
+        this.sessionIdString = sessionIdString;
+    }
+
     public String getSessionIdString() {
         return sessionIdString;
     }

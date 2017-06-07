@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.ListObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.topics.Topic;
 
@@ -39,12 +40,12 @@ public class GetTopicsServlet extends TopicServlet {
         return new ResultObject();
     }
 
-    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        TopicsResultObject result = new TopicsResultObject();
+        ListObject result = new ListObject();
         List<Topic> topics = TopicHolder.getInstance().getTopicList();
         result.setResult(Results.Success);
-        result.setTopicList(topics);
+        result.setList(topics);
 
         return result;
     }

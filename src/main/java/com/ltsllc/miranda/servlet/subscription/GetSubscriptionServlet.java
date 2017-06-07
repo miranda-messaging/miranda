@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.ReadObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
@@ -34,15 +35,15 @@ public class GetSubscriptionServlet extends SubscriptionServlet {
         return new ResultObject();
     }
 
-    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
+    public ReadObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        SubscriptionResultObject resultObject = new SubscriptionResultObject();
+        ReadObject resultObject = new ReadObject();
 
         Subscription subscription = SubscriptionHolder.getInstance().getSubscription(requestObject.getSubscription().getName());
         if (null == subscription)
             resultObject.setResult(Results.SubscriptionNotFound);
         else {
-            resultObject.setSubscription(subscription);
+            resultObject.setObject(subscription);
             resultObject.setResult(Results.Success);
         }
 

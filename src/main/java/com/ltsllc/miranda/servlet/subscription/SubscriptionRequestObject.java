@@ -25,6 +25,11 @@ import com.ltsllc.miranda.subsciptions.Subscription;
 public class SubscriptionRequestObject extends RequestObject {
     private Subscription subscription;
 
+    public SubscriptionRequestObject(String sessionIdString, Subscription subscription) {
+        super(sessionIdString);
+        this.subscription = subscription;
+    }
+
     public Subscription getSubscription() {
         return subscription;
     }

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.ReadObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.topics.Topic;
 
@@ -36,15 +37,16 @@ public class GetTopicServlet extends TopicServlet {
 
     public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        TopicResultObject topicResultObject = new TopicResultObject();
+        ReadObject readObject = new ReadObject();
+
         Topic topic = TopicHolder.getInstance().getTopic(requestObject.getTopic().getName());
-        if (topic != null) {
-            topicResultObject.setResult(Results.Success);
-            topicResultObject.setTopic(topic);
+        if (topic == null) {
+            readObject.setResult(Results.TopicNotFound);
         } else {
-            topicResultObject.setResult(Results.TopicNotFound);
+            readObject.setResult(Results.Success);
+            readObject.setObject(topic);
         }
 
-        return topicResultObject;
+        return readObject;
     }
 }
