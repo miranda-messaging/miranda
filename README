@@ -2,11 +2,19 @@ miranda --- a tool for creating reliable web services
 
 INSTALLATION
 
+You need to have git, maven, keytool, openssl and java on your path to use these instructions.
 To install miranda follow these steps:
 
 1) Download the distribution(s)
 2) Compile miranda
 3) Create a Certificate Authority
+4) Create a tuststore
+5) Generate keys for the miranda node
+6) Generate a certificate signing request
+7) Sign the certificate signing request with the certificate authority
+8) Import the certificate authority certificate to the keystore
+9) Import the node certificate to the keystore
+10) Run miranda
 
 Download the distribution(s)
 
@@ -18,18 +26,42 @@ Compile miranda
 
 miranda use maven for builds.  Compile it with the following command:
 
-mvn package
+mvn assembly:single
 
-Assuming everything went OK, you should have
+Assuming everything went OK, you should have the file
+
+target\miranda-1.0.0-SNAPSHOT-jar-with-dependencies.jar
 
 Create a Certificate Authority
 
 openssl req -new -x509 -keyout ca-key.pem.txt -out ca-certificate.pem.txt -days 365
+
+Create a tuststore
+
 keytool -import -keystore truststore -file ca-certificate.pem.txt -alias ca -keyalg rsa -storepass whatever
+
+Generate keys for the miranda node
+
 keytool -genkeypair -keystore keystore -storepass whatever -alias private -keyalg rsa
+
+Generate a certificate signing request
 
 keytool -certreq -keystore keystore -storepass whatever -alias private -file private.csr
 
+Sign the certificate signing request with the certificate authority
+
 openssl x509 -req -CA ca-certificate.pem.txt -CAkey ca-key.pem.txt -in server.csr -out server.cer  -days 365 -CAcreateserial
+
+Import the certificate authority certificate to the keystore
+
 keytool -import -keystore keystore -storepass whatever -file ca-certificate.pem.txt -alias ca
+
+Import the node certificate to the keystore
+
 keytool -import -keystore keystore -storepass whatever -file private.cer -alias certificate
+
+Run miranda
+
+You should be able to run Miranda with the following command:
+
+java target\miranda-1.0.0-SNAPSHOT-jar-with-dependencies.jar -4 log4j.xml -p whatever -t whatever
