@@ -37,7 +37,7 @@ public class GetTopicServlet extends TopicServlet {
 
     public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        ReadObject readObject = new ReadObject();
+        ReadObject<Topic> readObject = new ReadObject<Topic>();
 
         Topic topic = TopicHolder.getInstance().getTopic(requestObject.getTopic().getName());
         if (topic == null) {

@@ -37,7 +37,7 @@ public class GetSubscriptionServlet extends SubscriptionServlet {
 
     public ReadObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        ReadObject resultObject = new ReadObject();
+        ReadObject<Subscription> resultObject = new ReadObject();
 
         Subscription subscription = SubscriptionHolder.getInstance().getSubscription(requestObject.getSubscription().getName());
         if (null == subscription)

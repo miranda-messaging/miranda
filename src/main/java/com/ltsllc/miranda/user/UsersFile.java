@@ -182,7 +182,7 @@ public class UsersFile extends SingleFile<User> {
             setData(new ArrayList<User>());
         } else {
             GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(java.security.PublicKey.class, new JSPublicKeyCreator());
+            gsonBuilder.registerTypeAdapter(java.security.PublicKey.class, new JSPublicKeySerializer());
             gson = gsonBuilder.create();
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);

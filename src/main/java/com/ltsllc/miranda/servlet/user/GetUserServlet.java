@@ -38,7 +38,7 @@ public class GetUserServlet extends UserServlet {
                                    UserRequestObject requestObject) throws ServletException, IOException, TimeoutException
     {
         UserHolder.getInstance().getUser(requestObject.getUser().getName());
-        ReadObject readObject = new ReadObject();
+        ReadObject<User> readObject = new ReadObject<User>();
         readObject.setResult(UserHolder.getInstance().getGetUserResults());
         readObject.setObject(UserHolder.getInstance().getUser());
 

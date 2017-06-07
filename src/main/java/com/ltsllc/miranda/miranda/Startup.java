@@ -381,6 +381,9 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/login", LoginServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/getUsers", GetUsersServlet.class);
         mappings.add(servletMapping);
 
@@ -394,9 +397,6 @@ public class Startup extends State {
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/createKeyPair", CreateKeyPairServlet.class);
-        mappings.add(servletMapping);
-
-        servletMapping = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getTopics", GetTopicsServlet.class);

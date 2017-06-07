@@ -17,8 +17,10 @@
 package com.ltsllc.miranda.servlet.miranda;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.user.JSPublicKeySerializer;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -46,7 +48,14 @@ public class MirandaServlet extends HttpServlet {
 
     public static final String LOGIN_PAGE = "/login.html";
 
-    private Gson gson = new Gson();
+    private static Gson gson = createGson();
+
+    public static Gson createGson () {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(java.security.PublicKey.class, new JSPublicKeySerializer());
+
+        return gsonBuilder.create();
+    }
 
     public String read(InputStream inputStream) throws IOException {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
