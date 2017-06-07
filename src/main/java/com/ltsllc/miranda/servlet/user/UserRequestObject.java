@@ -17,23 +17,24 @@
 package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.servlet.objects.RequestObject;
+import com.ltsllc.miranda.user.User;
 
 /**
  * Created by Clark on 4/28/2017.
  */
 public class UserRequestObject extends RequestObject {
-    private UserObject userObject;
+    private User user;
 
-    public UserRequestObject(String sessionIdString, UserObject userObject) {
+    public UserRequestObject(String sessionIdString, User user) {
         super(sessionIdString);
-        this.userObject = userObject;
+        this.user = user;
     }
 
-    public UserObject getUserObject() {
-        return userObject;
+    public User getUser() {
+        return user;
     }
 
     public void setUserObject(UserObject userObject) {
-        this.userObject = userObject;
+        this.user = user;
     }
 }

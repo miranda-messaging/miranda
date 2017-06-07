@@ -41,8 +41,7 @@ public class UpdateUserServlet extends UserServlet {
     public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
-        User user = requestObject.getUserObject().asUser();
-        Results result = UserHolder.getInstance().updateUser(user);
+        Results result = UserHolder.getInstance().updateUser(requestObject.getUser());
         resultObject.setResult(result);
 
         return resultObject;

@@ -37,7 +37,7 @@ public class DeleteUserServlet extends UserServlet {
             throws ServletException, IOException, TimeoutException {
 
         ResultObject resultObject = new ResultObject();
-        Results result = UserHolder.getInstance().deleteUser(requestObject.getUserObject().getName());
+        Results result = UserHolder.getInstance().deleteUser(requestObject.getUser().getName());
         resultObject.setResult(result);
 
         return resultObject;
