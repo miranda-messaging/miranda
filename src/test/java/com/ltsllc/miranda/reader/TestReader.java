@@ -128,7 +128,7 @@ public class TestReader extends TestCase {
             exception = e;
         }
 
-        assert (exception != null);
+        assert (result.result == Results.Exception);
     }
 
     @Test

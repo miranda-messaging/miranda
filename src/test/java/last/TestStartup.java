@@ -18,6 +18,7 @@ package last;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.miranda.Startup;
@@ -27,6 +28,7 @@ import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UsersFile;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -143,6 +145,13 @@ public class TestStartup extends TestCase {
         setupMirandaProperties();
         setupMockPanicPolicy();
         this.startup = new Startup(getMiranda(), args);
+    }
+
+    @After
+    public void cleanup () {
+        if (null != getMiranda()) {
+            getMiranda().stop();
+        }
     }
 
     @Test

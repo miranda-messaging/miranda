@@ -35,10 +35,21 @@ import java.security.cert.Certificate;
  */
 public class MinaNetworkListener extends NetworkListener {
     public static final String NAME = "listener";
+
+    private static NioSocketAcceptor nioSocketAcceptor;
+
     private Network network;
     private KeyStore keystore;
     private KeyStore truststore;
     private String keyStorePassword;
+
+    public static NioSocketAcceptor getNioSocketAcceptor() {
+        return nioSocketAcceptor;
+    }
+
+    public static void setNioSocketAcceptor(NioSocketAcceptor nioSocketAcceptor) {
+        MinaNetworkListener.nioSocketAcceptor = nioSocketAcceptor;
+    }
 
     public String getKeyStorePassword() {
         return keyStorePassword;
@@ -63,6 +74,13 @@ public class MinaNetworkListener extends NetworkListener {
         this.truststore = truststore;
     }
 
+    public static void allStopListening () {
+        if (null != getNioSocketAcceptor()) {
+            getNioSocketAcceptor().unbind();
+            setNioSocketAcceptor(null);
+        }
+    }
+
     public void stopListening () {
         stop();
     }
@@ -73,6 +91,8 @@ public class MinaNetworkListener extends NetworkListener {
 
     public void basicStart () throws Exception {
         NioSocketAcceptor nioSocketAcceptor = new NioSocketAcceptor();
+        setNioSocketAcceptor(nioSocketAcceptor);
+
         SSLContext sslContext = SSLContext.getInstance("TLS");
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyManagerFactory.init(getKeystore(), getKeyStorePassword().toCharArray());
@@ -91,7 +111,10 @@ public class MinaNetworkListener extends NetworkListener {
 
         InetSocketAddress inetSocketAddress = new InetSocketAddress(getPort());
 
+        nioSocketAcceptor.setReuseAddress(true);
+
         nioSocketAcceptor.bind(inetSocketAddress);
+
     }
 
     public void start () {
