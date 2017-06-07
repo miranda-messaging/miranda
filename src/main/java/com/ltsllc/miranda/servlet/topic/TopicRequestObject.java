@@ -30,6 +30,12 @@ public class TopicRequestObject extends RequestObject {
         this.topic = topic;
     }
 
+    public TopicRequestObject (String sessionId, Object object) {
+        super(sessionId);
+        Topic topic = (Topic) object;
+        this.topic = topic;
+    }
+
     public Topic getTopic() {
         return topic;
     }

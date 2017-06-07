@@ -30,6 +30,12 @@ public class UserRequestObject extends RequestObject {
         this.user = user;
     }
 
+    public UserRequestObject (String sessionId, Object object) {
+        super(sessionId);
+        User user = (User) object;
+        this.user = user;
+    }
+
     public User getUser() {
         return user;
     }
