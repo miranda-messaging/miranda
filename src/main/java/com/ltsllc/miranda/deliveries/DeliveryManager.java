@@ -20,13 +20,15 @@ import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 5/1/2017.
  */
 public class DeliveryManager extends DirectoryManager {
     public static final String NAME = "delivery manager";
 
-    public DeliveryManager (String directory, Reader reader, Writer writer) {
-        super(NAME, directory, reader, writer);
+    public DeliveryManager (String directory, int objectLimit, Reader reader, Writer writer) throws IOException {
+        super(NAME, directory, objectLimit, reader, writer);
     }
 }

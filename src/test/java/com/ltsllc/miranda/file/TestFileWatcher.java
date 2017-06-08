@@ -72,8 +72,7 @@ public class TestFileWatcher extends TestCase {
         queue = new LinkedBlockingQueue<Message>();
         File file = new File("testdir/new/20170220-001.msg");
 
-        FileChangedMessage message = new FileChangedMessage(queue, this, file);
-        fileWatcher = new FileWatcher(queue, message);
+        fileWatcher = new FileWatcher(queue);
     }
 
     @After
@@ -83,7 +82,7 @@ public class TestFileWatcher extends TestCase {
 
     @Test
     public void testSend () {
-        getFileWatcher().sendMessage();
+        getFileWatcher().sendMessage("whatever");
 
         pause(125);
 

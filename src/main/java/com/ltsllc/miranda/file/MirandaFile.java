@@ -149,8 +149,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
     public void watch() {
         File file = new File(getFilename());
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
-        Miranda.fileWatcher.sendWatchMessage (getQueue(), this, file, fileChangedMessage);
+        Miranda.fileWatcher.sendWatchMessage (getQueue(), this, file);
     }
 
     public void updateVersion() throws NoSuchAlgorithmException {

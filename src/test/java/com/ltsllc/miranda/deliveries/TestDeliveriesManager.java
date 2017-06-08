@@ -20,6 +20,8 @@ import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 5/13/2017.
  */
@@ -38,14 +40,18 @@ public class TestDeliveriesManager extends TestCase {
 
     @Before
     public void setup () {
-        reset();
+        try {
+            reset();
 
-        super.setup();
+            super.setup();
 
-        setupMockMiranda();
-        setupMockFileWatcher();
+            setupMockMiranda();
+            setupMockFileWatcher();
 
-        this.deliveryManager = new DeliveryManager("testdir", getMockReader(), getMockWriter());
+            this.deliveryManager = new DeliveryManager("testdir", 1000000, getMockReader(), getMockWriter());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

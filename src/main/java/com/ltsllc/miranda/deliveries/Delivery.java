@@ -43,7 +43,7 @@ public class Delivery implements Perishable, Updateable<Delivery>, Matchable<Del
     private String subscription;
 
     public Delivery (Event event, long delivered, Subscription subscription) {
-        this.messageId = event.getId();
+        this.messageId = event.getGuid();
         this.id = UUID.randomUUID().toString();
         this.delivered = delivered;
         this.subscription = subscription.getName();

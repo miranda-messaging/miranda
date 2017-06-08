@@ -18,17 +18,27 @@ package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.directory.MirandaDirectory;
+import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventDirectory;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Clark on 5/3/2017.
  */
-public class DirectoryManager extends Consumer {
+public class DirectoryManager<T> extends Consumer {
     private Reader reader;
     private Writer writer;
     private MirandaDirectory directory;
+    private Map<String, T> map;
+
+    public Map<String, T> getMap() {
+        return map;
+    }
 
     public MirandaDirectory getDirectory() {
         return directory;
@@ -47,7 +57,6 @@ public class DirectoryManager extends Consumer {
     }
 
     public Reader getReader() {
-
         return reader;
     }
 
@@ -55,12 +64,21 @@ public class DirectoryManager extends Consumer {
         this.reader = reader;
     }
 
-    public DirectoryManager (String name, String directory, Reader reader, Writer writer) {
+    public DirectoryManager (String name, String directory, int objectLimit, Reader reader, Writer writer) throws IOException {
         super (name);
 
-        this.directory = new EventDirectory(directory);
+        this.directory = new EventDirectory(directory, objectLimit, reader, writer);
         this.reader = reader;
         this.writer = writer;
+        this.map = new HashMap<String, T>();
+    }
+
+    public void add (String key, T value) {
+        getMap().put(key, value);
+    }
+
+    public void fileChanged (Map<String, Event> map) {
+        map = new HashMap<String, Event>(map);
     }
 
 }

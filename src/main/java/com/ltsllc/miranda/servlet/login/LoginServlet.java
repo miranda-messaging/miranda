@@ -59,7 +59,7 @@ public class LoginServlet extends MirandaServlet {
             }
         } catch (MirandaException | GeneralSecurityException e) {
             result.setResult(Results.Exception);
-            result.setAdditionalInfo(e);
+            result.setException(e);
         } catch (TimeoutException e) {
             result.setResult(Results.Timeout);
         }

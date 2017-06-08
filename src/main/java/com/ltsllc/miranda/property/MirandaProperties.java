@@ -98,6 +98,10 @@ public class MirandaProperties {
 
     public static final String KEYSTORE_PACKAGE = PACKAGE_NAME + "keystore.";
 
+    public static final String EVENT_PACKAGE = PACKAGE_NAME + "event.";
+
+    public static final String DELIVERY_PACKAGE = PACKAGE_NAME + "delivery,";
+
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
@@ -148,6 +152,10 @@ public class MirandaProperties {
     public static final String PROPERTY_KEYSTORE_CERTIFICATE_ALIAS = KEYSTORE_PACKAGE + "Certificate";
     public static final String PROPERTY_KEYSTORE_CA_ALIAS = KEYSTORE_PACKAGE + "CA";
 
+    public static final String PROPERTY_EVENT_OBJECT_LIMIT = EVENT_PACKAGE + "ObjectLimit";
+
+    public static final String PROPERTY_DELIVERY_OBJECT_LIMIT = DELIVERY_PACKAGE + "ObjectLimit";
+
     public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -191,6 +199,10 @@ public class MirandaProperties {
     public static final String DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS = "private";
     public static final String DEFAULT_KEYSTORE_CERTIFICATE_ALIAS = "certificate";
     public static final String DEFAULT_KEYSTORE_CA_ALIAS = "ca";
+
+    public static final String DEFAULT_EVENT_OBJECT_LIMIT = "1000000";
+
+    public static final String DEFAULT_DELIVERY_OBJECT_LIMIT = "1000000";
 
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
@@ -237,6 +249,10 @@ public class MirandaProperties {
             {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS},
             {PROPERTY_KEYSTORE_CERTIFICATE_ALIAS, DEFAULT_KEYSTORE_CERTIFICATE_ALIAS},
             {PROPERTY_KEYSTORE_CA_ALIAS, DEFAULT_KEYSTORE_CA_ALIAS},
+
+            {PROPERTY_EVENT_OBJECT_LIMIT, DEFAULT_EVENT_OBJECT_LIMIT},
+
+            {PROPERTY_DELIVERY_OBJECT_LIMIT, DEFAULT_DELIVERY_OBJECT_LIMIT}
     };
 
     private Properties properties;

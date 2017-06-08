@@ -16,25 +16,58 @@
 
 package com.ltsllc.miranda.directory;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Created by Clark on 5/13/2017.
  */
-abstract public class MirandaDirectory extends Consumer {
-    abstract public boolean isInteresting (String name);
+abstract public class MirandaDirectory<T extends DirectoryEntry> extends Consumer {
+    abstract public boolean isInteresting(String name);
 
+    abstract public Type getListType();
 
     private File directory;
     private List<File> files;
+    private Map<String, T> map;
+    private int objectLimit;
+    private static Gson gson = new Gson();
+    private Reader reader;
+    private Writer writer;
+
+    public static Gson getGson() {
+        return gson;
+    }
+
+    public Writer getWriter() {
+        return writer;
+    }
+
+    public Reader getReader() {
+
+        return reader;
+    }
+
+    public int getObjectLimit() {
+        return objectLimit;
+    }
+
+    public Map<String, T> getMap() {
+
+        return map;
+    }
 
     public File getDirectory() {
         return directory;
@@ -44,11 +77,11 @@ abstract public class MirandaDirectory extends Consumer {
         this.directory = directory;
     }
 
-    public void setDirectoryName (String directoryName) {
+    public void setDirectoryName(String directoryName) {
         directory = new File(directoryName);
     }
 
-    public String getDirectoryName () {
+    public String getDirectoryName() {
         return directory.getName();
     }
 
@@ -60,39 +93,97 @@ abstract public class MirandaDirectory extends Consumer {
         this.files = files;
     }
 
-    public MirandaDirectory (String directoryName) {
+    public MirandaDirectory(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
         super(directoryName);
         this.directory = new File(directoryName);
         this.files = new ArrayList<File>();
+        this.map = new HashMap<String, T>();
+        this.objectLimit = objectLimit;
+        this.reader = reader;
+        this.writer = writer;
 
         setDirectoryName(directoryName);
 
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, null);
-
-        try {
-            Miranda.fileWatcher.watch(getDirectory(), getQueue(), fileChangedMessage);
-        } catch (IOException e) {
-            StartupPanic startupPanic = new StartupPanic("Exception watching directory", StartupPanic.StartupReasons.ExceptionWatchingFile);
-            Miranda.getInstance().panic(startupPanic);
-        }
-
         DirectoryStartState directoryStartState = new DirectoryStartState(this);
         setCurrentState(directoryStartState);
+
+        load();
     }
 
-    public void start () {
+    public void start() {
         ScanTask scanTask = new ScanTask(this);
         scanTask.start();
     }
 
-    public void sendScanCompleteMessage (List<File> files) {
+    public void add(T item) {
+        String key = item.getKey();
+        getMap().put(key, item);
+    }
+
+    public void sendScanCompleteMessage(List<File> files) {
         ScanCompleteMessage scanCompleteMessage = new ScanCompleteMessage(null, this, files);
         sendToMe(scanCompleteMessage);
     }
 
-    public void sendExceptionDuringScanMessage (Throwable throwable) {
+    public void sendExceptionDuringScanMessage(Throwable throwable) {
         ExceptionDuringScanMessage exceptionDuringScanMessage = new ExceptionDuringScanMessage(null, this, throwable);
         sendToMe(exceptionDuringScanMessage);
     }
 
+    public void load() throws IOException {
+        List<String> list = scan();
+
+        for (String filename : list) {
+            getReader().sendReadMessage(getQueue(), this, filename);
+        }
+    }
+
+    public List<String> scan() throws IOException {
+        List<String> list = new ArrayList<String>();
+        scan(getDirectory().getCanonicalPath(), list);
+        return list;
+    }
+
+    public void scan(String filename, List<String> list) throws IOException {
+        File file = new File(filename);
+
+        if (file.isDirectory()) {
+            scanDirectory(filename, list);
+        } else if (file.exists() && isInteresting(filename)) {
+            list.add(filename);
+        }
+    }
+
+    public void scanDirectory(String directoryName, List<String> list) throws IOException {
+        File directory = new File(directoryName);
+        if (!directory.isDirectory())
+            return;
+
+        String canonicalPath = directory.getCanonicalPath();
+        String[] contents = directory.list();
+        for (String entry : contents) {
+            String fullName = canonicalPath + File.pathSeparator + entry;
+            scan(fullName, list);
+        }
+    }
+
+    public void fileLoaded(String filename, byte[] data) {
+        String json = new String(data);
+        List<T> list = new ArrayList<T>();
+
+        if (getMap().size() >= getObjectLimit())
+            return;
+
+        list = getGson().fromJson(json, getListType());
+        File file = new File(filename);
+        Miranda.fileWatcher.sendWatchMessage(getQueue(), this, file);
+
+        for (T item : list) {
+            add(item);
+        }
+    }
 }
+
+
+
+

@@ -90,8 +90,7 @@ public class TestFileWatcherReadyState extends TestCase {
     @Test
     public void testProcessWatchMessage() {
         File file = new File(FILE_NAME);
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
-        WatchMessage message = new WatchMessage(getQueue(), this, file, fileChangedMessage);
+        WatchMessage message = new WatchMessage(getQueue(), this, file);
         send(message, getFileWatcherService().getQueue());
 
         pause(125);
@@ -109,8 +108,7 @@ public class TestFileWatcherReadyState extends TestCase {
         File file = new File(FILE_NAME);
         UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
 
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
-        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
+        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
 
         send(watchMessage, getFileWatcherService().getQueue());
 

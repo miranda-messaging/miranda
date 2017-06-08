@@ -18,6 +18,7 @@ package com.ltsllc.miranda.reader;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
@@ -100,5 +101,18 @@ public class Reader extends Consumer {
     public void sendReadMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
         ReadMessage readMessage = new ReadMessage (senderQueue, sender, filename);
         sendToMe(readMessage);
+    }
+
+    public void sendReadMessage (BlockingQueue<Message> senderQueue, Object sender, File file) {
+        try {
+            String canonicalPath = file.getCanonicalPath();
+            ReadMessage readMessage = new ReadMessage(senderQueue, sender, canonicalPath);
+            sendToMe(readMessage);
+        } catch (IOException e) {
+            Panic panic = new Panic("Excepion trying to get canical path of " + file.getName(), e,
+                    Panic.Reasons.ExceptionLoadingFile);
+
+            Miranda.panicMiranda(panic);
+        }
     }
 }

@@ -76,7 +76,7 @@ abstract public class SessionServlet extends MirandaServlet {
         } catch (MirandaException | IOException | ServletException e) {
             resultObject = createResultObject();
             resultObject.setResult(Results.Exception);
-            resultObject.setAdditionalInfo(e);
+            resultObject.setException(e);
         }
 
         respond(response.getOutputStream(), resultObject);

@@ -85,12 +85,12 @@ public class FileWatcherService extends Consumer {
     public void fireChanged(String canonicalName) {
         List<FileWatcher> list = watchers.get(canonicalName);
         for (FileWatcher fileWatcher : list) {
-            fileWatcher.sendMessage();
+            fileWatcher.sendMessage(canonicalName);
         }
     }
 
-    public void watch(File file, BlockingQueue<Message> queue, Message message) throws IOException {
-        FileWatcher fileWatcher = new FileWatcher(queue, message);
+    public void watch(File file, BlockingQueue<Message> queue) throws IOException {
+        FileWatcher fileWatcher = new FileWatcher(queue);
         String canonicalName = file.getCanonicalPath();
         List<FileWatcher> list = watchers.get(canonicalName);
 
@@ -137,8 +137,8 @@ public class FileWatcherService extends Consumer {
         return null != match;
     }
 
-    public void sendWatchMessage (BlockingQueue<Message> senderQueue, Object sender, File file, Message message) {
-        WatchMessage watchMessage = new WatchMessage(senderQueue, sender, file, message);
+    public void sendWatchMessage (BlockingQueue<Message> senderQueue, Object sender, File file) {
+        WatchMessage watchMessage = new WatchMessage(senderQueue, sender, file);
         sendToMe(watchMessage);
     }
 }

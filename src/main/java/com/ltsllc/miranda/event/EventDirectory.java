@@ -16,20 +16,37 @@
 
 package com.ltsllc.miranda.event;
 
+import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.directory.MirandaDirectory;
+import com.ltsllc.miranda.directory.MirandaDirectoryLoadingState;
+import com.ltsllc.miranda.file.Directory;
+import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.writer.Writer;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 
 
 /**
  * Created by Clark on 5/13/2017.
  */
-public class EventDirectory extends MirandaDirectory {
-    public EventDirectory (String directoryName) {
-        super(directoryName);
+public class EventDirectory extends MirandaDirectory<Event> {
+    public EventDirectory (String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
+        super(directoryName, objectLimit, reader, writer);
+
+        MirandaDirectoryLoadingState mirandaDirectoryLoadingState = new MirandaDirectoryLoadingState(this);
+        setCurrentState(mirandaDirectoryLoadingState);
     }
 
     public static final String EVENT_FILE = ".event";
 
     public boolean isInteresting (String name) {
         return name.endsWith(EVENT_FILE);
+    }
+
+    public Type getListType () {
+        return new TypeToken<List<Event>>(){}.getType();
     }
 }

@@ -98,14 +98,13 @@ public class TestFileWatcherService extends TestCase {
     }
 
     /**
-     * Note that this also tests the {@link FileWatcherService#watch(File, BlockingQueue, Message)}
+     * Note that this also tests the {@link FileWatcherService#watch(File, BlockingQueue)}
      * and {@link FileWatcherService#fireChanged(String)} methods.
      */
     @Test
     public void testCheckFiles () throws IOException{
         File file = new File(FILENAME);
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, file);
-        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
+        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
         send(watchMessage, getFileWatcherService().getQueue());
 
         pause(125);
@@ -121,8 +120,7 @@ public class TestFileWatcherService extends TestCase {
     public void testStopWatching () {
         File file = new File(FILENAME);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        FileChangedMessage fileChangedMessage = new FileChangedMessage(queue, this, file);
-        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file, fileChangedMessage);
+        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
         send(watchMessage, getFileWatcherService().getQueue());
 
         pause(125);

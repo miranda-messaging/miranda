@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.directory.DirectoryEntry;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
@@ -33,7 +34,7 @@ import java.util.UUID;
 /**
  * A message that was sent to a topic.
  */
-public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
+public class Event implements Perishable, Updateable<Event>, Matchable<Event>, DirectoryEntry {
     private static Gson ourGson = new Gson();
     private static SecureRandom random = new SecureRandom();
 
@@ -44,18 +45,17 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
         DELETE
     }
 
-    private String id;
+    private String guid;
     private String content;
     private Methods method;
     private long created;
-
 
     public Event (Methods method, String content) {
         this.method = method;
         this.content = content;
         this.created = System.currentTimeMillis();
 
-        this.id = UUID.randomUUID().toString();
+        this.guid = UUID.randomUUID().toString();
     }
 
     public Event (Methods method, byte[] buffer) {
@@ -65,11 +65,11 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
         this.content = hexString;
 
         this.created = System.currentTimeMillis();
-        this.id = UUID.randomUUID().toString();
+        this.guid = UUID.randomUUID().toString();
     }
 
     public Event (String eventId, Methods method, String content, long time) {
-        this.id = eventId;
+        this.guid = eventId;
         this.method = method;
         this.content = content;
         this.created = time;
@@ -101,8 +101,8 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
         return content;
     }
 
-    public String getId() {
-        return id;
+    public String getGuid() {
+        return guid;
     }
 
     public long getCreated() {
@@ -141,6 +141,10 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event> {
     }
 
     public boolean matches (Event other) {
-        return getId().equals(other.getId());
+        return getGuid().equals(other.getGuid());
+    }
+
+    public String getKey () {
+        return getGuid();
     }
 }

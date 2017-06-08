@@ -71,7 +71,7 @@ public class FileWatcherReadyState extends State {
 
     private State processWatchMessage (WatchMessage watchMessage) {
         try {
-            getFileWatcherService().watch(watchMessage.getFile(), watchMessage.getSender(), watchMessage.getMessage());
+            getFileWatcherService().watch(watchMessage.getFile(), watchMessage.getSender());
         } catch (IOException e) {
             Panic panic = new Panic ("Exception watching file", e, Panic.Reasons.ExceptionInProcessMessage);
             Miranda.getInstance().panic(panic);

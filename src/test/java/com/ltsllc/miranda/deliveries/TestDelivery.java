@@ -53,7 +53,7 @@ public class TestDelivery extends TestCase {
 
         this.delivery = new Delivery(event, timeDelivered, subscription);
 
-        assert (getDelivery().getMessageId().equals(event.getId()));
+        assert (getDelivery().getMessageId().equals(event.getGuid()));
         assert (getDelivery().getDelivered() == timeDelivered);
     }
 

@@ -631,14 +631,16 @@ public class Startup extends State {
             String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
             File f = new File(directoryName);
             directoryName = f.getCanonicalPath();
-            EventManager eventManager = new EventManager(directoryName, getReader(), getWriter());
+            int objectLimit = properties.getIntProperty(MirandaProperties.PROPERTY_EVENT_OBJECT_LIMIT);
+            EventManager eventManager = new EventManager(directoryName, objectLimit, getReader(), getWriter());
             eventManager.start();
             miranda.setEventManager(eventManager);
 
             directoryName = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
             f = new File(directoryName);
             directoryName = f.getCanonicalPath();
-            DeliveryManager deliveryManager = new DeliveryManager(directoryName, getReader(), getWriter());
+            objectLimit = properties.getIntProperty(MirandaProperties.PROPERTY_DELIVERY_OBJECT_LIMIT);
+            DeliveryManager deliveryManager = new DeliveryManager(directoryName, objectLimit, getReader(), getWriter());
             miranda.setDeliveryManager(deliveryManager);
 
         } catch (Exception e) {

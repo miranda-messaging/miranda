@@ -18,9 +18,11 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -30,24 +32,20 @@ public class FileWatcher {
     private static Logger logger = Logger.getLogger(FileWatcher.class);
 
     private BlockingQueue<Message> queue;
-    private Message message;
-
-    public Message getMessage() {
-        return message;
-    }
 
     public BlockingQueue<Message> getQueue() {
         return queue;
     }
 
-    public FileWatcher (BlockingQueue<Message> queue, Message message) {
+    public FileWatcher (BlockingQueue<Message> queue) {
         this.queue = queue;
-        this.message = message;
     }
 
-    public void sendMessage () {
+    public void sendMessage (String filename) {
         try {
-            getQueue().put(getMessage());
+            File file = new File(filename);
+            FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
+            getQueue().put(fileChangedMessage);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Exception while trying to send meaasge", e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.getInstance().panic(panic);
