@@ -22,6 +22,7 @@ import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import java.util.Map;
  */
 public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
 
-    public DeliveriesFile (String filename, Reader reader, Writer writer) {
+    public DeliveriesFile (String filename, Reader reader, Writer writer) throws IOException {
         super(filename, reader, writer);
 
         setCurrentState(new MirandaFileReadyState(this));

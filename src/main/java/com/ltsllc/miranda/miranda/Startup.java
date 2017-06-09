@@ -23,7 +23,6 @@ import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.http.HttpServer;
-import com.ltsllc.miranda.http.SetupServletsMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.network.Network;
@@ -57,7 +56,6 @@ import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -571,9 +569,13 @@ public class Startup extends State {
         Network network = factory.buildNetwork(getKeyStore(), getTrustStore());
         network.start();
 
-        String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
-        Cluster cluster = new Cluster(miranda.getNetwork(), filename);
-        miranda.setCluster(cluster);
+        try {
+            String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
+            Cluster cluster = new Cluster(miranda.getNetwork(), filename);
+            miranda.setCluster(cluster);
+        } catch (IOException e) {
+            throw new MirandaException(e);
+        }
 
         SessionManager sessionManager = new SessionManager();
         sessionManager.start();

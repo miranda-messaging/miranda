@@ -22,7 +22,6 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.messages.*;
-import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.log4j.Logger;
 

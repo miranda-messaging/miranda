@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.network.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.node.Node;
 
 import java.util.concurrent.BlockingQueue;
 

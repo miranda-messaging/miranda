@@ -17,11 +17,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.node.Node;
 
 /**
  * Created by Clark on 5/23/2017.

@@ -18,7 +18,6 @@ package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;

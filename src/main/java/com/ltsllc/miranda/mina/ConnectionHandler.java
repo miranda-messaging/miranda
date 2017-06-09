@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.mina;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
@@ -14,8 +13,6 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import java.nio.charset.Charset;
 import java.security.cert.Certificate;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by clarkhobbie on 5/30/17.

@@ -2,9 +2,7 @@ package com.ltsllc.miranda.user;
 
 import com.google.gson.*;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.mina.SslException;
 import com.ltsllc.miranda.miranda.Miranda;
-import sun.plugin2.message.Serializer;
 import sun.security.rsa.RSAPublicKeyImpl;
 
 import java.lang.reflect.Type;

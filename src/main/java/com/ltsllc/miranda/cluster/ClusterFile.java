@@ -29,6 +29,7 @@ import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return ourInstance;
     }
 
-    public static synchronized void initialize(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer,
+                                               BlockingQueue<Message> cluster) throws IOException {
         if (null == ourInstance) {
             ourInstance = new ClusterFile(filename, reader, writer, cluster);
             ourInstance.start();
@@ -68,11 +70,12 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return cluster;
     }
 
-    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
+    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) throws IOException {
         basicConstructor (filename, reader, writer, cluster);
     }
 
-    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue, List<NodeElement> nodeElementList) {
+    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue,
+                       List<NodeElement> nodeElementList) throws IOException {
         super(filename, reader, writer);
 
         this.cluster = queue;
@@ -83,7 +86,9 @@ public class ClusterFile extends SingleFile<NodeElement> {
         setData(nodeElementList);
     }
 
-    public void basicConstructor (String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) {
+    public void basicConstructor (String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster)
+            throws IOException
+    {
         super.basicConstructor(filename, reader, writer);
 
         this.cluster = cluster;

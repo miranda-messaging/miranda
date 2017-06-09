@@ -19,15 +19,12 @@ package com.ltsllc.miranda;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.util.Utils;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
-import java.security.spec.KeySpec;
 
 /**
  * Created by Clark on 4/3/2017.

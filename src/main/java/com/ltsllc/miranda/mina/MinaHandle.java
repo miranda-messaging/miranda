@@ -22,6 +22,7 @@ import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
+
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.util.concurrent.BlockingQueue;

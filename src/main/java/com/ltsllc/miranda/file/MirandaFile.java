@@ -22,16 +22,16 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
-import com.ltsllc.miranda.file.messages.WatchMessage;
+import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +42,14 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/5/2017.
  */
 abstract public class MirandaFile extends Consumer implements Comparer {
-    abstract public void load();
+    abstract public void load() throws IOException;
     abstract public byte[] getBytes();
+    abstract public List getData();
 
     private static Logger logger = Logger.getLogger(MirandaFile.class);
     private static Gson ourGson = new Gson();
 
+    private List<Subscriber> subscribers;
     private String filename;
     private Writer writer;
     private Reader reader;
@@ -55,6 +57,13 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private Version version;
     private long lastLoaded = -1;
     private long lastCollection;
+    private boolean dirty;
+
+    public MirandaFile () {}
+
+    public MirandaFile(String filename, Reader reader, Writer writer) throws IOException {
+        basicConstructor(filename, reader, writer);
+    }
 
     public long getLastCollection() {
         return lastCollection;
@@ -108,23 +117,32 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return ourGson;
     }
 
-    public MirandaFile () {}
-
-    public MirandaFile(String filename, Reader reader, Writer writer) {
-        basicConstructor(filename, reader, writer);
-    }
 
     public void recalculateVersion () {
         version = calculateVersion();
     }
 
-    public void basicConstructor (String filename, Reader reader, Writer writer) {
+    public List<Subscriber> getSubscribers() {
+        return subscribers;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public void basicConstructor (String filename, Reader reader, Writer writer) throws IOException {
         super.basicConstructor("file");
 
         this.filename = filename;
         this.writer = writer;
         this.reader = reader;
+        this.lastLoaded = -1;
         this.lastCollection = -1;
+        this.subscribers = new ArrayList<Subscriber>();
 
         load();
     }
@@ -142,7 +160,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         write(getFilename(), getBytes());
     }
 
-    public void fileChanged() {
+    public void fileChanged() throws IOException {
         logger.info(getFilename() + " changed");
         load();
     }
@@ -218,5 +236,22 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         }
 
         return null;
+    }
+
+    public void fireMessage (Message message) {
+        for (Subscriber subscriber : getSubscribers()) {
+            subscriber.notifySubscriber(message);
+        }
+    }
+
+    public void fireFileLoaded() {
+        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(getQueue(), this, getData());
+        fireMessage(fileLoadedMessage);
+    }
+
+    public void fireFileDoesNotExist () {
+        FileDoesNotExistMessage fileDoesNotExistMessage = new FileDoesNotExistMessage(getQueue(), this,
+                getFilename());
+        fireMessage(fileDoesNotExistMessage);
     }
 }

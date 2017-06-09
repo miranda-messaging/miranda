@@ -30,6 +30,7 @@ import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -50,7 +51,7 @@ public class UserManager extends StandardManager<User> {
         return (UsersFile) getFile();
     }
 
-    public UserManager(String filename) {
+    public UserManager(String filename) throws IOException {
         super(NAME, filename);
     }
 
@@ -58,7 +59,7 @@ public class UserManager extends StandardManager<User> {
         return new UserManagerStartState(this);
     }
 
-    public SingleFile<User> createFile (String filename) {
+    public SingleFile<User> createFile (String filename) throws IOException {
         return new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 

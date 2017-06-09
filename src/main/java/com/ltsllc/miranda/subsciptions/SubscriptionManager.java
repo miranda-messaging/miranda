@@ -25,6 +25,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -46,14 +47,14 @@ public class SubscriptionManager extends StandardManager<Subscription> {
         setData(subscriptions);
     }
 
-    public SubscriptionManager(String filename) {
+    public SubscriptionManager(String filename) throws IOException {
         super("subscription manager", filename);
 
         SubscriptionManagerStartState subscriptionManagerStartState = new SubscriptionManagerStartState(this);
         setCurrentState(subscriptionManagerStartState);
     }
 
-    public SingleFile createFile(String filename) {
+    public SingleFile createFile(String filename) throws IOException {
         return new SubscriptionsFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 

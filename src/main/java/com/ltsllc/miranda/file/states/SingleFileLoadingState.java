@@ -18,15 +18,11 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.reader.ReadMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
-
-import static com.ltsllc.miranda.reader.ReadResponseMessage.Results.Success;
 
 /**
  * Created by Clark on 5/14/2017.

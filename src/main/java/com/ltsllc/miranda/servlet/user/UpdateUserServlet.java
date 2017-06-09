@@ -18,7 +18,6 @@ package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

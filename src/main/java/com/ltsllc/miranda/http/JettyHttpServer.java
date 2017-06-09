@@ -23,11 +23,9 @@ import com.ltsllc.miranda.servlet.catchall.CatchallServlet;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletHandler;
 
-import javax.servlet.Servlet;
 import java.util.List;
 
 /**

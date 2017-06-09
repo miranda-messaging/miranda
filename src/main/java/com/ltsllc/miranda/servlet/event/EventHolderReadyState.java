@@ -3,7 +3,6 @@ package com.ltsllc.miranda.servlet.event;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.event.messages.CreateEventResponseMessage;
-import com.ltsllc.miranda.event.messages.ReadEventMessage;
 import com.ltsllc.miranda.event.messages.ReadEventResponseMessage;
 import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 

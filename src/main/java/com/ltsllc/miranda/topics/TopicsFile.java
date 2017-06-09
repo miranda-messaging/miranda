@@ -24,6 +24,7 @@ import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class TopicsFile extends SingleFile<Topic> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Reader reader, Writer writer) {
+    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException {
         if (null == ourInstance) {
             ourInstance = new TopicsFile(filename, reader, writer);
             ourInstance.start();
@@ -54,14 +55,14 @@ public class TopicsFile extends SingleFile<Topic> {
         ourInstance = topicsFile;
     }
 
-    public TopicsFile(String filename, Reader reader, Writer writer) {
+    public TopicsFile(String filename, Reader reader, Writer writer) throws IOException {
         super(filename, reader, writer);
 
         TopicsFileStartingState topicsFileStartingState = new TopicsFileStartingState(this);
         setCurrentState(topicsFileStartingState);
     }
 
-    public TopicsFile () {
+    public TopicsFile () throws IOException {
         super(null, null, null);
     }
 

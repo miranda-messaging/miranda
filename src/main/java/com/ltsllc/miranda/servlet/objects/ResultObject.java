@@ -17,10 +17,6 @@
 package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.util.Utils;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
  * Created by Clark on 4/7/2017.

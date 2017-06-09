@@ -17,13 +17,17 @@
 package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
+
+import java.io.IOException;
 
 /**
  * Created by Clark on 2/26/2017.
@@ -72,7 +76,12 @@ public class MirandaFileReadyState extends State {
     public void fireFileLoaded () {}
 
     public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
-        getMirandaFile().load();
+        try {
+            getMirandaFile().load();
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception loading file", e, Panic.Reasons.ExceptionLoadingFile);
+            Miranda.panicMiranda(panic);
+        }
 
         fireFileLoaded();
 

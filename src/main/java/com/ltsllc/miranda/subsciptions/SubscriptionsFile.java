@@ -21,6 +21,7 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Reader reader, Writer writer) {
+    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException {
         if (null == ourInstance) {
             ourInstance = new SubscriptionsFile(reader, writer, filename);
             ourInstance.start();
@@ -49,7 +50,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         ourInstance = subscriptionsFile;
     }
 
-    public SubscriptionsFile (Reader reader, Writer writer, String filename) {
+    public SubscriptionsFile (Reader reader, Writer writer, String filename) throws IOException {
         super(filename, reader, writer);
 
         SubscriptionsFileStartingState subscriptionsFileStartingState = new SubscriptionsFileStartingState(this);

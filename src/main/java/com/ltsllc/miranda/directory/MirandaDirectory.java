@@ -18,25 +18,24 @@ package com.ltsllc.miranda.directory;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.StartupPanic;
-import com.ltsllc.miranda.file.Directory;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Clark on 5/13/2017.
  */
-abstract public class MirandaDirectory<T extends DirectoryEntry> extends Consumer {
+abstract public class MirandaDirectory<T extends DirectoryEntry> extends MirandaFile {
     abstract public boolean isInteresting(String name);
-
     abstract public Type getListType();
 
     private File directory;
@@ -44,20 +43,9 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Consume
     private Map<String, T> map;
     private int objectLimit;
     private static Gson gson = new Gson();
-    private Reader reader;
-    private Writer writer;
 
     public static Gson getGson() {
         return gson;
-    }
-
-    public Writer getWriter() {
-        return writer;
-    }
-
-    public Reader getReader() {
-
-        return reader;
     }
 
     public int getObjectLimit() {
@@ -65,7 +53,6 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Consume
     }
 
     public Map<String, T> getMap() {
-
         return map;
     }
 
@@ -94,13 +81,11 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Consume
     }
 
     public MirandaDirectory(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
-        super(directoryName);
+        super(directoryName, reader, writer);
         this.directory = new File(directoryName);
         this.files = new ArrayList<File>();
         this.map = new HashMap<String, T>();
         this.objectLimit = objectLimit;
-        this.reader = reader;
-        this.writer = writer;
 
         setDirectoryName(directoryName);
 

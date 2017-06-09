@@ -17,8 +17,10 @@
 package com.ltsllc.miranda.writer;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.EncryptedMessage;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.util.Utils;
 
 import java.io.*;

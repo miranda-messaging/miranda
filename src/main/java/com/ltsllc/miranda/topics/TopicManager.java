@@ -26,6 +26,7 @@ import com.ltsllc.miranda.topics.messages.*;
 import com.ltsllc.miranda.topics.states.TopicManagerStartState;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -46,14 +47,14 @@ public class TopicManager extends StandardManager <Topic> {
         return getData();
     }
 
-    public TopicManager (String filename) {
+    public TopicManager (String filename) throws IOException {
         super("topics manager", filename);
 
         TopicManagerStartState topicManagerStartState = new TopicManagerStartState(this);
         setCurrentState(topicManagerStartState);
     }
 
-    public SingleFile<Topic> createFile (String filename) {
+    public SingleFile<Topic> createFile (String filename) throws IOException {
         return new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter());
     }
 

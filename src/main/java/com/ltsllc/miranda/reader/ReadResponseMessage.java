@@ -17,10 +17,7 @@
 package com.ltsllc.miranda.reader;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.util.Utils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.concurrent.BlockingQueue;
 
 /**

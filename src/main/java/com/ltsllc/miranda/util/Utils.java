@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda.util;
 
-import com.ltsllc.miranda.StartupPanic;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;

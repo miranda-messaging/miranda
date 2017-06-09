@@ -1,6 +1,5 @@
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 
 /**

@@ -21,7 +21,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
-import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.user.UserObject;
@@ -30,8 +29,7 @@ import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -56,7 +54,7 @@ public class UsersFile extends SingleFile<User> {
         ourInstance = usersFile;
     }
 
-    public UsersFile (com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) {
+    public UsersFile (com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) throws IOException {
         super(filename, reader, writer);
 
         UsersFileStartingState usersFileStartingState = new UsersFileStartingState(this);
@@ -84,7 +82,7 @@ public class UsersFile extends SingleFile<User> {
         }
     }
 
-    public static synchronized void initialize(String filename, Reader reader, Writer writer) {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer) throws IOException {
         if (null == ourInstance) {
             ourInstance = new UsersFile(reader, writer, filename);
             ourInstance.start();

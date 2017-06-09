@@ -25,6 +25,7 @@ import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -33,7 +34,7 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/26/2017.
  */
 public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends Consumer {
-    abstract public SingleFile<F> createFile (String filename);
+    abstract public SingleFile<F> createFile (String filename) throws IOException;
     abstract public State createStartState ();
     abstract public E convert (F f);
 
@@ -84,7 +85,7 @@ public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends
         return newList;
     }
 
-    public Manager (String name, String filename) {
+    public Manager (String name, String filename) throws IOException {
         super(name);
 
         SingleFile<F> file = createFile(filename);

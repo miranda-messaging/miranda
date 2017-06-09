@@ -16,16 +16,17 @@
 
 package com.ltsllc.miranda.event;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.directory.MirandaDirectory;
 import com.ltsllc.miranda.directory.MirandaDirectoryLoadingState;
-import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +34,16 @@ import java.util.List;
  * Created by Clark on 5/13/2017.
  */
 public class EventDirectory extends MirandaDirectory<Event> {
+    private static Gson gson = new Gson();
+
+    public byte[] getBytes () {
+        throw new RuntimeException("not implemented");
+    }
+
+    public List getData () {
+        return new ArrayList(getMap().values());
+    }
+
     public EventDirectory (String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
         super(directoryName, objectLimit, reader, writer);
 
@@ -48,5 +59,21 @@ public class EventDirectory extends MirandaDirectory<Event> {
 
     public Type getListType () {
         return new TypeToken<List<Event>>(){}.getType();
+    }
+
+    public void addFile (String filename, byte[] data) {
+        if (getMap().size() >= getObjectLimit())
+            return;
+
+        String json = new String(data);
+        List<Event> list = gson.fromJson(json, getListType());
+        for (Event event : list) {
+            add(event);
+        }
+
+        File file = new File(filename);
+        getFiles().add(file);
+
+        fireFileLoaded();
     }
 }

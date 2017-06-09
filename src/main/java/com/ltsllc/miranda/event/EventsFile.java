@@ -21,6 +21,7 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
  * Created by Clark on 2/19/2017.
  */
 public class EventsFile extends SingleFile<Event> {
-    public EventsFile (String filename, Reader reader, Writer writer) {
+    public EventsFile (String filename, Reader reader, Writer writer) throws IOException {
         super(filename, reader, writer);
 
         setCurrentState(new EventsFileLoadingState(this));

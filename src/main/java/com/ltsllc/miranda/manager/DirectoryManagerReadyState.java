@@ -2,7 +2,6 @@ package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 
 /**

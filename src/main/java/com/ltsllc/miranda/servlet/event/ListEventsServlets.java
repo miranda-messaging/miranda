@@ -2,7 +2,6 @@ package com.ltsllc.miranda.servlet.event;
 
 import com.ltsllc.miranda.servlet.objects.ListResultObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.subscription.SubscriptionRequestObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +18,7 @@ public class ListEventsServlets extends EventServlet {
     }
 
     @Override
-    public ResultObject basicPerformService(HttpServletRequest request, HttpServletResponse response, SubscriptionRequestObject requestObject) throws IOException, ServletException, TimeoutException {
-        getEventHolder().list();
+    public ResultObject basicPerformService(HttpServletRequest request, HttpServletResponse response, EventRequestObject requestObject) throws IOException, ServletException, TimeoutException {
         EventHolder.ListResult listResult = getEventHolder().list();
         ListResultObject listResultObject = new ListResultObject();
         listResultObject.setResult(listResult.result);

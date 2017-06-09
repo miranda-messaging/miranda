@@ -29,7 +29,9 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -51,34 +53,12 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
             .setPrettyPrinting()
             .create();
 
-    private boolean dirty;
-    private List<Subscriber> subscribers;
-
-    public List<Subscriber> getSubscribers() {
-        return subscribers;
-    }
-
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
     protected SingleFile () {}
 
-    public SingleFile(String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) {
+    public SingleFile(String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) throws IOException {
         super(filename, reader, writer);
 
         setDirty(false);
-        subscribers = new ArrayList<Subscriber>();
-    }
-
-    public void basicConstructor (String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) {
-        super.basicConstructor(filename, reader, writer);
-
-        subscribers = new ArrayList<Subscriber>();
     }
 
     private List<E> data = buildEmptyList();
@@ -244,22 +224,6 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
             if (queue == subscriber.getQueue())
                 getSubscribers().remove(subscriber);
         }
-    }
-
-    public void fireMessage (Message message) {
-        for (Subscriber subscriber : getSubscribers()) {
-            subscriber.notifySubscriber(message);
-        }
-    }
-    public void fireFileLoaded() {
-        FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(getQueue(), this, getData());
-        fireMessage(fileLoadedMessage);
-    }
-
-    public void fireFileDoesNotExist () {
-        FileDoesNotExistMessage fileDoesNotExistMessage = new FileDoesNotExistMessage(getQueue(), this,
-                getFilename());
-        fireMessage(fileDoesNotExistMessage);
     }
 
     public void start() {

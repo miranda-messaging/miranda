@@ -4,7 +4,6 @@ import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
-import com.ltsllc.miranda.servlet.subscription.SubscriptionHolder;
 import com.ltsllc.miranda.servlet.subscription.SubscriptionRequestObject;
 
 import javax.servlet.ServletException;
@@ -20,7 +19,7 @@ import static com.ltsllc.miranda.user.User.UserTypes.Subscriber;
  */
 public abstract class EventServlet extends SessionServlet {
     abstract ResultObject basicPerformService (HttpServletRequest request, HttpServletResponse response,
-                                               SubscriptionRequestObject requestObject)
+                                               EventRequestObject requestObject)
             throws IOException, ServletException, TimeoutException;
 
     public ServletHolder getServletHolder () {
@@ -38,8 +37,8 @@ public abstract class EventServlet extends SessionServlet {
     public ResultObject performService (HttpServletRequest request, HttpServletResponse response, RequestObject requestObject)
             throws IOException, ServletException, TimeoutException
     {
-        SubscriptionRequestObject subscriptionRequestObject = (SubscriptionRequestObject) requestObject;
-        ResultObject resultObject = basicPerformService(request, response, subscriptionRequestObject);
+        EventRequestObject eventRequestObject = (EventRequestObject) requestObject;
+        ResultObject resultObject = basicPerformService(request, response, eventRequestObject);
         return resultObject;
     }
 
