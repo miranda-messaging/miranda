@@ -3,6 +3,7 @@ package com.ltsllc.miranda.user;
 import com.google.gson.*;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
+import org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPublicKey;
 import sun.security.rsa.RSAPublicKeyImpl;
 
 import java.lang.reflect.Type;
@@ -37,11 +38,37 @@ public class JSPublicKeySerializer implements JsonSerializer<PublicKey>, JsonDes
 
     public JsonElement serialize(PublicKey publicKey, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject jsonObject = new JsonObject();
-        RSAPublicKeyImpl rsaPublicKeyImpl = (RSAPublicKeyImpl) publicKey;
-        JsonPrimitive e = new JsonPrimitive(rsaPublicKeyImpl.getPublicExponent());
-        JsonPrimitive n = new JsonPrimitive(rsaPublicKeyImpl.getModulus());
-        jsonObject.add("n", n);
-        jsonObject.add("e", e);
+
+        if (publicKey instanceof BCRSAPublicKey) {
+            BCRSAPublicKey bcrsaPublicKey = (BCRSAPublicKey) publicKey;
+            jsonObject = serializeBounceyCastlePublicKey(bcrsaPublicKey);
+        } else if (publicKey instanceof RSAPublicKeyImpl) {
+            RSAPublicKeyImpl rsaPublicKey = (RSAPublicKeyImpl) publicKey;
+            jsonObject = serializeSunPublicKey(rsaPublicKey);
+        } else {
+            Panic panic = new Panic("Unrecognized public key type: " + publicKey.getClass(),
+                    Panic.Reasons.UnrecognizedPublicKeyClass);
+            Miranda.panicMiranda(panic);
+        }
+
+        return jsonObject;
+    }
+
+    public JsonObject serializeBounceyCastlePublicKey (BCRSAPublicKey publicKey) {
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.add("e", new JsonPrimitive(publicKey.getPublicExponent()));
+        jsonObject.add("n", new JsonPrimitive(publicKey.getModulus()));
+
+        return jsonObject;
+    }
+
+    public JsonObject serializeSunPublicKey (RSAPublicKeyImpl publicKey) {
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.add("e", new JsonPrimitive(publicKey.getPublicExponent()));
+        jsonObject.add("n", new JsonPrimitive(publicKey.getModulus()));
+
         return jsonObject;
     }
 }

@@ -36,6 +36,7 @@ public enum Results {
     FileTooLarge,
     FileNotFound,
     ShortRead,
-    UnrecognizedMethod
+    UnrecognizedMethod,
+    NullResult
 }
 

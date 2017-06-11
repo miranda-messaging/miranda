@@ -57,6 +57,10 @@ public class MirandaServlet extends HttpServlet {
         return gsonBuilder.create();
     }
 
+    public static Gson getGson() {
+        return gson;
+    }
+
     public String read(InputStream inputStream) throws IOException {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         StringWriter stringWriter = new StringWriter();

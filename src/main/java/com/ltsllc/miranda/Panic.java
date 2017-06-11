@@ -66,6 +66,7 @@ public class Panic extends Exception {
         Test,
         UncheckedException, // an unchecked exception was thrown
         UnknownUser, // we were told to update a user that doesn't exist
+        UnrecognizedPublicKeyClass,
         UnrecognizedNode, // a node shut down that we don't have a record of
         UnrecognizedResult
     }

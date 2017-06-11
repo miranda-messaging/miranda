@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda.servlet.session;
 
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
@@ -24,6 +23,7 @@ import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.util.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +58,9 @@ abstract public class SessionServlet extends MirandaServlet {
         ResultObject resultObject = null;
 
         try {
-            RequestObject requestObject = fromJson(request.getInputStream(), getRequestClass());
+            String json = Utils.readInputStream(request.getInputStream());
+            RequestObject requestObject = getGson().fromJson(json, getRequestClass());
+
             setSession(getServletHolder().getSession(requestObject.getSessionId()));
             if (null == getSession()) {
                 resultObject = createResultObject();
@@ -73,7 +75,7 @@ abstract public class SessionServlet extends MirandaServlet {
         } catch (TimeoutException e) {
             resultObject = createResultObject();
             resultObject.setResult(Results.Timeout);
-        } catch (MirandaException | IOException | ServletException e) {
+        } catch (IOException | ServletException e) {
             resultObject = createResultObject();
             resultObject.setResult(Results.Exception);
             resultObject.setException(e);

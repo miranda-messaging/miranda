@@ -245,17 +245,41 @@ public class Utils {
     }
 
 
-    public static String inputStreamToString (InputStream inputStream) throws IOException {
+    public static String inputStreamToHexString(InputStream inputStream) throws IOException {
         StringWriter stringWriter = new StringWriter();
 
         int b = inputStream.read();
         while (-1 != b) {
             String stringByte = byteToHexString((byte) b);
             stringWriter.write(stringByte);
+            b = inputStream.read();
         }
 
         stringWriter.close();
         return stringWriter.toString();
+    }
+
+
+    public static String readInputStream (InputStream inputStream) throws IOException {
+        InputStreamReader inputStreamReader = null;
+        StringWriter stringWriter = null;
+
+        try {
+            stringWriter = new StringWriter();
+            inputStreamReader = new InputStreamReader(inputStream);
+
+            int c = inputStreamReader.read();
+            while (c != -1) {
+                stringWriter.write(c);
+                c = inputStreamReader.read();
+            }
+
+            return stringWriter.toString();
+        } finally {
+            Utils.closeIgnoreExceptions(inputStreamReader);
+            Utils.closeIgnoreExceptions(inputStream);
+            Utils.closeIgnoreExceptions(stringWriter);
+        }
     }
 
 
