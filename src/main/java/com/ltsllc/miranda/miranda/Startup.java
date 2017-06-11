@@ -275,7 +275,7 @@ public class Startup extends State {
             return new ReadyState(getMiranda());
         } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
-            Miranda.getInstance().panic(startupPanic);
+            Miranda.panicMiranda(startupPanic);
         }
 
         return StopState.getInstance();

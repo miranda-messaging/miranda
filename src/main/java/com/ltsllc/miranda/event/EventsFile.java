@@ -36,7 +36,7 @@ public class EventsFile extends SingleFile<Event> {
         setCurrentState(new EventsFileLoadingState(this));
     }
 
-    public Type listType() {
+    public Type getListType() {
         return new TypeToken<List<Event>>(){}.getType();
     }
 

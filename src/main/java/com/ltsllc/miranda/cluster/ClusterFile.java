@@ -152,7 +152,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return new ArrayList<NodeElement>();
     }
 
-    public Type listType() {
+    public Type getListType() {
         return new TypeToken<ArrayList<NodeElement>>() {
         }.getType();
     }

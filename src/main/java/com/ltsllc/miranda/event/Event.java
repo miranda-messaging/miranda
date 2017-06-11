@@ -147,4 +147,13 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
     public String getKey () {
         return getGuid();
     }
+
+    @Override
+    public boolean isEquivalentTo(DirectoryEntry other) {
+        if (!(other instanceof Event))
+            return false;
+
+        Event otherEvent = (Event) other;
+        return getGuid().equals(otherEvent.getGuid());
+    }
 }

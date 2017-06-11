@@ -17,12 +17,16 @@
 package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +62,8 @@ public class FileReadyState extends State {
             }
 
             case FileChanged: {
-                getFile().load();
+                FileChangedMessage fileChangedMessage = (FileChangedMessage) message;
+                nextState = processFileChangedMessage(fileChangedMessage);
                 break;
             }
 
@@ -86,5 +91,17 @@ public class FileReadyState extends State {
         getFile().setLastCollection(now);
 
         return this;
+    }
+
+
+    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
+        try {
+            getFile().load();
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception loading file", e, Panic.Reasons.ErrorLoadingFile);
+            Miranda.panicMiranda(panic);
+        }
+
+        return getFile().getCurrentState();
     }
 }

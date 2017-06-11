@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -81,8 +82,12 @@ public class TestMirandaFile extends TestCase {
         List<Event> eventList = new ArrayList<Event>();
         eventList.add(event);
 
-        eventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());
-        eventsFile.setData(eventList);
+        try {
+            eventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());
+            eventsFile.setData(eventList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -118,7 +123,7 @@ public class TestMirandaFile extends TestCase {
 
 
     @Test
-    public void testFileChanged() {
+    public void testFileChanged() throws IOException {
         setupMiranda();
         setupMockReader();
         File file = new File(getEventsFile().getFilename());
@@ -177,7 +182,7 @@ public class TestMirandaFile extends TestCase {
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws IOException {
         assert (getEventsFile().equals(getEventsFile()));
 
         EventsFile newEventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());

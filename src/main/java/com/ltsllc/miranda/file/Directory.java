@@ -28,6 +28,7 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ abstract public class Directory extends MirandaFile {
 
     private List<MirandaFile> files = new ArrayList<MirandaFile>();
 
-    public Directory (String filename, Reader reader, Writer writer) {
+    public Directory (String filename, Reader reader, Writer writer) throws IOException {
         super(filename, reader, writer);
 
         DirectoryReadyState readyState = new DirectoryReadyState(this);

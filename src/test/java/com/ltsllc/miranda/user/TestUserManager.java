@@ -92,7 +92,11 @@ public class TestUserManager extends TestCase {
 
         createFile(TEST_FILENAME, TEST_FILE_CONTENTS);
 
-        userManager = new UserManager(TEST_FILENAME);
+        try {
+            userManager = new UserManager(TEST_FILENAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @After

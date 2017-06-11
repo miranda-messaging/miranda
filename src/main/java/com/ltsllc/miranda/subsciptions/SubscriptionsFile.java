@@ -65,7 +65,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         return new ArrayList<Subscription>();
     }
 
-    public Type listType () {
+    public Type getListType() {
         return new TypeToken<ArrayList<Subscription>>(){}.getType();
     }
 

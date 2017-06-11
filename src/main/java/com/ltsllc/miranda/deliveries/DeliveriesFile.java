@@ -40,7 +40,7 @@ public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
         setCurrentState(new MirandaFileReadyState(this));
     }
 
-    public Type listType() {
+    public Type getListType() {
         return new TypeToken<List<Delivery>>() {}.getType();
     }
 

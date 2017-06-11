@@ -24,6 +24,7 @@ import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,12 @@ public class TestDeliveriesFile extends TestCase {
         MirandaProperties properties = Miranda.properties;
 
         String directory = properties.getProperty(MirandaProperties.PROPERTY_DELIVERY_DIRECTORY);
-        this.deliveriesFile = new DeliveriesFile(directory, getMockReader(), getMockWriter());
+
+        try {
+            this.deliveriesFile = new DeliveriesFile(directory, getMockReader(), getMockWriter());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -61,7 +67,7 @@ public class TestDeliveriesFile extends TestCase {
 
     @Test
     public void testListType () {
-        Type theirType = getDeliveriesFile().listType();
+        Type theirType = getDeliveriesFile().getListType();
         Type localType = new TypeToken<List<Delivery>>() {}.getType();
 
         assert (theirType.equals(localType));

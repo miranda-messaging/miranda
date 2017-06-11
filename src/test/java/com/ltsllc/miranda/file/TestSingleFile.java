@@ -80,7 +80,11 @@ public class TestSingleFile extends TestCase {
         setupDirectory();
         setupRandomFile();
 
-        this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
+        try {
+            this.singleFile = new ClusterFile(TEST_FILE, getMockReader(), getMockWriter(), getQueue());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -182,7 +186,7 @@ public class TestSingleFile extends TestCase {
     }
 
     @Test
-    public void testEquals () {
+    public void testEquals () throws IOException {
         ImprovedRandom random = new ImprovedRandom(new SecureRandom());
         NodeElement nodeElement = NodeElement.random(random);
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();

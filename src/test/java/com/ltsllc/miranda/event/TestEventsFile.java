@@ -22,6 +22,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 5/14/2017.
  */
@@ -49,7 +51,12 @@ public class TestEventsFile extends TestCase {
         setupMiranda();
         setupMockReader();
         setuplog4j();
-        eventsFile = new EventsFile(TEST_FILE, getMockReader(), getMockWriter());
+
+        try {
+            eventsFile = new EventsFile(TEST_FILE, getMockReader(), getMockWriter());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @After

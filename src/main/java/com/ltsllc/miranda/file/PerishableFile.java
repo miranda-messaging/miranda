@@ -19,11 +19,13 @@ package com.ltsllc.miranda.file;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 2/26/2017.
  */
 abstract public class PerishableFile<E extends Perishable & Updateable<E> & Matchable<E>> extends SingleFile<E> {
-    public PerishableFile (String filename, Reader reader, Writer writer) {
+    public PerishableFile (String filename, Reader reader, Writer writer) throws IOException {
         super(filename, reader, writer);
     }
 }

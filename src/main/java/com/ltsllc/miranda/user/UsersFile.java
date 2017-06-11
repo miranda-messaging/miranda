@@ -94,7 +94,7 @@ public class UsersFile extends SingleFile<User> {
         return new ArrayList<User>();
     }
 
-    public Type listType () {
+    public Type getListType() {
         return new TypeToken<ArrayList<User>>(){}.getType();
     }
 
@@ -185,7 +185,7 @@ public class UsersFile extends SingleFile<User> {
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
             InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
-            List<User> users = gson.fromJson(inputStreamReader, listType());
+            List<User> users = gson.fromJson(inputStreamReader, getListType());
 
             setData(users);
         }

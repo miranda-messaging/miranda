@@ -44,7 +44,7 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
-    abstract public Type listType();
+    abstract public Type getListType();
     abstract public void checkForDuplicates();
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
@@ -80,7 +80,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
 
             try {
                 inputStreamReader = new InputStreamReader(byteArrayInputStream);
-                this.data = getGson().fromJson(inputStreamReader, listType());
+                this.data = getGson().fromJson(inputStreamReader, getListType());
             } catch (Exception e) {
                 Panic panic = new Panic("Exception loading list", e, Panic.Reasons.ExceptionLoadingFile);
                 Miranda.panicMiranda(panic);
@@ -113,7 +113,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
         InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
         List<E> temp = null;
-        temp = getGson().fromJson(inputStreamReader, listType());
+        temp = getGson().fromJson(inputStreamReader, getListType());
         setData(temp);
         updateVersion();
         setLastLoaded(System.currentTimeMillis());

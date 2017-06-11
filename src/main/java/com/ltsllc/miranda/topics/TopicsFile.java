@@ -75,7 +75,7 @@ public class TopicsFile extends SingleFile<Topic> {
         return new ArrayList<Topic> ();
     }
 
-    public Type listType () {
+    public Type getListType() {
         return new TypeToken<ArrayList<Topic>>(){}.getType();
     }
 

@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -81,7 +82,11 @@ public class TestUsersFile extends TestCase {
         setuplog4j();
 
         createFile(TEST_FILENAME, TEST_FILE_CONTENTS);
-        usersFile = new UsersFile(getMockReader(), getMockWriter(), TEST_FILENAME);
+        try {
+            usersFile = new UsersFile(getMockReader(), getMockWriter(), TEST_FILENAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @After

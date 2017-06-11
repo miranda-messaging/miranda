@@ -57,6 +57,9 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
     }
 
     public File getDirectory() {
+        if (null == directory && null != getFilename())
+            directory = new File(getFilename());
+
         return directory;
     }
 

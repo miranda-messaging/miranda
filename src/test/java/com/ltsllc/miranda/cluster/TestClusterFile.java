@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -83,7 +84,7 @@ public class TestClusterFile extends TestCase {
         return cluster;
     }
 
-    public void setupClusterFile() {
+    public void setupClusterFile() throws IOException {
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
@@ -120,7 +121,12 @@ public class TestClusterFile extends TestCase {
         setupMiranda();
         setupMirandaProperties();
         setupMockReader();
-        setupClusterFile();
+
+        try {
+            setupClusterFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @After

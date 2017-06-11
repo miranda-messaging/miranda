@@ -37,20 +37,20 @@ public class Delivery implements Perishable, Updateable<Delivery>, Matchable<Del
     private static SecureRandom ourRandom = new SecureRandom();
     private static Gson ourGson = new Gson();
 
-    private String id;
+    private String guid;
     private String messageId;
     private long delivered;
     private String subscription;
 
     public Delivery (Event event, long delivered, Subscription subscription) {
         this.messageId = event.getGuid();
-        this.id = UUID.randomUUID().toString();
+        this.guid = UUID.randomUUID().toString();
         this.delivered = delivered;
         this.subscription = subscription.getName();
     }
 
     public Delivery (String deliveryId, String eventId, long time, String subscription) {
-        this.id = deliveryId;
+        this.guid = deliveryId;
         this.messageId = eventId;
         this.delivered = time;
         this.subscription = subscription;
@@ -64,9 +64,8 @@ public class Delivery implements Perishable, Updateable<Delivery>, Matchable<Del
         return delivered;
     }
 
-    public String getId() {
-
-        return id;
+    public String getGuid() {
+        return guid;
     }
 
     /**
@@ -88,16 +87,16 @@ public class Delivery implements Perishable, Updateable<Delivery>, Matchable<Del
     }
 
     public boolean matches (Delivery other) {
-        return getId().equals(other.getId());
+        return getGuid().equals(other.getGuid());
     }
 
     public static Delivery createRandomDelivery () {
-        String id = UUID.randomUUID().toString();
+        String guid = UUID.randomUUID().toString();
         String eventId = UUID.randomUUID().toString();
         long deliveryTime = ourRandom.nextLong();
         String subscriptionId = UUID.randomUUID().toString();
 
-        Delivery delivery = new Delivery(id, eventId, deliveryTime, subscriptionId);
+        Delivery delivery = new Delivery(guid, eventId, deliveryTime, subscriptionId);
         return delivery;
     }
 }
