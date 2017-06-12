@@ -32,6 +32,7 @@ public class Message implements Perishable {
         AddObjects,
         AddSession,
         Ballot,
+        Broadcast,
         CheckSession,
         CheckSessionResponse,
         Close,

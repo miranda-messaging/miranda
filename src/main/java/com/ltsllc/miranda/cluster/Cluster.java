@@ -18,10 +18,8 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.cluster.messages.ConnectMessage;
-import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
-import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
-import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
+import com.ltsllc.miranda.cluster.messages.*;
+import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
@@ -34,6 +32,7 @@ import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.event.NewEventHolder;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.session.AddSessionMessage;
@@ -343,8 +342,10 @@ public class Cluster extends Manager<Node, NodeElement> {
         }
     }
 
-    public void sendEventCreatedMessage (BlockingQueue<Message> senderQueue, Object sender, Event event) {
-        EventCreatedMessage eventCreatedMessage = new EventCreatedMessage (senderQueue, sender, event);
-        sendToMe(eventCreatedMessage);
+
+    public void broadcastNewEvent (BlockingQueue<Message> senderQueue, Object sender, String key, Event event) {
+        NewEventWireMessage newEventWireMessage = new NewEventWireMessage(key, event);
+        BroadcastMessage broadcastMessage = new BroadcastMessage (senderQueue, sender, newEventWireMessage);
+        sendToMe(broadcastMessage);
     }
 }

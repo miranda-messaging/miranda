@@ -4,6 +4,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -81,8 +82,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         // otherwise, if the user doesn't own the topic and they are not an admin
         // then tell the user and stop
         //
-        else if (!(getNewEventOperation().getSession().getUser().getName().equals(message.getTopic().getOwner()))
-            && (getNewEventOperation().getSession().getUser().getCategory() != User.UserTypes.Admin) {
+        else if (!ownsTopic(message.getTopic()) && !isAdmin(())) {
             reply(Results.InsufficientPermissions);
             nextState = StopState.getInstance();
         }
@@ -96,7 +96,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         //
         // Tell the other Miranda nodes about the new event
         //
-        Miranda.getInstance().getCluster().tellNewEvent(event);
+        tellNewEvent(getNewEventOperation().getEvent());
 
         //
         // if the remote policy for topic says to return immediately, then we are done.
@@ -116,4 +116,16 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return nextState;
     }
 
+    public boolean ownsTopic(Topic topic) {
+        return getOperation().getSession().getUser().getName().equals(topic.getOwner());
+    }
+
+    public boolean isAdmin() {
+        return getOperation().getSession().getUser().getCategory() == User.UserTypes.Admin;
+    }
+
+    public void tellNewEvent (Event event) {
+        Miranda.getInstance().getCluster().sendStartConversation (getOperation().getQueue(), this);
+        Miranda.getInstance().getCluster().broadcastNewEvent(getNewEventOperation().getQueue(), this, event);
+    }
 }

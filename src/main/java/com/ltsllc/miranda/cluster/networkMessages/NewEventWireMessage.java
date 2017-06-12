@@ -8,14 +8,20 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
  */
 public class NewEventWireMessage extends WireMessage {
     private Event event;
+    private String key;
 
-    public NewEventWireMessage (Event event) {
+    public NewEventWireMessage (String key, Event event) {
         super(WireSubjects.NewEvent);
 
+        this.key = key;
         this.event = event;
     }
 
     public Event getEvent() {
         return event;
+    }
+
+    public String getKey() {
+        return key;
     }
 }
