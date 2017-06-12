@@ -25,6 +25,7 @@ public enum Results {
     TopicNotFound,
     Timeout,
     Exception,
+    NotPublisher,
     UserOwnsProperty,
     UserOwnsTopics,
     UserOwnsSubscriptions,

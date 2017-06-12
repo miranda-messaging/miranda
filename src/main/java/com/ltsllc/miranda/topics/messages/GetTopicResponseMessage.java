@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.topics.messages;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.topics.Topic;
 
 import java.util.concurrent.BlockingQueue;
@@ -25,15 +26,21 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/9/2017.
  */
 public class GetTopicResponseMessage extends Message {
+    private Results result;
     private Topic topic;
 
     public Topic getTopic() {
         return topic;
     }
 
-    public GetTopicResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+    public Results getResult() {
+        return result;
+    }
+
+    public GetTopicResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, Topic topic) {
         super(Subjects.GetTopicResponse, senderQueue, sender);
 
+        this.result = result;
         this.topic = topic;
     }
 }

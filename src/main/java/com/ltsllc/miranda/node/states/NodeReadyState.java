@@ -115,8 +115,6 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
-
-
             default: {
                 nextState = super.processNetworkMessage(networkMessage);
                 break;
@@ -183,6 +181,10 @@ public class NodeReadyState extends NodeState {
                 ShutdownMessage shutdownMessage = (ShutdownMessage) message;
                 nextState = processShutdownMessage(shutdownMessage);
                 break;
+            }
+
+            case StartConversation: {
+                StartConversationMessage startConversationMessage = (StartConversationMessage)
             }
 
             default:

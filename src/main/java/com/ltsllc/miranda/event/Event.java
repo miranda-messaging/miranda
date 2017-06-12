@@ -21,10 +21,14 @@ import com.ltsllc.miranda.directory.DirectoryEntry;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import com.ltsllc.miranda.util.Utils;
 
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,13 +36,91 @@ import java.util.UUID;
  */
 
 /**
- * A message that was sent to a topic.
+ * An HTTP POST/PUT/DELETE that has been made to a topic.
+ *
+ * <h3>Properties</h3>
+ * <table border="1">
+ *     <th>
+ *         <td>Name</td>
+ *         <td>Type</td>
+ *         <td>Description</td>
+ *     </th>
+ *     <tr>
+ *         <td>guid</td>
+ *         <td>String</td>
+ *         <td>A string that identifies an Event from all the other events in the system.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>method</td>
+ *         <td>enum, Methods</td>
+ *         <td>
+ *             The HTTP verb used for this instance.
+ *             Currently this is one of POST PUT or DELETE
+ *         </td>
+ *     </tr>
+ *     <tr>
+ *         <td>userName</td>
+ *         <td>String</td>
+ *         <td>The name of the User who created this Event.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>timeOfCreation</td>
+ *         <td>long</td>
+ *         <td>The time returned by System.currentTimeMillis() when the Event was created.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>topicName</td>
+ *         <td>String</td>
+ *         <td>The name of the Topic that this instance was published to.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>awaitingDelivery</td>
+ *         <td>List of Objects</td>
+ *         <td>
+ *             <p>
+ *             The objects that are trying to deliver the Event.
+ *             </p>
+ *             <p>
+ *             Generally, clients do not interact with this property directly.
+ *             Instead, clients use methods like {@link #addAwaitingDelivery(Object)}}
+ *             or {@link #canBeEvicted()} to ascertain the state of this property.
+ *             </p>
+ *             <p>
+ *                 If this is empty, then it is because the Event has just been created or when
+ *                 everyone who was trying to deliver the Event has done so.
+ *             </p>
+ *         </td>
+ *     </tr>
+ *     <tr>
+ *         <td>content</td>
+ *         <td>byte[]</td>
+ *         <td>
+ *             <p>
+ *                 The content of an Event.
+ *             </p>
+ *             <p>
+ *                 The content of an Event is treated as a binary object even when the content is text ---
+ *                 Miranda can't tell the difference.
+ *             </p>
+ *             <p>
+ *                 This property can be null.
+ *                 This is generally the case for HTTP DELETE operations.
+ *             </p>
+ *             <p>
+ *                 In situations that an Event COULD have a content but does not,
+ *                 for example an HTTP POST that has an empty body,
+ *                 this property will generally be a zero length array.
+ *             </p>
+ *         </td>
+ *     </tr>
+ * </table>
  */
 public class Event implements Perishable, Updateable<Event>, Matchable<Event>, DirectoryEntry {
     private static Gson ourGson = new Gson();
     private static SecureRandom random = new SecureRandom();
 
     public enum Methods {
+        Unknown,
         GET,
         POST,
         PUT,
@@ -46,34 +128,72 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
     }
 
     private String guid;
-    private String content;
+    private byte[] content;
+    private String userName;
+    private long timeOfCreation;
     private Methods method;
-    private long created;
+    private String topicName;
+    private List awaitingDelivery;
 
-    public Event (Methods method, String content) {
-        this.method = method;
-        this.content = content;
-        this.created = System.currentTimeMillis();
+    public Event (Methods method, String hexString) throws IOException {
+        byte[] content = Utils.hexStringToBytes(hexString);
+        String guid = UUID.randomUUID().toString();
 
-        this.guid = UUID.randomUUID().toString();
+        basicConstructor(null, guid, null, System.currentTimeMillis(), Methods.Unknown,
+                content);
     }
 
     public Event (Methods method, byte[] buffer) {
-        this.method = method;
-
-        String hexString = Utils.bytesToString(buffer);
-        this.content = hexString;
-
-        this.created = System.currentTimeMillis();
-        this.guid = UUID.randomUUID().toString();
+        String guid = UUID.randomUUID().toString();
+        basicConstructor(null, guid, null, System.currentTimeMillis(), method, buffer);
     }
 
-    public Event (String eventId, Methods method, String content, long time) {
-        this.guid = eventId;
+    public Event (String userName, String guid, String topicName, long timeOfCreation, Methods method, byte[] content) {
+        basicConstructor(userName, guid, topicName, timeOfCreation, method, content);
+    }
+
+    public void basicConstructor (String userName, String guid, String topicName, long timeOfCreation, Methods method,
+                                  byte[] content) {
+
+        this.userName = userName;
+        this.guid = guid;
+        this.topicName = topicName;
+        this.timeOfCreation = timeOfCreation;
         this.method = method;
         this.content = content;
-        this.created = time;
+
+        this.awaitingDelivery = new ArrayList();
     }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setContent(byte[] content) {
+
+        this.content = content;
+    }
+
+    public void addAwaitingDelivery (Object deliverer) {
+        this.awaitingDelivery.add(deliverer);
+    }
+
 
     private static Methods[] methods = {Methods.POST, Methods.GET, Methods.PUT, Methods.DELETE};
 
@@ -97,20 +217,12 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
         return createRandom(improvedRandom, 1024);
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 
     public String getGuid() {
         return guid;
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
     }
 
     public Methods getMethod() {
@@ -155,5 +267,16 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
 
         Event otherEvent = (Event) other;
         return getGuid().equals(otherEvent.getGuid());
+    }
+
+    /**
+     * Answer whether this instance is eligible for eviction.
+     *
+     * <p>
+     *     An Event is eligible for eviction if no one is trying to deliver it.
+     * </p>
+     */
+    public boolean canBeEvicted () {
+        return awaitingDelivery.size() <= 0;
     }
 }

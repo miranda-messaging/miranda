@@ -31,6 +31,7 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
         Retry,
         Deadletter
     }
+
     private static Gson ourGson = new Gson();
 
     private long expires;

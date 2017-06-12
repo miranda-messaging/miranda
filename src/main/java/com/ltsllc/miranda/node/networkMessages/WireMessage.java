@@ -42,6 +42,8 @@ public class WireMessage {
         Join,
         JoinResponse,
         Misc,
+        NewEvent,
+        NewEventResponse,
         NewSession,
         NewSubscription,
         NewTopic,

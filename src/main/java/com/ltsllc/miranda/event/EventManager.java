@@ -18,13 +18,16 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.event.messages.CreateEventMessage;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.event.messages.ReadEventMessage;
 import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.manager.ListMessage;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -32,6 +35,8 @@ import java.util.concurrent.BlockingQueue;
  */
 public class EventManager extends DirectoryManager {
     public static final String NAME = "event manager";
+
+    private Map<String, Event> eventMap;
 
     public EventManager (String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
         super(NAME, directoryName, objectLimit, reader, writer);
@@ -53,5 +58,15 @@ public class EventManager extends DirectoryManager {
     public void sendListMessage (BlockingQueue<Message> senderQueue, Object sender) {
         ListMessage listMessage = new ListMessage(senderQueue, sender);
         sendToMe(listMessage);
+    }
+
+    public void sendNewEvent (BlockingQueue<Message> senderQueue, Object sender, String guid, Event.Methods method,
+                              byte[] content, Session session) {
+        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, sender, guid, method, content, session);
+        sendToMe(newEventMessage);
+    }
+
+    public void createEvent (Event event) {
+        eventMap.put (event.getGuid(), event);
     }
 }

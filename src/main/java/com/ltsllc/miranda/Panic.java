@@ -30,6 +30,7 @@ import java.io.StringWriter;
  */
 public class Panic extends Exception {
     public enum Reasons {
+        BadURL,
         CouldNotWrite, // A subsystem received a WriteFailed message
         DoesNotUnderstand, // A state received a message it does not know how to process
         DoesNotUnderstandNetworkMessage, // A state received a network message it does not know how to process

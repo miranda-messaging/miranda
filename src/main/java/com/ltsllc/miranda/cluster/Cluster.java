@@ -23,12 +23,15 @@ import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
 import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
+import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
@@ -340,7 +343,8 @@ public class Cluster extends Manager<Node, NodeElement> {
         }
     }
 
-    public void sendNewConnectionMessage (BlockingQueue<Message> senderQueue, Object sender, int handleId) {
-
+    public void sendEventCreatedMessage (BlockingQueue<Message> senderQueue, Object sender, Event event) {
+        EventCreatedMessage eventCreatedMessage = new EventCreatedMessage (senderQueue, sender, event);
+        sendToMe(eventCreatedMessage);
     }
 }
