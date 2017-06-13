@@ -1,10 +1,14 @@
 package com.ltsllc.miranda.operations.events;
 
-import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.event.messages.NewEventMessage;
-import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.event.EventManager;
+import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.topics.TopicManager;
+
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Create a new event and distribute it to the Cluster.
@@ -19,35 +23,23 @@ import com.ltsllc.miranda.session.Session;
  *     <li>Responding to the publisher</li>
  * </ul>
  */
-public class NewEventOperation extends Consumer {
+public class NewEventOperation extends Operation {
+    public static final String NAME = "new event operation";
+
+    private EventManager eventManager;
+    private TopicManager topicManager;
+    private Cluster cluster;
     private Event event;
-    private Session session;
-    private NewEventMessage originalMessage;
 
-    public NewEventOperation (NewEventMessage newEventMessage, Session session, String guid, String topicName,
-                              Event.Methods method, byte[] content) {
-        //
-        // get info on the topic
-        //
-        Miranda.getInstance().getTopicManager().sendGetTopicMessage(getQueue(), this, topicName);
+    public NewEventOperation (EventManager eventManager, TopicManager topicManager, Cluster cluster, Session session,
+                              BlockingQueue<Message> requester, Event event) {
 
-        //
-        // in the mean time, create the event
-        //
-        Event event = new Event(session.getUser().getName(), guid, topicName, System.currentTimeMillis(), method,
-                content);
+        super (NAME, requester, session);
 
-        setEvent (event);
-        setSession(session);
-        setOriginalMessage(newEventMessage);
-    }
-
-    public NewEventMessage getOriginalMessage() {
-        return originalMessage;
-    }
-
-    public void setOriginalMessage(NewEventMessage originalMessage) {
-        this.originalMessage = originalMessage;
+        this.eventManager = eventManager;
+        this.topicManager = topicManager;
+        this.cluster = cluster;
+        this.event = event;
     }
 
     public Event getEvent() {
@@ -58,11 +50,19 @@ public class NewEventOperation extends Consumer {
         this.event = event;
     }
 
-    public Session getSession() {
-        return session;
-    }
-
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public TopicManager getTopicManager() {
+        return topicManager;
+    }
+
+    public Cluster getCluster() {
+        return cluster;
     }
 }

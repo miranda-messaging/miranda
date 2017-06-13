@@ -21,7 +21,6 @@ import com.ltsllc.miranda.directory.DirectoryEntry;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
-import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import com.ltsllc.miranda.util.Utils;
 

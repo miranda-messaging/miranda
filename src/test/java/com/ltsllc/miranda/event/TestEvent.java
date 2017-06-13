@@ -22,6 +22,7 @@ import com.ltsllc.miranda.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 
 /**
@@ -41,11 +42,15 @@ public class TestEvent extends TestCase {
 
     @Before
     public void setup () {
-        reset();
+        try {
+            reset();
 
-        super.setup();
+            super.setup();
 
-        this.event = new Event(Event.Methods.POST, "junk");
+            this.event = new Event(Event.Methods.POST, "010203");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

@@ -19,6 +19,8 @@ package com.ltsllc.miranda.event;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.operations.events.NewEventOperation;
 
 /**
  * Created by Clark on 5/14/2017.
@@ -38,7 +40,7 @@ public class EventManagerReadyState extends State {
         switch (message.getSubject()) {
             case NewEvent: {
                 NewEventMessage newEventMessage = (NewEventMessage) message;
-                nextState = processEventMessage (newEventMessage);
+                nextState = processNewEventMessage (newEventMessage);
                 break;
             }
 
@@ -51,9 +53,10 @@ public class EventManagerReadyState extends State {
         return nextState;
     }
 
-    public State processEventMessage (NewEventMessage message) {
-        NewEventOperation newEventOperation = new NewEventOperation (getEventManager(), message.getSession(),
-                message.getGuid(), message.getMethod(), message.getContent());
+    public State processNewEventMessage (NewEventMessage message) {
+        NewEventOperation newEventOperation = new NewEventOperation (getEventManager(),
+                Miranda.getInstance().getTopicManager(), Miranda.getInstance().getCluster(), message.getSession(),
+                message.getSender(), message.getEvent());
 
         newEventOperation.start();
 

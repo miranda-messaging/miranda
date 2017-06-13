@@ -38,6 +38,8 @@ public enum Results {
     FileNotFound,
     ShortRead,
     UnrecognizedMethod,
-    NullResult
+    NullResult,
+    Acknowleged,
+    Written
 }
 

@@ -20,8 +20,18 @@ public class NewEventResponseMessage extends Message {
         this.result = result;
     }
 
+    public NewEventResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result) {
+        super(Subjects.NewEventResponse, senderQueue, sender);
+
+        this.result = result;
+    }
+
     public Event getEvent() {
         return event;
+    }
+
+    public void setEvent (Event event) {
+        this.event = event;
     }
 
     public Results getResult() {

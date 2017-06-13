@@ -22,17 +22,18 @@ import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
+import com.ltsllc.miranda.node.messages.EndConversationMessage;
+import com.ltsllc.miranda.node.messages.StartConversationMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
+import com.ltsllc.miranda.operations.WriteQuorum;
+import com.ltsllc.miranda.operations.events.AcknowledgeQuorum;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.event.NewEventHolder;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.session.AddSessionMessage;
@@ -342,10 +343,33 @@ public class Cluster extends Manager<Node, NodeElement> {
         }
     }
 
-
-    public void broadcastNewEvent (BlockingQueue<Message> senderQueue, Object sender, String key, Event event) {
+    public void sendBroadcastNewEventMessage (BlockingQueue<Message> senderQueue, Object sender, String key, Event event) {
         NewEventWireMessage newEventWireMessage = new NewEventWireMessage(key, event);
         BroadcastMessage broadcastMessage = new BroadcastMessage (senderQueue, sender, newEventWireMessage);
         sendToMe(broadcastMessage);
+    }
+
+    public void sendStartConversationMessage (BlockingQueue<Message> senderQueue, Object sender, String key,
+                                       BlockingQueue<Message> receiver) {
+
+        StartConversationMessage startConversationMessage = new StartConversationMessage(senderQueue, sender, key,
+                receiver);
+
+        sendToMe(startConversationMessage);
+    }
+
+    public void sendEndConversationMessage (BlockingQueue<Message> senderQueue, Object sender, String key) {
+        EndConversationMessage endConversationMessage = new EndConversationMessage(senderQueue, sender, key);
+        sendToMe(endConversationMessage);
+    }
+
+    public AcknowledgeQuorum createAcknowledgeQuorum() {
+        List<Node> list = new ArrayList<Node>(getNodes());
+        return new AcknowledgeQuorum(list);
+    }
+
+    public WriteQuorum createWriteQuorum () {
+        List<Node> list = new ArrayList<Node>(getNodes());
+        return new WriteQuorum(list);
     }
 }

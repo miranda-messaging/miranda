@@ -20,7 +20,6 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.NodeElement;

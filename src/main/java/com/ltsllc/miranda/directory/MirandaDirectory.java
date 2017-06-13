@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.directory;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;

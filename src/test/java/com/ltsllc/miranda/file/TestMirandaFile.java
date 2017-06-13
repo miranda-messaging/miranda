@@ -16,11 +16,9 @@
 
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventsFile;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -67,22 +65,22 @@ public class TestMirandaFile extends TestCase {
 
     @Before
     public void setup() {
-        reset();
-
-        super.setup();
-
-        setuplog4j();
-        setupMiranda();
-        setupMockFileWatcher();
-        setupMockReader();
-        setupMirandaProperties();
-        setupWriter();
-
-        Event event = new Event(Event.Methods.POST, "whatever");
-        List<Event> eventList = new ArrayList<Event>();
-        eventList.add(event);
-
         try {
+            reset();
+
+            super.setup();
+
+            setuplog4j();
+            setupMiranda();
+            setupMockFileWatcher();
+            setupMockReader();
+            setupMirandaProperties();
+            setupWriter();
+
+            Event event = new Event(Event.Methods.POST, "whatever");
+            List<Event> eventList = new ArrayList<Event>();
+            eventList.add(event);
+
             eventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());
             eventsFile.setData(eventList);
         } catch (IOException e) {
@@ -103,7 +101,7 @@ public class TestMirandaFile extends TestCase {
     }
 
     @Test
-    public void testVersion() {
+    public void testVersion() throws Exception {
         Version oldVersion = getEventsFile().getVersion();
 
         assert (oldVersion.equals(oldVersion));

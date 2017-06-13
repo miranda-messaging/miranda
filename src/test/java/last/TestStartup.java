@@ -18,7 +18,6 @@ package last;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.miranda.Startup;

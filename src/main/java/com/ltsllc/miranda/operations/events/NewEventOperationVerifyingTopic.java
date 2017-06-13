@@ -1,14 +1,11 @@
 package com.ltsllc.miranda.operations.events;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.event.NewEventHolder;
+import com.ltsllc.miranda.operations.Quorum;
 import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.messages.GetTopicResponseMessage;
 import com.ltsllc.miranda.user.User;
@@ -18,8 +15,26 @@ import com.ltsllc.miranda.user.User;
  * the existence of the topic and the user's
  */
 public class NewEventOperationVerifyingTopic extends OperationState {
-    public NewEventOperationVerifyingTopic(NewEventOperation newEventOperation) {
+    private String conversation;
+    private Cluster cluster;
+
+    public NewEventOperationVerifyingTopic(NewEventOperation newEventOperation, Cluster cluster, String conversation) {
         super(newEventOperation);
+
+        this.conversation = conversation;
+        this.cluster = cluster;
+    }
+
+    public String getConversation() {
+        return conversation;
+    }
+
+    public Cluster getCluster() {
+        return cluster;
+    }
+
+    public void setConversationKey(String conversation) {
+        this.conversation = conversation;
     }
 
     public NewEventOperation getNewEventOperation () {
@@ -45,16 +60,25 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return nextState;
     }
 
+    public boolean userIsPublisher () {
+        return getNewEventOperation().getSession().getUser().getCategory() == User.UserTypes.Publisher;
+    }
+
+    public boolean userIsAdmin () {
+        return getNewEventOperation().getSession().getUser().getCategory() == User.UserTypes.Admin;
+    }
+
     public State start () {
         State nextState = getNewEventOperation().getCurrentState();
+
+        setConversationKey(createConversationKey());
 
         //
         // in order to publish, a user must be an admin or a publisher
         //
-        if (getNewEventOperation().getSession().getUser().getCategory() != User.UserTypes.Publisher &&
-                getNewEventOperation().getSession().getUser().getCategory() != User.UserTypes.Admin) {
+        if (!userIsPublisher() && !userIsAdmin()) {
             reply(Results.NotPublisher);
-            nextState = StopState.getInstance();
+            return StopState.getInstance();
         }
 
         //
@@ -75,16 +99,16 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         //
         if (message.getResult() == Results.TopicNotFound) {
             reply(message.getResult());
-            nextState = StopState.getInstance();
+            return StopState.getInstance();
         }
 
         //
         // otherwise, if the user doesn't own the topic and they are not an admin
         // then tell the user and stop
         //
-        else if (!ownsTopic(message.getTopic()) && !isAdmin(())) {
-            reply(Results.InsufficientPermissions);
-            nextState = StopState.getInstance();
+        else if (!ownsTopic(message.getTopic()) && !isAdmin()) {
+            reply(Results.NotOwner);
+            return StopState.getInstance();
         }
 
         //
@@ -99,7 +123,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         tellNewEvent(getNewEventOperation().getEvent());
 
         //
-        // if the remote policy for topic says to return immediately, then we are done.
+        // if the remote policy for topic says to return immediately, then we do so
         //
         if (message.getTopic().getRemotePolicy() == Topic.RemotePolicies.None) {
             reply(Results.Success);
@@ -110,10 +134,24 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         // otherwise, wait for a quorum of the other nodes to respond
         //
         else {
-            nextState = new NewEventOperationAwaitingQuorum(getNewEventOperation());
+            Quorum quorum = createQuorum(message.getTopic());
+            nextState = new NewEventOperationAwaitingQuorum(getNewEventOperation(), quorum);
         }
 
         return nextState;
+    }
+
+    public Quorum createQuorum (Topic topic) {
+        if (topic.getRemotePolicy() == Topic.RemotePolicies.Acknowledged)
+            return getCluster().createAcknowledgeQuorum();
+        else if (topic.getRemotePolicy() == Topic.RemotePolicies.Written)
+            return getCluster().createWriteQuorum();
+        else {
+            Panic panic = new Panic("Unrecognized remote policy: " + topic.getRemotePolicy().toString(),
+                    Panic.Reasons.UnrecognizedRemotePolicy);
+            Miranda.panicMiranda(panic);
+            return null;
+        }
     }
 
     public boolean ownsTopic(Topic topic) {
@@ -125,7 +163,16 @@ public class NewEventOperationVerifyingTopic extends OperationState {
     }
 
     public void tellNewEvent (Event event) {
-        Miranda.getInstance().getCluster().sendStartConversation (getOperation().getQueue(), this);
-        Miranda.getInstance().getCluster().broadcastNewEvent(getNewEventOperation().getQueue(), this, event);
+        setConversationKey(createConversationKey());
+        Miranda.getInstance().getCluster().sendStartConversationMessage (getOperation().getQueue(), this,
+                getConversation(), getOperation().getQueue());
+
+        Miranda.getInstance().getCluster().sendBroadcastNewEventMessage(getNewEventOperation().getQueue(), this,
+                getConversation(), event);
+    }
+
+    public Message createResponseMessage (Results result) {
+        return new NewEventResponseMessage(getNewEventOperation().getQueue(), this, result,
+                getNewEventOperation().getEvent());
     }
 }

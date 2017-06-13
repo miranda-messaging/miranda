@@ -29,6 +29,7 @@ public class StartupPanic extends Panic {
         ExceptionManipulatingKeystore, // An exception was caught while trying to manipulate the keystore
         ExceptionOpeningKeystore, // an exception was caught trying to open the system Keystore
         ExceptionScanning,
+        ExceptionStartingEventManager,
         ExceptionStartingHttpServer,
         ExceptionStartingNetwork, // an exception was thrown while trying to start the network
         ExceptionStartingNetworkListener,

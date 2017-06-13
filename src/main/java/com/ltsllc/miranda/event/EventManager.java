@@ -17,11 +17,16 @@
 package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.event.messages.CreateEventMessage;
+import com.ltsllc.miranda.event.messages.EvictMessage;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.event.messages.ReadEventMessage;
 import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.manager.ListMessage;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
@@ -31,42 +36,61 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 5/1/2017.
+ * A DirectoryManager that handles Events
  */
 public class EventManager extends DirectoryManager {
     public static final String NAME = "event manager";
 
     private Map<String, Event> eventMap;
 
-    public EventManager (String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
+    public EventManager(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
         super(NAME, directoryName, objectLimit, reader, writer);
 
         EventManagerReadyState eventManagerReadyState = new EventManagerReadyState(this);
         setCurrentState(eventManagerReadyState);
     }
 
-    public void sendReadEventMessage (BlockingQueue<Message> senderQueue, Object sender, String guid) {
+    /**
+     * Start the manager.
+     *
+     * <p>
+     *     This entails starting periodic evictions.
+     * </p>
+     */
+    public void start () {
+        try {
+            long period = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_EVENT_EVICTION_PERIOD);
+            EvictMessage evictEventsMessage = new EvictMessage();
+            Miranda.timer.sendSchedulePeriodic(period, getQueue(), evictEventsMessage);
+        } catch (MirandaException e) {
+            StartupPanic startupPanic = new StartupPanic("Exception starting event manager", e,
+                    StartupPanic.StartupReasons.ExceptionStartingEventManager);
+
+            Miranda.panicMiranda(startupPanic);
+        }
+    }
+
+    public void sendReadEventMessage(BlockingQueue<Message> senderQueue, Object sender, String guid) {
         ReadEventMessage readEventMessage = new ReadEventMessage(senderQueue, sender, guid);
         sendToMe(readEventMessage);
     }
 
-    public void sendCreateEventMessage (BlockingQueue<Message> senderQueue, Object sender, Event event) {
+    public void sendCreateEventMessage(BlockingQueue<Message> senderQueue, Object sender, Event event) {
         CreateEventMessage createEventMessage = new CreateEventMessage(senderQueue, sender, event);
         sendToMe(createEventMessage);
     }
 
-    public void sendListMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendListMessage(BlockingQueue<Message> senderQueue, Object sender) {
         ListMessage listMessage = new ListMessage(senderQueue, sender);
         sendToMe(listMessage);
     }
 
-    public void sendNewEvent (BlockingQueue<Message> senderQueue, Object sender, String guid, Event.Methods method,
-                              byte[] content, Session session) {
-        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, sender, guid, method, content, session);
+    public void sendNewEventMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, Event event) {
+        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, sender, session, event);
         sendToMe(newEventMessage);
     }
 
-    public void createEvent (Event event) {
-        eventMap.put (event.getGuid(), event);
+    public void createEvent(Event event) {
+        eventMap.put(event.getGuid(), event);
     }
 }

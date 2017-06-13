@@ -16,17 +16,16 @@
 
 package com.ltsllc.miranda.cluster.states;
 
-import com.ltsllc.miranda.LoadResponseMessage;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownMessage;
-import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
 import com.ltsllc.miranda.manager.ManagerReadyState;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.node.messages.EndConversationMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.StartConversationMessage;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
@@ -197,6 +196,18 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
             case DeleteTopic: {
                 DeleteTopicMessage deleteTopicMessage = (DeleteTopicMessage) m;
                 nextState = processDeleteTopicMessage (deleteTopicMessage);
+                break;
+            }
+
+            case StartConversation: {
+                StartConversationMessage startConversationMessage = (StartConversationMessage) m;
+                nextState = processStartConversationMessage (startConversationMessage);
+                break;
+            }
+
+            case EndConversation: {
+                EndConversationMessage endConversationMessage = (EndConversationMessage) m;
+                nextState = processEndConversationMessage (endConversationMessage);
                 break;
             }
 
@@ -389,6 +400,22 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         DeleteTopicWireMessage deleteTopicWireMessage = new DeleteTopicWireMessage(deleteTopicMessage.getTopicName());
         getCluster().broadcast(deleteTopicWireMessage);
 
+        return getCluster().getCurrentState();
+    }
+
+    public void forwardMessage (Message message) {
+        for (Node node : getCluster().getNodes()) {
+            Consumer.staticSend(message, node.getQueue());
+        }
+    }
+
+    public State processStartConversationMessage (StartConversationMessage message) {
+        forwardMessage(message);
+        return getCluster().getCurrentState();
+    }
+
+    public State processEndConversationMessage (EndConversationMessage message) {
+        forwardMessage(message);
         return getCluster().getCurrentState();
     }
 }

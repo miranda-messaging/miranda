@@ -22,6 +22,8 @@ import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 2/22/2017.
  */
@@ -34,27 +36,35 @@ public class TestDelivery extends TestCase {
 
     @Before
     public void setup() {
-        reset();
+        try {
+            reset();
 
-        super.setup();
+            super.setup();
 
-        Event event = new Event(Event.Methods.POST, "junk");
-        Subscription subscription = new Subscription();
+            Event event = new Event(Event.Methods.POST, "010203");
+            Subscription subscription = new Subscription();
 
-        this.delivery = new Delivery(event, System.currentTimeMillis(), subscription);
+            this.delivery = new Delivery(event, System.currentTimeMillis(), subscription);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testConstructor() {
-        Event event = new Event(Event.Methods.POST, "junk");
-        Subscription subscription = new Subscription();
+        try {
+            Event event = new Event(Event.Methods.POST, "junk");
+            Subscription subscription = new Subscription();
 
-        long timeDelivered = System.currentTimeMillis();
+            long timeDelivered = System.currentTimeMillis();
 
-        this.delivery = new Delivery(event, timeDelivered, subscription);
+            this.delivery = new Delivery(event, timeDelivered, subscription);
 
-        assert (getDelivery().getMessageId().equals(event.getGuid()));
-        assert (getDelivery().getDelivered() == timeDelivered);
+            assert (getDelivery().getMessageId().equals(event.getGuid()));
+            assert (getDelivery().getDelivered() == timeDelivered);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

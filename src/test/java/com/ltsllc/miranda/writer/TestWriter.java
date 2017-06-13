@@ -19,7 +19,6 @@ package com.ltsllc.miranda.writer;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.PrivateKey;
-import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
@@ -36,7 +35,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 
-import static org.mockito.Matchers.byteThat;
 import static org.mockito.Mockito.when;
 
 /**

@@ -20,7 +20,6 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
 import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
@@ -37,7 +36,6 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 4/2/2017.

@@ -4,10 +4,6 @@ import com.ltsllc.miranda.directory.DirectoryEntry;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Updateable;
-import com.ltsllc.miranda.subsciptions.Subscription;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An {@link com.ltsllc.miranda.event.Event} and when (if) it was delivered ({@link com.ltsllc.miranda.deliveries.Delivery}).

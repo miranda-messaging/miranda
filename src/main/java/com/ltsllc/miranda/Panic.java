@@ -69,6 +69,7 @@ public class Panic extends Exception {
         UnknownUser, // we were told to update a user that doesn't exist
         UnrecognizedPublicKeyClass,
         UnrecognizedNode, // a node shut down that we don't have a record of
+        UnrecognizedRemotePolicy,
         UnrecognizedResult
     }
 

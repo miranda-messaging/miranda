@@ -20,7 +20,6 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.network.messages.CloseResponseMessage;
-import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

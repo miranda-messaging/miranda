@@ -35,6 +35,12 @@ public class NetworkMessage extends Message {
         this.wireMessage = wireMessage;
     }
 
+    public NetworkMessage (Subjects subject, BlockingQueue<Message> senderQueue, WireMessage wireMessage) {
+        super(subject, senderQueue, null);
+
+        this.wireMessage = wireMessage;
+    }
+
     @Override
     public String toString() {
         return super.toString();

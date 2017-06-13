@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -73,23 +72,22 @@ public class NewEventHolder extends ServletHolder {
         eventMap.remove(guid);
     }
 
-    public NewEvent create (Event.Methods method, byte[] content, Session session) throws TimeoutException {
-        String guid = UUID.randomUUID().toString();
+    public NewEvent create (Session session, Event event) throws TimeoutException {
         try {
-            registerGuid(guid);
-            Miranda.getInstance().getEventManager().sendNewEvent(getQueue(), this, guid, method, content, session);
+            registerGuid(event.getGuid());
+            Miranda.getInstance().getEventManager().sendNewEventMessage(getQueue(), this, session, event);
 
             sleep();
 
             NewEvent newEvent = new NewEvent();
 
-            newEvent.guid = guid;
-            newEvent.result = getResult(guid);
-            newEvent.event = getEvent(guid);
+            newEvent.guid = event.getGuid();
+            newEvent.result = getResult(event.getGuid());
+            newEvent.event = event;
 
             return newEvent;
         } finally {
-            unregisterGuid(guid);
+            unregisterGuid(event.getGuid());
         }
     }
 

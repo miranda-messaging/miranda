@@ -17,27 +17,13 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.NetworkReadyState;
-import com.ltsllc.miranda.network.messages.ConnectToMessage;
-import com.ltsllc.miranda.network.messages.SendNetworkMessage;
-import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
-import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.servlet.holder.TestLoginHolder;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.Utils;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.future.ConnectFuture;
-import org.apache.mina.core.future.WriteFuture;
-import org.apache.mina.core.service.IoAcceptor;
-import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
-import org.apache.mina.filter.ssl.KeyStoreFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
@@ -50,14 +36,13 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 3/18/2017.

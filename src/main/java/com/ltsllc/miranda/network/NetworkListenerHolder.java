@@ -66,9 +66,4 @@ public class NetworkListenerHolder extends Consumer {
     public void stop () {
        getNetworkListener().stop();
     }
-
-    public void newConnection (Handle handle) {
-        int handleId = getNetwork().newConnection(handle);
-        getCluster().sendNewConnectionMessage(getQueue(), this, handleId);
-    }
 }

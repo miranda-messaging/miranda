@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.cluster.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.node.networkMessages.WireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.ConversationWireMessage;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -9,14 +9,19 @@ import java.util.concurrent.BlockingQueue;
  * Created by clarkhobbie on 6/12/17.
  */
 public class BroadcastMessage extends Message {
-    private WireMessage wireMessage;
+    private String key;
+    private ConversationWireMessage converasationWireMessage;
 
-    public WireMessage getWireMessage() {
-        return wireMessage;
+    public String getKey() {
+        return key;
     }
 
-    public BroadcastMessage(BlockingQueue<Message> sender, Object senderObject, WireMessage wireMessage) {
+    public ConversationWireMessage getWireMessage() {
+        return converasationWireMessage;
+    }
+
+    public BroadcastMessage(BlockingQueue<Message> sender, Object senderObject, ConversationWireMessage wireMessage) {
         super(Subjects.Broadcast, sender, senderObject);
-        this.wireMessage = wireMessage;
+        this.converasationWireMessage = wireMessage;
     }
 }

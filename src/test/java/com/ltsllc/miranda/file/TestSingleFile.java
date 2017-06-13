@@ -18,7 +18,6 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.NodeElementFileCreator;

@@ -112,7 +112,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         Topic topic = getTopicManager().getTopic(getTopicMessage.getName());
 
         GetTopicResponseMessage getTopicResponseMessage = new GetTopicResponseMessage(getTopicManager().getQueue(),
-                this, topic);
+                this, Results.Success, topic);
 
         getTopicMessage.reply(getTopicResponseMessage);
 

@@ -18,7 +18,6 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
 import com.ltsllc.miranda.file.messages.WatchMessage;
 import com.ltsllc.miranda.miranda.Miranda;

@@ -1,27 +1,20 @@
 package com.ltsllc.miranda.cluster.networkMessages;
 
 import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.node.networkMessages.WireMessage;
 
 /**
  * Created by Clark on 6/11/2017.
  */
-public class NewEventWireMessage extends WireMessage {
+public class NewEventWireMessage extends ConversationWireMessage {
     private Event event;
-    private String key;
 
     public NewEventWireMessage (String key, Event event) {
-        super(WireSubjects.NewEvent);
+        super(WireSubjects.NewEvent, key);
 
-        this.key = key;
         this.event = event;
     }
 
     public Event getEvent() {
         return event;
-    }
-
-    public String getKey() {
-        return key;
     }
 }

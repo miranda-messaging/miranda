@@ -16,9 +16,7 @@
 
 package last;
 
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
-import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.mina.core.future.CloseFuture;
@@ -30,7 +28,6 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 
 import javax.net.ssl.SSLContext;
@@ -40,11 +37,8 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Clark on 3/18/2017.
