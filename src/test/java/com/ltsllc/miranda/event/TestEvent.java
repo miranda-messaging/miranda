@@ -54,17 +54,17 @@ public class TestEvent extends TestCase {
     }
 
     @Test
-    public void testConstructors () {
-        String junk = "junk";
-        assert (getEvent().getContent().equals(junk));
+    public void testConstructors () throws IOException {
+        String junk = "010203";
+        assert (getEvent().getContentAsHexString().equals(junk));
         assert (getEvent().getMethod() == Event.Methods.POST);
 
-        Event event = new Event(Event.Methods.PUT, junk.getBytes());
+        Event event = new Event(Event.Methods.PUT, junk);
 
         assert (event.getMethod() == Event.Methods.PUT);
 
-        String junkAsBinaryAsHex = Utils.bytesToString(junk.getBytes());
-        assert (event.getContent().equals(junkAsBinaryAsHex));
+        byte[] whatever = Utils.hexStringToBytes(junk);
+        assert (arraysAreEquivalent(event.getContent(), whatever));
     }
 
     @Test

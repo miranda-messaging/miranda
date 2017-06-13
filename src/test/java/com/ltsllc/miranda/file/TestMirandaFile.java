@@ -77,7 +77,7 @@ public class TestMirandaFile extends TestCase {
             setupMirandaProperties();
             setupWriter();
 
-            Event event = new Event(Event.Methods.POST, "whatever");
+            Event event = new Event(Event.Methods.POST, "010203");
             List<Event> eventList = new ArrayList<Event>();
             eventList.add(event);
 
@@ -106,7 +106,7 @@ public class TestMirandaFile extends TestCase {
 
         assert (oldVersion.equals(oldVersion));
 
-        Event event = new Event(Event.Methods.POST, "whatever");
+        Event event = new Event(Event.Methods.POST, "010203");
         List<Event> eventList = new ArrayList<Event>();
         eventList.add(event);
 

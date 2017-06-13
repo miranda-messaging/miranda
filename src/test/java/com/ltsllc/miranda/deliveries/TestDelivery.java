@@ -53,7 +53,7 @@ public class TestDelivery extends TestCase {
     @Test
     public void testConstructor() {
         try {
-            Event event = new Event(Event.Methods.POST, "junk");
+            Event event = new Event(Event.Methods.POST, "010203");
             Subscription subscription = new Subscription();
 
             long timeDelivered = System.currentTimeMillis();

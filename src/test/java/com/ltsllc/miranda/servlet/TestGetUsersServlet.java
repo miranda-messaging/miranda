@@ -102,7 +102,7 @@ public class TestGetUsersServlet extends TestServlet {
     @Test
     public void testDoPost () {
         User user = new User("whatever", "whatever");
-        String input = "hello world!";
+        String input = "{ \"session\" : \"1234\"}";
         byte[] data = input.getBytes();
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
         LocalServletInputStream localServletInputStream = new LocalServletInputStream(byteArrayInputStream);

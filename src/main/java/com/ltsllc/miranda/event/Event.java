@@ -138,7 +138,7 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
         byte[] content = Utils.hexStringToBytes(hexString);
         String guid = UUID.randomUUID().toString();
 
-        basicConstructor(null, guid, null, System.currentTimeMillis(), Methods.Unknown,
+        basicConstructor(null, guid, null, System.currentTimeMillis(), method,
                 content);
     }
 
@@ -218,6 +218,10 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
 
     public byte[] getContent() {
         return content;
+    }
+
+    public String getContentAsHexString () {
+        return Utils.bytesToString(getContent());
     }
 
     public String getGuid() {
