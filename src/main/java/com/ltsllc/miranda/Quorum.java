@@ -1,7 +1,7 @@
-package com.ltsllc.miranda.operations;
+package com.ltsllc.miranda;
 
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.node.Node;
+import com.ltsllc.miranda.operations.WireResponse;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ abstract public class Quorum {
     public void addResponse (Node node, WireResponse response) {
         if (response.getResult() == Results.Acknowleged && !requiresWrites()) {
             moveWaitingToResponded(node);
-        } else if (response.getResult() == Results.Written && requiresWrites()) {
+        } else if (response.getResult() == Results.Written) {
             moveWaitingToResponded(node);
         }
 

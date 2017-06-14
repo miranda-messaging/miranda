@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.servlet.ReadObject;
+import com.ltsllc.miranda.servlet.objects.ReadObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.user.User;
 

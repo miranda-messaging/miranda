@@ -56,9 +56,7 @@ public class TestGetUsersServlet extends TestServlet {
             return true;
         }
 
-        public void setReadListener (ReadListener readListener) {
-
-        }
+        public void setReadListener (ReadListener readListener) {}
 
         public boolean isFinished () {
             return lastRead == -1;

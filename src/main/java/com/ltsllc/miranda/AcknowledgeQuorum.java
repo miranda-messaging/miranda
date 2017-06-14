@@ -1,12 +1,12 @@
-package com.ltsllc.miranda.operations.events;
+package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.operations.Quorum;
+import com.ltsllc.miranda.Quorum;
 
 import java.util.List;
 
 /**
- * Created by Clark on 6/13/2017.
+ * A {@link Quorum} that accepts acknowledge
  */
 public class AcknowledgeQuorum extends Quorum {
     public AcknowledgeQuorum(List<Node> waitingFor) {

@@ -3,7 +3,7 @@ package com.ltsllc.miranda.operations.events;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
-import com.ltsllc.miranda.operations.Quorum;
+import com.ltsllc.miranda.Quorum;
 
 /**
  * We are waiting on the other nodes to acknowledge or record the Event.

@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.ListObject;
+import com.ltsllc.miranda.servlet.objects.ListObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.subsciptions.Subscription;
 
