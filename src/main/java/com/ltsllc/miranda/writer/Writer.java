@@ -73,6 +73,26 @@ public class Writer extends Consumer {
 
     private static final int BUFFER_SIZE = 8192;
 
+    public void copyFile (String srcFileName, String destFileName) throws IOException {
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        byte[] buffer = new byte[BUFFER_SIZE];
+
+        try {
+            fileInputStream = new FileInputStream(srcFileName);
+            fileOutputStream = new FileOutputStream(destFileName);
+
+            int bytesRead = fileInputStream.read(buffer);
+            while (bytesRead != -1) {
+                fileOutputStream.write(buffer);
+                bytesRead = fileInputStream.read(buffer);
+            }
+        } finally {
+            Utils.closeIgnoreExceptions(fileInputStream);
+            Utils.closeIgnoreExceptions(fileOutputStream);
+        }
+    }
+
     public void backup (File file) throws IOException
     {
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -84,22 +104,10 @@ public class Writer extends Consumer {
             }
         }
 
-        FileInputStream fileInputStream = null;
-        FileOutputStream fileOutputStream = null;
+        String filename = file.getCanonicalPath();
+        String backupFilename = filename + ".backup";
 
-        try {
-            fileInputStream = new FileInputStream(file);
-            fileOutputStream = new FileOutputStream(backup);
-
-            int bytesRead = fileInputStream.read(buffer);
-            do {
-                fileOutputStream.write(buffer,0, bytesRead);
-                bytesRead = fileInputStream.read(buffer);
-            } while (bytesRead == buffer.length);
-        } finally {
-            Utils.closeIgnoreExceptions(fileInputStream);
-            Utils.closeIgnoreExceptions(fileOutputStream);
-        }
+        copyFile(filename, backupFilename);
     }
 
     public void sendWrite (BlockingQueue<Message> senderQueue, Object sender, String filename, byte[] data) {

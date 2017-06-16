@@ -48,19 +48,19 @@ Generate keys for the miranda node
 
 keytool -genkeypair -keystore keystore -storepass whatever -alias private -keyalg rsa
 
-Generate a certificate signing request
+Generate a certificate signing request for the Miranda node
 
 keytool -certreq -keystore keystore -storepass whatever -alias private -file private.csr
 
-Sign the certificate signing request with the certificate authority
+Sign the certificate signing request for the Miranda node with the certificate authority
 
-openssl x509 -req -CA ca-certificate.pem.txt -CAkey ca-key.pem.txt -in server.csr -out server.cer  -days 365 -CAcreateserial
+openssl x509 -req -CA ca-certificate.pem.txt -CAkey ca-key.pem.txt -in private.csr -out private.cer  -days 365 -CAcreateserial
 
-Import the certificate authority certificate to the keystore
+Import the certificate authority to the keystore
 
 keytool -import -keystore keystore -storepass whatever -file ca-certificate.pem.txt -alias ca
 
-Import the node certificate to the keystore
+Import the Miranda node certificate to the keystore
 
 keytool -import -keystore keystore -storepass whatever -file private.cer -alias certificate
 

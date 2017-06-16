@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -79,6 +81,11 @@ public class TestFileWatcherReadyState extends TestCase {
         this.fileWatcherService = Miranda.fileWatcher;
     }
 
+
+    public boolean contains (Map map, String entry) {
+        return map.containsKey(entry);
+    }
+
     @After
     public void cleanup() {
         deleteDirectory(ROOT);
@@ -87,18 +94,15 @@ public class TestFileWatcherReadyState extends TestCase {
     private static final String FILE_NAME = "testdir/new/20170220-001.msg";
 
     @Test
-    public void testProcessWatchMessage() {
+    public void testProcessWatchMessage() throws IOException {
         File file = new File(FILE_NAME);
         WatchMessage message = new WatchMessage(getQueue(), this, file);
         send(message, getFileWatcherService().getQueue());
 
-        pause(125);
+        pause(500);
 
-        touch(file);
+        assert (contains(getFileWatcherService().getWatchedFiles(),file.getCanonicalPath()));
 
-        pause(125);
-
-        assert (contains(Message.Subjects.FileChanged, getQueue()));
     }
 
 
@@ -106,21 +110,20 @@ public class TestFileWatcherReadyState extends TestCase {
     public void testProcessUnwatchFileMessage() {
         File file = new File(FILE_NAME);
         UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
-
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
 
         send(watchMessage, getFileWatcherService().getQueue());
 
-        pause(125);
+        pause(500);
 
         touch(file);
 
-        pause(125);
+        pause(500);
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
         send(unwatchFileMessage, getFileWatcherService().getQueue());
 
-        pause(125);
+        pause(250);
         getQueue().clear();
 
         touch(file);

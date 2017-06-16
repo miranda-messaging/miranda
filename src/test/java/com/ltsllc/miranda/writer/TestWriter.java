@@ -240,6 +240,7 @@ public class TestWriter extends TestCase {
     }
 
 
+    /*
     @Test
     public void testBackupCannotDeleteBackup () {
         FileInputStream fileInputStream = null;
@@ -262,4 +263,5 @@ public class TestWriter extends TestCase {
             Utils.closeIgnoreExceptions(fileInputStream);
         }
     }
+    */
 }

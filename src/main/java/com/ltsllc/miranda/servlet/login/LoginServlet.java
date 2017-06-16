@@ -20,12 +20,14 @@ import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
+import com.ltsllc.miranda.util.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -50,11 +52,12 @@ public class LoginServlet extends MirandaServlet {
             result.setResult(loginResult.result);
 
             if (loginResult.session != null) {
-                result.setCategory(loginResult.session.getUser().getCategory().toString());
                 String sessionIdString = Long.toString(loginResult.session.getId());
                 byte[] plainText = sessionIdString.getBytes();
-                EncryptedMessage encryptedMessage = loginResult.session.getUser().getPublicKey().encrypt(plainText);
-                result.setEncryptedMessage(encryptedMessage);
+                byte[] cipherText = Utils.rsaEncrypt(loginResult.session.getUser().getPublicKey().getSecurityPublicKey(),
+                        plainText);
+                Base64.Encoder encoder = Base64.getEncoder();
+                result.setSession(encoder.encodeToString(cipherText));
             }
         } catch (MirandaException | GeneralSecurityException e) {
             result.setResult(Results.Exception);

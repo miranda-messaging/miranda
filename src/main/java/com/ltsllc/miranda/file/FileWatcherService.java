@@ -77,7 +77,7 @@ public class FileWatcherService extends Consumer {
             long lastModified = new Long(file.lastModified());
             Long lastRecordChange = watchedFiles.get(canonicalName);
 
-            if (lastModified != lastRecordChange.longValue())
+            if (lastModified > lastRecordChange.longValue())
                 fireChanged(canonicalName);
         }
     }

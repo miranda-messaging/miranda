@@ -24,16 +24,6 @@ import com.ltsllc.miranda.servlet.objects.ResultObject;
  */
 public class LoginResultObject extends ResultObject {
     private String session;
-    private String category;
-    private EncryptedMessage encryptedMessage;
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     public String getSession() {
         return session;
@@ -41,13 +31,5 @@ public class LoginResultObject extends ResultObject {
 
     public void setSession(String session) {
         this.session = session;
-    }
-
-    public EncryptedMessage getEncryptedMessage() {
-        return encryptedMessage;
-    }
-
-    public void setEncryptedMessage(EncryptedMessage encryptedMessage) {
-        this.encryptedMessage = encryptedMessage;
     }
 }

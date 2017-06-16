@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/11/2017.
  */
-public class GetUsersServlet extends UserServlet {
+public class ListUsersServlet extends UserServlet {
     public ResultObject createResultObject() {
         return new UserListResultObject();
     }

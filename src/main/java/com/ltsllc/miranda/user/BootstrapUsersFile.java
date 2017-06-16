@@ -8,6 +8,8 @@ import com.ltsllc.miranda.util.Utils;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
@@ -66,5 +68,17 @@ public class BootstrapUsersFile {
         } finally {
             Utils.closeIgnoreExceptions(fileWriter);
         }
+    }
+
+    public void createUser (String name, String description) throws GeneralSecurityException, IOException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        PublicKey publicKey = new PublicKey(keyPair.getPublic());
+        User user = new User(name, User.UserTypes.Admin, description, publicKey);
+        String publicKeyFilename = name + ".public.pem.txt";
+        String privateKeyFilename = name + ".private.pem.txt";
+        Utils.writeAsPem(publicKeyFilename, keyPair.getPublic());
+        Utils.writeAsPem(privateKeyFilename, keyPair.getPrivate());
+        userList.add (user);
     }
 }

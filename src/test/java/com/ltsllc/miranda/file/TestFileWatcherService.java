@@ -122,13 +122,13 @@ public class TestFileWatcherService extends TestCase {
         WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
         send(watchMessage, getFileWatcherService().getQueue());
 
-        pause(125);
+        pause(500);
 
         long time = touch(file);
         time++;
         touch (file, time);
 
-        pause(200);
+        pause(500);
 
         getFileWatcherService().checkFiles();
 

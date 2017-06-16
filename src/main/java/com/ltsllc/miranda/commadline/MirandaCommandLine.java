@@ -51,8 +51,8 @@ public class MirandaCommandLine extends CommandLine {
     public static final String OPTION_MODE_SHORT = "-m";
     public static final String OPTION_MODE_LONG = "--mode";
 
-    public static final String OPTION_PASSWORD_SHORT = "-p";
-    public static final String OPTION_PASSWORD_LONG = "--password";
+    public static final String OPTION_KEYSTORE_PASSWORD_SHORT = "-p";
+    public static final String OPTION_KEYSTORE_PASSWORD_LONG = "--keyStorePassword";
 
     public static final String OPTION_PROPERTIES_SHORT = "-r";
     public static final String OPTION_PROPERTIES_LONG = "--properties";
@@ -61,7 +61,7 @@ public class MirandaCommandLine extends CommandLine {
     public static final String OPTION_LOG4J_LONG = "--log4j";
 
     public static final String OPTION_TRUSTORE_PASSWORD_SHORT = "-t";
-    public static final String OPTION_TRUSTORE_PASSWORD_LONG = "--trustorePassword";
+    public static final String OPTION_TRUSTORE_PASSWORD_LONG = "--trustStorePassword";
 
     public static final String USAGE = "miranda [-d] [-l <logging level>] [-m <mode>] [-p <keystore password>] [-r <properties file>] [-4 <log4j XML file>] [-t <trustore password>]";
 
@@ -114,7 +114,7 @@ public class MirandaCommandLine extends CommandLine {
             option = Options.LoggingLevel;
         else if (argument.equals(OPTION_MODE_SHORT) || argument.equals(OPTION_MODE_LONG))
             option = Options.Mode;
-        else if (argument.equals(OPTION_PASSWORD_SHORT) || argument.equals(OPTION_PASSWORD_LONG))
+        else if (argument.equals(OPTION_KEYSTORE_PASSWORD_SHORT) || argument.equals(OPTION_KEYSTORE_PASSWORD_LONG))
             option = Options.Password;
         else if (argument.equals(OPTION_PROPERTIES_SHORT) || argument.equals(OPTION_PROPERTIES_LONG))
             option = Options.Properties;

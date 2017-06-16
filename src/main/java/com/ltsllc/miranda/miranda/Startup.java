@@ -367,10 +367,19 @@ public class Startup extends State {
         ServletMapping servletMapping = new ServletMapping("/servlets/status", StatusServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/status", StatusServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/properties", PropertiesServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/properties/list", PropertiesServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/setProperty", SetPropertyServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/properties/", SetPropertyServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/clusterStatus", ClusterStatusServlet.class);
@@ -379,22 +388,43 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/login", LoginServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/login", LoginServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/createUser", CreateUserServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getUsers", GetUsersServlet.class);
+        servletMapping = new ServletMapping("/users/create", CreateUserServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getUsers", ListUsersServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/user/list", ListUsersServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getUser", GetUserServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/user/read", GetUserServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/updateUser", UpdateUserServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/user/update", UpdateUserServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/deleteUser", DeleteUserServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/user/delete", DeleteUserServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/createKeyPair", CreateKeyPairServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/key/createKeyPair", CreateKeyPairServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getTopics", GetTopicsServlet.class);
@@ -775,7 +805,7 @@ public class Startup extends State {
         try {
             return Utils.loadKeyStore(filename, password);
         } catch (GeneralSecurityException | IOException e) {
-            StartupPanic startupPanic = new StartupPanic("Exception loading keystoeb from " + filename,e,
+            StartupPanic startupPanic = new StartupPanic("Exception loading keystore from " + filename,e,
                     StartupPanic.StartupReasons.ExceptionLoadingKeystore);
             Miranda.panicMiranda(startupPanic);
         }

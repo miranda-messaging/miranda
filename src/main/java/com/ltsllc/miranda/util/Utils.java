@@ -31,6 +31,7 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
+import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -485,5 +486,37 @@ public class Utils {
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return publicKeyToPemString(keyPair.getPublic());
+    }
+
+    public static void writeAsPem (String filename, PublicKey publicKey) throws IOException {
+        FileWriter fileWriter = null;
+
+        try {
+            fileWriter = new FileWriter(filename);
+            PEMWriter pemWriter = new PEMWriter(fileWriter);
+            pemWriter.writeObject(publicKey);
+            pemWriter.close();
+        } finally {
+            Utils.closeIgnoreExceptions(fileWriter);
+        }
+    }
+
+    public static void writeAsPem (String filename, PrivateKey privateKey) throws IOException {
+        FileWriter fileWriter = null;
+
+        try {
+            fileWriter = new FileWriter(filename);
+            PEMWriter pemWriter = new PEMWriter(fileWriter);
+            pemWriter.writeObject(privateKey);
+            pemWriter.close();
+        } finally {
+            Utils.closeIgnoreExceptions(fileWriter);
+        }
+    }
+
+    public static byte[] rsaEncrypt (PublicKey publicKey, byte[] plainText) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        return cipher.doFinal(plainText);
     }
 }

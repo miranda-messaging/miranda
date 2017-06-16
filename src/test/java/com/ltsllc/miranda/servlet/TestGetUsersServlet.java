@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.servlet.user.GetUsersServlet;
+import com.ltsllc.miranda.servlet.user.ListUsersServlet;
 import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.test.TestServlet;
 import com.ltsllc.miranda.user.User;
@@ -66,9 +66,9 @@ public class TestGetUsersServlet extends TestServlet {
     @Mock
     private UserHolder mockUserHolder;
 
-    private GetUsersServlet getUsersServlet;
+    private ListUsersServlet getUsersServlet;
 
-    public GetUsersServlet getUsersServlet() {
+    public ListUsersServlet getUsersServlet() {
         return getUsersServlet;
     }
 
@@ -90,7 +90,7 @@ public class TestGetUsersServlet extends TestServlet {
         super.setup();
 
         mockUserHolder = mock(UserHolder.class);
-        getUsersServlet = new GetUsersServlet();
+        getUsersServlet = new ListUsersServlet();
     }
 
     public void setupMockUsersHolder () {
