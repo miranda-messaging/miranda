@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/22/2017.
  */
-public class GetSubscriptionsServlet extends SubscriptionServlet {
+public class ListSubscriptionsServlet extends SubscriptionServlet {
     public ResultObject createResultObject () {
         return new SubscriptionsResult();
     }

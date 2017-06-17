@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.subscription;
+package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.objects.ReadObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.topics.Topic;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,25 +28,25 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Created by Clark on 4/22/2017.
+ * Created by Clark on 4/11/2017.
  */
-public class GetSubscriptionServlet extends SubscriptionServlet {
-    public ResultObject createResultObject() {
-        return new ResultObject();
+public class ReadTopicServlet extends TopicServlet {
+    public ResultObject createResultObject () {
+        return new TopicResultObject();
     }
 
-    public ReadObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
+    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        ReadObject<Subscription> resultObject = new ReadObject();
+        ReadObject<Topic> readObject = new ReadObject<Topic>();
 
-        Subscription subscription = SubscriptionHolder.getInstance().getSubscription(requestObject.getSubscription().getName());
-        if (null == subscription)
-            resultObject.setResult(Results.SubscriptionNotFound);
-        else {
-            resultObject.setObject(subscription);
-            resultObject.setResult(Results.Success);
+        Topic topic = TopicHolder.getInstance().getTopic(requestObject.getTopic().getName());
+        if (topic == null) {
+            readObject.setResult(Results.TopicNotFound);
+        } else {
+            readObject.setResult(Results.Success);
+            readObject.setObject(topic);
         }
 
-        return resultObject;
+        return readObject;
     }
 }

@@ -29,7 +29,7 @@ public class Subscription extends StatusObject<Subscription> implements Perishab
     public enum ErrorPolicies {
         Drop,
         Retry,
-        Deadletter
+        DeadLetter
     }
 
     private static Gson ourGson = new Gson();

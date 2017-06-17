@@ -39,7 +39,7 @@ import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
 import com.ltsllc.miranda.servlet.misc.ShutdownHolder;
 import com.ltsllc.miranda.servlet.misc.ShutdownServlet;
 import com.ltsllc.miranda.servlet.objects.ServletMapping;
-import com.ltsllc.miranda.servlet.property.PropertiesServlet;
+import com.ltsllc.miranda.servlet.property.ListPropertiesServlet;
 import com.ltsllc.miranda.servlet.property.SetPropertyServlet;
 import com.ltsllc.miranda.servlet.status.StatusServlet;
 import com.ltsllc.miranda.servlet.subscription.*;
@@ -370,10 +370,10 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/status", StatusServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/properties", PropertiesServlet.class);
+        servletMapping = new ServletMapping("/servlets/properties", ListPropertiesServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/properties/list", PropertiesServlet.class);
+        servletMapping = new ServletMapping("/properties/list", ListPropertiesServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/setProperty", SetPropertyServlet.class);
@@ -403,10 +403,10 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/users/list", ListUsersServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getUser", GetUserServlet.class);
+        servletMapping = new ServletMapping("/servlets/getUser", ReadUserServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/users/read", GetUserServlet.class);
+        servletMapping = new ServletMapping("/users/read", ReadUserServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/updateUser", UpdateUserServlet.class);
@@ -427,19 +427,34 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/key/createKeyPair", CreateKeyPairServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getTopics", GetTopicsServlet.class);
+        servletMapping = new ServletMapping("/servlets/getTopics", ListTopicsServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getTopic", GetTopicServlet.class);
+        servletMapping = new ServletMapping("/topics/list", ListTopicsServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getTopic", ReadTopicServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/topics/read", ReadTopicServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/createTopic", CreateTopicServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/topics/create", CreateTopicServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/updateTopic", UpdateTopicServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/topics/update", UpdateTopicServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/deleteTopic", DeleteTopicServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/topics/delete", DeleteTopicServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/fileServlet", FileServlet.class);
@@ -448,19 +463,37 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/createSubscription", CreateSubscriptionServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getSubscriptions", GetSubscriptionsServlet.class);
+        servletMapping = new ServletMapping("/subscriptions/create", CreateSubscriptionServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/servlets/getSubscription", GetSubscriptionServlet.class);
+        servletMapping = new ServletMapping("/servlets/getSubscriptions", ListSubscriptionsServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/subscriptions/list", ListSubscriptionsServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/servlets/getSubscription", ReadSubscriptionServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/subscriptions/read", ReadSubscriptionServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/updateSubscription", UpdateSubscriptionServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/subscriptions/update", UpdateSubscriptionServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/deleteSubscription", DeleteSubscriptionServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/subscriptions/delete", DeleteSubscriptionServlet.class);
+        mappings.add(servletMapping);
+
         servletMapping = new ServletMapping("/servlets/shutdown", ShutdownServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/shutdown", ShutdownServlet.class);
         mappings.add(servletMapping);
 
         MirandaStatus.initialize();

@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.topic;
+package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ListObject;
+import com.ltsllc.miranda.servlet.objects.ReadObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.subsciptions.Subscription;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Created by Clark on 4/9/2017.
+ * Created by Clark on 4/22/2017.
  */
-public class GetTopicsServlet extends TopicServlet {
-    public boolean allowAccess() {
-        return true;
-    }
-
+public class ReadSubscriptionServlet extends SubscriptionServlet {
     public ResultObject createResultObject() {
         return new ResultObject();
     }
 
-    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+    public ReadObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
             throws ServletException, IOException, TimeoutException {
-        ListObject result = new ListObject();
-        List<Topic> topics = TopicHolder.getInstance().getTopicList();
-        result.setResult(Results.Success);
-        result.setList(topics);
+        ReadObject<Subscription> resultObject = new ReadObject();
 
-        return result;
+        Subscription subscription = SubscriptionHolder.getInstance().getSubscription(requestObject.getSubscription().getName());
+        if (null == subscription)
+            resultObject.setResult(Results.SubscriptionNotFound);
+        else {
+            resultObject.setObject(subscription);
+            resultObject.setResult(Results.Success);
+        }
+
+        return resultObject;
     }
 }

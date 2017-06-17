@@ -32,7 +32,7 @@ import java.util.Properties;
 /**
  * Created by Clark on 3/4/2017.
  */
-public class PropertiesServlet extends HttpServlet {
+public class ListPropertiesServlet extends HttpServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
         MirandaProperties poperties = Miranda.properties;

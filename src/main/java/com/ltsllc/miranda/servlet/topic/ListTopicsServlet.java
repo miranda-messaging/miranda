@@ -14,34 +14,39 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.servlet.objects.ReadObject;
+import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.servlet.objects.ListObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.topics.Topic;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Created by Clark on 4/10/2017.
+ * Created by Clark on 4/9/2017.
  */
-public class GetUserServlet extends UserServlet {
-    public ResultObject createResultObject () {
+public class ListTopicsServlet extends TopicServlet {
+    public boolean allowAccess() {
+        return true;
+    }
+
+    public ResultObject createResultObject() {
         return new ResultObject();
     }
 
-    public ReadObject basicService(HttpServletRequest request, HttpServletResponse response,
-                                   UserRequestObject requestObject) throws ServletException, IOException, TimeoutException
-    {
-        UserHolder.getInstance().getUser(requestObject.getUser().getName());
-        ReadObject<User> readObject = new ReadObject<User>();
-        readObject.setResult(UserHolder.getInstance().getGetUserResults());
-        readObject.setObject(UserHolder.getInstance().getUser());
+    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+            throws ServletException, IOException, TimeoutException {
+        ListObject result = new ListObject();
+        List<Topic> topics = TopicHolder.getInstance().getTopicList();
+        result.setResult(Results.Success);
+        result.setList(topics);
 
-        return readObject;
+        return result;
     }
 }

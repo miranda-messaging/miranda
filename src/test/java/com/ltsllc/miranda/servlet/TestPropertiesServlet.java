@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.servlet.property.PropertiesServlet;
+import com.ltsllc.miranda.servlet.property.ListPropertiesServlet;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.util.PropertiesUtils;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class TestPropertiesServlet extends TestCase {
     @Mock
     private HttpServletResponse mockServletResponse;
 
-    private PropertiesServlet propertiesServlet;
+    private ListPropertiesServlet propertiesServlet;
 
     public HttpServletResponse getMockServletResponse() {
         return mockServletResponse;
@@ -55,7 +55,7 @@ public class TestPropertiesServlet extends TestCase {
         return mockServletRequest;
     }
 
-    public PropertiesServlet getPropertiesServlet() {
+    public ListPropertiesServlet getPropertiesServlet() {
         return propertiesServlet;
     }
 
@@ -73,7 +73,7 @@ public class TestPropertiesServlet extends TestCase {
 
         mockServletRequest = mock(HttpServletRequest.class);
         mockServletResponse = mock(HttpServletResponse.class);
-        propertiesServlet = new PropertiesServlet();
+        propertiesServlet = new ListPropertiesServlet();
     }
 
     @Test
