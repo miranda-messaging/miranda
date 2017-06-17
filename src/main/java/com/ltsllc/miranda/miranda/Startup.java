@@ -400,25 +400,25 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/getUsers", ListUsersServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/user/list", ListUsersServlet.class);
+        servletMapping = new ServletMapping("/users/list", ListUsersServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/getUser", GetUserServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/user/read", GetUserServlet.class);
+        servletMapping = new ServletMapping("/users/read", GetUserServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/updateUser", UpdateUserServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/user/update", UpdateUserServlet.class);
+        servletMapping = new ServletMapping("/users/update", UpdateUserServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/deleteUser", DeleteUserServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/user/delete", DeleteUserServlet.class);
+        servletMapping = new ServletMapping("/users/delete", DeleteUserServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/createKeyPair", CreateKeyPairServlet.class);

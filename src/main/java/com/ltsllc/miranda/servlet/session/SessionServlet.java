@@ -79,7 +79,10 @@ abstract public class SessionServlet extends MirandaServlet {
             resultObject = createResultObject();
             resultObject.setResult(Results.Exception);
             resultObject.setException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         respond(response.getOutputStream(), resultObject);
         response.setHeader("Access-Control-Allow-Origin", "*");

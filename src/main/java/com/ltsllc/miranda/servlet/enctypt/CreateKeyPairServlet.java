@@ -72,6 +72,7 @@ public class CreateKeyPairServlet extends MirandaServlet {
             throw new ServletException("Exception trying to generate key pair", e);
         }
 
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         respond(resp.getOutputStream(), keyPairResult);
         resp.setStatus(200);
     }
