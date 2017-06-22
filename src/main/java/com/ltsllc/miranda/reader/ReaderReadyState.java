@@ -58,20 +58,11 @@ public class ReaderReadyState extends State {
         ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this);
         response.setFilename(readMessage.getFilename());
 
-        try {
-            Reader.ReadResult readResult = getReader().read(readMessage.getFilename());
-            response.setResult(readResult.result);
-
-            if (readResult.result == Results.Success) {
-                response.setData(readResult.data);
-            } else if (readResult.result == Results.Exception) {
-                response.setException(readResult.exception);
-            }
-        } catch (GeneralSecurityException | IOException e) {
-            response.setResult(Results.Exception);
-            response.setException(e);
-        }
-
+        Reader.ReadResult readResult = getReader().read(readMessage.getFilename());
+        response.setData(readResult.data);
+        response.setException(readResult.exception);
+        response.setFilename(readResult.filename);
+        response.setResult(readResult.result);
         readMessage.reply(response);
 
         return getReader().getCurrentState();

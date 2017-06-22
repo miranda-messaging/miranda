@@ -28,6 +28,7 @@ public class ReadResponseMessage extends Message {
         Success,
         FileDoesNotExist,
         ExceptionReadingFile,
+        ExceptionDecryptingFile,
         Unknown
     }
 
@@ -52,28 +53,8 @@ public class ReadResponseMessage extends Message {
         super(Subjects.ReadResponse, senderQueue, sender);
     }
 
-    public void setResult (com.ltsllc.miranda.Results result) {
-        switch (result) {
-            case Success: {
-                this.result = Results.Success;
-                break;
-            }
-
-            case FileNotFound: {
-                this.result = Results.FileDoesNotExist;
-                break;
-            }
-
-            case Exception: {
-                this.result = Results.ExceptionReadingFile;
-                break;
-            }
-
-            default: {
-                this.result = Results.Unknown;
-                break;
-            }
-        }
+    public void setResult (Results result) {
+        this.result = result;
     }
 
     public void setData (byte[] data) {

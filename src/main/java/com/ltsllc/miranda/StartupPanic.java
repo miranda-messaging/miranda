@@ -39,6 +39,7 @@ public class StartupPanic extends Panic {
         ExceptionWatchingFile,
         MissingKey, // A key that the system needs is missing from the keystore
         MissingProperty, // A Property that the system requires to start up is missing
+        MultipleProperties,
         NetworkListener, // NetworkListener.startup threw an exception
         NullStartState, // The currentState was null for a Consumer when starting
         ProblemLoadingFile,
@@ -49,6 +50,7 @@ public class StartupPanic extends Panic {
         UncheckedException, // an unchecked exception was thrown during startup
         UndefinedKeystore, // The keystore property was null or empty
         UnrecognizedEncryptionMode,
+        UnrecognizedResult,
         WebServer // a problem that prevented the web server from starting occurred
     }
 

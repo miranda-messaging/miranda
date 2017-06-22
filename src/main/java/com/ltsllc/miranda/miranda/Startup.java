@@ -32,6 +32,7 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusServlet;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
+import com.ltsllc.miranda.servlet.event.PublishServlet;
 import com.ltsllc.miranda.servlet.file.FileServlet;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
 import com.ltsllc.miranda.servlet.login.LoginServlet;
@@ -61,6 +62,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -272,6 +274,7 @@ public class Startup extends State {
             startHttpServer();
             startListening();
             Miranda.getInstance().performGarbageCollection();
+            exportCertificate();
             return new ReadyState(getMiranda());
         } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception during startup", e, StartupPanic.StartupReasons.StartupFailed);
@@ -491,6 +494,9 @@ public class Startup extends State {
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/shutdown", ShutdownServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/events", PublishServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/shutdown", ShutdownServlet.class);
@@ -861,5 +867,11 @@ public class Startup extends State {
 
     public void logProperties () {
         Miranda.properties.log();
+    }
+
+    public void exportCertificate () throws GeneralSecurityException, IOException {
+        KeyStore keyStore = getKeyStore();
+        Certificate certificate = keyStore.getCertificate("private");
+        Utils.writeAsPem("tempfile", certificate);
     }
 }

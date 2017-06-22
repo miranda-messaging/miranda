@@ -61,8 +61,8 @@ public class SubscriptionManagerReadyState extends StandardManagerReadyState<Sub
                 break;
             }
 
-            case GetSubscriptions: {
-                GetSubscriptionsMessage getSubscriptionsMessage = (GetSubscriptionsMessage) message;
+            case ListSubscriptions: {
+                LIstSubscriptionsMessage getSubscriptionsMessage = (LIstSubscriptionsMessage) message;
                 nextState = processGetSubscriptionsMessage (getSubscriptionsMessage);
                 break;
             }
@@ -130,7 +130,7 @@ public class SubscriptionManagerReadyState extends StandardManagerReadyState<Sub
         return getSubscriptionManager().getCurrentState();
     }
 
-    public State processGetSubscriptionsMessage (GetSubscriptionsMessage getSubscriptionsMessage) {
+    public State processGetSubscriptionsMessage (LIstSubscriptionsMessage getSubscriptionsMessage) {
         GetSubscriptionsResponseMessage response = new GetSubscriptionsResponseMessage(getSubscriptionManager().getQueue(),
                 this, getSubscriptionManager().getSubscriptions());
 

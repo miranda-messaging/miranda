@@ -60,8 +60,8 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
                 break;
             }
 
-            case GetUsers: {
-                GetUsersMessage getUsersMessage = (GetUsersMessage) message;
+            case ListUsers: {
+                ListUsersMessage getUsersMessage = (ListUsersMessage) message;
                 nextState = processGetUsersMessage(getUsersMessage);
                 break;
             }
@@ -138,7 +138,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUsersMessage (GetUsersMessage getUsersMessage) {
+    public State processGetUsersMessage (ListUsersMessage getUsersMessage) {
         List<User> users = getUserManager().getUsers();
 
         GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(getUserManager().getQueue(),

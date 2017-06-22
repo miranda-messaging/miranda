@@ -21,6 +21,7 @@ import com.ltsllc.miranda.directory.DirectoryEntry;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
+import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.util.ImprovedRandom;
 import com.ltsllc.miranda.util.Utils;
 
@@ -145,6 +146,12 @@ public class Event implements Perishable, Updateable<Event>, Matchable<Event>, D
     public Event (Methods method, byte[] buffer) {
         String guid = UUID.randomUUID().toString();
         basicConstructor(null, guid, null, System.currentTimeMillis(), method, buffer);
+    }
+
+
+    public Event (User user, Methods method, String topicName, byte[] content) {
+        String guid = UUID.randomUUID().toString();
+        basicConstructor(user.getName(), guid, topicName, System.currentTimeMillis(), method, content);
     }
 
     public Event (String userName, String guid, String topicName, long timeOfCreation, Methods method, byte[] content) {

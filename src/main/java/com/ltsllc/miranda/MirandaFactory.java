@@ -33,6 +33,7 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -262,8 +263,10 @@ public class MirandaFactory {
             properties.setProperty(JETTY_TAG, DEFAULT_JETTY_TAG);
             properties.updateSystemProperties();
 
-            Server jetty = new Server();
+            int threadPoolSize = getProperties().getIntProperty(MirandaProperties.PROPERTY_SERVLET_THREAD_POOL_SIZE);
+            QueuedThreadPool threadPool = new QueuedThreadPool(100);
 
+            Server jetty = new Server(threadPool);
 
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);

@@ -38,7 +38,7 @@ target\miranda-1.0.0-SNAPSHOT-jar-with-dependencies.jar
 
 Create a Certificate Authority
 
-openssl req -new -x509 -keyout ca-key.pem.txt -out ca-certificate.pem.txt -days 365
+openssl req -config config -newkey rsa:2048 -x509 -keyout ca-key.pem.txt -out ca-certificate.pem.txt -days 365
 
 Create a tuststore
 

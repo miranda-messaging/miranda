@@ -82,9 +82,23 @@ abstract public class SingleFileStartingState extends State {
             getFile().fireFileDoesNotExist();
             restoreDeferredMessages();
             return getReadyState();
-        } else {
-            StartupPanic startupPanic = new StartupPanic("Problem loading " + getFile().getFilename(), null,
+        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile) {
+            StartupPanic startupPanic = new StartupPanic("Problem loading " + getFile().getFilename(),
+                    readResponseMessage.getException(),
                     StartupPanic.StartupReasons.ProblemLoadingFile);
+            Miranda.panicMiranda(startupPanic);
+
+            return StopState.getInstance();
+        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionDecryptingFile) {
+            StartupPanic startupPanic = new StartupPanic("Error decrypting " + getFile().getFilename(),
+                    readResponseMessage.getException(),
+                    StartupPanic.StartupReasons.ProblemLoadingFile);
+            Miranda.panicMiranda(startupPanic);
+
+            return StopState.getInstance();
+        } else {
+            StartupPanic startupPanic = new StartupPanic("Got unrecognized result: " + readResponseMessage.getResult(),
+                    null, StartupPanic.StartupReasons.UnrecognizedResult);
             Miranda.panicMiranda(startupPanic);
 
             return StopState.getInstance();

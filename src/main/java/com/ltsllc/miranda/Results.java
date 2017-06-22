@@ -25,6 +25,7 @@ public enum Results {
     TopicNotFound,
     Timeout,
     Exception,
+    ExceptionDecryptingFile,
     NotPublisher,
     UserOwnsProperty,
     UserOwnsTopics,
@@ -40,6 +41,10 @@ public enum Results {
     UnrecognizedMethod,
     NullResult,
     Acknowleged,
-    Written
+    Written,
+    MissingSessionId,
+    MissingTopic,
+    InvalidSessionId,
+    InvalidSession
 }
 

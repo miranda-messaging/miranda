@@ -101,7 +101,7 @@ public class TestReader extends TestCase {
 
         result = getReader().read(TEST_FILENAME);
 
-        assert (result.result == Results.Success);
+        assert (result.result == ReadResponseMessage.Results.Success);
         assert (arraysAreEquivalent(result.data, TEST_FILE_CONTENTS.getBytes()));
         assert (null == generalSecurityException);
     }
@@ -110,7 +110,7 @@ public class TestReader extends TestCase {
     public void testReadFileDoesNotExist() throws GeneralSecurityException, IOException {
         Reader.ReadResult result = getReader().read("I don't exist");
 
-        assert (result.result == Results.FileNotFound);
+        assert (result.result == ReadResponseMessage.Results.FileDoesNotExist);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class TestReader extends TestCase {
             exception = e;
         }
 
-        assert (result.result == Results.Exception);
+        assert (result.result == ReadResponseMessage.Results.ExceptionDecryptingFile);
     }
 
     @Test

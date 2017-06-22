@@ -53,6 +53,9 @@ abstract public class SessionServlet extends MirandaServlet {
         this.session = session;
     }
 
+    public User getUser () {
+        return getSession().getUser();
+    }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ResultObject resultObject = null;

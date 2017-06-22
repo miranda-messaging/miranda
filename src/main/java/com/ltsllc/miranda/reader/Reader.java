@@ -19,7 +19,6 @@ package com.ltsllc.miranda.reader;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -35,7 +34,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Reader extends Consumer {
     public static class ReadResult {
-        public Results result;
+        public ReadResponseMessage.Results result;
         public String filename;
         public byte[] data;
         public Throwable exception;
@@ -69,35 +68,47 @@ public class Reader extends Consumer {
         setCurrentState(readerReadyState);
     }
 
-    public ReadResult read (String filename) throws IOException, GeneralSecurityException {
+    public ReadResult read (String filename) {
         ReadResult result = new ReadResult();
         FileReader fileReader = null;
-        FileInputStream fileInputStream = null;
-        result.result = Results.Unknown;
+        result.result = ReadResponseMessage.Results.Unknown;
         result.filename = filename;
 
         File file = new File (filename);
         if (!file.exists()) {
-            result.result = Results.FileNotFound;
+            result.result = ReadResponseMessage.Results.FileDoesNotExist;
         } else {
+            EncryptedMessage encryptedMessage = null;
             try {
-                fileReader = new FileReader(file);
-                EncryptedMessage encryptedMessage = gson.fromJson(fileReader, EncryptedMessage.class);
-                byte[] plainText = getPrivateKey().decrypt(encryptedMessage);
-                result.result = Results.Success;
-                result.data = plainText;
+                fileReader = new FileReader(filename);
+                encryptedMessage = readEncryptedMessage(fileReader);
             } catch (Exception e) {
-                result.result = Results.Exception;
+                result.result = ReadResponseMessage.Results.ExceptionReadingFile;
                 result.exception = e;
-            } finally {
-                Utils.closeIgnoreExceptions(fileReader);
+            }
+
+            if (null != encryptedMessage) {
+                try {
+                    result.data = decryptMessage(encryptedMessage);
+                    result.result = ReadResponseMessage.Results.Success;
+                } catch (GeneralSecurityException e) {
+                    result.result = ReadResponseMessage.Results.ExceptionDecryptingFile;
+                    result.exception = e;
+                } catch (IOException e) {
+                    result.result = ReadResponseMessage.Results.ExceptionDecryptingFile;
+                    result.exception = e;
+                }
             }
         }
 
         return result;
     }
 
-    public byte[] decrypt (EncryptedMessage encryptedMessage) throws GeneralSecurityException, IOException {
+    public EncryptedMessage readEncryptedMessage (java.io.Reader reader) {
+        return gson.fromJson(reader, EncryptedMessage.class);
+    }
+
+    public byte[] decryptMessage (EncryptedMessage encryptedMessage) throws GeneralSecurityException, IOException {
         return getPrivateKey().decrypt(encryptedMessage);
     }
 

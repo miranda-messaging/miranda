@@ -63,7 +63,7 @@ public class TopicManager extends StandardManager <Topic> {
     }
 
     public void sendGetTopicsMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        GetTopicsMessage getTopicsMessage = new GetTopicsMessage(senderQueue, sender);
+        ListTopicsMessage getTopicsMessage = new ListTopicsMessage(senderQueue, sender);
         sendToMe(getTopicsMessage);
     }
 

@@ -28,6 +28,7 @@ import com.ltsllc.miranda.util.PropertiesUtils;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
+import javax.xml.bind.annotation.XmlType;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -153,6 +154,7 @@ public class MirandaProperties {
     public static final String PROPERTY_SESSION_LOGIN_TIMEOUT = SESSION_PACKAGE + "LoginTimeout";
 
     public static final String PROPERTY_SERVLET_TIMEOUT = SERVLET_PACKAGE + "Timeout";
+    public static final String PROPERTY_SERVLET_THREAD_POOL_SIZE = SERVLET_PACKAGE + "ThreadPoolSize";
 
     public static final String PROPERTY_KEYSTORE_FILE = KEYSTORE_PACKAGE + "File";
     public static final String PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS = KEYSTORE_PACKAGE + "PrivateKey";
@@ -202,6 +204,7 @@ public class MirandaProperties {
     public static final String DEFAULT_SESSION_LOGIN_TIMEOUT = "1000";
 
     public static final String DEFAULT_SERVLET_TIMEOUT = "1000";
+    public static final String DEFAULT_SERVLET_THREAD_POOL_SIZE = "20";
 
     public static final String DEFAULT_KEYSTORE_FILE = "keystore";
     public static final String DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS = "private";
@@ -253,6 +256,7 @@ public class MirandaProperties {
             {PROPERTY_SESSION_LOGIN_TIMEOUT, DEFAULT_SESSION_LOGIN_TIMEOUT},
 
             {PROPERTY_SERVLET_TIMEOUT, DEFAULT_SERVLET_TIMEOUT},
+            {PROPERTY_SERVLET_THREAD_POOL_SIZE, DEFAULT_SERVLET_THREAD_POOL_SIZE},
 
             {PROPERTY_KEYSTORE_FILE, DEFAULT_KEYSTORE_FILE},
             {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS},
@@ -264,6 +268,8 @@ public class MirandaProperties {
 
             {PROPERTY_DELIVERY_OBJECT_LIMIT, DEFAULT_DELIVERY_OBJECT_LIMIT}
     };
+
+    private static MirandaProperties instance;
 
     private Properties properties;
     private String filename;
@@ -280,9 +286,26 @@ public class MirandaProperties {
         return properties;
     }
 
+    public static MirandaProperties getInstance() {
+        return instance;
+    }
+
+    public static synchronized void setInstance (MirandaProperties mirandaProperties) {
+        if (null != instance) {
+            StartupPanic startupPanic = new StartupPanic("Attempt to create multiple instances of MirandaProperties",
+                    StartupPanic.StartupReasons.MultipleProperties);
+            Miranda.panicMiranda(startupPanic);
+        } else {
+            instance = mirandaProperties;
+        }
+    }
+
     public MirandaProperties (String filename) {
         properties = new Properties();
         this.filename = filename;
+
+        setInstance(this);
+
         load();
     }
 

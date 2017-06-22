@@ -1,12 +1,19 @@
 package com.ltsllc.miranda.servlet.event;
 
+import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.ServletHolder;
+import com.ltsllc.miranda.session.Session;
 
+import java.security.cert.CertPathValidatorException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -37,6 +44,35 @@ public class EventHolder extends ServletHolder {
     private Results readResult;
     private Results createResult;
     private String guid;
+    private Map<Long, Long> sessionIdToExpirationTime;
+    private long msecCheckIsGoodFor;
+    private Long wakeUpSessionId;
+    private Map <Thread, Long> threadToWakeupTime;
+
+
+    public Map<Thread, Long> getThreadToWakeupTime() {
+        return threadToWakeupTime;
+    }
+
+    public Long getWakeUpSessionId() {
+        return wakeUpSessionId;
+    }
+
+    public void setWakeUpSessionId(Long wakeUpSessionId) {
+        this.wakeUpSessionId = wakeUpSessionId;
+    }
+
+    public long getMsecCheckIsGoodFor() {
+        return msecCheckIsGoodFor;
+    }
+
+    public void setMsecCheckIsGoodFor(long msecCheckIsGoodFor) {
+        this.msecCheckIsGoodFor = msecCheckIsGoodFor;
+    }
+
+    public Map<Long, Long> getSessionIdToExpirationTime() {
+        return sessionIdToExpirationTime;
+    }
 
     public Results getListResult() {
         return listResult;
@@ -90,7 +126,7 @@ public class EventHolder extends ServletHolder {
         ourInstance = subscriptionHolder;
     }
 
-    public static void initialize(long timeout) {
+    public static void initialize(long timeout) throws MirandaException {
         ourInstance = new EventHolder(timeout);
     }
 
@@ -102,8 +138,12 @@ public class EventHolder extends ServletHolder {
         this.createResult = createResult;
     }
 
-    public EventHolder(long timeout) {
+    public EventHolder(long timeout) throws MirandaException {
         super("subscription holder", timeout);
+
+        this.sessionIdToExpirationTime = new HashMap<Long, Long>();
+        this.msecCheckIsGoodFor = MirandaProperties.getInstance().getLongProperty(MirandaProperties.PROPERTY_SESSION_LENGTH) / 2;
+        this.threadToWakeupTime = new HashMap<Thread, Long>();
 
         EventHolderReadyState readyState = new EventHolderReadyState(this);
         setCurrentState(readyState);
@@ -119,7 +159,7 @@ public class EventHolder extends ServletHolder {
         return getEventList();
     }
 
-    public void setReadResultAndAwaken (Results result, Event event) {
+    public void setReadResultAndAwaken(Results result, Event event) {
         setReadResult(result);
         setEvent(event);
 
@@ -136,7 +176,7 @@ public class EventHolder extends ServletHolder {
         return getEvent();
     }
 
-    public CreateResult create (Event event) throws TimeoutException {
+    public CreateResult create(Event event) throws TimeoutException {
         setCreateResult(Results.Unknown);
         setGuid(null);
         Miranda.getInstance().getEventManager().sendCreateEventMessage(getQueue(), this, event);
@@ -150,7 +190,7 @@ public class EventHolder extends ServletHolder {
         return createResult;
     }
 
-    public ReadResult read (String guid) throws TimeoutException {
+    public ReadResult read(String guid) throws TimeoutException {
         setEvent(null);
         setReadResult(Results.Unknown);
 
@@ -164,7 +204,7 @@ public class EventHolder extends ServletHolder {
         return readResult;
     }
 
-    public ListResult list () throws TimeoutException {
+    public ListResult list() throws TimeoutException {
         setListResult(Results.Unknown);
         setEventList(null);
 
@@ -190,5 +230,74 @@ public class EventHolder extends ServletHolder {
         setGuid(guid);
 
         wake();
+    }
+
+    public synchronized void sleepOn(long sessionId) throws TimeoutException {
+        Thread thread = Thread.currentThread();
+        long wakeupTime = System.currentTimeMillis() + getTimeoutPeriod();
+        getThreadToWakeupTime().put(thread, wakeupTime);
+
+        sleep();
+
+        while (!shouldWakeUp(sessionId))
+            goBackToSleep();
+    }
+
+    public synchronized void wakeUpFor(long sessionId) {
+        setWakeUpSessionId(sessionId);
+        notifyAll();
+    }
+
+    public boolean shouldWakeUp (long sessionId) {
+        if (null == getWakeUpSessionId()) {
+            Panic panic = new Panic("null session ID", Panic.Reasons.InvalidWakeup);
+            Miranda.panicMiranda(panic);
+            return false;
+        }
+
+        return sessionId == getWakeUpSessionId().longValue();
+    }
+
+    public void goBackToSleep () throws TimeoutException {
+        Thread thread = Thread.currentThread();
+        if (getThreadToWakeupTime().get(thread) == null) {
+            Panic panic = new Panic("null wakeup time for tread " + thread, Panic.Reasons.NullWakeupTime);
+            Miranda.panicMiranda(panic);
+        } else if (getThreadToWakeupTime().get(thread) > System.currentTimeMillis()) {
+            throw new TimeoutException();
+        } else {
+            long remainingPeriod = getThreadToWakeupTime().get(thread) - System.currentTimeMillis();
+            waitFor(remainingPeriod);
+        }
+    }
+
+    public synchronized void removeSleeperForSession (long sessionIds) {
+        Thread thread = Thread.currentThread();
+        getThreadToWakeupTime().remove(thread);
+    }
+
+    public boolean sessionIsGood(long sessionId) throws TimeoutException {
+        long now = System.currentTimeMillis();
+        Long expirationTime = getSessionIdToExpirationTime().get(sessionId);
+
+        if (expirationTime == null || expirationTime.longValue() > now) {
+            Miranda.getInstance().getSessionManager().sendCheckSessionMessage(getQueue(), this, sessionId);
+            sleepOn(sessionId);
+            removeSleeperForSession (sessionId);
+        }
+
+        expirationTime = getSessionIdToExpirationTime().get(sessionId);
+        return expirationTime != null;
+    }
+
+    public void setCheckSessionIdResultAndAwaken(long sessionId, Session session) {
+        if (session != null) {
+            long expirationTime = System.currentTimeMillis() + getMsecCheckIsGoodFor();
+            Long value = new Long(expirationTime);
+            Long key = new Long(sessionId);
+            getSessionIdToExpirationTime().put(key, value);
+        }
+
+        wakeUpFor(sessionId);
     }
 }

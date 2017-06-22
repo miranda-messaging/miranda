@@ -127,7 +127,7 @@ public class UserManager extends StandardManager<User> {
     }
 
     public void sendGetUsers (BlockingQueue<Message> senderQueue, Object sender) {
-        GetUsersMessage getUsersMessage = new GetUsersMessage(senderQueue, sender);
+        ListUsersMessage getUsersMessage = new ListUsersMessage(senderQueue, sender);
         sendToMe(getUsersMessage);
     }
 

@@ -110,15 +110,15 @@ public class ReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case NewConnection: {
-                NewConnectionMessage newConnectionMessage = (NewConnectionMessage) message;
-                nextState = processNewConnectionMessage(newConnectionMessage);
-                break;
-            }
-
             case GetVersions: {
                 GetVersionsMessage getVersionsMessage = (GetVersionsMessage) message;
                 nextState = processGetVersionsMessage(getVersionsMessage);
+                break;
+            }
+
+            case NewConnection: {
+                NewConnectionMessage newConnectionMessage = (NewConnectionMessage) message;
+                nextState = processNewConnectionMessage(newConnectionMessage);
                 break;
             }
 

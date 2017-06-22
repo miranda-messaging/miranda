@@ -73,8 +73,8 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
                 break;
             }
 
-            case GetTopics: {
-                GetTopicsMessage getTopicsMessage = (GetTopicsMessage) message;
+            case ListTopics: {
+                ListTopicsMessage getTopicsMessage = (ListTopicsMessage) message;
                 nextState = processGetTopicsMessage(getTopicsMessage);
                 break;
             }
@@ -119,7 +119,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processGetTopicsMessage (GetTopicsMessage getTopicsMessage) {
+    public State processGetTopicsMessage (ListTopicsMessage getTopicsMessage) {
         List<Topic> topics = new ArrayList<Topic>(getTopicManager().getTopics());
 
         GetTopicsResponseMessage getTopicsResponseMessage = new GetTopicsResponseMessage(getTopicManager().getQueue(),

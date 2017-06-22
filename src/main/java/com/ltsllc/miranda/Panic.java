@@ -45,6 +45,9 @@ public class Panic extends Exception {
         ExceptionDuringNewConnection,
         ExceptionEncrypting,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
+        ExceptionInEventPost,
+        ExceptionInEventPut,
+        ExceptionInEventDelete,
         ExceptionInProcessMessage, // an unchecked exception was thrown in processMessage
         ExceptionInRun, // an unchecked exception was thrown in a Consumers run method
         ExceptionLoadingFile,
@@ -58,9 +61,12 @@ public class Panic extends Exception {
         ExceptionTryingToRectify,
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
         ExceptionWritingFile,
+        InvalidWakeup,
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone
+        NoSleepers,
         NullCurrentState, // The currentState is null for a consumer
+        NullWakeupTime,
         OutOfMemory,
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.topics.messages;
+package com.ltsllc.miranda.subsciptions.messages;
 
 import com.ltsllc.miranda.Message;
 
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 4/9/2017.
+ * Created by Clark on 4/22/2017.
  */
-public class GetTopicsMessage extends Message {
-    public GetTopicsMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        super(Subjects.GetTopics, senderQueue, sender);
+public class LIstSubscriptionsMessage extends Message {
+    public LIstSubscriptionsMessage(BlockingQueue<Message> senderQueue, Object sender) {
+        super(Message.Subjects.ListSubscriptions, senderQueue, sender);
     }
 }

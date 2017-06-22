@@ -23,7 +23,7 @@ import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.GetUserMessage;
-import com.ltsllc.miranda.user.messages.GetUsersMessage;
+import com.ltsllc.miranda.user.messages.ListUsersMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -103,7 +103,7 @@ public class TestUserManagerReadyState extends TestCase {
         users.add(user);
 
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        GetUsersMessage getUsersMessage = new GetUsersMessage(queue, this);
+        ListUsersMessage getUsersMessage = new ListUsersMessage(queue, this);
 
         when(getMockUserManager().getCurrentState()).thenReturn(getReadyState());
         when(getMockUserManager().getUsers()).thenReturn(users);

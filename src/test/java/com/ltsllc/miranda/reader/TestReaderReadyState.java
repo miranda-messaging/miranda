@@ -61,7 +61,7 @@ public class TestReaderReadyState extends TestCase {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         ReadMessage readMessage = new ReadMessage(queue, this, "whatever");
         Reader.ReadResult result = new Reader.ReadResult();
-        result.result = Results.Success;
+        result.result = ReadResponseMessage.Results.Success;
         result.data = "whatever".getBytes();
         result.filename = "whatever";
 

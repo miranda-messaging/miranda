@@ -68,7 +68,7 @@ public class SubscriptionManager extends StandardManager<Subscription> {
     }
 
     public void sendGetSubscriptionsMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        GetSubscriptionsMessage getSubscriptionsMessage = new GetSubscriptionsMessage(senderQueue, sender);
+        LIstSubscriptionsMessage getSubscriptionsMessage = new LIstSubscriptionsMessage(senderQueue, sender);
         sendToMe(getSubscriptionsMessage);
     }
 

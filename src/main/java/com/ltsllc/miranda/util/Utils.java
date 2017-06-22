@@ -36,11 +36,12 @@ import javax.crypto.CipherInputStream;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
+import javax.servlet.ServletInputStream;
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.security.*;
-import java.security.cert.X509Certificate;
+import java.security.cert.*;
 
 
 /**
@@ -518,5 +519,29 @@ public class Utils {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(plainText);
+    }
+
+    public static void writeAsPem (String filename, java.security.cert.Certificate certificate) throws IOException {
+        FileWriter fileWriter = null;
+
+        try {
+            fileWriter = new FileWriter(filename);
+            PEMWriter pemWriter = new PEMWriter(fileWriter);
+            pemWriter.writeObject(certificate);
+            pemWriter.close();
+        } finally {
+            Utils.closeIgnoreExceptions(fileWriter);
+        }
+    }
+
+    public static byte[] readBytes (ServletInputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int b = inputStream.read();
+        while (-1 != b) {
+            byteArrayOutputStream.write(b);
+            b = inputStream.read();
+        }
+
+        return byteArrayOutputStream.toByteArray();
     }
 }
