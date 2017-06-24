@@ -2,7 +2,6 @@
   <library name="Maven: com.google.code.gson:gson:2.8.0">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/../common/out/artifacts/common_jar/common.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0-javadoc.jar!/" />

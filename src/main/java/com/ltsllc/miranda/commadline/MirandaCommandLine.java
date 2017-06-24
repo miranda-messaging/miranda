@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.commadline;
 
+import com.ltsllc.common.commadline.CommandLine;
 import com.ltsllc.miranda.property.MirandaProperties;
 import org.apache.log4j.Logger;
 

@@ -32,5 +32,6 @@
     <orderEntry type="library" name="Maven: org.bouncycastle:bcmail-jdk15:1.46" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15:1.46" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.25" level="project" />
+    <orderEntry type="module" module-name="common" />
   </component>
 </module>
