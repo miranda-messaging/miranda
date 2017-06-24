@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet;
 
+import com.ltsllc.common.util.PropertiesUtils;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.property.ListPropertiesServlet;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.PropertiesUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

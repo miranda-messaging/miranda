@@ -17,12 +17,12 @@
 package com.ltsllc.miranda.user;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.servlet.objects.UserObject;
-import com.ltsllc.miranda.util.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class User extends StatusObject<User> implements Perishable, Serializable
     private PublicKey publicKey;
 
 
-    public String getPublicKeyPem() {
+    public String getPublicKeyPem() throws IOException {
         if (null == publicKeyPem)
             createPublicKeyPem();
 
@@ -76,7 +76,7 @@ public class User extends StatusObject<User> implements Perishable, Serializable
         this.category = category;
     }
 
-    public PublicKey getPublicKey() {
+    public PublicKey getPublicKey() throws IOException {
         if (null == publicKey)
             createPublicKey();
 
@@ -148,12 +148,12 @@ public class User extends StatusObject<User> implements Perishable, Serializable
         this.publicKey = publicKey;
     }
 
-    public void createPublicKey () {
+    public void createPublicKey () throws IOException {
         java.security.PublicKey jaPublicKey = Utils.pemStringToPublicKey(publicKeyPem);
         publicKey = new PublicKey(jaPublicKey);
     }
 
-    public void createPublicKeyPem () {
+    public void createPublicKeyPem () throws IOException {
         publicKeyPem = Utils.publicKeyToPemString(publicKey.getSecurityPublicKey());
     }
 
@@ -191,7 +191,7 @@ public class User extends StatusObject<User> implements Perishable, Serializable
         }
     }
 
-    public UserObject asUserObject () {
+    public UserObject asUserObject () throws IOException {
         UserObject userObject = new UserObject();
 
         userObject.setName(getName());
@@ -211,7 +211,11 @@ public class User extends StatusObject<User> implements Perishable, Serializable
     public void updateFrom (User other) {
         super.updateFrom(other);
 
-        setPublicKey(other.getPublicKey());
+        try {
+            setPublicKey(other.getPublicKey());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         setDescription(other.getDescription());
     }
 

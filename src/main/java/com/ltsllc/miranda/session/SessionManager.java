@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.session;
 
+import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
@@ -26,7 +27,6 @@ import com.ltsllc.miranda.session.messages.CheckSessionMessage;
 import com.ltsllc.miranda.session.messages.CreateSessionMessage;
 import com.ltsllc.miranda.session.messages.GetSessionMessage;
 import com.ltsllc.miranda.user.User;
-import com.ltsllc.miranda.util.ImprovedRandom;
 import org.apache.log4j.Logger;
 
 import java.security.SecureRandom;

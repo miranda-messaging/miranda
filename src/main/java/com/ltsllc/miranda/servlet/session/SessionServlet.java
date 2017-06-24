@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.session;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
@@ -23,7 +24,6 @@ import com.ltsllc.miranda.servlet.objects.RequestObject;
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.user.User;
-import com.ltsllc.miranda.util.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

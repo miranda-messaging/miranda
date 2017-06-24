@@ -17,11 +17,11 @@
 package com.ltsllc.miranda.writer;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.PublicKey;
-import com.ltsllc.miranda.util.Utils;
 
 import java.io.*;
 import java.security.GeneralSecurityException;

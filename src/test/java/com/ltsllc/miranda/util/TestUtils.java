@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.util;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -335,24 +336,6 @@ public class TestUtils extends TestCase {
         }
     }
 
-    @Test
-    public void testCloseLogExceptionsInputStream () {
-        TestInputStream testInputStream = new TestInputStream();
-
-        Utils.closeLogExceptions(testInputStream, getMockLogger());
-
-        verify(getMockLogger(), atLeastOnce()).error(Matchers.anyString(), Matchers.any(IOException.class));
-    }
-
-    @Test
-    public void testCloseLogExceptionsOutputStream () {
-        TestOutputStream testOutputStream = new TestOutputStream();
-
-        Utils.closeLogExceptions(testOutputStream, getMockLogger());
-
-        verify(getMockLogger(), atLeastOnce()).error(Matchers.anyString(), Matchers.any(IOException.class));
-    }
-
     public static final String TEST_SHA1 = "BA612E2B074B53812E7C621BC76ADFBA3718C0F9";
 
     @Test
@@ -510,8 +493,8 @@ public class TestUtils extends TestCase {
     public static final String TEST_SHA1_3 = "D869DB7FE62FB07C25A0403ECAEA55031744B5FB";
 
     @Test
-    public void testSha1LogExceptions () {
-        String s = Utils.calculateSha1LogExceptions("whatever");
+    public void testSha1LogExceptions () throws GeneralSecurityException {
+        String s = Utils.calculateSha1("whatever");
         assert (s.equals(TEST_SHA1_3));
     }
 }

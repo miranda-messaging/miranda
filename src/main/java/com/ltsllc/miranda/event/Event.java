@@ -17,13 +17,13 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.directory.DirectoryEntry;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.user.User;
-import com.ltsllc.miranda.util.ImprovedRandom;
-import com.ltsllc.miranda.util.Utils;
 
 import java.io.IOException;
 import java.security.SecureRandom;

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
@@ -28,7 +29,6 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
-import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 

@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.util.Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;

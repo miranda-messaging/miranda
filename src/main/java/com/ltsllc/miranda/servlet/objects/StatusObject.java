@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.servlet.objects;
 
+import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.servlet.property.Property;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,9 +16,9 @@
 
 package last;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.Utils;
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoHandlerAdapter;

@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.node;
 
+import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.ImprovedRandom;
 import org.junit.Before;
 import org.junit.Test;
 

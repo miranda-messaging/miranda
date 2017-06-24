@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.property;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 

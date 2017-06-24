@@ -17,10 +17,10 @@
 package com.ltsllc.miranda.node;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.file.Matchable;
 import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.Updateable;
-import com.ltsllc.miranda.util.ImprovedRandom;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

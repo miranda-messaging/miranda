@@ -16,6 +16,9 @@
 
 package com.ltsllc.miranda.miranda;
 
+import com.ltsllc.common.util.JavaKeyStore;
+import com.ltsllc.common.util.PropertiesUtils;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
@@ -51,9 +54,6 @@ import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.user.UserManager;
-import com.ltsllc.miranda.util.JavaKeyStore;
-import com.ltsllc.miranda.util.PropertiesUtils;
-import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;

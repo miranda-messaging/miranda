@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.topics;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Perishable;
-import com.ltsllc.miranda.util.ImprovedRandom;
 
 /**
  * Created by Clark on 1/5/2017.

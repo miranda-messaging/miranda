@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.miranda;
 
+import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
@@ -36,7 +37,6 @@ import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.session.AddSessionMessage;

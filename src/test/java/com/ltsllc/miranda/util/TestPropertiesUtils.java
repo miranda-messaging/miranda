@@ -16,9 +16,11 @@
 
 package com.ltsllc.miranda.util;
 
+import com.ltsllc.common.util.PropertiesUtils;
+import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.servlet.property.Property;
 import com.ltsllc.miranda.test.TestCase;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +38,8 @@ public class TestPropertiesUtils extends TestCase{
 
         }
     }
+    private static Logger logger = Logger.getLogger(TestPropertiesUtils.class);
+
     private PropertiesUtils propertiesUtils;
 
     public PropertiesUtils getPropertiesUtils() {
@@ -70,7 +74,8 @@ public class TestPropertiesUtils extends TestCase{
 
         Properties properties = PropertiesUtils.buildFrom(MirandaProperties.DEFAULT_PROPERTIES);
 
-        getPropertiesUtils().log(properties);
+        String message = getPropertiesUtils().toString(properties);
+        logger.info(message);
     }
 
     @After

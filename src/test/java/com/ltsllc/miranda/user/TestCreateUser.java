@@ -2,10 +2,10 @@ package com.ltsllc.miranda.user;
 
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.PrivateKey;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.Utils;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509v3CertificateBuilder;

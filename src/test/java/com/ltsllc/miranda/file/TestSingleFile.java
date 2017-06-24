@@ -17,13 +17,13 @@
 package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.NodeElementFileCreator;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.ImprovedRandom;
-import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

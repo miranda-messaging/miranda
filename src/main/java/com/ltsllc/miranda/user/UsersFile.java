@@ -50,11 +50,11 @@ public class UsersFile extends SingleFile<User> {
         return ourInstance;
     }
 
-    public static void setInstance (UsersFile usersFile) {
+    public static void setInstance(UsersFile usersFile) {
         ourInstance = usersFile;
     }
 
-    public UsersFile (com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) throws IOException {
+    public UsersFile(com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) throws IOException {
         super(filename, reader, writer);
 
         UsersFileStartingState usersFileStartingState = new UsersFileStartingState(this);
@@ -69,12 +69,12 @@ public class UsersFile extends SingleFile<User> {
     }
 
 
-    public void addUser (User user) {
+    public void addUser(User user) {
         getData().add(user);
         write();
     }
 
-    public void add (User user, boolean write) {
+    public void add(User user, boolean write) {
         getData().add(user);
 
         if (write) {
@@ -90,15 +90,16 @@ public class UsersFile extends SingleFile<User> {
         }
     }
 
-    public List buildEmptyList () {
+    public List buildEmptyList() {
         return new ArrayList<User>();
     }
 
     public Type getListType() {
-        return new TypeToken<ArrayList<User>>(){}.getType();
+        return new TypeToken<ArrayList<User>>() {
+        }.getType();
     }
 
-    public void removeUsers (List<User> users) {
+    public void removeUsers(List<User> users) {
         boolean modified = false;
 
         List<User> usersToRemove = new ArrayList<User>();
@@ -118,14 +119,15 @@ public class UsersFile extends SingleFile<User> {
             write();
     }
 
-    public void sendNewUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public void sendNewUserMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
         sendToMe(newUserMessage);
     }
 
-    public static List<UserObject> asUserObjects (List<User> users) {
+    public static List<UserObject> asUserObjects(List<User> users) throws IOException {
         List<UserObject> userObjects = new ArrayList<UserObject>();
         for (User user : users) {
+
             UserObject userObject = user.asUserObject();
             userObjects.add(userObject);
         }
@@ -133,13 +135,17 @@ public class UsersFile extends SingleFile<User> {
         return userObjects;
     }
 
-    public byte[] getBytes () {
-        List<UserObject> userObjects = asUserObjects(getData());
-        String json = gson.toJson(userObjects);
-        return json.getBytes();
+    public byte[] getBytes() {
+        try {
+            List<UserObject> userObjects = asUserObjects(getData());
+            String json = gson.toJson(userObjects);
+            return json.getBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<User> asUsers (List<UserObject> userObjects) throws MirandaException {
+    public List<User> asUsers(List<UserObject> userObjects) throws MirandaException {
         List<User> users = new ArrayList<User>();
 
         for (UserObject userObject : userObjects) {
@@ -151,7 +157,7 @@ public class UsersFile extends SingleFile<User> {
     }
 
 
-    public void checkForDuplicates () {
+    public void checkForDuplicates() {
         List<User> userList = new ArrayList<User>(getData());
         List<User> duplicates = new ArrayList<User>();
 
@@ -166,7 +172,7 @@ public class UsersFile extends SingleFile<User> {
         getData().removeAll(duplicates);
     }
 
-    public User find (User user) {
+    public User find(User user) {
         for (User candidate : getData()) {
             if (candidate.getName().equals(user.getName()))
                 return candidate;
@@ -175,7 +181,7 @@ public class UsersFile extends SingleFile<User> {
         return null;
     }
 
-    public void setData (byte[] data) {
+    public void setData(byte[] data) {
         if (null == data) {
             setData(new ArrayList<User>());
         } else {

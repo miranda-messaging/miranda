@@ -45,6 +45,8 @@ import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+
 /**
  * Created by Clark on 1/3/2017.
  */
@@ -329,19 +331,27 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     }
 
     public State processNewUserMessage (NewUserMessage newUserMessage) {
-        NewUserWireMessage newUserWireMessage = new NewUserWireMessage(newUserMessage.getUser().asUserObject());
-        getCluster().broadcast(newUserWireMessage);
+        try {
+            NewUserWireMessage newUserWireMessage = new NewUserWireMessage(newUserMessage.getUser().asUserObject());
+            getCluster().broadcast(newUserWireMessage);
 
-        return getCluster().getCurrentState();
+            return getCluster().getCurrentState();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
-        UserObject userObject = updateUserMessage.getUser().asUserObject();
+        try {
+            UserObject userObject = updateUserMessage.getUser().asUserObject();
 
-        UpdateUserWireMessage updateUserWireMessage = new UpdateUserWireMessage(userObject);
-        getCluster().broadcast(updateUserWireMessage);
+            UpdateUserWireMessage updateUserWireMessage = new UpdateUserWireMessage(userObject);
+            getCluster().broadcast(updateUserWireMessage);
 
-        return getCluster().getCurrentState();
+            return getCluster().getCurrentState();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) {

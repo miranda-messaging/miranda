@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.JettyHttpServer;
 import com.ltsllc.miranda.mina.MinaNetwork;
@@ -26,7 +27,6 @@ import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.util.Utils;
 import io.netty.handler.ssl.SslContext;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.*;
@@ -116,12 +116,6 @@ public class MirandaFactory {
 
     public Network buildNetwork (KeyStore keyStore, KeyStore trustStore) throws MirandaException {
         return new MinaNetwork(keyStore, trustStore, getKeystorePassword());
-    }
-
-    public SslContext buildNettyClientSslContext () throws IOException, GeneralSecurityException {
-        String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-
-        return Utils.createClientSslContext(filename, getTruststorePassword());
     }
 
     public void checkProperty (String name, String value) throws MirandaException {

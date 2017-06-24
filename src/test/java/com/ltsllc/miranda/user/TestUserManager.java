@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.user;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
-import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

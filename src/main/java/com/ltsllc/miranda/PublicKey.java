@@ -17,7 +17,7 @@
 package com.ltsllc.miranda;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.common.util.Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;

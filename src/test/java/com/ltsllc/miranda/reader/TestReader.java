@@ -17,12 +17,11 @@
 package com.ltsllc.miranda.reader;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.PrivateKey;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.Utils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

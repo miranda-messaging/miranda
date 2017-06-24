@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.servlet.login;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.servlet.objects.LoginObject;
 import com.ltsllc.miranda.servlet.objects.LoginResultObject;
-import com.ltsllc.miranda.util.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

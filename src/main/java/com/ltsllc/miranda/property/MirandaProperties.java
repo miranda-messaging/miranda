@@ -17,18 +17,17 @@
 package com.ltsllc.miranda.property;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.common.util.PropertiesUtils;
+import com.ltsllc.common.util.Property;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.property.Property;
-import com.ltsllc.miranda.util.PropertiesUtils;
-import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
-import javax.xml.bind.annotation.XmlType;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -443,7 +442,7 @@ public class MirandaProperties {
     }
 
     public void log () {
-        PropertiesUtils.log(properties);
+        logger.info ("Properties\n" + PropertiesUtils.toString(getProperties()));
     }
 
     public Properties asProperties () {

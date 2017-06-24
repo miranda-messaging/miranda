@@ -17,6 +17,9 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.common.util.JavaKeyStore;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.*;
@@ -40,9 +43,6 @@ import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.UsersFile;
-import com.ltsllc.miranda.util.ImprovedRandom;
-import com.ltsllc.miranda.util.JavaKeyStore;
-import com.ltsllc.miranda.util.Utils;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;

@@ -20,8 +20,8 @@ package com.ltsllc.miranda.test;
  * Created by Clark on 2/24/2017.
  */
 
-import com.ltsllc.miranda.util.ImprovedRandom;
-import com.ltsllc.miranda.util.Utils;
+import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.common.util.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

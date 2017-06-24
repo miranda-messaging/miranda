@@ -18,6 +18,7 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
@@ -28,7 +29,6 @@ import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
 import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;

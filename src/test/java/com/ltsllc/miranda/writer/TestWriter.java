@@ -17,11 +17,11 @@
 package com.ltsllc.miranda.writer;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.PrivateKey;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;

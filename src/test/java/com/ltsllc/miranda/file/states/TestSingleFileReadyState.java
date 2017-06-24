@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
+import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.cluster.ClusterFile;
@@ -29,7 +30,6 @@ import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.util.ImprovedRandom;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
