@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.cluster;
+package com.ltsllc.miranda.servlet.objects;
 
-import com.ltsllc.miranda.servlet.status.NodeStatus;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ltsllc.miranda.topics.Topic;
 
 /**
- * Created by Clark on 3/10/2017.
+ * Created by Clark on 4/9/2017.
  */
-public class ClusterStatusObject {
-    private List<NodeStatus> nodes = new ArrayList<NodeStatus>();
+public class UpdateTopicObject {
+    private Topic oldTopic;
+    private Topic newTopic;
 
-    public List<NodeStatus> getNodes() {
-        return nodes;
+    public Topic getOldTopic() {
+        return oldTopic;
     }
 
-    public void setNodes(List<NodeStatus> nodes) {
-        this.nodes = nodes;
-    }
-
-    public ClusterStatusObject (List<NodeStatus> nodes) {
-        this.nodes = new ArrayList<NodeStatus>(nodes);
+    public Topic getNewTopic() {
+        return newTopic;
     }
 }

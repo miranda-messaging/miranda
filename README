@@ -1,6 +1,6 @@
 WARNING!
-This is a non-functional release of Miranda!  Key functionailty is (such as replicating information to the cluster)
-is missing!  A fully functional release is planned for 9/302017.
+This is a non-functional release of Miranda!  Key functionality is (such as replicating information to the cluster)
+is missing!  A fully functional release is planned for 9/30 2017.
 
 miranda --- a tool for creating reliable web services
 
@@ -28,7 +28,7 @@ https://github.com/ClarkHobbie/miranda
 
 Compile miranda
 
-miranda use maven for builds.  Compile it with the following command:
+miranda uses maven for builds.  Compile it with the following command:
 
 mvn assembly:single
 

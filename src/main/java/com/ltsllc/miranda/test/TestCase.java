@@ -29,7 +29,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.cluster.ClusterStatusObject;
+import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;

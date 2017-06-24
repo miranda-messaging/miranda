@@ -18,6 +18,8 @@ package com.ltsllc.miranda.servlet.enctypt;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
+import com.ltsllc.miranda.servlet.objects.KeyPairObject;
+import com.ltsllc.miranda.servlet.objects.KeyPairResultObject;
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.openssl.PEMWriter;
@@ -44,7 +46,7 @@ public class CreateKeyPairServlet extends MirandaServlet {
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        KeyPairResult keyPairResult = new KeyPairResult();
+        KeyPairResultObject keyPairResult = new KeyPairResultObject();
         keyPairResult.setResult(Results.Unknown);
 
         try {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.status;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.servlet.property.Property;

@@ -2,30 +2,20 @@ package com.ltsllc.miranda.servlet.event;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.MirandaException;
-import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.session.SessionServlet;
-import com.ltsllc.miranda.servlet.subscription.SubscriptionRequestObject;
+import com.ltsllc.miranda.servlet.objects.CreateEventResultObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.util.Utils;
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.http.HttpStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.TimeoutException;
-
-import static com.ltsllc.miranda.user.User.UserTypes.Subscriber;
 
 /**
  * Created by Clark on 6/7/2017.

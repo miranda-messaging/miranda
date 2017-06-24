@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.subscription;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.subsciptions.Subscription;

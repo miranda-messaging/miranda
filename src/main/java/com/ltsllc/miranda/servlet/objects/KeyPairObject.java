@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.enctypt;
+package com.ltsllc.miranda.servlet.objects;
 
 
 import java.security.PrivateKey;

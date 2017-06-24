@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.subscription;
+package com.ltsllc.miranda.servlet.objects;
 
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.servlet.status.NodeStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Clark on 4/22/2017.
+ * Created by Clark on 3/10/2017.
  */
-public class SubscriptionsResult extends ResultObject {
-    private List<Subscription> subscriptions;
+public class ClusterStatusObject {
+    private List<NodeStatus> nodes = new ArrayList<NodeStatus>();
 
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
+    public List<NodeStatus> getNodes() {
+        return nodes;
     }
 
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
+    public void setNodes(List<NodeStatus> nodes) {
+        this.nodes = nodes;
+    }
+
+    public ClusterStatusObject (List<NodeStatus> nodes) {
+        this.nodes = new ArrayList<NodeStatus>(nodes);
     }
 }

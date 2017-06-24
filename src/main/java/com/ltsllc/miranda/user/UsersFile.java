@@ -23,7 +23,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.servlet.user.UserObject;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import com.ltsllc.miranda.writer.Writer;

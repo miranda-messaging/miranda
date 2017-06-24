@@ -18,7 +18,7 @@ package com.ltsllc.miranda.servlet.miranda;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.status.StatusObject;
+import com.ltsllc.miranda.servlet.objects.StatusObject;
 
 /**
  * Created by Clark on 3/9/2017.

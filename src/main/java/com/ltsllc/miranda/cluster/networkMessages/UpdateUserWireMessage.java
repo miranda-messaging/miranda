@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.cluster.networkMessages;
 
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.servlet.user.UserObject;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 
 /**
  * Created by Clark on 4/13/2017.

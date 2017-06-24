@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
-
-import com.ltsllc.miranda.servlet.objects.ResultObject;
+package com.ltsllc.miranda.servlet.objects;
 
 /**
- * Created by Clark on 4/15/2017.
+ * Created by Clark on 3/31/2017.
  */
-public class UserObjectResultObject extends ResultObject {
-    private UserObject userObject;
+public class LoginObject {
+    private String name;
 
-    public UserObject getUserObject() {
-        return userObject;
+    public String getName () {
+        return name;
     }
 
-    public void setUserObject(UserObject userObject) {
-        this.userObject = userObject;
+    public void setName(String name) {
+        this.name = name;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.event;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.servlet.objects.ResultObject;
 

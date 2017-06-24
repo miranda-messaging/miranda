@@ -496,7 +496,7 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/shutdown", ShutdownServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/events", PublishServlet.class);
+        servletMapping = new ServletMapping("/publish", PublishServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/shutdown", ShutdownServlet.class);

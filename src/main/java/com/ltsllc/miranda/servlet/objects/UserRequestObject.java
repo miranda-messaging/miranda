@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.topic;
+package com.ltsllc.miranda.servlet.objects;
 
-import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.user.User;
 
 /**
- * Created by Clark on 4/9/2017.
+ * Created by Clark on 4/28/2017.
  */
-public class UpdateTopicObject {
-    private Topic oldTopic;
-    private Topic newTopic;
+public class UserRequestObject extends RequestObject {
+    private User user;
 
-    public Topic getOldTopic() {
-        return oldTopic;
+    public UserRequestObject(String sessionIdString, User user) {
+        super(sessionIdString);
+        this.user = user;
     }
 
-    public Topic getNewTopic() {
-        return newTopic;
+    public UserRequestObject (String sessionId, Object object) {
+        super(sessionId);
+        User user = (User) object;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUserObject(UserObject userObject) {
+        this.user = user;
     }
 }

@@ -25,7 +25,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
-import com.ltsllc.miranda.servlet.user.UserObject;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
 import org.apache.log4j.Logger;

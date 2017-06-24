@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.session;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.servlet.objects.ResultObject;
+import com.ltsllc.miranda.topics.Topic;
+
+import java.util.List;
 
 /**
  * Created by Clark on 4/15/2017.
  */
-public class SessionResultObject extends ResultObject {
-    private String session;
+public class TopicsResultObject extends ResultObject {
+    private List<Topic> topicList;
 
-    public String getSession() {
-        return session;
+    public List<Topic> getTopicList() {
+        return topicList;
     }
 
-    public void setSession(String session) {
-        this.session = session;
+    public void setTopicList(List<Topic> topicList) {
+        this.topicList = topicList;
     }
 }

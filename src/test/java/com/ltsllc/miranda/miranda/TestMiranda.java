@@ -19,7 +19,7 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.StopState;
-import com.ltsllc.miranda.servlet.user.UserObject;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.topics.Topic;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.login;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.servlet.objects.ResultObject;

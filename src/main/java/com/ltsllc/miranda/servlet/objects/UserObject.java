@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.objects;
 
 import com.ltsllc.miranda.user.User;
 

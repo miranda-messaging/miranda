@@ -22,11 +22,13 @@ import java.util.concurrent.TimeoutException;
 public class EventHolder extends ServletHolder {
     public static class ReadResult {
         public Results result;
+        public Throwable exception;
         public Event event;
     }
 
     public static class CreateResult {
         public Results result;
+        public Throwable exception;
         public String guid;
     }
 

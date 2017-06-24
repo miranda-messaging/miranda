@@ -33,7 +33,7 @@ import com.ltsllc.miranda.node.messages.GetSubscriptionsFileMessage;
 import com.ltsllc.miranda.node.messages.GetTopicsFileMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
-import com.ltsllc.miranda.servlet.user.UserObject;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;

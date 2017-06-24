@@ -21,7 +21,7 @@ import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.PublicKey;
 import com.ltsllc.miranda.StatusObject;
 import com.ltsllc.miranda.file.Perishable;
-import com.ltsllc.miranda.servlet.user.UserObject;
+import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.util.Utils;
 
 import java.io.ByteArrayInputStream;
