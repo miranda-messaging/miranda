@@ -18,10 +18,10 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
 
 import java.util.ArrayList;
 import java.util.List;

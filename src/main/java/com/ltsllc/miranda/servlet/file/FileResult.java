@@ -16,7 +16,8 @@
 
 package com.ltsllc.miranda.servlet.file;
 
-import com.ltsllc.miranda.servlet.objects.ResultObject;
+
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 /**
  * Created by Clark on 4/18/2017.

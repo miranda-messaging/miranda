@@ -18,9 +18,9 @@ package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.GetUserMessage;
 import com.ltsllc.miranda.user.messages.ListUsersMessage;

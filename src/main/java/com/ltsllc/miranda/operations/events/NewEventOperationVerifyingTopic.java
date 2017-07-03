@@ -1,14 +1,15 @@
 package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.Quorum;
-import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.messages.GetTopicResponseMessage;
-import com.ltsllc.miranda.user.User;
 
 /**
  * The point in the event creation process where Miranda is verifying
@@ -125,7 +126,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         //
         // if the remote policy for topic says to return immediately, then we do so
         //
-        if (message.getTopic().getRemotePolicy() == Topic.RemotePolicies.None) {
+        if (message.getTopic().getRemotePolicy() == Topic.RemotePolicies.Immediate) {
             reply(Results.Success);
             nextState = StopState.getInstance();
         }

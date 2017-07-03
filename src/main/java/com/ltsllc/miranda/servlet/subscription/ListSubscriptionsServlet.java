@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ListObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.SubscriptionRequestObject;
-import com.ltsllc.miranda.servlet.objects.SubscriptionsResultObject;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.clientinterface.objects.ListObject;
+import com.ltsllc.miranda.clientinterface.objects.SubscriptionsResultObject;
+import com.ltsllc.miranda.clientinterface.requests.SubscriptionRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class ListSubscriptionsServlet extends SubscriptionServlet {
         return new SubscriptionsResultObject();
     }
 
-    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
+    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequest request)
             throws IOException, ServletException, TimeoutException {
 
         ListObject subscriptionsResult = new ListObject();

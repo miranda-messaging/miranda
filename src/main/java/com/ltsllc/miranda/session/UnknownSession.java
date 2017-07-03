@@ -16,12 +16,10 @@
 
 package com.ltsllc.miranda.session;
 
-import com.ltsllc.miranda.MirandaException;
-
 /**
  * The session id is unknown.
  */
-public class UnknownSession extends MirandaException {
+public class UnknownSession extends Exception {
     private long id;
 
     public long getId() {

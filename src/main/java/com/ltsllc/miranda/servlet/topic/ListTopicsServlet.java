@@ -16,11 +16,11 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ListObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.TopicRequestObject;
-import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.objects.ListObject;
+import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ public class ListTopicsServlet extends TopicServlet {
         return new ResultObject();
     }
 
-    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+    public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ListObject result = new ListObject();
         List<Topic> topics = TopicHolder.getInstance().getTopicList();

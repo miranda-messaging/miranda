@@ -16,11 +16,11 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ReadObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.SubscriptionRequestObject;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.clientinterface.objects.ReadObject;
+import com.ltsllc.miranda.clientinterface.requests.SubscriptionRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class ReadSubscriptionServlet extends SubscriptionServlet {
         return new ResultObject();
     }
 
-    public ReadObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequestObject requestObject)
+    public ReadObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ReadObject<Subscription> resultObject = new ReadObject();
 

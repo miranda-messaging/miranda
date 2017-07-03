@@ -17,10 +17,10 @@
 package com.ltsllc.miranda.operations.user;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.user.User;
 
 import java.util.concurrent.BlockingQueue;
 

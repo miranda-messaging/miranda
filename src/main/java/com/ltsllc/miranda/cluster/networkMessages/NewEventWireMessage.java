@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.cluster.networkMessages;
 
-import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 
 /**
  * Created by Clark on 6/11/2017.

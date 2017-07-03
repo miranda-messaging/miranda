@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.servlet.login;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.session.LoginResponseMessage;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
 

@@ -17,8 +17,9 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 

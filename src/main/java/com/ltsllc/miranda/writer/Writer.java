@@ -21,7 +21,7 @@ import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.PublicKey;
+import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -115,7 +115,7 @@ public class Writer extends Consumer {
         sendToMe(writeMessage);
     }
 
-    public EncryptedMessage encrypt (byte[] plaintext) throws GeneralSecurityException {
+    public EncryptedMessage encrypt (byte[] plaintext) throws GeneralSecurityException, IOException {
         return getPublicKey().encrypt(plaintext);
     }
 }

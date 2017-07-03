@@ -1,12 +1,12 @@
 package com.ltsllc.miranda.servlet.event;
 
-import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.requests.Request;
 
 /**
  * Created by Clark on 6/7/2017.
  */
-public class EventRequest extends RequestObject {
+public class EventRequest extends Request {
     private Event event;
 
     public EventRequest (String sessionId, Event event){

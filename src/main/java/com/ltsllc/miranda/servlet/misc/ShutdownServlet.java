@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.servlet.misc;
 
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.requests.Request;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
-import com.ltsllc.miranda.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class ShutdownServlet extends SessionServlet {
     public Class getRequestClass () {
-        return RequestObject.class;
+        return Request.class;
     }
 
     public ResultObject createResultObject () {
@@ -47,7 +47,7 @@ public class ShutdownServlet extends SessionServlet {
         return ShutdownHolder.getInstance();
     }
 
-    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, RequestObject requestObject)
+    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, Request requestObject)
             throws TimeoutException
     {
         ShutdownHolder.getInstance().shutdownMirada();

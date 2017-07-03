@@ -17,6 +17,12 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.TestClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
@@ -24,18 +30,13 @@ import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
-import com.ltsllc.miranda.servlet.status.NodeStatus;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
@@ -185,7 +186,7 @@ public class TestClusterReadyState extends TestCase {
     @Test
     public void testProcessLoadResponseMessage () {
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
         nodeElementList.add(nodeElement);
         LoadResponseMessage loadResponseMessage = new LoadResponseMessage(null, this, nodeElementList);
 
@@ -213,7 +214,7 @@ public class TestClusterReadyState extends TestCase {
     @Test
     public void testClusterFileChangedMessage () {
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
         nodeElementList.add(nodeElement);
         Version version = new Version();
 
@@ -226,7 +227,7 @@ public class TestClusterReadyState extends TestCase {
 
     @Test
     public void testProcessDropNodeMessage () {
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
         DropNodeMessage dropNodeMessage = new DropNodeMessage(null, this, nodeElement);
         List<Node> nodeList = new ArrayList<Node>();
 
@@ -364,7 +365,7 @@ public class TestClusterReadyState extends TestCase {
 
     @Test
     public void testProcessNewNodeMessage () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com",6789, "a test node");
         Node node = new Node(nodeElement, getMockNetwork(), getMockCluster());
         NewNodeMessage newNodeMessage = new NewNodeMessage(null, this, node);
         List<Node> nodes = new ArrayList<Node>();

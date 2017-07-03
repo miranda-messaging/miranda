@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
+import com.ltsllc.miranda.clientinterface.requests.Request;
+import com.ltsllc.miranda.clientinterface.requests.SubscriptionRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.SubscriptionRequestObject;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
 
 import javax.servlet.ServletException;
@@ -28,14 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import static com.ltsllc.miranda.user.User.UserTypes.Subscriber;
+import static com.ltsllc.miranda.clientinterface.basicclasses.User.UserTypes.Subscriber;
 
 /**
  * Created by Clark on 4/28/2017.
  */
 abstract public class SubscriptionServlet extends SessionServlet {
     abstract ResultObject basicPerformService (HttpServletRequest request, HttpServletResponse response,
-                                               SubscriptionRequestObject requestObject)
+                                               SubscriptionRequest requestObject)
         throws IOException, ServletException, TimeoutException;
 
     public ServletHolder getServletHolder () {
@@ -43,17 +43,17 @@ abstract public class SubscriptionServlet extends SessionServlet {
     }
 
     public Class getRequestClass () {
-        return SubscriptionRequestObject.class;
+        return SubscriptionRequest.class;
     }
 
     public boolean allowAccess () {
         return getSession().getUser().getCategory() == Subscriber;
     }
 
-    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, RequestObject requestObject)
+    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, Request requestObject)
         throws IOException, ServletException, TimeoutException
     {
-        SubscriptionRequestObject subscriptionRequestObject = (SubscriptionRequestObject) requestObject;
+        SubscriptionRequest subscriptionRequestObject = (SubscriptionRequest) requestObject;
         ResultObject resultObject = basicPerformService(request, response, subscriptionRequestObject);
         return resultObject;
     }

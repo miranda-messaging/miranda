@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
@@ -27,7 +28,6 @@ import com.ltsllc.miranda.file.messages.AddObjectsMessage;
 import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
 import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -148,7 +148,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessUpdateObjectsMessage () {
+    public void testProcessUpdateObjectsMessage () throws Exception {
         SecureRandom secureRandom = new SecureRandom();
         ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
         List<NodeElement> nodeElements = new ArrayList<NodeElement>();

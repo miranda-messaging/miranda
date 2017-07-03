@@ -18,6 +18,7 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

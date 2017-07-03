@@ -17,11 +17,7 @@
 package com.ltsllc.miranda.reader;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  * Created by Clark on 5/3/2017.

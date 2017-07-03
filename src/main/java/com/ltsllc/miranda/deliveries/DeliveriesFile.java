@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.reader.Reader;

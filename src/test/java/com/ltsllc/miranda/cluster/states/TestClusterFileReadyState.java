@@ -19,10 +19,10 @@ package com.ltsllc.miranda.cluster.states;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -176,7 +176,7 @@ public class TestClusterFileReadyState extends TestCase {
     @Test
     public void testProcessNodesUpdatedMessage () {
         List<NodeElement> nodeList = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         nodeList.add(nodeElement);
 
         NodesUpdatedMessage message = new NodesUpdatedMessage(null, this, nodeList);

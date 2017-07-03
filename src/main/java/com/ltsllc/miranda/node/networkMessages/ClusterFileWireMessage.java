@@ -19,7 +19,7 @@ package com.ltsllc.miranda.node.networkMessages;
 import com.google.gson.Gson;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.node.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 
 import java.io.IOException;
 import java.util.List;

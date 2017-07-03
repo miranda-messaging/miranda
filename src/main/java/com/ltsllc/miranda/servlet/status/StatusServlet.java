@@ -17,8 +17,9 @@
 package com.ltsllc.miranda.servlet.status;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.clientinterface.objects.StatusObject;
+import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.servlet.miranda.MirandaStatus;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +29,14 @@ import java.io.IOException;
 /**
  * Created by Clark on 3/4/2017.
  */
-public class StatusServlet extends HttpServlet {
-    private static Gson ourGson = new Gson();
+public class StatusServlet extends MirandaServlet {
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
         MirandaStatus mirandaStatus = MirandaStatus.getInstance();
         StatusObject statusObject = mirandaStatus.getStatus();
 
-        response.getOutputStream().print(ourGson.toJson(statusObject));
+        String json = getGson().toJson(statusObject);
+        response.getOutputStream().print(json);
     }
 }

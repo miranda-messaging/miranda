@@ -16,9 +16,10 @@
 
 package com.ltsllc.miranda.node;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.ConnectingState;
-import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class TestNode extends TestCase {
 
         setuplog4j();
 
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         node = new Node(nodeElement, getMockNetwork(), getMockCluster());
     }
 
@@ -61,7 +62,6 @@ public class TestNode extends TestCase {
     public void testConstructor () {
         assert (getNode().getCurrentState() instanceof ConnectingState);
         assert (getNode().getDns().equals("foo.com"));
-        assert (getNode().getIp().equals("192.168.1.1"));
         assert (getNode().getPort() == 6789);
         assert (getNode().getDescription().equals("a node"));
     }
@@ -77,26 +77,26 @@ public class TestNode extends TestCase {
 
     @Test
     public void testMatches () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
 
         assert (getNode().matches(nodeElement));
 
-        NodeElement nodeElement2 = new NodeElement("bar.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement2 = new NodeElement("bar.com", 6789, "a node");
         assert (!getNode().matches(nodeElement2));
 
-        nodeElement2 = new NodeElement("foo.com", "192.168.1.2", 6789, "a node");
+        nodeElement2 = new NodeElement("foo.com", 6789, "a node");
         assert (!getNode().matches(nodeElement2));
 
-        nodeElement2 = new NodeElement("foo.com", "192.168.1.1", 6790, "a node");
+        nodeElement2 = new NodeElement("foo.com", 6790, "a node");
         assert (!getNode().matches(nodeElement2));
 
-        nodeElement2 = new NodeElement("foo.com", "192.168.1.1", 6789, "another node");
+        nodeElement2 = new NodeElement("foo.com", 6789, "another node");
         assert (getNode().matches(nodeElement2));
     }
 
     @Test
     public void testAsNodeElement () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
 
         NodeElement nodeElement2 = getNode().asNodeElement();
 
@@ -109,7 +109,6 @@ public class TestNode extends TestCase {
 
         assert (status.getLastConnected() == -1);
         assert (status.getDns().equals("foo.com"));
-        assert (status.getIp().equals("192.168.1.1"));
         assert (status.getPort() == 6789);
         assert (status.getDescription().equals("a node"));
     }

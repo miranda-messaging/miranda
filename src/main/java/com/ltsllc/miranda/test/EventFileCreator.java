@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 
 import java.io.File;
 import java.io.FileWriter;

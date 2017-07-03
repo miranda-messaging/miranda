@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class TestClusterStartState extends TestCase {
 
     @Test
     public void testProcessFileLoadedMessage () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a test node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
         FileLoadedMessage fileLoadedMessage = new FileLoadedMessage(null, this, nodeElementList);

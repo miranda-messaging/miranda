@@ -19,6 +19,8 @@ package com.ltsllc.miranda.miranda.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.objects.MirandaStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.RemoteVersionMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
@@ -42,7 +44,6 @@ import com.ltsllc.miranda.operations.user.DeleteUserOperation;
 import com.ltsllc.miranda.operations.user.UpdateUserOperation;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -307,7 +308,7 @@ public class ReadyState extends State {
     }
 
     private State processGetStatusMessage (GetStatusMessage getStatusMessage) {
-        StatusObject statusObject = getMiranda().getStatusImpl();
+        MirandaStatusObject statusObject = getMiranda().getStatusImpl();
 
         GetStatusResponseMessage response = new GetStatusResponseMessage(getMiranda().getQueue(), this, statusObject);
         getStatusMessage.reply(response);

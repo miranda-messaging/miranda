@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,9 +68,9 @@ public class TestManager extends TestCase {
     @Test
     public void testConvertList () {
         List<NodeElement> temp = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         temp.add(nodeElement);
-        nodeElement = new NodeElement("bar.com", "192.168.1.2", 6789, "another node");
+        nodeElement = new NodeElement("bar.com", 6789, "another node");
         temp.add(nodeElement);
 
         List<Node> nodes = getManager().convertList(temp);
@@ -78,11 +78,10 @@ public class TestManager extends TestCase {
 
     @Test
     public void testConvert () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         Node node = (Node) getManager().convert(nodeElement);
 
         assert (node.getDns().equals("foo.com"));
-        assert (node.getIp().equals("192.168.1.1"));
         assert (node.getPort() == 6789);
         assert (node.getDescription().equals("a node"));
     }

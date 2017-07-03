@@ -1,5 +1,6 @@
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.operations.WireResponse;
 import org.apache.log4j.Logger;

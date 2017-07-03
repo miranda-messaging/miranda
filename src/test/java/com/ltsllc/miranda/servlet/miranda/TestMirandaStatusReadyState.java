@@ -18,8 +18,8 @@ package com.ltsllc.miranda.servlet.miranda;
 
 import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.node.NodeElement;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

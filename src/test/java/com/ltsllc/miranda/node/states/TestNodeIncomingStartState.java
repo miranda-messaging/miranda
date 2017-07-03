@@ -64,7 +64,6 @@ public class TestNodeIncomingStartState extends TesterNodeState {
         State nextState = getNodeIncoming().processMessage(networkMessage);
 
         verify(getMockNode(), atLeastOnce()).setDns(Matchers.eq("foo.com"));
-        verify(getMockNode(), atLeastOnce()).setIp(Matchers.eq("192.168.1.1"));
         verify(getMockNode(), atLeastOnce()).setPort(Matchers.eq(6789));
         verify(getMockNode(), atLeastOnce()).setDescription("a node");
 

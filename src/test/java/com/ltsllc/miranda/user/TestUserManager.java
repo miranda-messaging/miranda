@@ -18,7 +18,8 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.StatusObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
@@ -156,7 +157,6 @@ public class TestUserManager extends TestCase {
     @Test
     public void testPerformGarbageCollection() {
         User user = new User("whatever", "whatever");
-        user.setStatus(StatusObject.Status.Deleted);
         getUserManager().getData().add(user);
 
         assert (getUserManager().getUsers().size() > 0);
@@ -171,7 +171,6 @@ public class TestUserManager extends TestCase {
         User user = new User("whatever", "whatever");
         getUserManager().getData().add(user);
         User shouldContain = new User("whatever", "whatever");
-        shouldContain.setStatus(StatusObject.Status.Deleted);
         User shouldNotContain = new User("not here", "absent");
 
         assert (getUserManager().contains(shouldContain));

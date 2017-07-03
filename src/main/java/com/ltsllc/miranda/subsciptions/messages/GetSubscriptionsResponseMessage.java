@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.subsciptions.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
 import com.ltsllc.miranda.Quorum;
 

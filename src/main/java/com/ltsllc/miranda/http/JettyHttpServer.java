@@ -20,7 +20,6 @@ import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.catchall.CatchallServlet;
-import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;

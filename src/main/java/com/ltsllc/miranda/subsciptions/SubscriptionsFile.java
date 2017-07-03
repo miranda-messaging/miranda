@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;

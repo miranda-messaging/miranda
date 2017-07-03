@@ -1,13 +1,12 @@
 package com.ltsllc.miranda.servlet.event;
 
-import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.clientinterface.results.EventResultObject;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.objects.EventResultObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
 
 /**
- * A {@link SessionServlet} that deals with {@link Event}s.
+ * A {@link SessionServlet} that deals with {@link com.ltsllc.miranda.test.TestNetworkListener.Event}s.
  *
  * <p>
  *     This class doesn't do much --- it just provides implementations for a few

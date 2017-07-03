@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.subsciptions.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;

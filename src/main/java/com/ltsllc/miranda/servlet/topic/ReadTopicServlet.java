@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ReadObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.TopicRequestObject;
-import com.ltsllc.miranda.servlet.objects.TopicResultObject;
-import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.objects.ReadObject;
+import com.ltsllc.miranda.clientinterface.objects.TopicResultObject;
+import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class ReadTopicServlet extends TopicServlet {
         return new TopicResultObject();
     }
 
-    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequestObject requestObject)
+    public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ReadObject<Topic> readObject = new ReadObject<Topic>();
 

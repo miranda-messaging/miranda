@@ -16,7 +16,8 @@
 
 package com.ltsllc.miranda.user;
 
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Test;
 

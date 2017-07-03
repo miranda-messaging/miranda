@@ -16,11 +16,11 @@
 
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ListObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.UserRequestObject;
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.ListObject;
+import com.ltsllc.miranda.clientinterface.requests.UserRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class ListUsersServlet extends UserServlet {
         return new UserListResultObject();
     }
 
-    public ListObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequestObject requestObject)
+    public ListObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequest requestObject)
             throws IOException, ServletException, TimeoutException {
         List<User> users = UserHolder.getInstance().getUsers();
         ListObject listObject = new ListObject();

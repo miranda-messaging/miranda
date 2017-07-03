@@ -17,9 +17,11 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
@@ -33,11 +35,9 @@ import com.ltsllc.miranda.node.messages.GetSubscriptionsFileMessage;
 import com.ltsllc.miranda.node.messages.GetTopicsFileMessage;
 import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
 import org.junit.Before;

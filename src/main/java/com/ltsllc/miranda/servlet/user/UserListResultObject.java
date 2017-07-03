@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import java.util.List;
 

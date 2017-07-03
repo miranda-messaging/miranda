@@ -18,13 +18,13 @@ package last;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.miranda.Startup;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UsersFile;
 import org.apache.log4j.Logger;
 import org.junit.After;

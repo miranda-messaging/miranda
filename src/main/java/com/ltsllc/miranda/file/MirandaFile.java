@@ -53,7 +53,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private String filename;
     private Writer writer;
     private Reader reader;
-    private List<Perishable> elements = new ArrayList<Perishable>();
+    private List elements = new ArrayList();
     private Version version;
     private long lastLoaded = -1;
     private long lastCollection;
@@ -81,7 +81,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return writer;
     }
 
-    public List<Perishable> getElements() {
+    public List getElements() {
         return elements;
     }
 

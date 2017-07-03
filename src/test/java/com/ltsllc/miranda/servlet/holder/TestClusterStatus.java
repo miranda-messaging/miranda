@@ -16,11 +16,11 @@
 
 package com.ltsllc.miranda.servlet.holder;
 
+import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusReadyState;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.status.NodeStatus;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

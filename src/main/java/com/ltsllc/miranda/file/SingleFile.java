@@ -22,6 +22,9 @@ import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
+import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.AddObjectsMessage;
@@ -44,7 +47,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/10/2017.
  */
-abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends MirandaFile implements Comparer {
+abstract public class SingleFile<E extends MirandaObject & Matchable> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
     abstract public Type getListType();
     abstract public void checkForDuplicates();
@@ -274,7 +277,7 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         write();
     }
 
-    public void updateObjects(List<E> updatedObjects) {
+    public void updateObjects(List<E> updatedObjects) throws MergeException {
         for (E updatedObject : updatedObjects) {
             update(updatedObject);
         }
@@ -284,13 +287,13 @@ abstract public class SingleFile<E extends Updateable<E> & Matchable<E>> extends
         write();
     }
 
-    public void update(E updatedObject) {
+    public void update(E updatedObject) throws MergeException {
         E existingObject = find(updatedObject);
 
         if (null == existingObject) {
             logger.error("Could not find match for update");
         } else {
-            existingObject.updateFrom(updatedObject);
+            existingObject.merge(updatedObject);
         }
 
         write();

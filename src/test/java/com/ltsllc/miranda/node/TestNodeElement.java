@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class TestNodeElement extends TestCase {
 
         super.setup();
 
-        nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "a test node");
+        nodeElement = new NodeElement("whatever.com", 6789, "a test node");
     }
 
     @Test
@@ -66,7 +67,6 @@ public class TestNodeElement extends TestCase {
 
         getNodeElement().updateFrom(other);
 
-        assert (getNodeElement().getIp().equals(other.getIp()));
         assert (getNodeElement().getDescription().equals(other.getDescription()));
         assert (getNodeElement().getLastConnected() == other.getLastConnected());
     }

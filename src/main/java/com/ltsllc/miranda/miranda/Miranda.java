@@ -18,6 +18,12 @@ package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.MirandaStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
@@ -30,7 +36,6 @@ import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkListener;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
@@ -38,22 +43,18 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
-import com.ltsllc.miranda.servlet.objects.StatusObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
-import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.timer.MirandaTimer;
-import com.ltsllc.miranda.topics.Topic;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
 import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.CreateUserMessage;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
@@ -404,18 +405,17 @@ public class Miranda extends Consumer {
         send(getStatusMessage, getQueue());
     }
 
-    public StatusObject getStatusImpl () {
+    public MirandaStatusObject getStatusImpl () {
         MirandaProperties properties = Miranda.properties;
 
         String localDns = properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);
-        String localIp = properties.getProperty(MirandaProperties.PROPERTY_MY_IP);
         int localPort = properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
         String localDescription = properties.getProperty(MirandaProperties.PROPERTY_MY_DESCIPTION);
 
-        NodeElement local = new NodeElement(localDns, localIp, localPort, localDescription);
+        NodeElement local = new NodeElement(localDns, localPort, localDescription);
         List<Property> list = properties.asPropertyList();
 
-        StatusObject statusObject = new StatusObject(local, list, null);
+        MirandaStatusObject statusObject = new MirandaStatusObject(local, list);
 
         return statusObject;
     }

@@ -17,7 +17,6 @@
 package com.ltsllc.miranda;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
@@ -26,7 +25,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 12/30/2016.
  */
-public class Message implements Perishable {
+public class Message {
     public enum Subjects {
         Auction,
         AddObjects,

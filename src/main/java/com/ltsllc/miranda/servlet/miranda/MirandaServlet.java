@@ -19,7 +19,7 @@ package com.ltsllc.miranda.servlet.miranda;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.user.JSPublicKeySerializer;
 
 import javax.servlet.ServletOutputStream;

@@ -18,12 +18,13 @@ package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.WriteMessage;
 import com.ltsllc.miranda.writer.Writer;
@@ -98,7 +99,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
     public void addNode(Node node) {
         if (!containsNode(node)) {
-            NodeElement nodeElement = new NodeElement(node);
+            NodeElement nodeElement = new NodeElement(node.getDns(), node.getPort(), node.getDescription());
             getData().add(nodeElement);
 
             byte[] buffer = getBytes();
@@ -126,7 +127,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
     private boolean containsNode(Node node) {
         for (NodeElement nodeElement : getData()) {
-            if (nodeElement.getDns().equals(node.getDns()) && nodeElement.getIp().equals(node.getIp()) && nodeElement.getPort() == node.getPort())
+            if (nodeElement.getDns().equals(node.getDns()) && nodeElement.getPort() == node.getPort())
                 return true;
         }
         return false;
@@ -217,14 +218,14 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
 
-    public void updateNode(NodeElement oldValue, NodeElement newValue) {
+    public void updateNode(NodeElement oldValue, NodeElement newValue) throws MergeException {
         if (!contains(oldValue)) {
             logger.error("asked to update a node that we don't contain");
             return;
         }
 
         NodeElement current = matchingNode(oldValue);
-        current.update(newValue);
+        current.merge(newValue);
         updateVersion();
         write();
     }

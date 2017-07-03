@@ -19,7 +19,8 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.Matchable;
+import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
+import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Updateable;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -33,7 +34,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/26/2017.
  */
-public abstract class Manager<E, F extends Updateable<F> & Matchable<F>> extends Consumer {
+public abstract class Manager<E, F extends MirandaObject & Matchable> extends Consumer {
     abstract public SingleFile<F> createFile (String filename) throws IOException;
     abstract public State createStartState ();
     abstract public E convert (F f);

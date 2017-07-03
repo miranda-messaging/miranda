@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
+import com.ltsllc.miranda.clientinterface.requests.Request;
+import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.TopicRequestObject;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
 
 import javax.servlet.ServletException;
@@ -33,20 +33,20 @@ import java.util.concurrent.TimeoutException;
  */
 abstract public class TopicServlet extends SessionServlet {
     abstract ResultObject basicPerformService (HttpServletRequest request, HttpServletResponse response,
-                                               TopicRequestObject requestObject) throws IOException, ServletException, TimeoutException;
+                                               TopicRequest requestObject) throws IOException, ServletException, TimeoutException;
 
     public boolean allowAccess () {
         return true;
     }
 
     public Class getRequestClass () {
-        return TopicRequestObject.class;
+        return TopicRequest.class;
     }
 
-    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, RequestObject requestObject)
+    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, Request requestObject)
             throws IOException, ServletException, TimeoutException
     {
-        TopicRequestObject topicRequestObject = (TopicRequestObject) requestObject;
+        TopicRequest topicRequestObject = (TopicRequest) requestObject;
         ResultObject resultObject = basicPerformService(request, response, topicRequestObject);
         return resultObject;
     }

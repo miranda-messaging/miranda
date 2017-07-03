@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.directory.MirandaDirectory;
-import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventDirectory;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;

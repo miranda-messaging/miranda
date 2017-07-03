@@ -18,6 +18,7 @@ package com.ltsllc.miranda.topics;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -68,20 +69,7 @@ public class TopicManager extends StandardManager <Topic> {
     }
 
     public void performGarbageCollection () {
-        long now = System.currentTimeMillis();
-
-        List<Topic> expired = new ArrayList<Topic>();
-
-        for (Topic topic : getTopics()) {
-            if (topic.expired(now))
-                expired.add(topic);
-        }
-
-        for (Topic topic : expired) {
-            logger.info ("Removing expired topic " + topic.getName());
-        }
-
-        getTopics().removeAll(expired);
+        logger.info ("performGarbageCollection called");
     }
 
     public Topic getTopic (String name) {

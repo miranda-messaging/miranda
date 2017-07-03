@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.topics.Topic;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.topics.TopicsFile;
 
 import java.lang.reflect.Type;
@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 /**
  * Created by Clark on 2/18/2017.
  */
-public class NewTopicHandlerReadyState extends NewObjectHandlerReadyState<TopicsFile, Topic, NewTopicHandler> {
+public class NewTopicHandlerReadyState extends NewObjectHandlerReadyState<TopicsFile, NewTopicHandler> {
     public Type getBasicType() {
         return Topic.class;
     }

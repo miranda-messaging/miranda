@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file.states;
 import com.google.gson.Gson;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.AddObjectsMessage;
@@ -186,7 +187,15 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     }
 
     public State processUpdateObjectsMessage (UpdateObjectsMessage updateObjectsMessage) {
-        getFile().updateObjects(updateObjectsMessage.getUpdatedObjects());
+        try {
+            getFile().updateObjects(updateObjectsMessage.getUpdatedObjects());
+
+            return getFile().getCurrentState();
+        } catch (MergeException e) {
+            Panic panic = new Panic("Exception while trying to update objects", e,
+                    Panic.Reasons.ExceptionDuringUpdate);
+            Miranda.panicMiranda(panic);
+        }
 
         return getFile().getCurrentState();
     }

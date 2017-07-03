@@ -18,9 +18,9 @@ package com.ltsllc.miranda.user.states;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.SingleFileSyncingState;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UsersFile;
 
 import java.lang.reflect.Type;

@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.topics.Topic;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

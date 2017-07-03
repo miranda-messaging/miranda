@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
 import org.apache.mina.core.future.ConnectFuture;

@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.cluster.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.file.Perishable;
 
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
@@ -26,13 +25,13 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/12/2017.
  */
 public class ExpiredMessage extends Message {
-    private Collection<Perishable> expired;
+    private Collection expired;
 
-    public Collection<Perishable> getExpired() {
+    public Collection getExpired() {
         return expired;
     }
 
-    public ExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, Collection<Perishable> expired) {
+    public ExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, Collection expired) {
         super(Subjects.Expired, senderQueue, sender);
 
         this.expired = expired;

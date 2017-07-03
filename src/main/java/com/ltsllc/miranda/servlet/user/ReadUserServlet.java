@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.servlet.objects.ReadObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.UserRequestObject;
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.ReadObject;
+import com.ltsllc.miranda.clientinterface.requests.UserRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class ReadUserServlet extends UserServlet {
     }
 
     public ReadObject basicService(HttpServletRequest request, HttpServletResponse response,
-                                   UserRequestObject requestObject) throws ServletException, IOException, TimeoutException
+                                   UserRequest requestObject) throws ServletException, IOException, TimeoutException
     {
         UserHolder.getInstance().getUser(requestObject.getUser().getName());
         ReadObject<User> readObject = new ReadObject<User>();

@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.enctypt;
 
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.objects.KeyPairObject;
+import com.ltsllc.miranda.clientinterface.objects.KeyPairResultObject;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
-import com.ltsllc.miranda.servlet.objects.KeyPairObject;
-import com.ltsllc.miranda.servlet.objects.KeyPairResultObject;
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.openssl.PEMWriter;

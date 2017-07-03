@@ -18,11 +18,11 @@ package com.ltsllc.miranda.reader;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.GeneralSecurityException;

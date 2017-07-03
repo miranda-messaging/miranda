@@ -16,13 +16,13 @@
 
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.requests.Request;
+import com.ltsllc.miranda.clientinterface.requests.UserRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.UserRequestObject;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
-import com.ltsllc.miranda.user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,14 +35,14 @@ import java.util.concurrent.TimeoutException;
  */
 abstract public class UserServlet extends SessionServlet {
     abstract public ResultObject basicService (HttpServletRequest request, HttpServletResponse response,
-                                               UserRequestObject requestObject) throws ServletException, IOException, TimeoutException;
+                                               UserRequest requestObject) throws ServletException, IOException, TimeoutException;
 
     public ServletHolder getServletHolder() {
         return UserHolder.getInstance();
     }
 
     public Class getRequestClass () {
-        return UserRequestObject.class;
+        return UserRequest.class;
     }
 
     public boolean allowAccess () {
@@ -50,9 +50,9 @@ abstract public class UserServlet extends SessionServlet {
     }
 
     public ResultObject performService(HttpServletRequest request, HttpServletResponse response,
-                                                RequestObject requestObject) throws ServletException, IOException, TimeoutException
+                                                Request requestObject) throws ServletException, IOException, TimeoutException
     {
-        UserRequestObject userRequestObject = (UserRequestObject) requestObject;
+        UserRequest userRequestObject = (UserRequest) requestObject;
 
         if (getSession().getUser().getCategory() != User.UserTypes.Admin) {
             ResultObject resultObject = createResultObject();

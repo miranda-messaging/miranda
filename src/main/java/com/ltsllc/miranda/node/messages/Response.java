@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.node.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.node.Node;
 
 import java.util.concurrent.BlockingQueue;

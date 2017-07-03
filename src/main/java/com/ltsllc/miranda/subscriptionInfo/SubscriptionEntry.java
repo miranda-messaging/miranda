@@ -1,12 +1,13 @@
 package com.ltsllc.miranda.subscriptionInfo;
 
-import com.ltsllc.miranda.directory.DirectoryEntry;
-import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.file.Matchable;
+import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
+import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.Updateable;
 
 /**
- * An {@link com.ltsllc.miranda.event.Event} and when (if) it was delivered ({@link com.ltsllc.miranda.deliveries.Delivery}).
+ * An {@link Event} and when (if) it was delivered ({@link com.ltsllc.miranda.clientinterface.basicclasses.Delivery}).
  *
  * This class represents an Event and, if it has been delivered, when it was Delivered.
  * A subscription has one of these for each Event of interest to the Subscription.
@@ -21,7 +22,7 @@ import com.ltsllc.miranda.file.Updateable;
  *     signifies that the Event hasn't been delivered yet.</li>
  * </ul>
  */
-public class SubscriptionEntry implements DirectoryEntry, Updateable<SubscriptionEntry>, Matchable<SubscriptionEntry> {
+public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, Updateable<SubscriptionEntry>, Matchable {
     private String event;
     private String delivery;
 
@@ -99,7 +100,15 @@ public class SubscriptionEntry implements DirectoryEntry, Updateable<Subscriptio
      * @see SubscriptionEntry#isEquivalentTo(DirectoryEntry)
      */
     @Override
-    public boolean matches(SubscriptionEntry other) {
+    public boolean matches(Object o) {
+        if (null == o)
+            return false;
+
+        if (!(o instanceof SubscriptionEntry))
+            return false;
+
+        SubscriptionEntry other = (SubscriptionEntry) o;
+
         return isEquivalentTo(other);
     }
 }

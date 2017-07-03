@@ -17,11 +17,11 @@
 package com.ltsllc.miranda.operations.user;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserResponseMessage;
 

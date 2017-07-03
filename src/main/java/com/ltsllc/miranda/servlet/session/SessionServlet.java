@@ -17,13 +17,13 @@
 package com.ltsllc.miranda.servlet.session;
 
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.requests.Request;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
 import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.user.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +35,10 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/28/2017.
  */
 abstract public class SessionServlet extends MirandaServlet {
-    abstract public Class<? extends RequestObject> getRequestClass();
+    abstract public Class<? extends Request> getRequestClass();
 
     abstract public ResultObject performService(HttpServletRequest request, HttpServletResponse response,
-                                                RequestObject requestObject) throws ServletException, IOException, TimeoutException;
+                                                Request requestObject) throws ServletException, IOException, TimeoutException;
 
     abstract public ServletHolder getServletHolder();
 
@@ -62,9 +62,9 @@ abstract public class SessionServlet extends MirandaServlet {
 
         try {
             String json = Utils.readInputStream(request.getInputStream());
-            RequestObject requestObject = getGson().fromJson(json, getRequestClass());
+            Request requestObject = getGson().fromJson(json, getRequestClass());
 
-            setSession(getServletHolder().getSession(requestObject.getSessionId()));
+            setSession(getServletHolder().getSession(requestObject.getSessionIdAsLong()));
             if (null == getSession()) {
                 resultObject = createResultObject();
                 resultObject.setResult(Results.SessionNotFound);

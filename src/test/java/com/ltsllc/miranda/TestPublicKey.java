@@ -17,6 +17,8 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
+import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

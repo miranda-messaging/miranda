@@ -18,6 +18,7 @@ package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.directory.MirandaDirectory;
 import com.ltsllc.miranda.directory.MirandaDirectoryLoadingState;
 import com.ltsllc.miranda.reader.Reader;

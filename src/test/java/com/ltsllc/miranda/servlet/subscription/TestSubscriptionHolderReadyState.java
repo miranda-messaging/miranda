@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.subsciptions.messages.*;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

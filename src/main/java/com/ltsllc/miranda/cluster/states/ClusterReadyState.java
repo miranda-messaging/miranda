@@ -17,21 +17,21 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
 import com.ltsllc.miranda.manager.ManagerReadyState;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.messages.StartConversationMessage;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;

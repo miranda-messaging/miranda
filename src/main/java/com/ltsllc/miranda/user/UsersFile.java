@@ -20,10 +20,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import com.ltsllc.miranda.writer.Writer;
@@ -127,7 +128,6 @@ public class UsersFile extends SingleFile<User> {
     public static List<UserObject> asUserObjects(List<User> users) throws IOException {
         List<UserObject> userObjects = new ArrayList<UserObject>();
         for (User user : users) {
-
             UserObject userObject = user.asUserObject();
             userObjects.add(userObject);
         }

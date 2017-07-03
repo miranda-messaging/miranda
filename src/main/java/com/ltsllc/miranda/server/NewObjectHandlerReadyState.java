@@ -19,7 +19,6 @@ package com.ltsllc.miranda.server;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.SingleFile;
 import org.apache.log4j.Logger;
 
@@ -28,7 +27,7 @@ import java.lang.reflect.Type;
 /**
  * Created by Clark on 2/18/2017.
  */
-abstract public class NewObjectHandlerReadyState<T extends SingleFile, E extends Perishable, W extends NewObjectPostHandler> extends State {
+abstract public class NewObjectHandlerReadyState<T extends SingleFile, W extends NewObjectPostHandler> extends State {
     private static Logger logger = Logger.getLogger(NewObjectHandlerReadyState.class);
 
     abstract public Type getBasicType();

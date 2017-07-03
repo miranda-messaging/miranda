@@ -17,13 +17,13 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.StopState;
-import com.ltsllc.miranda.servlet.objects.UserObject;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.topics.Topic;
-import com.ltsllc.miranda.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

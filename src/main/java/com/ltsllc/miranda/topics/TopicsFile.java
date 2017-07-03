@@ -17,10 +17,11 @@
 package com.ltsllc.miranda.topics;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.topics.states.TopicsFileStartingState;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 

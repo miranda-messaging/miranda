@@ -18,8 +18,8 @@ package com.ltsllc.miranda.topics.messages;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.SessionMessage;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.topics.Topic;
 
 import java.util.concurrent.BlockingQueue;
 

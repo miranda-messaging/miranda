@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.TopicRequestObject;
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +39,7 @@ public class CreateTopicServlet extends TopicServlet {
     }
 
     public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp,
-                                            TopicRequestObject requestObject)
+                                            TopicRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
         requestObject.getTopic().setOwner(getSession().getUser().getName());

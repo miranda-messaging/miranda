@@ -175,7 +175,6 @@ public class NewNodeState extends NodeState {
 
     private State processJoinWireMessage (JoinWireMessage joinWireMessage) {
         getNode().setDns(joinWireMessage.getDns());
-        getNode().setIp(joinWireMessage.getIp());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());
 

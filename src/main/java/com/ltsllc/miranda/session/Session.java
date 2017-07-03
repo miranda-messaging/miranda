@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.session;
 
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 
 /**
  * Created by Clark on 3/30/2017.

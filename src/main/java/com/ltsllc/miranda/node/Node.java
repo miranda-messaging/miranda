@@ -19,6 +19,8 @@ package com.ltsllc.miranda.node;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
@@ -26,7 +28,6 @@ import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.ConnectingState;
 import com.ltsllc.miranda.node.states.NodeIncomingStartState;
-import com.ltsllc.miranda.servlet.status.NodeStatus;
 import org.apache.log4j.Logger;
 
 import java.util.Date;
@@ -40,7 +41,6 @@ public class Node extends Consumer
     public Node(NodeElement element, Network network, Cluster cluster) {
         super("node");
         dns = element.getDns();
-        ip = element.getIp();
         port = element.getPort();
         description = element.getDescription();
         this.network = network;
@@ -70,7 +70,6 @@ public class Node extends Consumer
     private static Logger logger = Logger.getLogger(Node.class);
 
     private String dns;
-    private String ip;
     private String description;
     private int port;
     private Network network;
@@ -84,14 +83,6 @@ public class Node extends Consumer
 
     public void setDns (String dns) {
         this.dns = dns;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp (String ip) {
-        this.ip = ip;
     }
 
     public String getDescription() {
@@ -130,7 +121,7 @@ public class Node extends Consumer
         if (null == getDns())
             return false;
 
-        return getDns().equals(nodeElement.getDns()) && getIp().equals(nodeElement.getIp()) && getPort() == nodeElement.getPort();
+        return getDns().equals(nodeElement.getDns()) && getPort() == nodeElement.getPort();
     }
 
     public void connect () {
@@ -148,14 +139,14 @@ public class Node extends Consumer
 
 
     public NodeElement getUpdatedElement () {
-        NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+        NodeElement nodeElement = new NodeElement(getDns(), getPort(), getDescription());
         Date date = new Date();
         nodeElement.setLastConnected(date.getTime());
         return nodeElement;
     }
 
     public NodeElement getNodeElement() {
-        NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+        NodeElement nodeElement = new NodeElement(getDns(), getPort(), getDescription());
 
         if (isConnected()) {
             nodeElement.setLastConnected(System.currentTimeMillis());
@@ -168,13 +159,12 @@ public class Node extends Consumer
     public boolean matches (NodeElement nodeElement) {
         return (
                 getDns().equals(nodeElement.getDns())
-                        && getIp().equals(nodeElement.getIp())
                         && getPort() == nodeElement.getPort()
         );
     }
 
     public NodeElement asNodeElement () {
-        NodeElement nodeElement = new NodeElement(getDns(), getIp(), getPort(), getDescription());
+        NodeElement nodeElement = new NodeElement(getDns(), getPort(), getDescription());
 
         if (isConnected()) {
             nodeElement.setLastConnected(System.currentTimeMillis());
@@ -185,7 +175,7 @@ public class Node extends Consumer
 
     public NodeStatus getStatus () {
         NodeStatus.NodeStatuses status = isConnected() ? NodeStatus.NodeStatuses.Online : NodeStatus.NodeStatuses.Offline;
-        NodeStatus nodeStatus = new NodeStatus(getDns(), getIp(), getPort(), getDescription(), status);
+        NodeStatus nodeStatus = new NodeStatus(getDns(), getPort(), getDescription(), status);
         return nodeStatus;
     }
 

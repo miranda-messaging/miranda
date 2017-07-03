@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.subscriptionInfo;
 
-import com.ltsllc.miranda.directory.DirectoryEntry;
+import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
 import com.ltsllc.miranda.file.SingleFile;
 
 import java.lang.reflect.Type;
@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A file that contains the {@link com.ltsllc.miranda.event.Event Events} and {@link com.ltsllc.miranda.deliveries.Delivery Deliveries}
+ * A file that contains the {@link com.ltsllc.miranda.clientinterface.basicclasses.Event}s and
+ * {@link com.ltsllc.miranda.clientinterface.basicclasses.Delivery}
  * of a subscription.
  */
 public class SubscriptionEntryFile extends SingleFile<SubscriptionEntry> {

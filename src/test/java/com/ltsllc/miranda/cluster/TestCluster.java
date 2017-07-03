@@ -17,19 +17,19 @@
 package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
-import com.ltsllc.miranda.servlet.status.NodeStatus;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.session.Session;
-import com.ltsllc.miranda.subsciptions.Subscription;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.topics.Topic;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.junit.After;
 import org.junit.Before;
@@ -151,9 +151,9 @@ public class TestCluster extends TestCase {
     @Test
     public void testContains ()
     {
-        NodeElement shouldContain = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement shouldContain = new NodeElement("foo.com", 6789, "a node");
         Node node = new Node(shouldContain, getMockNetwork(), getMockCluster());
-        NodeElement shouldNotContain = new NodeElement("bar.com", "192.168.1.2", 6790, "another node");
+        NodeElement shouldNotContain = new NodeElement("bar.com", 6790, "another node");
         List<Node> nodeList = new ArrayList<Node>(1);
         nodeList.add(node);
 
@@ -177,7 +177,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testMatchingNode () {
         ArrayList<Node> nodes = new ArrayList<Node>();
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
@@ -190,7 +190,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testGetStatus () {
         ArrayList<Node> nodes = new ArrayList<Node>();
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
@@ -214,13 +214,13 @@ public class TestCluster extends TestCase {
     @Test
     public void testMergeNewNode () {
         List<Node> nodes = new ArrayList<Node>();
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
         nodes.add(node);
 
         getCluster().setData(nodes);
 
-        NodeElement newNode = new NodeElement("foo.com", "192.168.1.2", 6789, "another node");
+        NodeElement newNode = new NodeElement("foo.com", 6789, "another node");
         List<NodeElement> nodeElements = new ArrayList<NodeElement>();
         nodeElements.add(newNode);
 
@@ -248,7 +248,7 @@ public class TestCluster extends TestCase {
 
     @Test
     public void testNewNode () {
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
 
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
@@ -267,7 +267,7 @@ public class TestCluster extends TestCase {
     public void testSendNewNode () {
         getCluster().stop();
 
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
 
         getCluster().sendNewNode(null, this, node);
@@ -287,7 +287,7 @@ public class TestCluster extends TestCase {
 
         when(getMockClusterFile().getQueue()).thenReturn(queue);
 
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
 
         when(getMockNode().asNodeElement()).thenReturn(nodeElement);
 
@@ -340,7 +340,7 @@ public class TestCluster extends TestCase {
     public void testSendNodeStopped () {
         getCluster().stop();
 
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());
 
         getCluster().sendNodeStopped(null, this, node);
@@ -377,7 +377,7 @@ public class TestCluster extends TestCase {
     @Test
     public void testAsNodeElements () {
         List<Node> nodes = new ArrayList<Node>();
-        NodeElement nodeElement = new NodeElement("whatever.com", "192.168.1.1", 6789, "whatever");
+        NodeElement nodeElement = new NodeElement("whatever.com", 6789, "whatever");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
         Node node = new Node(nodeElement, getMockNetwork(), getCluster());

@@ -20,7 +20,6 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.MirandaFile;
-import com.ltsllc.miranda.file.Perishable;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -76,21 +75,7 @@ public class FileReadyState extends State {
 
 
     private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        long now = System.currentTimeMillis();
-
-        List<Perishable> expired = new ArrayList<Perishable>();
-
-        for (Perishable perishable : getFile().getElements()) {
-            if (perishable.expired(now)) {
-                expired.add(perishable);
-            }
-        }
-
-        getFile().getElements().removeAll(expired);
-
-        getFile().setLastCollection(now);
-
-        return this;
+        return getFile().getCurrentState();
     }
 
 

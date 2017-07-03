@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.TopicRequestObject;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class UpdateTopicServlet extends TopicServlet {
     }
 
     public ResultObject basicPerformService(HttpServletRequest request, HttpServletResponse response,
-                                       TopicRequestObject requestObject) throws ServletException, IOException, TimeoutException {
+                                       TopicRequest requestObject) throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
 
         Results result = TopicHolder.getInstance().updateTopic(requestObject.getTopic());

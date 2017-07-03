@@ -1,11 +1,9 @@
 package com.ltsllc.miranda.mina;
 
-import com.ltsllc.miranda.MirandaException;
-
 /**
  * Created by clarkhobbie on 5/30/17.
  */
-public class SslException extends MirandaException {
+public class SslException extends Exception {
     public enum Reasons {
         NoSession,
         Exception,

@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.servlet.cluster;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.servlet.objects.ClusterStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -17,9 +17,11 @@
 package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -28,7 +30,6 @@ import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.user.DuplicateUserException;
 import com.ltsllc.miranda.user.UnknownUserException;
-import com.ltsllc.miranda.user.User;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.*;
 import org.apache.log4j.Logger;
@@ -238,6 +239,8 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
             getUserManager().updateUser(userUpdatedMessage.getUser());
         } catch (UnknownUserException e) {
             logger.error("Asked to update unknown user " + userUpdatedMessage.getUser().getName());
+        } catch (MergeException e) {
+            logger.error("Exception while merging", e);
         }
 
         getUserManager().getUsersFile().sendUpdateObjectsMessage (getUserManager().getQueue(), this,

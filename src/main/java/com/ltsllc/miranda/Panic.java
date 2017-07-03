@@ -43,6 +43,7 @@ public class Panic extends Exception {
         ExceptionDuringInstantiation,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
         ExceptionDuringNewConnection,
+        ExceptionDuringUpdate,
         ExceptionEncrypting,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionInEventPost,

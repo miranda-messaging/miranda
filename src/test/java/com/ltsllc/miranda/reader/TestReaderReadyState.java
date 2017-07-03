@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.reader;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

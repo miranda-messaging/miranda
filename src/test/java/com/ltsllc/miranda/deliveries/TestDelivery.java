@@ -16,8 +16,9 @@
 
 package com.ltsllc.miranda.deliveries;
 
-import com.ltsllc.miranda.event.Event;
-import com.ltsllc.miranda.subsciptions.Subscription;
+import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,7 @@ public class TestDelivery extends TestCase {
 
             this.delivery = new Delivery(event, timeDelivered, subscription);
 
-            assert (getDelivery().getMessageId().equals(event.getGuid()));
+            assert (getDelivery().getGuid().equals(event.getGuid()));
             assert (getDelivery().getDelivered() == timeDelivered);
         } catch (IOException e) {
             e.printStackTrace();

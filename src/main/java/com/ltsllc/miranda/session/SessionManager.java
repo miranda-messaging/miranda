@@ -19,14 +19,14 @@ package com.ltsllc.miranda.session;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.session.messages.CheckSessionMessage;
 import com.ltsllc.miranda.session.messages.CreateSessionMessage;
 import com.ltsllc.miranda.session.messages.GetSessionMessage;
-import com.ltsllc.miranda.user.User;
 import org.apache.log4j.Logger;
 
 import java.security.SecureRandom;
@@ -82,7 +82,7 @@ public class SessionManager extends Consumer {
         setCurrentState(readyState);
     }
 
-    public Session createSession (User user) {
+    public Session createSession(User user) {
         Long session = null;
 
         while (null == session || getSessions().containsKey(session)) {
@@ -91,7 +91,7 @@ public class SessionManager extends Consumer {
 
         long now = System.currentTimeMillis();
 
-        Session newSession = new Session (user, now + getSessionLength(), session.longValue());
+        Session newSession = new Session(user, now + getSessionLength(), session.longValue());
 
         logger.info("Created session " + newSession.getId() + " for " + user.getName());
 
@@ -101,7 +101,7 @@ public class SessionManager extends Consumer {
         return newSession;
     }
 
-    public boolean isSessionValid (long id) {
+    public boolean isSessionValid(long id) {
         Session session = getSessions().get(id);
 
         if (null == session)
@@ -111,33 +111,31 @@ public class SessionManager extends Consumer {
         return session.getExpires() < now;
     }
 
-    public void updateSession (long id) throws UnknownSession {
-        Session session = sessions.get (id);
+    public void updateSession(long id) throws UnknownSession {
+        Session session = sessions.get(id);
         if (null == session)
             throw new UnknownSession(id);
 
         long now = System.currentTimeMillis();
-        session.setExpires (now + getSessionLength());
+        session.setExpires(now + getSessionLength());
     }
 
-    public void performGarbageCollection () {
+    public void performGarbageCollection() {
         long now = System.currentTimeMillis();
 
         List<Session> expired = new ArrayList<Session>();
 
-        for (Long key : getSessions().keySet())
-        {
+        for (Long key : getSessions().keySet()) {
             Session session = getSessions().get(key);
-            if (now >= session.getExpires())
-            {
-                expired.add (session);
+            if (now >= session.getExpires()) {
+                expired.add(session);
             }
         }
 
         if (expired.size() > 0) {
             for (Session session : expired) {
-                getSessions().put (session.getId(), null);
-                getUserToSession().put (session.getUser().getName(), null);
+                getSessions().put(session.getId(), null);
+                getUserToSession().put(session.getUser().getName(), null);
             }
 
             Miranda miranda = Miranda.getInstance();
@@ -146,17 +144,13 @@ public class SessionManager extends Consumer {
         }
     }
 
-    public void addSession (Session session) {
-        try {
-            Session oldSession = getSessions().get(session.getId());
+    public void addSession(Session session) throws UnknownSession {
+        Session oldSession = getSessions().get(session.getId());
 
-            if (null != oldSession) {
-                updateSession(oldSession.getId());
-            } else {
-                getSessions().put(session.getId(), session);
-            }
-        } catch (MirandaException e) {
-            logger.error("Exception trying to add session", e);
+        if (null != oldSession) {
+            updateSession(oldSession.getId());
+        } else {
+            getSessions().put(session.getId(), session);
         }
     }
 
@@ -165,38 +159,38 @@ public class SessionManager extends Consumer {
         sendToMe(addSessionMessage);
     }
 
-    public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
+    public void sendSessionsExpiredMessage(BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
         SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(senderQueue, sender, expiredSessions);
         sendToMe(sessionsExpiredMessage);
     }
 
-    public void expireSessions (List<Session> expiredSessions) {
+    public void expireSessions(List<Session> expiredSessions) {
         for (Session session : expiredSessions) {
-            logger.info ("Expiring session " + session.getId());
+            logger.info("Expiring session " + session.getId());
             getSessions().put(session.getId(), null);
         }
     }
 
-    public void sendCreateSession (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public void sendCreateSession(BlockingQueue<Message> senderQueue, Object sender, User user) {
         CreateSessionMessage createSessionMessage = new CreateSessionMessage(senderQueue, sender, user);
         sendToMe(createSessionMessage);
     }
 
-    public void sendGetSessionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
-        GetSessionMessage getSessionMessage = new GetSessionMessage (senderQueue, sender, name);
+    public void sendGetSessionMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
+        GetSessionMessage getSessionMessage = new GetSessionMessage(senderQueue, sender, name);
         sendToMe(getSessionMessage);
     }
 
-    public Session getSessionFor (String name) {
+    public Session getSessionFor(String name) {
         return getUserToSession().get(name);
     }
 
-    public void sendCheckSessionMessage (BlockingQueue<Message> senderQueue, Object sender, long sessionId) {
+    public void sendCheckSessionMessage(BlockingQueue<Message> senderQueue, Object sender, long sessionId) {
         CheckSessionMessage checkSessionMessage = new CheckSessionMessage(senderQueue, sender, sessionId);
         sendToMe(checkSessionMessage);
     }
 
-    public Session checkSession (long sessionId) {
+    public Session checkSession(long sessionId) {
         Session session = getSessions().get(sessionId);
 
         if (session != null) {

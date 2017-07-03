@@ -17,21 +17,22 @@
 package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.MirandaException;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
-import com.ltsllc.miranda.servlet.objects.UserObject;
 import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.user.states.UserManagerStartState;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -64,17 +65,7 @@ public class UserManager extends StandardManager<User> {
     }
 
     public void garbageCollectUsers () {
-        List<User> expired = new ArrayList<User>();
 
-        for (User user : getUsers()) {
-            if (user.expired()) {
-                logger.info ("The user, " + user.getName() + " has expired.  Deleting.");
-                expired.add(user);
-            }
-        }
-
-        getUsers().removeAll(expired);
-        getUsersFile().removeUsers(expired);
     }
 
     public void performGarbageCollection () {
@@ -147,16 +138,16 @@ public class UserManager extends StandardManager<User> {
         if (null == existingUser)
             throw new UnknownUserException ("User " + userObject.getName() + " not found");
 
-        existingUser.updateFrom (userObject);
+        existingUser.merge (userObject);
     }
 
-    public void updateUser (User user) throws UnknownUserException {
+    public void updateUser (User user) throws UnknownUserException, MergeException {
         User existingUser = getUser(user.getName());
 
         if (null == existingUser) {
             throw new UnknownUserException("User " + user.getName() + " was not found.");
         } else {
-            existingUser.updateFrom(user);
+            existingUser.merge(user);
         }
     }
 

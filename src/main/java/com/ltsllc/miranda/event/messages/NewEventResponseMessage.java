@@ -1,8 +1,8 @@
 package com.ltsllc.miranda.event.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 
 import java.util.concurrent.BlockingQueue;
 

@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.property;
 
-import com.ltsllc.miranda.MirandaException;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 /**
  * Created by Clark on 3/30/2017.

@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.user;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.states.UsersFileStartingState;
 import org.junit.After;

@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.servlet.user;
 
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.servlet.objects.UserRequestObject;
+import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.requests.UserRequest;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class UpdateUserServlet extends UserServlet {
         return true;
     }
 
-    public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequestObject requestObject)
+    public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
         Results result = UserHolder.getInstance().updateUser(requestObject.getUser());

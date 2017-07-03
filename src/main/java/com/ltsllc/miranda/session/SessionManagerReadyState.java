@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.session;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.property.MirandaProperties;

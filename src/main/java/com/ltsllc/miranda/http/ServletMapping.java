@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.objects;
-
-import com.ltsllc.miranda.servlet.objects.ResultObject;
-import com.ltsllc.miranda.subsciptions.Subscription;
+package com.ltsllc.miranda.http;
 
 /**
- * Created by Clark on 4/22/2017.
+ * Created by Clark on 3/9/2017.
  */
-public class SubscriptionResultObject extends ResultObject {
-    private Subscription subscription;
+public class ServletMapping {
+    private String path;
+    private Class servletClass;
 
-    public Subscription getSubscription() {
-        return subscription;
+    public String getPath() {
+        return path;
     }
 
-    public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
+    public Class getServletClass() {
+        return servletClass;
+    }
+
+    public ServletMapping (String path, Class servletClass) {
+        this.path = path;
+        this.servletClass = servletClass;
     }
 }

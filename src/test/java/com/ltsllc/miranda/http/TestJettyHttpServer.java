@@ -16,7 +16,6 @@
 
 package com.ltsllc.miranda.http;
 
-import com.ltsllc.miranda.servlet.objects.ServletMapping;
 import com.ltsllc.miranda.servlet.status.StatusServlet;
 import com.ltsllc.miranda.test.TestCase;
 import org.eclipse.jetty.server.Handler;

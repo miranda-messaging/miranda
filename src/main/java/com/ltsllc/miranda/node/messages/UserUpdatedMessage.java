@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.node.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.user.User;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 
 import java.util.concurrent.BlockingQueue;
 

@@ -1,8 +1,8 @@
 package com.ltsllc.miranda.servlet.event;
 
-import com.ltsllc.miranda.servlet.objects.EventSearchRequestObject;
-import com.ltsllc.miranda.servlet.objects.RequestObject;
-import com.ltsllc.miranda.servlet.objects.ResultObject;
+import com.ltsllc.miranda.clientinterface.requests.EventSearchRequest;
+import com.ltsllc.miranda.clientinterface.requests.Request;
+import com.ltsllc.miranda.clientinterface.results.ResultObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,12 +16,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class SearchEventsServlet extends EventServlet {
     @Override
-    public Class<? extends RequestObject> getRequestClass() {
-        return EventSearchRequestObject.class;
+    public Class<? extends Request> getRequestClass() {
+        return EventSearchRequest.class;
     }
 
     @Override
-    public ResultObject performService(HttpServletRequest request, HttpServletResponse response, RequestObject requestObject)
+    public ResultObject performService(HttpServletRequest request, HttpServletResponse response, Request requestObject)
             throws ServletException, IOException, TimeoutException
     {
         return null;

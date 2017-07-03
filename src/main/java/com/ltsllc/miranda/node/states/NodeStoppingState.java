@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.network.messages.CloseResponseMessage;
 import com.ltsllc.miranda.network.messages.DisconnectedMessage;
 import com.ltsllc.miranda.node.Node;

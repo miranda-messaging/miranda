@@ -2,6 +2,7 @@ package bootstrap;
 
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.BootstrapUsersFile;
+import org.bouncycastle.openssl.PEMEncryptor;
 import org.junit.Test;
 
 /**
@@ -16,5 +17,8 @@ public class TestCreateUser extends TestCase {
         BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(usersFilename, keyStoreFileName, password);
         bootstrapUsersFile.createUser("admin", "the admin user");
         bootstrapUsersFile.write();
+
+
+
     }
 }

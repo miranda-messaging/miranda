@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.operations.topic;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.messages.CreateTopicResponseMessage;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;

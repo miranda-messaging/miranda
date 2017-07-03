@@ -20,8 +20,8 @@ import com.google.gson.Gson;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.test.NodeElementFileCreator;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
@@ -134,7 +134,7 @@ public class TestSingleFile extends TestCase {
 
     @Test
     public void testLoad () throws IOException {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
 
@@ -155,7 +155,7 @@ public class TestSingleFile extends TestCase {
 
     @Test
     public void testGetBytes () throws IOException {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
 
@@ -178,7 +178,7 @@ public class TestSingleFile extends TestCase {
 
         getSingleFile().setData(nodeElementList);
 
-        NodeElement notPresent = new NodeElement("test.com", "192.168.1.2", 6789, "a node that could not be generated radomly");
+        NodeElement notPresent = new NodeElement("test.com", 6789, "a node that could not be generated radomly");
 
         assert (getSingleFile().contains(nodeElement));
         assert (!getSingleFile().contains(notPresent));
@@ -192,7 +192,7 @@ public class TestSingleFile extends TestCase {
 
         setupFile(TEST_FILE, nodeElementList);
 
-        NodeElement notPresent = new NodeElement("test.com", "192.168.1.2", 6789, "a node that could not be generated radomly");
+        NodeElement notPresent = new NodeElement("test.com", 6789, "a node that could not be generated radomly");
         List<NodeElement> nodeElementList2 = new ArrayList<NodeElement>();
         nodeElementList2.add(notPresent);
 
@@ -265,7 +265,7 @@ public class TestSingleFile extends TestCase {
     }
 
     @Test
-    public void testUpdateObjects () {
+    public void testUpdateObjects () throws Exception {
         setupMockWriter();
         SecureRandom secureRandom = new SecureRandom();
         ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);

@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.event.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.event.EventsFile;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;

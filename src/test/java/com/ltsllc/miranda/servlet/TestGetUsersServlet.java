@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.servlet;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.servlet.user.ListUsersServlet;
 import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.test.TestServlet;
-import com.ltsllc.miranda.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -1,8 +1,8 @@
 package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.event.Event;
 import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.session.Session;

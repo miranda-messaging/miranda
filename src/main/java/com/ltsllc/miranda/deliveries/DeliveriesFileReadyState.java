@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.file.Perishable;
+import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
 
 import java.lang.reflect.Type;
@@ -46,7 +46,7 @@ public class DeliveriesFileReadyState extends SingleFileReadyState {
         return new TypeToken<List<Delivery>> () {}.getType();
     }
 
-    public List<Perishable> getPerishables() {
-        return new ArrayList<Perishable>(getDeliveriesFile().getData());
+    public List getPerishables() {
+        return new ArrayList(getDeliveriesFile().getData());
     }
 }

@@ -19,10 +19,10 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.node.NodeElement;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
@@ -94,7 +94,7 @@ public class TestClusterFile extends TestCase {
         ClusterFile.initialize(filename, getMockReader(), getMockWriter(), getCluster());
         this.clusterFile = ClusterFile.getInstance();
 
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a test node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
         this.clusterFile.setData(nodeElementList);
@@ -135,7 +135,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testInitialize() {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a ssltest node");
+        NodeElement nodeElement = new NodeElement("foo.com",6789, "a ssltest node");
         getClusterFile().add(nodeElement);
         assert (getClusterFile().contains(nodeElement));
     }
@@ -156,13 +156,13 @@ public class TestClusterFile extends TestCase {
 
         pause(125);
 
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
+        NodeElement nodeElement = new NodeElement("bar.com",6790, "a different ssltest node");
         com.ltsllc.miranda.cluster.ClusterFile.getInstance().contains(nodeElement);
     }
 
     @Test
     public void testUpdateNode() {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.2", 6789, "a ssltest node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a ssltest node");
         long now = System.currentTimeMillis();
         nodeElement.setLastConnected(now);
         com.ltsllc.miranda.cluster.ClusterFile.getInstance().updateNode(nodeElement);
@@ -176,7 +176,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testAdd() {
-        NodeElement nodeElement = new NodeElement("bar.com", "192.168.1.2", 6790, "a different ssltest node");
+        NodeElement nodeElement = new NodeElement("bar.com", 6790, "a different ssltest node");
         getClusterFile().addNode(nodeElement);
 
         verify(getMockWriter(), atLeastOnce()).sendWrite(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.anyString(), Matchers.any(byte[].class));
@@ -184,8 +184,8 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testContainsNode () {
-        NodeElement contains = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
-        NodeElement doesNotContain = new NodeElement("bar.com", "192.168.1.2", 6789, "a different test node");
+        NodeElement contains = new NodeElement("foo.com", 6789, "a test node");
+        NodeElement doesNotContain = new NodeElement("bar.com", 6789, "a different test node");
 
         assert(getClusterFile().contains(contains));
         assert(!getClusterFile().contains(doesNotContain));
@@ -193,8 +193,8 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testContainsElement () {
-        NodeElement contains = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
-        NodeElement doesNotContain = new NodeElement("bar.com", "192.168.1.2", 6789, "a different test node");
+        NodeElement contains = new NodeElement("foo.com", 6789, "a test node");
+        NodeElement doesNotContain = new NodeElement("bar.com", 6789, "a different test node");
 
         assert(getClusterFile().containsElement(contains));
         assert(!getClusterFile().containsElement(doesNotContain));
@@ -202,7 +202,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testMergeNewElement () {
-        NodeElement newElement = new NodeElement("bar.com", "192.168.1.2", 6789, "a new element");
+        NodeElement newElement = new NodeElement("bar.com", 6789, "a new element");
         List<NodeElement> newElementList = new ArrayList<NodeElement>();
         newElementList.add(newElement);
 
@@ -238,7 +238,7 @@ public class TestClusterFile extends TestCase {
 
     @Test
     public void testMatchingNode () {
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a test node");
 
         NodeElement match = getClusterFile().matchingNode(nodeElement);
 
@@ -249,7 +249,7 @@ public class TestClusterFile extends TestCase {
     @Test
     public void testCheckForDuplicatesHasDuplicates () {
         getClusterFile().setLogger(getMockLogger());
-        NodeElement nodeElement = new NodeElement("foo.com", "192.168.1.1", 6789, "a test node");
+        NodeElement nodeElement = new NodeElement("foo.com", 6789, "a test node");
 
         getClusterFile().getData().add (nodeElement);
 

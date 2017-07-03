@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.network.messages.*;
 import org.apache.log4j.Logger;
 
