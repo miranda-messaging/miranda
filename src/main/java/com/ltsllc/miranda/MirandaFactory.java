@@ -259,7 +259,7 @@ public class MirandaFactory {
             properties.updateSystemProperties();
 
             int threadPoolSize = getProperties().getIntProperty(MirandaProperties.PROPERTY_SERVLET_THREAD_POOL_SIZE);
-            QueuedThreadPool threadPool = new QueuedThreadPool(100);
+            QueuedThreadPool threadPool = new QueuedThreadPool(threadPoolSize);
 
             Server jetty = new Server(threadPool);
 
