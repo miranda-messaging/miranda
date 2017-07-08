@@ -19,7 +19,7 @@ package com.ltsllc.miranda.miranda.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.clientinterface.objects.MirandaStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.RemoteVersionMessage;
@@ -308,7 +308,7 @@ public class ReadyState extends State {
     }
 
     private State processGetStatusMessage (GetStatusMessage getStatusMessage) {
-        MirandaStatusObject statusObject = getMiranda().getStatusImpl();
+        NodeStatus statusObject = getMiranda().getStatusImpl();
 
         GetStatusResponseMessage response = new GetStatusResponseMessage(getMiranda().getQueue(), this, statusObject);
         getStatusMessage.reply(response);

@@ -4,7 +4,7 @@ import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.operations.Operation;
 
 /**

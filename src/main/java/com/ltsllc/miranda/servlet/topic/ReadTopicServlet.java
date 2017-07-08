@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.objects.ReadObject;
 import com.ltsllc.miranda.clientinterface.objects.TopicResultObject;
 import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.clientinterface.results.Results;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

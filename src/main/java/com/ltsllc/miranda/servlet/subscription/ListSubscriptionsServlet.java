@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.objects.ListObject;
 import com.ltsllc.miranda.clientinterface.objects.SubscriptionsResultObject;
 import com.ltsllc.miranda.clientinterface.requests.SubscriptionRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.clientinterface.results.Results;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

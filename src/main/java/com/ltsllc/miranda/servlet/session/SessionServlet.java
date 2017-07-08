@@ -17,10 +17,10 @@
 package com.ltsllc.miranda.servlet.session;
 
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.session.Session;
@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+
 
 /**
  * Created by Clark on 4/28/2017.

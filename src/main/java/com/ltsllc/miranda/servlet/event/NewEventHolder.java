@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.servlet.event;
 
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.session.Session;

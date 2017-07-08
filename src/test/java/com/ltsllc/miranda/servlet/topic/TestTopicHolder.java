@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.test.ServletHolderRunner;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

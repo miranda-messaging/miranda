@@ -34,7 +34,7 @@ public class ReadEventServlet extends EventServlet {
         EventResultObject eventResultObject = new EventResultObject();
         eventResultObject.setResult(readResult.result);
         eventResultObject.setEvent(readResult.event);
-        eventResultObject.setException(readResult.exception);
+        eventResultObject.setAdditionalInfo(readResult.exception);
 
         return eventResultObject;
     }

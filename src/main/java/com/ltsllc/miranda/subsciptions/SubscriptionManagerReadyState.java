@@ -18,8 +18,8 @@ package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;

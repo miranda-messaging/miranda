@@ -18,7 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
-import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.network.messages.CloseResponseMessage;
 import org.junit.Before;
 import org.junit.Test;

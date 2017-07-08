@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.test.TestServlet;
 import org.junit.Before;

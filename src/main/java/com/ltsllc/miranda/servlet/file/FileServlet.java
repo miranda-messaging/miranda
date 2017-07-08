@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet.file;
 
-import com.ltsllc.miranda.clientinterface.Results;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import org.eclipse.jetty.server.Request;
 

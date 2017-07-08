@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import org.apache.log4j.Logger;

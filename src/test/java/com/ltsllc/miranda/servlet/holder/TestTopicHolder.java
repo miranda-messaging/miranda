@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.servlet.holder;
 
 import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.miranda.clientinterface.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
+import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.topic.TopicHolder;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

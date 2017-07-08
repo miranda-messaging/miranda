@@ -22,7 +22,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.objects.MirandaStatusObject;
+import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
@@ -405,19 +405,15 @@ public class Miranda extends Consumer {
         send(getStatusMessage, getQueue());
     }
 
-    public MirandaStatusObject getStatusImpl () {
+    public NodeStatus getStatusImpl () {
         MirandaProperties properties = Miranda.properties;
 
         String localDns = properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);
         int localPort = properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
         String localDescription = properties.getProperty(MirandaProperties.PROPERTY_MY_DESCIPTION);
 
-        NodeElement local = new NodeElement(localDns, localPort, localDescription);
-        List<Property> list = properties.asPropertyList();
-
-        MirandaStatusObject statusObject = new MirandaStatusObject(local, list);
-
-        return statusObject;
+        NodeStatus nodeStatus = new NodeStatus(localDns, localPort, localDescription, NodeStatus.NodeStatuses.Online);
+        return nodeStatus;
     }
 
     public void sendNewProperties (BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
