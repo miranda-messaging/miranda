@@ -79,6 +79,7 @@ public class JettyHttpServer extends HttpServer {
             getJetty().setHandler(getHandlerCollection());
             getJetty().start();
             logger.info("Jetty started");
+            org.bouncycastle.asn1.x509.AlgorithmIdentifier algorithmIdentifier;
         } catch (Exception e) {
             Panic panic = new StartupPanic("Excepion trying to start HttpServer", e, StartupPanic.StartupReasons.ExceptionStartingHttpServer);
             Miranda.getInstance().panic(panic);

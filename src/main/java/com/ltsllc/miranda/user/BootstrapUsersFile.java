@@ -1,13 +1,18 @@
 package com.ltsllc.miranda.user;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.EncryptedMessage;
+import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
 import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -23,9 +28,21 @@ public class BootstrapUsersFile {
     private static Gson gson = new Gson();
 
     private PublicKey publicKey;
+    private PrivateKey privateKey;
     private String filename;
     private List<User> userList;
 
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
 
     public BootstrapUsersFile (String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
         initialize(usersFilename, keyStoreFilename, password);
@@ -55,6 +72,27 @@ public class BootstrapUsersFile {
 
     public void create (User user) {
         userList.add(user);
+    }
+
+    public void read () throws IOException, GeneralSecurityException {
+        File file = new File(getFilename());
+        if (!file.exists())
+            return;
+
+        FileReader fileReader = null;
+
+        try {
+            Gson gson = new Gson();
+            fileReader = new FileReader(getFilename());
+            EncryptedMessage encryptedMessage = gson.fromJson(fileReader, EncryptedMessage.class);
+            byte[] plainText = getPrivateKey().decrypt(encryptedMessage);
+            String json = new String(plainText);
+            Type t = new TypeToken<List<User>>() {
+            }.getType();
+            setUserList(gson.fromJson(json, t));
+        } finally {
+            Utils.closeIgnoreExceptions(fileReader);
+        }
     }
 
     public void write () throws IOException, GeneralSecurityException {
