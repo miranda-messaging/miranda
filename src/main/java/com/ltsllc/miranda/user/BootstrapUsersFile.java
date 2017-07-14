@@ -50,10 +50,16 @@ public class BootstrapUsersFile {
 
     public void initialize (String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
         KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, password);
+
+        java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey("private", password.toCharArray());
+        PrivateKey privateKey = new PrivateKey(jsPrivateKey);
+        setPrivateKey(privateKey);
+
         Certificate certificate = keyStore.getCertificate("private");
         java.security.PublicKey jsPublicKey = certificate.getPublicKey();
         PublicKey publicKey = new PublicKey(jsPublicKey);
         setPublicKey (publicKey);
+
         this.filename = usersFilename;
         this.userList = new ArrayList<User>();
     }

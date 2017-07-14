@@ -868,6 +868,25 @@ public class TestCase {
         return null;
     }
 
+    public String loadHexString (String filename) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileInputStream = new FileInputStream(filename);
+            int b = fileInputStream.read();
+            while (-1 != b) {
+                byteArrayOutputStream.write(b);
+                b = fileInputStream.read();
+            }
+        } finally {
+            Utils.closeIgnoreExceptions(fileInputStream);
+        }
+
+        return Utils.bytesToString(byteArrayOutputStream.toByteArray());
+    }
+
     public String loadPrivateKey(String filename, String password, String alias) {
         ByteArrayOutputStream byteArrayOutputStream = null;
         try {
