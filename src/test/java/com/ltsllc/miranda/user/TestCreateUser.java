@@ -3,8 +3,6 @@ package com.ltsllc.miranda.user;
 
 import com.google.gson.Gson;
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
-import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.test.TestCase;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -40,20 +38,6 @@ public class TestCreateUser extends TestCase {
         } finally {
             Utils.closeIgnoreExceptions(fileWriter);
         }
-    }
-
-
-    public void createPrivateKeyFile(String filename, PrivateKey privateKey) throws IOException {
-        Gson gson = new Gson();
-        String json = gson.toJson(privateKey.getSecurityPrivateKey());
-        createTextFile(filename, json);
-    }
-
-    public void createPublicKeyFile(String filename, PublicKey publicKey) throws IOException {
-        java.security.PublicKey jsPublicKey = publicKey.getSecurityPublicKey();
-        Gson gson = new Gson();
-        String json = gson.toJson(jsPublicKey);
-        createTextFile(filename, json);
     }
 
     public static final String TEST_KEY_ALIAS = "private";
@@ -119,7 +103,7 @@ public class TestCreateUser extends TestCase {
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-        PublicKey publicKey = new PublicKey(keyPair.getPublic());
+        com.ltsllc.clcl.PublicKey publicKey = new com.ltsllc.clcl.PublicKey(keyPair.getPublic());
         User user = new User("admin", User.UserTypes.Admin, "the admin user", publicKey);
         BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(USERS_FILE, KEY_STORE_FILE, KEY_STORE_PASSWORD);
         bootstrapUsersFile.create(user);

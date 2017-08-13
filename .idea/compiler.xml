@@ -10,7 +10,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="common" target="1.5" />
       <module name="miranda" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -17,8 +17,10 @@
 package com.ltsllc.miranda.reader;
 
 import com.google.gson.Gson;
+import com.ltsllc.clcl.EncryptedMessage;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
@@ -91,10 +93,7 @@ public class Reader extends Consumer {
                 try {
                     result.data = decryptMessage(encryptedMessage);
                     result.result = ReadResponseMessage.Results.Success;
-                } catch (GeneralSecurityException e) {
-                    result.result = ReadResponseMessage.Results.ExceptionDecryptingFile;
-                    result.exception = e;
-                } catch (IOException e) {
+                } catch (EncryptionException e) {
                     result.result = ReadResponseMessage.Results.ExceptionDecryptingFile;
                     result.exception = e;
                 }
@@ -108,7 +107,7 @@ public class Reader extends Consumer {
         return gson.fromJson(reader, EncryptedMessage.class);
     }
 
-    public byte[] decryptMessage (EncryptedMessage encryptedMessage) throws GeneralSecurityException, IOException {
+    public byte[] decryptMessage (EncryptedMessage encryptedMessage) throws EncryptionException {
         return getPrivateKey().decrypt(encryptedMessage);
     }
 

@@ -17,9 +17,10 @@
 package com.ltsllc.miranda.writer;
 
 import com.google.gson.Gson;
+import com.ltsllc.clcl.EncryptedMessage;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.EncryptedMessage;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
@@ -49,14 +50,14 @@ public class TestWriter extends TestCase {
         return writer;
     }
 
-    public void reset () {
+    public void reset() {
         super.reset();
 
         writer = null;
     }
 
     @Before
-    public void setup () {
+    public void setup() {
         reset();
 
         super.setup();
@@ -66,22 +67,22 @@ public class TestWriter extends TestCase {
     }
 
     @After
-    public void cleanup () {
+    public void cleanup() {
         String filename = TEST_FILE_NAME + ".backup";
         deleteFile(TEST_FILE_NAME);
         deleteFile(filename);
     }
 
     @Test
-    public void testConstructor () {
+    public void testConstructor() {
         assert (getWriter().getQueue() != null);
         assert (getWriter().getCurrentState() instanceof WriterReadyState);
     }
 
     public static final String TEST_FILE_NAME = "testfile";
-    public static final byte[] TEST_DATA = { 1, 2, 3, 4 };
+    public static final byte[] TEST_DATA = {1, 2, 3, 4};
 
-    public byte[] readFile (String filename) {
+    public byte[] readFile(String filename) {
         byte[] fileData = null;
         FileInputStream fileInputStream = null;
 
@@ -100,7 +101,7 @@ public class TestWriter extends TestCase {
         return fileData;
     }
 
-    public boolean equivalent (byte[] b1, byte[] b2) {
+    public boolean equivalent(byte[] b1, byte[] b2) {
         if (b1.length != b2.length)
             return false;
 
@@ -112,24 +113,24 @@ public class TestWriter extends TestCase {
         return true;
     }
 
-    public boolean fileIsEquivalentTo (String filename, byte[] data) {
+    public boolean fileIsEquivalentTo(String filename, byte[] data) {
         byte[] fileData = readFile(filename);
         return equivalent(fileData, data);
     }
 
-    public boolean fileIsEquivalentTo (String filename, String hexString) {
+    public boolean fileIsEquivalentTo(String filename, String hexString) {
         try {
             byte[] data = Utils.hexStringToBytes(hexString);
             return fileIsEquivalentTo(filename, data);
         } catch (Exception e) {
-            System.err.println ("Exception");
+            System.err.println("Exception");
             e.printStackTrace();
         }
 
         return false;
     }
 
-    public boolean fileIsEquivalentToText (String filename, String text) {
+    public boolean fileIsEquivalentToText(String filename, String text) {
         char[] textArray = text.toCharArray();
         FileReader fileReader = null;
 
@@ -156,36 +157,29 @@ public class TestWriter extends TestCase {
     }
 
     public static final String TEST_TEXT = "{\"key\":\"hi there\",\"message\":\"4123983514D0DB213E5CE7AEBAF3BBD4DB78676D74B2F7AD5885818773F2467335F0671CD039B35A732BDE66DA2FFF93DFA62CFACBD5B6AC2A900E1C8E0C4C1BD31B2D0A5BA2F476F157100EDDF8C9BF62971AF0213FEBA1125C3622A15B872111D1D817AF5DD500D7B59405CC62CD5065AF1C5CB227133B7D29A11AD9C4DA7EC2BDAF6EE0A23C694D780068FA74D20081BFF4C77B449433E79920B2184796D40CEF972BA3794E060AB4BCCD36B0463621215B6672D0497CE835F60CBAD04B613C000E62ED9C402709DB83A5AA28E2ACE3CF701168B02A09C87CE02060E42B48E7EC2B78F975C9A9F1CB68940C7B7686A9A82DE9567031003C3E76A2EC6F5EEB\",\"length\":512}";
+    public static final byte[] TEST_CIPHER_TEXT = {1, 2, 3};
 
     @Test
-    public void testWrite () throws Exception {
+    public void testWrite() throws Exception {
         EncryptedMessage encryptedMessage = new EncryptedMessage();
         encryptedMessage.setKey("hi there");
         encryptedMessage.setMessage(TEST_TEXT);
 
-        try {
-            when(getMockPublicKey().encrypt(Matchers.any(byte[].class))).thenReturn(encryptedMessage);
-        } catch (Exception e) {
-            System.err.println("Exception");
-            e.printStackTrace();
-        }
+        when(getMockPublicKey().encrypt(Matchers.any(byte[].class))).thenReturn(TEST_CIPHER_TEXT);
+        getWriter().write(TEST_FILE_NAME, TEST_TEXT.getBytes());
 
-        try {
-            getWriter().write(TEST_FILE_NAME, TEST_TEXT.getBytes());
-        } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace();
-        }
+        String hexString = Utils.bytesToString(TEST_CIPHER_TEXT);
 
         Gson gson = new Gson();
         String json = gson.toJson(encryptedMessage);
-        assert (fileIsEquivalentToText(TEST_FILE_NAME, json));
+        assert (fileIsEquivalentToText(TEST_FILE_NAME, hexString));
     }
 
     public static final String TEST_PASSWORD = "whatever";
     public static final String TEST_KEY_ALIAS = "private";
 
 
-    public EncryptedMessage loadEncryptedMessage (String filename) {
+    public EncryptedMessage loadEncryptedMessage(String filename) {
         FileReader fileReader = null;
         char[] buffer = null;
 
@@ -205,7 +199,7 @@ public class TestWriter extends TestCase {
         return null;
     }
 
-    public PrivateKey loadPrivateKey () throws Exception {
+    public PrivateKey loadPrivateKey() throws Exception {
         MirandaProperties mirandaProperties = new MirandaProperties();
         String keyStoreFilename = mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
         KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, TEST_PASSWORD);
@@ -216,20 +210,20 @@ public class TestWriter extends TestCase {
     public static final String TEST_FILE_CONTENTS = "01020304";
 
     @Test
-    public void testBackupSuccess () {
+    public void testBackupSuccess() {
         try {
             createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
             File file = new File(TEST_FILE_NAME);
             getWriter().backup(file);
 
-            file = new File (TEST_FILE_NAME + ".backup");
+            file = new File(TEST_FILE_NAME + ".backup");
             assert (file.exists());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public FileInputStream openFile (String filename) {
+    public FileInputStream openFile(String filename) {
         try {
             return new FileInputStream(filename);
         } catch (IOException e) {

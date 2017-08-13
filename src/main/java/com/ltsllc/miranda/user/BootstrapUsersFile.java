@@ -2,10 +2,11 @@ package com.ltsllc.miranda.user;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.clcl.EncryptedMessage;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.PrivateKey;
+import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.EncryptedMessage;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
-import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 
 import java.io.File;
@@ -80,7 +81,7 @@ public class BootstrapUsersFile {
         userList.add(user);
     }
 
-    public void read () throws IOException, GeneralSecurityException {
+    public void read () throws IOException, EncryptionException {
         File file = new File(getFilename());
         if (!file.exists())
             return;
@@ -91,7 +92,7 @@ public class BootstrapUsersFile {
             Gson gson = new Gson();
             fileReader = new FileReader(getFilename());
             EncryptedMessage encryptedMessage = gson.fromJson(fileReader, EncryptedMessage.class);
-            byte[] plainText = getPrivateKey().decrypt(encryptedMessage);
+            byte[] plainText = getPrivateKey().decryptFromMessage(encryptedMessage);
             String json = new String(plainText);
             Type t = new TypeToken<List<User>>() {
             }.getType();
@@ -101,13 +102,13 @@ public class BootstrapUsersFile {
         }
     }
 
-    public void write () throws IOException, GeneralSecurityException {
+    public void write () throws IOException, EncryptionException {
         FileWriter fileWriter = null;
 
         try {
             String json = gson.toJson(userList);
             fileWriter = new FileWriter(getFilename());
-            EncryptedMessage encryptedMessage = getPublicKey().encrypt(json.getBytes());
+            EncryptedMessage encryptedMessage = getPublicKey().encryptToMessage(json.getBytes());
             json = gson.toJson(encryptedMessage);
             fileWriter.write(json);
         } finally {

@@ -34,7 +34,6 @@ public class JettyHttpServer extends HttpServer {
     private static HandlerCollection ourHandlerCollection;
     private static ServletHandler ourServletHandler;
     private static Logger logger = Logger.getLogger(JettyHttpServer.class);
-
     private Server jetty;
 
     public JettyHttpServer (Server jetty, HandlerCollection handlerCollection) {
@@ -81,7 +80,7 @@ public class JettyHttpServer extends HttpServer {
             logger.info("Jetty started");
             org.bouncycastle.asn1.x509.AlgorithmIdentifier algorithmIdentifier;
         } catch (Exception e) {
-            Panic panic = new StartupPanic("Excepion trying to start HttpServer", e, StartupPanic.StartupReasons.ExceptionStartingHttpServer);
+            Panic panic = new StartupPanic("Excepion trying to start HttpServer", e, StartupPanic.StartupReasons.ExceptionStartingServletContainer);
             Miranda.getInstance().panic(panic);
         }
     }

@@ -8,7 +8,6 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0-sources.jar!/" />
-      <root url="file://$PROJECT_DIR$/../common/src/main/java" />
     </SOURCES>
   </library>
 </component>

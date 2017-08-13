@@ -133,5 +133,20 @@
             <version>1.7.25</version>
         </dependency>
 
+        <!-- tomcat -->
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-logging-log4j</artifactId>
+            <version>8.5.2</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-logging-log4j -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-logging-log4j</artifactId>
+            <version>8.5.2</version>
+        </dependency>
+
     </dependencies>
 </project>

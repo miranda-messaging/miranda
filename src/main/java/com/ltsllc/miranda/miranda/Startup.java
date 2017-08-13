@@ -16,13 +16,11 @@
 
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.common.util.JavaKeyStore;
+import com.ltsllc.clcl.*;
 import com.ltsllc.common.util.PropertiesUtils;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
-import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
@@ -311,51 +309,16 @@ public class Startup extends State {
         checkProperties(properties);
     }
 
-    public void getKeys(String password) {
+    public void getKeys(String password) throws EncryptionException {
         checkProperties(MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
         String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
 
-        File file = new File(keyStoreFilename);
-        if (!file.exists()) {
-            String message = "The keystore file, " + keyStoreFilename + ", does not exist";
-            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.KeystoreDoesNotExist);
-            Miranda.getInstance().panic(startupPanic);
-        }
+        JavaKeyStore javaKeyStore = new JavaKeyStore(keyStoreFilename, password);
 
-        KeyStore keyStore = null;
-
-        try {
-            keyStore = Utils.loadKeyStore(keyStoreFilename, password);
-        } catch (Exception e) {
-            String message = "Exception trying to open keystore, " + keyStoreFilename + ".";
-            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.ExceptionOpeningKeystore);
-            Miranda.getInstance().panic(startupPanic);
-        }
-
-        JavaKeyStore javaKeyStore = new JavaKeyStore(keyStore);
-
-        String privateKeyAlias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
-
-        try {
-            java.security.PrivateKey jsPrivateKey = javaKeyStore.getPrivateKey(privateKeyAlias);
-            if (null == jsPrivateKey) {
-                String message = "Missing private key.  Keystore " + keyStoreFilename + " alias: " + privateKeyAlias;
-                StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.MissingKey);
-                Miranda.getInstance().panic(startupPanic);
-            }
-            PrivateKey privateKey = new PrivateKey(jsPrivateKey);
-            setPrivateKey(privateKey);
-
-            java.security.PublicKey jsPublicKey = javaKeyStore.getPublicKey(privateKeyAlias);
-            PublicKey publicKey = new PublicKey(jsPublicKey);
-            setPublicKey(publicKey);
-        } catch (GeneralSecurityException e) {
-            String message = "Caught exception while trying to get keys.  Keystore: " + keyStoreFilename +
-                    " private key alias: " + privateKeyAlias;
-
-            StartupPanic startupPanic = new StartupPanic(message, StartupPanic.StartupReasons.ExceptionManipulatingKeystore);
-            Miranda.getInstance().panic(startupPanic);
-        }
+        String alias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
+        KeyPair keyPair = javaKeyStore.getKeyPair(alias);
+        setPublicKey(keyPair.getPublicKey());
+        setPrivateKey(keyPair.getPrivateKey());
     }
 
     public ServletMapping[] convertToArray(List<ServletMapping> mappings) {
@@ -673,7 +636,7 @@ public class Startup extends State {
     private void setupHttpServer() {
         try {
             MirandaFactory factory = getMiranda().factory;
-            HttpServer httpServer = factory.buildHttpServer();
+            HttpServer httpServer = factory.buildServletContainer();
             getMiranda().setHttpServer(httpServer);
             setHttpServer(httpServer);
         } catch (MirandaException e) {

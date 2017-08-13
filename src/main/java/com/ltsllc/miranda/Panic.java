@@ -57,6 +57,7 @@ public class Panic extends Exception {
         ExceptionReceivingMessage,
         ExceptionReadingFile,
         ExceptionSendingMessage,
+        ExceptionShuttingDownServletContainer,
         ExceptionStartingServlets,
         ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.
         ExceptionTryingToRectify,

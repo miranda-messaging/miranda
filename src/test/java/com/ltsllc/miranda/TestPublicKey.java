@@ -16,9 +16,10 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.clcl.EncryptedMessage;
+import com.ltsllc.clcl.PrivateKey;
+import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
-import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class TestPublicKey extends TestCase {
         return publicKey;
     }
 
-    public void reset () {
+    public void reset() {
         super.reset();
 
         publicKey = null;
@@ -64,7 +65,7 @@ public class TestPublicKey extends TestCase {
         return new PublicKey(securityPublicKey);
     }
 
-    public PrivateKey getPrivateKey (String hexstring) {
+    public PrivateKey getPrivateKey(String hexstring) {
         ByteArrayInputStream byteArrayInputStream = null;
         java.security.PrivateKey securityPrivateKey = null;
 
@@ -82,7 +83,7 @@ public class TestPublicKey extends TestCase {
 
 
     @Before
-    public void setup () {
+    public void setup() {
         reset();
 
         super.setup();
@@ -90,7 +91,7 @@ public class TestPublicKey extends TestCase {
         publicKey = getPublicKey(SERIALIZED_PUBLIC_KEY);
     }
 
-    public boolean equivalent (byte[] a1, byte[] a2) {
+    public boolean equivalent(byte[] a1, byte[] a2) {
         if (a1.length != a2.length)
             return false;
 
@@ -103,15 +104,11 @@ public class TestPublicKey extends TestCase {
     }
 
     @Test
-    public void testEncrypt () {
-        try {
-            byte[] plainText = {1, 2, 3};
-            EncryptedMessage encryptedMessage = getPublicKey().encrypt(plainText);
-            byte[] result = getPrivateKey(SERIALIZED_PRIVATE_KEY).decrypt(encryptedMessage);
+    public void testEncrypt() throws Exception {
+        byte[] plainText = {1, 2, 3};
+        EncryptedMessage encryptedMessage = getPublicKey().encryptToMessage(plainText);
+        byte[] result = getPrivateKey(SERIALIZED_PRIVATE_KEY).decrypt(encryptedMessage);
 
-            assert (equivalent(result, plainText));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        assert (equivalent(result, plainText));
     }
 }

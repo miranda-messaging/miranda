@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="clcl-1.0-SNAPSHOT1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../clcl/target/clcl-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

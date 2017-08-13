@@ -127,7 +127,6 @@ public class MirandaFactory {
         }
     }
 
-
     public SslContext buildServerSslContext() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
         MirandaProperties.EncryptionModes encryptionMode = properties.getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
@@ -223,10 +222,8 @@ public class MirandaFactory {
     private static final String JETTY_TAG = "jetty.tag.version";
     private static final String DEFAULT_JETTY_TAG = "master";
 
-
-    public HttpServer buildHttpServer () throws MirandaException {
+    public HttpServer buildServletContainer () throws MirandaException {
         MirandaProperties.WebSevers whichServer = getProperties().getHttpServerProperty(MirandaProperties.PROPERTY_HTTP_SERVER);
-        int httpPort = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_PORT);
         int sslPort = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_SSL_PORT);
         String httpBase = getProperties().getProperty(MirandaProperties.PROPERTY_HTTP_BASE);
 
@@ -234,7 +231,7 @@ public class MirandaFactory {
 
         switch (whichServer) {
             default: {
-                httpServer = buildJetty(httpPort, sslPort, httpBase);
+                httpServer = buildJetty(sslPort, httpBase);
                 break;
             }
         }
@@ -243,7 +240,7 @@ public class MirandaFactory {
     }
 
 
-    public HttpServer buildJetty (int httpPort, int sslPort, String httpBase) throws MirandaException {
+    public HttpServer buildJetty (int sslPort, String httpBase) throws MirandaException {
         try {
             MirandaProperties properties = Miranda.properties;
 
@@ -288,11 +285,7 @@ public class MirandaFactory {
                     new SslConnectionFactory(sslContextFactory, "http/1.1"),
                     new HttpConnectionFactory(https));
             sslConnector.setPort(sslPort);
-
-            ServerConnector connector = new ServerConnector(jetty);
-            connector.setPort(httpPort);
-
-            jetty.setConnectors(new Connector[] { sslConnector, connector });
+            jetty.setConnectors(new Connector[] { sslConnector });
 
             HttpServer httpServer = new JettyHttpServer(jetty, handlerCollection);
             httpServer.start(); // this starts the HttpServer instance not jetty

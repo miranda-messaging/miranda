@@ -17,13 +17,13 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
+import com.ltsllc.clcl.JavaKeyStore;
+import com.ltsllc.clcl.PrivateKey;
+import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.common.util.JavaKeyStore;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
-import com.ltsllc.miranda.clientinterface.basicclasses.PrivateKey;
-import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
@@ -848,24 +848,6 @@ public class TestCase {
 
     public void setupMockWriter() {
         Miranda.getInstance().setWriter(getMockWriter());
-    }
-
-    public PublicKey loadPublicKey(String filename, String password, String alias) {
-        String hexString = null;
-        ByteArrayOutputStream byteArrayOutputStream = null;
-
-        try {
-            KeyStore keyStore = Utils.loadKeyStore(filename, password);
-            JavaKeyStore javaKeyStore = new JavaKeyStore(keyStore);
-            java.security.PublicKey publicKey = javaKeyStore.getPublicKey(alias);
-            return new PublicKey(publicKey);
-        } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace();
-        } finally {
-            Utils.closeIgnoreExceptions(byteArrayOutputStream);
-        }
-
-        return null;
     }
 
     public String loadHexString (String filename) throws IOException {

@@ -17,11 +17,12 @@
 package com.ltsllc.miranda.writer;
 
 import com.google.gson.Gson;
+import com.ltsllc.clcl.EncryptedMessage;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.EncryptedMessage;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.clientinterface.basicclasses.PublicKey;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -52,17 +53,16 @@ public class Writer extends Consumer {
         this.publicKey = publicKey;
     }
 
-    public void write (String filename, byte[] data) throws IOException, GeneralSecurityException {
+    public void write (String filename, byte[] data) throws IOException, EncryptionException {
         File file = new File(filename);
 
         if (file.exists())
             backup(file);
 
-        EncryptedMessage encryptedMessage = encrypt(data);
-
         FileWriter fileWriter = null;
 
         try {
+            EncryptedMessage encryptedMessage = encrypt(data);
             fileWriter = new FileWriter(filename);
             String json = gson.toJson(encryptedMessage);
             fileWriter.write(json);
@@ -115,7 +115,7 @@ public class Writer extends Consumer {
         sendToMe(writeMessage);
     }
 
-    public EncryptedMessage encrypt (byte[] plaintext) throws GeneralSecurityException, IOException {
-        return getPublicKey().encrypt(plaintext);
+    public EncryptedMessage encrypt (byte[] plaintext) throws EncryptionException {
+        return getPublicKey().encryptToMessage(plaintext);
     }
 }

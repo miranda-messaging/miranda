@@ -29,6 +29,7 @@ public class Message {
     public enum Subjects {
         Auction,
         AddObjects,
+        AddServlets,
         AddSession,
         Ballot,
         Broadcast,
@@ -157,6 +158,7 @@ public class Message {
         Shutdown,
         ShutdownResponse,
         SetupServlets,
+        Start,
         StartConversation,
         StartHttpServer,
         Starting,

@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.writer;
 
+import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 
@@ -59,7 +60,7 @@ public class WriterReadyState extends State {
             getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
             WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getWriter().getQueue(), writeMessage.getFilename(), this);
             writeMessage.reply(writeSucceededMessage);
-        } catch (IOException | GeneralSecurityException e) {
+        } catch (IOException | EncryptionException e) {
             WriteFailedMessage writeFailedMessage = new WriteFailedMessage(getWriter().getQueue(), writeMessage.getFilename(), e, this);
             writeMessage.reply(writeFailedMessage);
         }

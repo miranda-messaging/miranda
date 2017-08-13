@@ -77,14 +77,14 @@ public class TestWriterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessWriteMessageException () {
+    public void testProcessWriteMessageException () throws Exception {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         WriteMessage writeMessage = new WriteMessage(TEST_FILE_NAME, TEST_DATA, queue, this);
 
         IOException ioException = new IOException("test");
         try {
             doThrow(ioException).when(getMockWriter()).write(Matchers.anyString(), Matchers.any(byte[].class));
-        } catch (IOException | GeneralSecurityException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
