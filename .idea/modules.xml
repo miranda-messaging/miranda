@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../clcl/src/main/clcl.iml" filepath="$PROJECT_DIR$/../clcl/src/main/clcl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../mirandaInterface/src/main/interface.iml" filepath="$PROJECT_DIR$/../mirandaInterface/src/main/interface.iml" />
       <module fileurl="file://$PROJECT_DIR$/miranda.iml" filepath="$PROJECT_DIR$/miranda.iml" />
     </modules>
   </component>

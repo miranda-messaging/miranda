@@ -199,6 +199,10 @@ public class JavaKeyStore {
     }
 
 
+    public void add (String alias, Certificate certificate) {
+        getCertificates().put(alias, certificate);
+    }
+
     public Certificate[] getCertificateChain (String alias) {
         return getCertificateChains().get(alias);
     }

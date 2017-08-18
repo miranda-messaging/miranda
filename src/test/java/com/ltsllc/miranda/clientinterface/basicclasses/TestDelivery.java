@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.deliveries;
+package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
-import com.ltsllc.miranda.test.TestCase;
-import org.junit.Before;
+import com.ltsllc.miranda.clientinterface.test.TestCase;
 import org.junit.Test;
 
 import java.io.IOException;
+
+import static com.sun.xml.internal.ws.dump.LoggingDumpTube.Position.Before;
 
 /**
  * Created by Clark on 2/22/2017.
@@ -36,7 +37,7 @@ public class TestDelivery extends TestCase {
         return delivery;
     }
 
-    @Before
+
     public void setup() {
         try {
             reset();
@@ -74,8 +75,14 @@ public class TestDelivery extends TestCase {
         ImprovedRandom improvedRandom = new ImprovedRandom();
 
         Delivery delivery = Delivery.createRandomDelivery(improvedRandom);
-        Delivery update = Delivery.createRandomDelivery(improvedRandom);
+        delivery.setDelivered(System.currentTimeMillis());
+        delivery.setLastChange(System.currentTimeMillis());
 
+        pause(1);
+
+        Delivery update = Delivery.createRandomDelivery(improvedRandom);
+        update.setDelivered(System.currentTimeMillis());
+        update.setLastChange(System.currentTimeMillis());
         IllegalStateException illegalStateException = null;
 
         try {
@@ -84,18 +91,18 @@ public class TestDelivery extends TestCase {
             illegalStateException = e;
         }
 
-        assert (null != illegalStateException);
+        assert (null == illegalStateException);
     }
 
     @Test
-    public void testEquals () {
+    public void testMatch() {
         ImprovedRandom improvedRandom = new ImprovedRandom();
 
         Delivery delivery = Delivery.createRandomDelivery(improvedRandom);
         Delivery other = Delivery.createRandomDelivery(improvedRandom);
 
-        assert (delivery.equals(delivery));
-        assert (!delivery.equals(other));
+        assert (delivery.isEquivalentTo(delivery));
+        assert (!delivery.isEquivalentTo(other));
     }
 }
 

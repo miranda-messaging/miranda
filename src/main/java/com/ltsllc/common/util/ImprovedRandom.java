@@ -17,6 +17,7 @@
 
 package com.ltsllc.common.util;
 
+import java.io.StringWriter;
 import java.security.SecureRandom;
 import java.util.Random;
 
@@ -76,6 +77,15 @@ public class ImprovedRandom {
         return atLeastAndIncluding + random.nextInt(interval);
     }
 
+    public int nextNonNegativeInteger () {
+        int i = random.nextInt();
+
+        if (i < 0)
+            i = i * -1;
+
+        return i;
+    }
+
     public byte nextByte () {
         byte[] buffer = new byte[1];
         random.nextBytes(buffer);
@@ -96,5 +106,25 @@ public class ImprovedRandom {
         }
 
         return value;
+    }
+
+    public static final String UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    public String randomString (int length) {
+        char[] candidates = UPPER_CASE_LETTERS.toCharArray();
+
+        StringWriter stringWriter = new StringWriter();
+        for (int i = length; i > 0; i--) {
+            int index = nextIndex(candidates.length);
+            stringWriter.write(candidates[index]);
+        }
+
+        return stringWriter.toString();
+    }
+
+    public boolean nextBoolean () {
+        int i = random.nextInt();
+
+        return (i % 2) == 0;
     }
 }

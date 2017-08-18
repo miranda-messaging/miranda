@@ -665,11 +665,62 @@ public class Utils {
         return stringWriter.toString();
     }
 
-    public static List<Equivalent> toEquivalentList(List<NodeElement> nodeElements) {
-        List l = new ArrayList(nodeElements.size());
-        for (Equivalent equivalent : nodeElements) {
-            l.add(equivalent);
+    public static byte[] copy(byte[] content) {
+        byte[] copy = new byte[content.length];
+        for (int i = 0; i < content.length; i++) {
+            copy[i] = content[i];
         }
-        return l;
+
+        return copy;
+    }
+
+    public static List copy (List src) {
+        if (src == null)
+            return null;
+
+        List copy = new ArrayList(src.size());
+        copy.addAll(src);
+        return copy;
+    }
+
+    public static boolean StringListsAreEquivalent(List<String> l1, List<String> l2) {
+        if (l1 == l2)
+            return true;
+
+        if (l1 == null || l2 == null)
+            return false;
+
+        if (l1.size() != l2.size())
+            return false;
+
+        for (int i = 0; i < l1.size(); i++) {
+            if (!(stringsAreEquivalent(l1.get(i), l2.get(i))))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static boolean stringsAreEquivalent(String s1, String s2) {
+        if (s1 == s2)
+            return true;
+
+        if (s1 == null || s2 == null)
+            return false;
+
+        if (s1.length() != s2.length())
+            return false;
+
+        return s1.equals(s2);
+    }
+
+    public static List<Equivalent> toEquivalentList(List<NodeElement> nodeElements) {
+        List<Equivalent> equivalentList = new ArrayList<Equivalent>(nodeElements.size());
+
+        for (Equivalent equivalent : nodeElements) {
+            equivalentList.add(equivalent);
+        }
+
+        return equivalentList;
     }
 }

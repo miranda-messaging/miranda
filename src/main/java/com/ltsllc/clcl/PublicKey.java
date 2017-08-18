@@ -57,6 +57,9 @@ public class PublicKey extends Key {
         this.securityPublicKey = publicKey;
     }
 
+    public PublicKey (PublicKey other) {
+        this.securityPublicKey = other.securityPublicKey;
+    }
 
     @Override
     public String getSessionAlgorithm() {
