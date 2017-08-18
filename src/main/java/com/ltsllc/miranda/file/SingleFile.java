@@ -22,7 +22,6 @@ import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
-import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
@@ -47,7 +46,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/10/2017.
  */
-abstract public class SingleFile<E extends MirandaObject & Matchable> extends MirandaFile implements Comparer {
+abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
     abstract public Type getListType();
     abstract public void checkForDuplicates();
@@ -145,7 +144,7 @@ abstract public class SingleFile<E extends MirandaObject & Matchable> extends Mi
     public boolean contains(Object o) {
         E e = (E) o;
         for (E contained : getData()) {
-            if (contained.matches(e))
+            if (contained.isEquivalentTo(e))
                 return true;
         }
 
@@ -301,7 +300,7 @@ abstract public class SingleFile<E extends MirandaObject & Matchable> extends Mi
 
     public E findMatch(E object) {
         for (E candidate : getData()) {
-            if (object.matches(candidate))
+            if (object.isEquivalentTo(candidate))
                 return candidate;
         }
 
@@ -328,7 +327,7 @@ abstract public class SingleFile<E extends MirandaObject & Matchable> extends Mi
 
     public E find(E object) {
         for (E candidate : getData()) {
-            if (candidate.matches(object))
+            if (candidate.isEquivalentTo(object))
                 return candidate;
         }
 

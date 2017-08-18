@@ -18,6 +18,8 @@
 package com.ltsllc.common.util;
 
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
+import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
@@ -36,6 +38,8 @@ import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -659,5 +663,13 @@ public class Utils {
         pemWriter.writeObject(privateKey);
         pemWriter.close();
         return stringWriter.toString();
+    }
+
+    public static List<Equivalent> toEquivalentList(List<NodeElement> nodeElements) {
+        List l = new ArrayList(nodeElements.size());
+        for (Equivalent equivalent : nodeElements) {
+            l.add(equivalent);
+        }
+        return l;
     }
 }

@@ -61,7 +61,7 @@ public class TestDelivery extends TestCase {
 
             this.delivery = new Delivery(event, timeDelivered, subscription);
 
-            assert (getDelivery().getGuid().equals(event.getGuid()));
+            assert (getDelivery().getEventGuid().equals(event.getGuid()));
             assert (getDelivery().getDelivered() == timeDelivered);
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class TestDelivery extends TestCase {
         IllegalStateException illegalStateException = null;
 
         try {
-            delivery.updateFrom(update);
+            delivery.merge(update);
         } catch (IllegalStateException e) {
             illegalStateException = e;
         }
@@ -84,12 +84,12 @@ public class TestDelivery extends TestCase {
     }
 
     @Test
-    public void testMatch () {
+    public void testEquals () {
         Delivery delivery = Delivery.createRandomDelivery();
         Delivery other = Delivery.createRandomDelivery();
 
-        assert (delivery.matches(delivery));
-        assert (!delivery.matches(other));
+        assert (delivery.equals(delivery));
+        assert (!delivery.equals(other));
     }
 }
 

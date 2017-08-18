@@ -23,7 +23,7 @@ import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
+import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
@@ -65,7 +65,7 @@ import static org.mockito.Mockito.mock;
 /**
  * Created by Clark on 2/20/2017.
  */
-public class TestCase {
+public class TestCase extends com.ltsllc.common.test.TestCase {
     private static Gson ourGson = new Gson();
     private static Logger logger = Logger.getLogger(TestCase.class);
 
@@ -819,7 +819,7 @@ public class TestCase {
     }
 
     public void setupMockMiranda() {
-        Miranda.setInstance(mockMiranda);
+        Miranda.setInstance(getMockMiranda());
     }
 
     public void setupMockPanicPolicy() {
@@ -918,19 +918,19 @@ public class TestCase {
         return false;
     }
 
-    public boolean listContains(Matchable matchable, List<Matchable> list) {
-        for (Matchable element : list) {
-            if (element.matches(matchable))
+    public boolean listContains(Equivalent item, List<Equivalent> list) {
+        for (Equivalent element : list) {
+            if (element.isEquivalentTo(item))
                 return true;
         }
 
         return false;
     }
 
-    public boolean listsAreEquivalent(List l1, List l2) {
+    public boolean listsAreEquivalent(List<Equivalent> l1, List<Equivalent> l2) {
         for (Object o : l1) {
-            Matchable matchable = (Matchable) o;
-            if (!listContains(matchable, l2))
+            Equivalent item = (Equivalent) o;
+            if (!listContains(item, l2))
                 return false;
         }
 

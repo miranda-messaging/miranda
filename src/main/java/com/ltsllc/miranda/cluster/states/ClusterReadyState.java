@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.cluster.states;
 
+import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
@@ -336,7 +337,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
             getCluster().broadcast(newUserWireMessage);
 
             return getCluster().getCurrentState();
-        } catch (IOException e) {
+        } catch (EncryptionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -349,7 +350,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
             getCluster().broadcast(updateUserWireMessage);
 
             return getCluster().getCurrentState();
-        } catch (IOException e) {
+        } catch (EncryptionException e) {
             throw new RuntimeException(e);
         }
     }

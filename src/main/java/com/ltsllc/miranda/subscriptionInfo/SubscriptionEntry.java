@@ -1,9 +1,6 @@
 package com.ltsllc.miranda.subscriptionInfo;
 
-import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
-import com.ltsllc.miranda.clientinterface.basicclasses.Event;
-import com.ltsllc.miranda.clientinterface.basicclasses.Matchable;
-import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.file.Updateable;
 
 /**
@@ -22,7 +19,7 @@ import com.ltsllc.miranda.file.Updateable;
  *     signifies that the Event hasn't been delivered yet.</li>
  * </ul>
  */
-public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, Updateable<SubscriptionEntry>, Matchable {
+public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, Updateable<SubscriptionEntry>, Equivalent {
     private String event;
     private String delivery;
 
@@ -99,8 +96,8 @@ public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, 
      *
      * @see SubscriptionEntry#isEquivalentTo(DirectoryEntry)
      */
-    @Override
-    public boolean matches(Object o) {
+
+    public boolean isEquivalentTo(Object o) {
         if (null == o)
             return false;
 
@@ -110,5 +107,9 @@ public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, 
         SubscriptionEntry other = (SubscriptionEntry) o;
 
         return isEquivalentTo(other);
+    }
+
+    public void copyFrom (Mergeable mergeable) {
+
     }
 }

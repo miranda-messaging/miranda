@@ -17,8 +17,5 @@ public class TestCreateUser extends TestCase {
         BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(usersFilename, keyStoreFileName, password);
         bootstrapUsersFile.createUser("admin", "the admin user");
         bootstrapUsersFile.write();
-
-
-
     }
 }

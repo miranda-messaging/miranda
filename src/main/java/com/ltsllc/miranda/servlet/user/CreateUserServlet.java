@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.user;
 
+import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.UserRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
@@ -38,10 +39,15 @@ public class CreateUserServlet extends UserServlet {
     public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
-        User user = requestObject.getUser();
-        User newUser = new User(user.getName(), user.getCategory(), user.getDescription(), user.getPublicKeyPem());
-        Results result = UserHolder.getInstance().createUser(newUser);
-        resultObject.setResult(result);
+
+        try {
+            User user = requestObject.getUser();
+            User newUser = new User(user.getName(), user.getCategory(), user.getDescription(), user.getPublicKeyPem());
+            Results result = UserHolder.getInstance().createUser(newUser);
+            resultObject.setResult(result);
+        } catch (EncryptionException e) {
+            resultObject.setResult(Results.Exception);
+        }
 
         return resultObject;
     }

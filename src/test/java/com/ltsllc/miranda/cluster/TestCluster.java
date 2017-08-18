@@ -16,12 +16,10 @@
 
 package com.ltsllc.miranda.cluster;
 
+import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
-import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
-import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
-import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
@@ -386,7 +384,11 @@ public class TestCluster extends TestCase {
         getCluster().setData(nodes);
 
         List<NodeElement> nodeElements = getCluster().asNodeElements();
-        assert(listsAreEquivalent(nodeElements, nodeElementList));
+
+        //
+        // The call to toEquivalentList makes no sense to me, but it seems to make the compiler happy
+        //
+        assert(listsAreEquivalent(Utils.toEquivalentList(nodeElements), Utils.toEquivalentList(nodeElementList)));
     }
 
     @Test

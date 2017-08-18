@@ -138,7 +138,8 @@ public class UserManager extends StandardManager<User> {
         if (null == existingUser)
             throw new UnknownUserException ("User " + userObject.getName() + " not found");
 
-        existingUser.merge (userObject);
+        User user = userObject.asUser();
+        existingUser.merge (user);
     }
 
     public void updateUser (User user) throws UnknownUserException, MergeException {

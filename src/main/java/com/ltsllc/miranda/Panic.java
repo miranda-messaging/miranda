@@ -34,31 +34,21 @@ public class Panic extends Exception {
         CouldNotWrite, // A subsystem received a WriteFailed message
         DoesNotUnderstand, // A state received a message it does not know how to process
         DoesNotUnderstandNetworkMessage, // A state received a network message it does not know how to process
-        EncryptException, // trying to encrypt a file prior to writing failed.  We effectively cannot write anything
         ErrorLoadingFile,
         ExceptionCalculatingSha1,
         ExceptionCreatingSslContext,
-        ExceptionDecrypting,
         ExceptionDeserializing,
-        ExceptionDuringInstantiation,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
-        ExceptionDuringNewConnection,
         ExceptionDuringUpdate,
-        ExceptionEncrypting,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionInEventPost,
         ExceptionInEventPut,
         ExceptionInEventDelete,
         ExceptionInProcessMessage, // an unchecked exception was thrown in processMessage
-        ExceptionInRun, // an unchecked exception was thrown in a Consumers run method
         ExceptionLoadingFile,
-        ExceptionLoadingProperties, // an exception was thrown while trying to load the properties file
         ExceptionPaesingJson,
-        ExceptionReceivingMessage,
-        ExceptionReadingFile,
         ExceptionSendingMessage,
         ExceptionShuttingDownServletContainer,
-        ExceptionStartingServlets,
         ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.
         ExceptionTryingToRectify,
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node
@@ -66,15 +56,13 @@ public class Panic extends Exception {
         InvalidWakeup,
         NetworkThreadCrashed, // one of our network connections died
         Network, // We cannot communicate with anyone
-        NoSleepers,
         NullCurrentState, // The currentState is null for a consumer
         NullWakeupTime,
         OutOfMemory,
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
         Test,
-        UncheckedException, // an unchecked exception was thrown
-        UnknownUser, // we were told to update a user that doesn't exist
+        UncaughtException, // A misc checked exception was caught
         UnrecognizedPublicKeyClass,
         UnrecognizedNode, // a node shut down that we don't have a record of
         UnrecognizedRemotePolicy,
