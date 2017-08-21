@@ -62,7 +62,9 @@ public abstract class Mergeable {
         if (changedAfter(other))
             return false;
 
-        lastChange = new Long (other.getLastChange().longValue());
+        if (other.getLastChange() != null)
+            lastChange = new Long (other.getLastChange().longValue());
+
         copyFrom(other);
 
         return true;
