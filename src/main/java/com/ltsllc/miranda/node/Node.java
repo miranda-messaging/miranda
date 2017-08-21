@@ -157,10 +157,8 @@ public class Node extends Consumer
 
 
     public boolean matches (NodeElement nodeElement) {
-        return (
-                getDns().equals(nodeElement.getDns())
-                        && getPort() == nodeElement.getPort()
-        );
+        return getDns().equals(nodeElement.getDns()) && getPort() == nodeElement.getPort();
+
     }
 
     public NodeElement asNodeElement () {
@@ -193,5 +191,19 @@ public class Node extends Consumer
         if (isConnected()) {
             getNetwork().sendClose(getQueue(), this, getHandle());
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Node { ");
+        stringBuilder.append(getDns());
+        stringBuilder.append(", ");
+        stringBuilder.append(getPort());
+        stringBuilder.append(", ");
+        stringBuilder.append(getHandle());
+        stringBuilder.append("}");
+
+        return stringBuilder.toString();
     }
 }

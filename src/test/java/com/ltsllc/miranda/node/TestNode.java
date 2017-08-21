@@ -84,9 +84,6 @@ public class TestNode extends TestCase {
         NodeElement nodeElement2 = new NodeElement("bar.com", 6789, "a node");
         assert (!getNode().matches(nodeElement2));
 
-        nodeElement2 = new NodeElement("foo.com", 6789, "a node");
-        assert (!getNode().matches(nodeElement2));
-
         nodeElement2 = new NodeElement("foo.com", 6790, "a node");
         assert (!getNode().matches(nodeElement2));
 
