@@ -147,4 +147,14 @@ public class PublicKey extends Key {
         PublicKey other = (PublicKey) o;
         return getSecurityPublicKey().equals(other.getSecurityPublicKey());
     }
+
+    @Override
+    public String toString() {
+        String s = "";
+
+        if (getSecurityPublicKey() != null)
+            s = getSecurityPublicKey().toString();
+
+        return s;
+    }
 }

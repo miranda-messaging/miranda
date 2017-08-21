@@ -19,6 +19,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.MirandaUncheckedException;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
 
@@ -162,7 +163,7 @@ public class User extends MirandaObject {
     }
 
     public PublicKey getPublicKey() throws IOException {
-        if (null == publicKey)
+        if (null == publicKey && null != publicKeyPem)
             createPublicKey();
 
         return publicKey;
@@ -266,5 +267,25 @@ public class User extends MirandaObject {
         userObject.setPublicKeyPem(getPublicKeyPem());
 
         return userObject;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("User {");
+            stringBuilder.append(getName());
+            stringBuilder.append(", ");
+            stringBuilder.append(getCategory());
+            stringBuilder.append(", ");
+            stringBuilder.append(getDescription());
+            stringBuilder.append(", ");
+            stringBuilder.append(getPublicKey());
+            stringBuilder.append("}");
+
+            return stringBuilder.toString();
+        } catch (IOException e) {
+            throw new MirandaUncheckedException("Exception in toString", e);
+        }
     }
 }
