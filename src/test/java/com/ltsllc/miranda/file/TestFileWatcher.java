@@ -45,7 +45,7 @@ public class TestFileWatcher extends TestCase {
     public static final String TEST_FILENAME = "testdir/whatever";
 
     private FileWatcher fileWatcher;
-    private BlockingQueue<Message> queue;
+    private BlockingQueue<Message> watcher;
     private File file;
 
     public File getFile() {
@@ -56,15 +56,15 @@ public class TestFileWatcher extends TestCase {
         return fileWatcher;
     }
 
-    public BlockingQueue<Message> getQueue() {
-        return queue;
+    public BlockingQueue<Message> getWatcher() {
+        return watcher;
     }
 
     public void reset () {
         super.reset();
 
         fileWatcher = null;
-        queue = null;
+        watcher = null;
     }
 
     @Before
@@ -78,13 +78,15 @@ public class TestFileWatcher extends TestCase {
 
             createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
-            queue = new LinkedBlockingQueue<Message>();
+            file = new File(TEST_FILENAME);
+
+            watcher = new LinkedBlockingQueue<Message>();
 
             createDirectory(TEST_DIRECTORY);
             createFile(TEST_FILENAME);
 
             File file = new File(TEST_FILENAME);
-            fileWatcher = new SimpleFileWatcher(file, queue);
+            fileWatcher = new SimpleFileWatcher(file, watcher);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,14 +98,15 @@ public class TestFileWatcher extends TestCase {
     }
 
     @Test
-    public void testScan () throws Exception {
+    public void testCheck () throws Exception {
         getFileWatcher().check();
 
-        assert (queueIsEmpty(getQueue()));
+        assert (queueIsEmpty(getWatcher()));
 
         touch(getFile());
-        pause(100);
 
-        assert (contains(Message.Subjects.FileChanged, getQueue()));
+        getFileWatcher().check();
+
+        assert (contains(Message.Subjects.FileChanged, getWatcher()));
     }
 }

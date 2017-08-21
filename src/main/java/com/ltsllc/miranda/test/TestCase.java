@@ -416,6 +416,8 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         this.mockServletHolder = mock(ServletHolder.class);
         this.mockSubscriptionManager = mock(SubscriptionManager.class);
         this.mockHttpServer = mock(HttpServer.class);
+
+        setuplog4j();
     }
 
     public void setupMockNetwork() {
