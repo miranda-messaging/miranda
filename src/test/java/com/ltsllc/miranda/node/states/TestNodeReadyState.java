@@ -330,7 +330,7 @@ public class TestNodeReadyState extends TesterNodeState {
 
         assert (nextState == getReadyState());
         verify(getMockMiranda(), atLeastOnce()).sendUserAddedMessage(Matchers.any(BlockingQueue.class),
-                Matchers.any(), Matchers.eq(user));
+                Matchers.any(), Matchers.any(User.class));
     }
 
     @Test
