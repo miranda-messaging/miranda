@@ -129,6 +129,12 @@ public class Cluster extends Manager<Node, NodeElement> {
         }
     }
 
+    public void disconnect () {
+        for (Node node : getNodes()) {
+            node.disconnect();
+        }
+    }
+
     /**
      * Return the {@link Node} that matches the {@link NodeElement}
      */
@@ -367,5 +373,12 @@ public class Cluster extends Manager<Node, NodeElement> {
     public WriteQuorum createWriteQuorum () {
         List<Node> list = new ArrayList<Node>(getNodes());
         return new WriteQuorum(list);
+    }
+
+    @Override
+    public void fileChanged() {
+        disconnect();
+        super.fileChanged();
+        connect();
     }
 }

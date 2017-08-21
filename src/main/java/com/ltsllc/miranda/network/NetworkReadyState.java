@@ -89,6 +89,7 @@ public class NetworkReadyState extends State {
 
         CloseResponseMessage reply = new CloseResponseMessage(getNetwork().getQueue(), this, closeMessage.getHandle(),
                 Results.Success);
+        closeMessage.reply(reply);
 
         return this;
     }

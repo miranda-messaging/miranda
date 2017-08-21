@@ -135,8 +135,8 @@ public class TestMirandaFile extends TestCase {
     public void testWatch() {
         getEventsFile().watch();
         File file = new File(getEventsFile().getFilename());
-        verify(getMockFileWatcherService(), atLeastOnce()).sendWatchMessage(Matchers.any(BlockingQueue.class),
-                Matchers.any(), Matchers.eq(file));
+        verify(getMockFileWatcherService(), atLeastOnce()).sendWatchFileMessage(Matchers.any(BlockingQueue.class),
+                Matchers.any(), Matchers.eq(file), Matchers.any(BlockingQueue.class));
     }
 
     private void changeEvent(Event event) {

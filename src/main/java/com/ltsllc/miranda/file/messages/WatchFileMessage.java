@@ -21,19 +21,27 @@ import com.ltsllc.miranda.Message;
 import java.io.File;
 import java.util.concurrent.BlockingQueue;
 
+import static com.ltsllc.miranda.Message.Subjects.WatchFile;
+
 /**
  * Created by Clark on 2/25/2017.
  */
-public class WatchMessage extends Message {
+public class WatchFileMessage extends Message {
     private File file;
+    private BlockingQueue<Message> listener;
 
     public File getFile() {
         return file;
     }
 
-    public WatchMessage (BlockingQueue<Message> senderQueue, Object sender, File file) {
-        super(Subjects.Watch, senderQueue, sender);
+    public BlockingQueue<Message> getListener() {
+        return listener;
+    }
+
+    public WatchFileMessage(BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
+        super(WatchFile, senderQueue, sender);
 
         this.file = file;
+        this.listener = listener;
     }
 }

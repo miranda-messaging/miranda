@@ -116,21 +116,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
     /**
-     * This is called when there is a new version of the cluster file.  If
-     * something changed, then we need to tell the cluster about it.
-     *
-     * @param newClusterFileMessage
-     * @return
-     */
-    private State processNewClusterFileMessage (NewClusterFileMessage newClusterFileMessage) {
-        if (!getClusterFile().getVersion().equals(newClusterFileMessage.getVersion())) {
-            getClusterFile().merge(newClusterFileMessage.getFile());
-        }
-
-        return this;
-    }
-
-    /**
      * This message means that we should update all the matching nodes time
      * of last conection, and possibly drop the nodes that don't match.  A
      * node that has not connected in an amount of time (in milliseconds)
@@ -276,4 +261,5 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
         return this;
     }
+
 }

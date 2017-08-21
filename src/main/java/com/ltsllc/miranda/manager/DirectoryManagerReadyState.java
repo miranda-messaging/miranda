@@ -35,9 +35,6 @@ public class DirectoryManagerReadyState extends State {
     }
 
     public State processFileChangedMessage(FileChangedMessage fileChangedMessage) {
-        getDirectoryManager().getReader().sendReadMessage(getDirectoryManager().getQueue(), this,
-                fileChangedMessage.getFile());
-
         return getDirectoryManager().getCurrentState();
     }
 }

@@ -188,4 +188,10 @@ public class Node extends Consumer
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, getHandle());
         sendToMe(sendNetworkMessage);
     }
+
+    public void disconnect () {
+        if (isConnected()) {
+            getNetwork().sendClose(getQueue(), this, getHandle());
+        }
+    }
 }

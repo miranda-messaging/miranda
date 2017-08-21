@@ -84,7 +84,7 @@ public class TestDelivery extends TestCase {
             illegalStateException = e;
         }
 
-        assert (null != illegalStateException);
+        assert (null == illegalStateException);
     }
 
     @Test

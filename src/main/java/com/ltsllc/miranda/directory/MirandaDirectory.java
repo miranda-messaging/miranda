@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.directory;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -118,7 +119,7 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
         sendToMe(exceptionDuringScanMessage);
     }
 
-    public void load() throws IOException {
+    public void load() {
         List<String> list = scan();
 
         for (String filename : list) {
@@ -126,13 +127,23 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
         }
     }
 
-    public List<String> scan() throws IOException {
-        List<String> list = new ArrayList<String>();
-        scan(getDirectory().getCanonicalPath(), list);
-        return list;
+    public List<String> scan() {
+        String filename = getDirectory().getName();
+
+        try {
+            filename = getDirectory().getCanonicalPath();
+            List<String> list = new ArrayList<String>();
+            scan (filename, list);
+            return list;
+        } catch (IOException e) {
+            String message = "Exception during scan of " + filename;
+            Panic panic = new Panic(message, e, Panic.Reasons.ExceptionDuringScan);
+            Miranda.panicMiranda(panic);
+            return new ArrayList<String>();
+        }
     }
 
-    public void scan(String filename, List<String> list) throws IOException {
+    public void scan(String filename, List<String> list) {
         File file = new File(filename);
 
         if (file.isDirectory()) {
@@ -142,16 +153,22 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
         }
     }
 
-    public void scanDirectory(String directoryName, List<String> list) throws IOException {
-        File directory = new File(directoryName);
-        if (!directory.isDirectory())
-            return;
+    public void scanDirectory(String directoryName, List<String> list) {
+        try {
+            File directory = new File(directoryName);
+            if (!directory.isDirectory())
+                return;
 
-        String canonicalPath = directory.getCanonicalPath();
-        String[] contents = directory.list();
-        for (String entry : contents) {
-            String fullName = canonicalPath + File.pathSeparator + entry;
-            scan(fullName, list);
+            String canonicalPath = directory.getCanonicalPath();
+            String[] contents = directory.list();
+            for (String entry : contents) {
+                String fullName = canonicalPath + File.pathSeparator + entry;
+                scan(fullName, list);
+            }
+        } catch (IOException e) {
+            String message = "Exception during scan of " + directoryName;
+            Panic panic = new Panic(message, e, Panic.Reasons.ExceptionDuringScan);
+            Miranda.panicMiranda(panic);
         }
     }
 
@@ -164,7 +181,7 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
 
         list = getGson().fromJson(json, getListType());
         File file = new File(filename);
-        Miranda.fileWatcher.sendWatchMessage(getQueue(), this, file);
+        Miranda.fileWatcher.sendWatchDirectoryMessage(getQueue(), this, file, getQueue());
 
         for (T item : list) {
             add(item);

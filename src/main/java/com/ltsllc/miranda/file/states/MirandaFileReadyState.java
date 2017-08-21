@@ -33,11 +33,11 @@ import java.io.IOException;
  * Created by Clark on 2/26/2017.
  */
 public class MirandaFileReadyState extends State {
-    public MirandaFileReadyState (MirandaFile file) {
+    public MirandaFileReadyState(MirandaFile file) {
         super(file);
     }
 
-    public MirandaFile getMirandaFile () {
+    public MirandaFile getMirandaFile() {
         return (MirandaFile) getContainer();
     }
 
@@ -64,6 +64,10 @@ public class MirandaFileReadyState extends State {
                 break;
             }
 
+            case GetFile: {
+
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -73,34 +77,25 @@ public class MirandaFileReadyState extends State {
         return nextState;
     }
 
-    public void fireFileLoaded () {}
+    public void fireFileLoaded() {
+    }
 
-    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
-        try {
-            getMirandaFile().load();
-        } catch (IOException e) {
-            Panic panic = new Panic("Exception loading file", e, Panic.Reasons.ExceptionLoadingFile);
-            Miranda.panicMiranda(panic);
-        }
-
-        fireFileLoaded();
+    public State processFileChangedMessage(FileChangedMessage fileChangedMessage) {
+        getMirandaFile().load();
 
         return getMirandaFile().getCurrentState();
     }
 
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    private State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         getMirandaFile().performGarbageCollection();
         return this;
     }
 
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+    private State processGetVersionMessage(GetVersionMessage getVersionMessage) {
         NameVersion nameVersion = new NameVersion(getMirandaFile().getName(), getMirandaFile().getVersion());
         VersionMessage versionMessage = new VersionMessage(getMirandaFile().getQueue(), this, nameVersion);
         send(getVersionMessage.getRequester(), versionMessage);
 
         return getMirandaFile().getCurrentState();
     }
-
-
-
 }

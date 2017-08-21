@@ -24,9 +24,11 @@ import com.google.gson.Gson;
  */
 abstract public class MirandaObject extends Mergeable implements Equivalent {
     private static Gson gson;
-    public static Gson getGson() {
+
+    public static Gson getGson () {
         return gson;
     }
+
 
     /**
      * Are two strings equal?
@@ -103,6 +105,6 @@ abstract public class MirandaObject extends Mergeable implements Equivalent {
 
 
     public String toJson () {
-        return getGson().toJson(this);
+        return gson.toJson(this);
     }
 }

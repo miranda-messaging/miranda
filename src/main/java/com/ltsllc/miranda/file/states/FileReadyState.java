@@ -38,7 +38,7 @@ public class FileReadyState extends State {
     private MirandaFile file;
 
 
-    public FileReadyState (MirandaFile file) {
+    public FileReadyState(MirandaFile file) {
         super(file);
 
         this.file = file;
@@ -66,7 +66,7 @@ public class FileReadyState extends State {
                 break;
             }
 
-            default :
+            default:
                 nextState = super.processMessage(message);
                 break;
         }
@@ -74,18 +74,13 @@ public class FileReadyState extends State {
     }
 
 
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    private State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         return getFile().getCurrentState();
     }
 
 
-    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
-        try {
-            getFile().load();
-        } catch (IOException e) {
-            Panic panic = new Panic("Exception loading file", e, Panic.Reasons.ErrorLoadingFile);
-            Miranda.panicMiranda(panic);
-        }
+    public State processFileChangedMessage(FileChangedMessage fileChangedMessage) {
+        getFile().load();
 
         return getFile().getCurrentState();
     }

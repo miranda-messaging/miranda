@@ -20,8 +20,10 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.FileWatcherService;
+import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
-import com.ltsllc.miranda.file.messages.WatchMessage;
+import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
+import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 
 import java.io.IOException;
@@ -47,15 +49,21 @@ public class FileWatcherReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case Watch: {
-                WatchMessage watchMessage = (WatchMessage) message;
-                nextState = processWatchMessage(watchMessage);
+            case WatchFile: {
+                WatchFileMessage watchFileMessage = (WatchFileMessage) message;
+                nextState = processWatchFileMessage(watchFileMessage);
                 break;
             }
 
-            case UnwatchFile: {
-                UnwatchFileMessage unwatchFileMessage = (UnwatchFileMessage) message;
-                nextState = processUnwatchFileMessage (unwatchFileMessage);
+            case WatchDirectory: {
+                WatchDirectoryMessage watchDirectoryMessage = (WatchDirectoryMessage) message;
+                nextState = processWatchDirectoryMessage (watchDirectoryMessage);
+                break;
+            }
+
+            case StopWatching: {
+                StopWatchingMessage stopWatchingMessage = (StopWatchingMessage) message;
+                nextState = processStopWatchingMessage(stopWatchingMessage);
                 break;
             }
 
@@ -69,25 +77,34 @@ public class FileWatcherReadyState extends State {
     }
 
 
-    private State processWatchMessage (WatchMessage watchMessage) {
+    public State processWatchFileMessage (WatchFileMessage watchFileMessage) {
         try {
-            getFileWatcherService().watch(watchMessage.getFile(), watchMessage.getSender());
+            getFileWatcherService().watchFile(watchFileMessage.getFile(), watchFileMessage.getListener());
         } catch (IOException e) {
-            Panic panic = new Panic ("Exception watching file", e, Panic.Reasons.ExceptionInProcessMessage);
+            String message = "Exception watching " + watchFileMessage.getFile();
+            Panic panic = new Panic (message, e, Panic.Reasons.ExceptionInProcessMessage);
             Miranda.getInstance().panic(panic);
         }
 
-        return this;
+        return getFileWatcherService().getCurrentState();
     }
 
-    private State processUnwatchFileMessage (UnwatchFileMessage unwatchFileMessage) {
+
+    public State processWatchDirectoryMessage (WatchDirectoryMessage watchDirectoryMessage) {
         try {
-            getFileWatcherService().stopWatching(unwatchFileMessage.getFile(), unwatchFileMessage.getSender());
+            getFileWatcherService().watchDirectory(watchDirectoryMessage.getDirectory(), watchDirectoryMessage.getListener());
         } catch (IOException e) {
-            Panic panic = new Panic("Exception trying to unwatch file", e, Panic.Reasons.ExceptionInProcessMessage);
-            Miranda.getInstance().panic(panic);
+            String message = "Exception watching " + watchDirectoryMessage.getDirectory();
+            Panic panic = new Panic(message, e, Panic.Reasons.ExceptionInProcessMessage);
+            Miranda.panicMiranda(panic);
         }
 
-        return this;
+        return getFileWatcherService().getCurrentState();
+    }
+
+    public State processStopWatchingMessage (StopWatchingMessage stopWatchingMessage) {
+        getFileWatcherService().stopWatching(stopWatchingMessage.getFile(), stopWatchingMessage.getListener());
+
+        return getFileWatcherService().getCurrentState();
     }
 }

@@ -24,6 +24,7 @@ import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.manager.ManagerReadyState;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;

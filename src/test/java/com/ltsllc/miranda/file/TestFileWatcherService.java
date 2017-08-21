@@ -17,8 +17,9 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
-import com.ltsllc.miranda.file.messages.WatchMessage;
+import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.file.states.FileWatcherReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
@@ -96,30 +97,11 @@ public class TestFileWatcherService extends TestCase {
         assert (getFileWatcherService().getCurrentState() instanceof FileWatcherReadyState);
     }
 
-    /**
-     * Note that this also tests the {@link FileWatcherService#watch(File, BlockingQueue)}
-     * and {@link FileWatcherService#fireChanged(String)} methods.
-     */
-    @Test
-    public void testCheckFiles () throws IOException{
-        File file = new File(FILENAME);
-        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
-        send(watchMessage, getFileWatcherService().getQueue());
-
-        pause(125);
-
-        String canonicalName = file.getCanonicalPath();
-        List<FileWatcher> list = getFileWatcherService().getWatchers().get(canonicalName);
-        Long value = getFileWatcherService().getWatchedFiles().get(canonicalName);
-        assert (null != list);
-        assert (null != value);
-    }
-
     @Test
     public void testStopWatching () {
         File file = new File(FILENAME);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
+        WatchFileMessage watchMessage = new WatchFileMessage(getQueue(), this, file, getQueue());
         send(watchMessage, getFileWatcherService().getQueue());
 
         pause(500);
@@ -134,8 +116,8 @@ public class TestFileWatcherService extends TestCase {
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
 
-        UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
-        send(unwatchFileMessage, getFileWatcherService().getQueue());
+        StopWatchingMessage stopWatchingMessage = new StopWatchingMessage(getQueue(), this, file, getQueue());
+        send(stopWatchingMessage, getFileWatcherService().getQueue());
 
         pause (250);
 

@@ -18,8 +18,12 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.file.messages.WatchMessage;
+import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.file.messages.StopWatchingMessage;
+import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
+import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.file.states.FileWatcherReadyState;
+import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -28,7 +32,7 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/10/2017.
+ * An Object that watches files and directories for changes.
  */
 public class FileWatcherService extends Consumer {
     private static Logger logger = Logger.getLogger(FileWatcherService.class);
@@ -36,14 +40,9 @@ public class FileWatcherService extends Consumer {
 
     private long period;
     private Timer timer;
-    private Map<String, Long> watchedFiles;
-    private Map<String, List<FileWatcher>> watchers = new HashMap<String, List<FileWatcher>>();
+    private List<Watcher> watchers;
 
-    public Map<String, Long> getWatchedFiles() {
-        return watchedFiles;
-    }
-
-    public Map<String, List<FileWatcher>> getWatchers() {
+    public List<Watcher> getWatchers() {
         return watchers;
     }
 
@@ -54,7 +53,7 @@ public class FileWatcherService extends Consumer {
     public FileWatcherService(int period) {
         super("file watcher");
 
-        this.watchedFiles = new HashMap<String, Long>();
+        this.watchers = new ArrayList<Watcher>();
         this.period = (long) period;
         this.timer = new Timer("file system scanner", true);
 
@@ -71,74 +70,50 @@ public class FileWatcherService extends Consumer {
         setCurrentState(readyState);
     }
 
+    public synchronized void watchFile (File file, BlockingQueue<Message> listener) throws IOException {
+        SimpleFileWatcher simpleFileWatcher = new SimpleFileWatcher(file, listener);
+        this.watchers.add(simpleFileWatcher);
+    }
+
+    public synchronized void watchDirectory (File directory, BlockingQueue<Message> listener) throws IOException {
+        DirectoryWatcher directoryWatcher = new DirectoryWatcher(directory, listener);
+        this.watchers.add(directoryWatcher);
+    }
+
+    public synchronized void stopWatching (File file, BlockingQueue<Message> listener) {
+        List<Watcher> remove = new ArrayList<Watcher>();
+
+        for (Watcher watcher : getWatchers()) {
+            if (watcher.matches(file, listener))
+                remove.add(watcher);
+        }
+
+        getWatchers().removeAll(remove);
+    }
+
     public synchronized void checkFiles() {
-        for (String canonicalName : watchedFiles.keySet()) {
-            File file = new File(canonicalName);
-            long lastModified = new Long(file.lastModified());
-            Long lastRecordChange = watchedFiles.get(canonicalName);
-
-            if (lastModified > lastRecordChange.longValue())
-                fireChanged(canonicalName);
-        }
-    }
-
-    public void fireChanged(String canonicalName) {
-        List<FileWatcher> list = watchers.get(canonicalName);
-        for (FileWatcher fileWatcher : list) {
-            fileWatcher.sendMessage(canonicalName);
-        }
-    }
-
-    public void watch(File file, BlockingQueue<Message> queue) throws IOException {
-        FileWatcher fileWatcher = new FileWatcher(queue);
-        String canonicalName = file.getCanonicalPath();
-        List<FileWatcher> list = watchers.get(canonicalName);
-
-        if (null == list) {
-            list = new ArrayList<FileWatcher>();
-            watchers.put(canonicalName, list);
-        }
-
-        list.add(fileWatcher);
-
-        Long l = new Long(file.lastModified());
-        watchedFiles.put(canonicalName, l);
-    }
-
-
-    /**
-     * Note that this wont work if the client wants to be sent several messages
-     * when a file is modified.  The method also does not check for the case
-     * of no more watchers.
-     *
-     * @param file  The file to watch.
-     * @param queue The queue to sendToMe messages on.
-     * @return true if this file was being watched.  False otherwise.
-     */
-    public synchronized boolean stopWatching(File file, BlockingQueue<Message> queue) throws IOException{
-        String canonicalName = file.getCanonicalPath();
-        List<FileWatcher> list = watchers.get(canonicalName);
-
-        FileWatcher match = null;
-
-        if (null != list) {
-            for (FileWatcher fileWatcher : list) {
-                if (fileWatcher.getQueue() == queue) {
-                    match = fileWatcher;
-                    break;
-                }
+        try {
+            for (Watcher watcher : getWatchers()) {
+                watcher.check();
             }
-
-            if (null != match) {
-                list.remove(match);
-            }
+        } catch (IOException e) {
+            Panic panic = new Panic("Excetion watching files", e, Panic.Reasons.ExceptionDuringScan);
+            Miranda.panicMiranda(panic);
         }
-
-        return null != match;
     }
 
-    public void sendWatchMessage (BlockingQueue<Message> senderQueue, Object sender, File file) {
-        WatchMessage watchMessage = new WatchMessage(senderQueue, sender, file);
-        sendToMe(watchMessage);
+    public void sendWatchFileMessage (BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
+        WatchFileMessage watchFileMessage = new WatchFileMessage(senderQueue, sender, file, listener);
+        sendToMe(watchFileMessage);
+    }
+
+    public void sendWatchDirectoryMessage (BlockingQueue<Message> senderQueue, Object sender, File directory, BlockingQueue<Message> listener) {
+        WatchDirectoryMessage watchDirectoryMessage = new WatchDirectoryMessage(senderQueue, sender, directory, listener);
+        sendToMe(watchDirectoryMessage);
+    }
+
+    public void sendStopWatchingMessage (BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
+        StopWatchingMessage stopWatchingMessage = new StopWatchingMessage (senderQueue, sender, file, listener);
+        sendToMe(stopWatchingMessage);
     }
 }

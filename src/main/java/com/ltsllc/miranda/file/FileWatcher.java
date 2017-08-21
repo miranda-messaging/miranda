@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.file;
 
+import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
@@ -23,32 +24,42 @@ import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/25/2017.
  */
-public class FileWatcher {
+public abstract class FileWatcher implements Watcher {
+    abstract boolean scan() throws IOException;
+
     private static Logger logger = Logger.getLogger(FileWatcher.class);
 
-    private BlockingQueue<Message> queue;
+    private File file;
+    private BlockingQueue<Message> listener;
 
-    public BlockingQueue<Message> getQueue() {
-        return queue;
+    public BlockingQueue<Message> getListener() {
+        return listener;
     }
 
-    public FileWatcher (BlockingQueue<Message> queue) {
-        this.queue = queue;
+    public File getFile() {
+        return file;
     }
 
-    public void sendMessage (String filename) {
-        try {
-            File file = new File(filename);
-            FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, file);
-            getQueue().put(fileChangedMessage);
-        } catch (InterruptedException e) {
-            Panic panic = new Panic("Exception while trying to send meaasge", e, Panic.Reasons.ExceptionSendingMessage);
-            Miranda.getInstance().panic(panic);
-        }
+    public FileWatcher(File file, BlockingQueue<Message> listener) {
+        this.file = file;
+        this.listener = listener;
+    }
+
+    public void check() throws IOException {
+        boolean changed = scan();
+
+        if (changed)
+            notifyListener();
+    }
+
+    public void notifyListener() {
+        FileChangedMessage fileChangedMessage = new FileChangedMessage(null, this, getFile());
+        Consumer.staticSend(fileChangedMessage, getListener());
     }
 }

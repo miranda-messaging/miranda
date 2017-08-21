@@ -19,7 +19,7 @@ package com.ltsllc.miranda.file.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
-import com.ltsllc.miranda.file.messages.WatchMessage;
+import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
@@ -94,25 +94,12 @@ public class TestFileWatcherReadyState extends TestCase {
     private static final String FILE_NAME = "testdir/new/20170220-001.msg";
 
     @Test
-    public void testProcessWatchMessage() throws IOException {
-        File file = new File(FILE_NAME);
-        WatchMessage message = new WatchMessage(getQueue(), this, file);
-        send(message, getFileWatcherService().getQueue());
-
-        pause(500);
-
-        assert (contains(getFileWatcherService().getWatchedFiles(),file.getCanonicalPath()));
-
-    }
-
-
-    @Test
     public void testProcessUnwatchFileMessage() {
         File file = new File(FILE_NAME);
         UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
-        WatchMessage watchMessage = new WatchMessage(getQueue(), this, file);
+        WatchFileMessage watchFileMessage = new WatchFileMessage(getQueue(), this, file, getQueue());
 
-        send(watchMessage, getFileWatcherService().getQueue());
+        send(watchFileMessage, getFileWatcherService().getQueue());
 
         pause(500);
 

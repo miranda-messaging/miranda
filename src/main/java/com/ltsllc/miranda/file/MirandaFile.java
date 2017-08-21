@@ -22,6 +22,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -42,7 +43,6 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 1/5/2017.
  */
 abstract public class MirandaFile extends Consumer implements Comparer {
-    abstract public void load() throws IOException;
     abstract public byte[] getBytes();
     abstract public List getData();
 
@@ -58,6 +58,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private long lastLoaded = -1;
     private long lastCollection;
     private boolean dirty;
+
 
     public MirandaFile () {}
 
@@ -152,8 +153,8 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return filename;
     }
 
-    public void write(String filename, byte[] array) {
-        getWriter().sendWrite(getQueue(), this, filename, array);
+    public void write(String filename, byte[] content) {
+        getWriter().sendWrite(getQueue(), this, filename, content);
     }
 
     public void write() {
@@ -167,7 +168,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
     public void watch() {
         File file = new File(getFilename());
-        Miranda.fileWatcher.sendWatchMessage (getQueue(), this, file);
+        Miranda.fileWatcher.sendWatchFileMessage (getQueue(), this, file, getQueue());
     }
 
     public void updateVersion() throws NoSuchAlgorithmException {
@@ -253,5 +254,9 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         FileDoesNotExistMessage fileDoesNotExistMessage = new FileDoesNotExistMessage(getQueue(), this,
                 getFilename());
         fireMessage(fileDoesNotExistMessage);
+    }
+
+    public void load () {
+        getReader().sendReadMessage(getQueue(), this, getFilename());
     }
 }

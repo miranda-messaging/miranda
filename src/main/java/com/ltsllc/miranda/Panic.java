@@ -39,6 +39,7 @@ public class Panic extends Exception {
         ExceptionCreatingSslContext,
         ExceptionDeserializing,
         ExceptionDuringNetworkSend, // an InterruptedException was thrown while waiting for a network to complete
+        ExceptionDuringScan,
         ExceptionDuringUpdate,
         ExceptionGettingNextMessage, // an InterruptedException was thrown while waiting for the next message
         ExceptionInEventPost,

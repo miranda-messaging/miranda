@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -40,8 +41,16 @@ public class TestFileWatcher extends TestCase {
             {"old/whatever", "random file"},
     };
 
+    public static final String TEST_DIRECTORY = "testdir";
+    public static final String TEST_FILENAME = "testdir/whatever";
+
     private FileWatcher fileWatcher;
     private BlockingQueue<Message> queue;
+    private File file;
+
+    public File getFile() {
+        return file;
+    }
 
     public FileWatcher getFileWatcher() {
         return fileWatcher;
@@ -60,18 +69,25 @@ public class TestFileWatcher extends TestCase {
 
     @Before
     public void setup () {
-        reset();
+        try {
+            reset();
 
-        super.setup();
+            super.setup();
 
-        setupMirandaProperties();
+            setupMirandaProperties();
 
-        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
+            createFileSystem(ROOT, FILE_SYSTEM_SPEC);
 
-        queue = new LinkedBlockingQueue<Message>();
-        File file = new File("testdir/new/20170220-001.msg");
+            queue = new LinkedBlockingQueue<Message>();
 
-        fileWatcher = new FileWatcher(queue);
+            createDirectory(TEST_DIRECTORY);
+            createFile(TEST_FILENAME);
+
+            File file = new File(TEST_FILENAME);
+            fileWatcher = new SimpleFileWatcher(file, queue);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @After
@@ -80,10 +96,13 @@ public class TestFileWatcher extends TestCase {
     }
 
     @Test
-    public void testSend () {
-        getFileWatcher().sendMessage("whatever");
+    public void testScan () throws Exception {
+        getFileWatcher().check();
 
-        pause(125);
+        assert (queueIsEmpty(getQueue()));
+
+        touch(getFile());
+        pause(100);
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
     }

@@ -47,7 +47,6 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
     private static Gson ourGson = new Gson();
 
-
     public SingleFileReadyState (SingleFile file) {
         super(file);
     }

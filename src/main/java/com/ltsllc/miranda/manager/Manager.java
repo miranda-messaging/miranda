@@ -122,4 +122,10 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     public void load () {
         getFile().sendLoad(getQueue(), this);
     }
+
+    public void fileChanged () {
+        List<F> fileData = getFile().getData();
+        List<E> newData = convertList(fileData);
+        setData(newData);
+    }
 }

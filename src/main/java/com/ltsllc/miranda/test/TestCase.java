@@ -55,6 +55,7 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -495,6 +496,13 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         }
     }
 
+    public static void createFile (String filename) {
+        SecureRandom random = new SecureRandom();
+        byte[] contents = new byte[1024];
+        random.nextBytes(contents);
+        createFile(filename, contents);
+    }
+
     public static void createFile(String filename, String contents) {
         FileOutputStream fileOutputStream = null;
 
@@ -646,6 +654,9 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         }
     }
 
+    public static void pause () {
+        pause(1);
+    }
 
     public boolean contains(Message.Subjects subject, BlockingQueue<Message> queue) {
         for (Message m : queue) {

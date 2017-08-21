@@ -58,11 +58,13 @@ public abstract class Mergeable {
         this.lastChange = random.nextNonNegativeLong();
     }
 
-    public void merge (Mergeable other) {
+    public boolean merge (Mergeable other) {
         if (changedAfter(other))
-            return;
+            return false;
 
         lastChange = new Long (other.getLastChange().longValue());
         copyFrom(other);
+
+        return true;
     }
 }

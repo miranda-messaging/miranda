@@ -19,6 +19,7 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -50,6 +51,12 @@ public class ManagerReadyState<E,F> extends State {
             case FileDoesNotExist: {
                 FileDoesNotExistMessage fileDoesNotExistMessage = (FileDoesNotExistMessage) message;
                 nextState = processFileDoesNotExistMessage(fileDoesNotExistMessage);
+                break;
+            }
+
+            case FileChanged: {
+                FileChangedMessage fileChangedMessage = (FileChangedMessage) message;
+                nextState = processFileChangedMessage(fileChangedMessage);
                 break;
             }
 
@@ -97,6 +104,12 @@ public class ManagerReadyState<E,F> extends State {
 
     public State processFileDoesNotExistMessage (FileDoesNotExistMessage fileDoesNotExistMessage) {
         getManager().getData().clear();
+
+        return getManager().getCurrentState();
+    }
+
+    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
+        getManager().fileChanged();
 
         return getManager().getCurrentState();
     }

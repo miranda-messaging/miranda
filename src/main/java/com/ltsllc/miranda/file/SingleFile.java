@@ -23,14 +23,18 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
+import com.ltsllc.miranda.cluster.messages.ClusterFileChangedMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.AddObjectsMessage;
+import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
 import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
@@ -205,17 +209,37 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         sendToMe(loadMessage);
     }
 
-    public void merge(List<E> list) {
+    public boolean merge(List list) {
         List<E> newItems = new ArrayList<E>();
+        boolean changed = false;
 
-        for (E e : list) {
-            if (!contains(e))
+        for (Object o : list) {
+            E mergeable = (E) o;
+
+            MirandaObject existing = find(mergeable);
+
+            if (null == existing) {
+                E e = (E) mergeable;
                 newItems.add(e);
+                changed = true;
+            } else {
+                boolean temp = existing.merge(mergeable);
+                if (!(changed))
+                    changed = temp;
+            }
         }
 
         if (newItems.size() > 0) {
             getData().addAll(newItems);
         }
+
+        if (changed) {
+            updateVersion();
+            write();
+            fireFileChanged();
+        }
+
+        return changed;
     }
 
     public void addSubscriber(BlockingQueue<Message> subscriberQueue) {
@@ -287,15 +311,13 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
     }
 
     public void update(E updatedObject) throws MergeException {
-        E existingObject = find(updatedObject);
+        E existingObject = (E) find(updatedObject);
 
         if (null == existingObject) {
             logger.error("Could not find match for update");
         } else {
             existingObject.merge(updatedObject);
         }
-
-        write();
     }
 
     public E findMatch(E object) {
@@ -325,12 +347,17 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         write();
     }
 
-    public E find(E object) {
-        for (E candidate : getData()) {
+    public MirandaObject find(MirandaObject object) {
+        for (MirandaObject candidate : getData()) {
             if (candidate.isEquivalentTo(object))
                 return candidate;
         }
 
         return null;
+    }
+
+    public void fireFileChanged () {
+        FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, null);
+        fireMessage(fileChangedMessage);
     }
 }

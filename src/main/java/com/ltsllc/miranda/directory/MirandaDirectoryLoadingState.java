@@ -23,34 +23,34 @@ public class MirandaDirectoryLoadingState extends State {
         this.filesToLoad = filesToLoad;
     }
 
-    public MirandaDirectoryLoadingState (MirandaDirectory mirandaDirectory, int filesToLoad) {
+    public MirandaDirectoryLoadingState(MirandaDirectory mirandaDirectory, int filesToLoad) {
         super(mirandaDirectory);
 
         this.filesToLoad = filesToLoad;
     }
 
-    public MirandaDirectoryLoadingState (MirandaDirectory mirandaDirectory) {
+    public MirandaDirectoryLoadingState(MirandaDirectory mirandaDirectory) {
         super(mirandaDirectory);
     }
 
-    public void decrementFilesToLoad () {
+    public void decrementFilesToLoad() {
         filesToLoad--;
     }
 
-    public boolean loadedAllFiles () {
+    public boolean loadedAllFiles() {
         return filesToLoad <= 0;
     }
 
-    public MirandaDirectory getMirandaDirectory () {
+    public MirandaDirectory getMirandaDirectory() {
         return (MirandaDirectory) getContainer();
     }
 
-    public State processMessage (Message message) {
+    public State processMessage(Message message) {
         State nextState = getMirandaDirectory().getCurrentState();
-        switch (message.getSubject())  {
+        switch (message.getSubject()) {
             case ReadResponse: {
                 ReadResponseMessage readResponseMessage = (ReadResponseMessage) message;
-                nextState = processReadResponseMessage (readResponseMessage);
+                nextState = processReadResponseMessage(readResponseMessage);
                 break;
             }
 
@@ -69,7 +69,7 @@ public class MirandaDirectoryLoadingState extends State {
         return nextState;
     }
 
-    public State processReadResponseMessage (ReadResponseMessage readResponseMessage) {
+    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) {
         getMirandaDirectory().fileLoaded(readResponseMessage.getFilename(), readResponseMessage.getData());
         decrementFilesToLoad();
         if (loadedAllFiles()) {
@@ -79,13 +79,8 @@ public class MirandaDirectoryLoadingState extends State {
         return getMirandaDirectory().getCurrentState();
     }
 
-    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
-        try {
-            getMirandaDirectory().load();
-        } catch (IOException e) {
-            Panic panic = new Panic("Exception scanning directory", e, Panic.Reasons.ExceptionLoadingFile);
-            Miranda.panicMiranda(panic);
-        }
+    public State processFileChangedMessage(FileChangedMessage fileChangedMessage) {
+        getMirandaDirectory().load();
 
         return getMirandaDirectory().getCurrentState();
     }
