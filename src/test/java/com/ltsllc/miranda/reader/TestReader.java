@@ -114,16 +114,15 @@ public class TestReader extends TestCase {
     }
 
     @Test
-    public void testReadGeneralSecurityException() throws EncryptionException {
+    public void testReadEncryptionException() throws EncryptionException {
         Exception exception = null;
         Reader.ReadResult result = null;
 
         createTestFile(TEST_FILENAME);
 
-        GeneralSecurityException generalSecurityException = new GeneralSecurityException("a test");
-        when(getMockPrivateKey().decrypt(Matchers.any(EncryptedMessage.class))).thenThrow(generalSecurityException);
+        EncryptionException encryptionException = new EncryptionException("a test");
+        when(getMockPrivateKey().decrypt(Matchers.any(EncryptedMessage.class))).thenThrow(encryptionException);
         result = getReader().read(TEST_FILENAME);
-
 
         assert (result.result == ReadResponseMessage.Results.ExceptionDecryptingFile);
     }
