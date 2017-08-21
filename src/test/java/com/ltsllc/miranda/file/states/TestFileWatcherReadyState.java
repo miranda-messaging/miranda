@@ -18,19 +18,23 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
+import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by Clark on 2/25/2017.
@@ -46,24 +50,17 @@ public class TestFileWatcherReadyState extends TestCase {
             {"old/whatever", "random file"},
     };
 
-    private FileWatcherService fileWatcherService;
-    private BlockingQueue<Message> queue;
+    private FileWatcherReadyState fileWatcherReadyState;
 
-    public BlockingQueue<Message> getQueue() {
-        return queue;
+    public FileWatcherReadyState getFileWatcherReadyState() {
+        return fileWatcherReadyState;
     }
 
-    public FileWatcherService getFileWatcherService() {
-        return fileWatcherService;
-    }
 
     public void reset() {
         super.reset();
 
         super.setup();
-
-        fileWatcherService = null;
-        queue = null;
     }
 
     @Before
@@ -73,14 +70,8 @@ public class TestFileWatcherReadyState extends TestCase {
         setuplog4j();
         setupMirandaProperties();
 
-        setupFileWatcher(100);
-
-        createFileSystem(ROOT, FILE_SYSTEM_SPEC);
-
-        this.queue = new LinkedBlockingQueue<Message>();
-        this.fileWatcherService = Miranda.fileWatcher;
+        fileWatcherReadyState = new FileWatcherReadyState(getMockFileWatcherService());
     }
-
 
     public boolean contains (Map map, String entry) {
         return map.containsKey(entry);
@@ -94,29 +85,11 @@ public class TestFileWatcherReadyState extends TestCase {
     private static final String FILE_NAME = "testdir/new/20170220-001.msg";
 
     @Test
-    public void testProcessUnwatchFileMessage() {
+    public void testProcessWatchFileMessage() throws Exception {
         File file = new File(FILE_NAME);
-        UnwatchFileMessage unwatchFileMessage = new UnwatchFileMessage(getQueue(), this, file);
-        WatchFileMessage watchFileMessage = new WatchFileMessage(getQueue(), this, file, getQueue());
+        WatchFileMessage watchFileMessage = new WatchFileMessage(null, this, file, null);
+        getFileWatcherReadyState().processMessage(watchFileMessage);
 
-        send(watchFileMessage, getFileWatcherService().getQueue());
-
-        pause(500);
-
-        touch(file);
-
-        pause(500);
-
-        assert (contains(Message.Subjects.FileChanged, getQueue()));
-        send(unwatchFileMessage, getFileWatcherService().getQueue());
-
-        pause(250);
-        getQueue().clear();
-
-        touch(file);
-
-        pause(250);
-
-        assert (!contains(Message.Subjects.FileChanged, getQueue()));
+        verify (getMockFileWatcherService(), atLeastOnce()).watchFile(Matchers.any(File.class), Matchers.any());
     }
 }

@@ -21,7 +21,6 @@ import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
-import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
 import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.miranda.Miranda;
