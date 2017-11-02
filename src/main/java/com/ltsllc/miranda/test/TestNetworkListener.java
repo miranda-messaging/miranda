@@ -18,15 +18,15 @@ package com.ltsllc.miranda.test;
 
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkException;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.ConnectionListener;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * A class for use in testing {@link NetworkListener}
+ * A class for use in testing {@link ConnectionListener}
  */
-public class TestNetworkListener extends NetworkListener {
+public class TestNetworkListener extends ConnectionListener {
     public enum EventTypes {
         NewHandle,
         Exception,

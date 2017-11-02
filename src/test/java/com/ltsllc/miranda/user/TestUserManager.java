@@ -154,23 +154,11 @@ public class TestUserManager extends TestCase {
             "]"
     };
 
-    @Test
-    public void testPerformGarbageCollection() {
-        User user = new User("whatever", "whatever");
-        getUserManager().getData().add(user);
-
-        assert (getUserManager().getUsers().size() > 0);
-
-        getUserManager().performGarbageCollection();
-
-        assert (getUserManager().getUsers().size() < 1);
-    }
 
     @Test
-    public void testContains() {
-        User user = new User("whatever", "whatever");
-        getUserManager().getData().add(user);
+    public void testContains() throws Exception {
         User shouldContain = new User("whatever", "whatever");
+        getUserManager().addUser(shouldContain);
         User shouldNotContain = new User("not here", "absent");
 
         assert (getUserManager().contains(shouldContain));

@@ -157,22 +157,15 @@ public class TestWriter extends TestCase {
     }
 
     public static final String TEST_TEXT = "{\"key\":\"hi there\",\"message\":\"4123983514D0DB213E5CE7AEBAF3BBD4DB78676D74B2F7AD5885818773F2467335F0671CD039B35A732BDE66DA2FFF93DFA62CFACBD5B6AC2A900E1C8E0C4C1BD31B2D0A5BA2F476F157100EDDF8C9BF62971AF0213FEBA1125C3622A15B872111D1D817AF5DD500D7B59405CC62CD5065AF1C5CB227133B7D29A11AD9C4DA7EC2BDAF6EE0A23C694D780068FA74D20081BFF4C77B449433E79920B2184796D40CEF972BA3794E060AB4BCCD36B0463621215B6672D0497CE835F60CBAD04B613C000E62ED9C402709DB83A5AA28E2ACE3CF701168B02A09C87CE02060E42B48E7EC2B78F975C9A9F1CB68940C7B7686A9A82DE9567031003C3E76A2EC6F5EEB\",\"length\":512}";
-    public static final byte[] TEST_CIPHER_TEXT = {1, 2, 3};
+    public static final byte[] TEST_CLEAR_TEXT = {1, 2, 3};
+    public static final String TEST_FILE_TEXT = "{\"algorithm\":\"whatever\",\"key\":\"whatever\",\"message\":\"\\u0001\\u0002\\u0003\"}";
 
     @Test
     public void testWrite() throws Exception {
-        EncryptedMessage encryptedMessage = new EncryptedMessage();
-        encryptedMessage.setKey("hi there");
-        encryptedMessage.setMessage(TEST_TEXT);
-
-        when(getMockPublicKey().encrypt(Matchers.any(byte[].class))).thenReturn(TEST_CIPHER_TEXT);
-        getWriter().write(TEST_FILE_NAME, TEST_TEXT.getBytes());
-
-        String hexString = Utils.bytesToString(TEST_CIPHER_TEXT);
-
-        Gson gson = new Gson();
-        String json = gson.toJson(encryptedMessage);
-        assert (fileIsEquivalentToText(TEST_FILE_NAME, hexString));
+        EncryptedMessage encryptedMessage = new EncryptedMessage("whatever", "whatever", new String(TEST_CLEAR_TEXT));
+        when(getMockPublicKey().encryptToMessage(Matchers.any(byte[].class))).thenReturn(encryptedMessage);
+        getWriter().write(TEST_FILE_NAME, TEST_CLEAR_TEXT);
+        assert (fileIsEquivalentToText(TEST_FILE_NAME, TEST_FILE_TEXT));
     }
 
     public static final String TEST_PASSWORD = "whatever";

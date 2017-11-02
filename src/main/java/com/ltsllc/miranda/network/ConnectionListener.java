@@ -33,7 +33,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *     other nodes. Subclases need to define the listen method.
  * </P>
  */
-abstract public class NetworkListener extends Consumer {
+abstract public class ConnectionListener extends Consumer {
     abstract public void stopListening();
 
     public static final String NAME = "network listener";
@@ -67,7 +67,7 @@ abstract public class NetworkListener extends Consumer {
         connectionCount++;
     }
 
-    public NetworkListener (int port) {
+    public ConnectionListener(int port) {
         super("network listener");
 
         this.port = port;

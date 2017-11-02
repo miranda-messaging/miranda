@@ -17,7 +17,7 @@
 package last;
 
 import com.ltsllc.miranda.network.Handle;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.NetworkListenerReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -34,18 +34,18 @@ import static org.mockito.Mockito.mock;
  */
 public class TestNetworkListener extends TestCase {
     public static class TestNewConnectionLoop implements Runnable {
-        private NetworkListener networkListener;
+        private ConnectionListener networkListener;
         private BlockingQueue<Handle> handleQueue;
 
         public BlockingQueue<Handle> getHandleQueue() {
             return handleQueue;
         }
 
-        public NetworkListener getNetworkListener() {
+        public ConnectionListener getNetworkListener() {
             return networkListener;
         }
 
-        public TestNewConnectionLoop (NetworkListener networkListener, BlockingQueue<Handle> handleQueue) {
+        public TestNewConnectionLoop (ConnectionListener networkListener, BlockingQueue<Handle> handleQueue) {
             this.networkListener = networkListener;
             this.handleQueue = handleQueue;
         }

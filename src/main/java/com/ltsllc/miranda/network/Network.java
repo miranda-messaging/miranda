@@ -36,7 +36,7 @@ abstract public class Network extends Consumer {
     abstract public Handle basicConnectTo (String host, int port) throws MirandaException;
     abstract public Handle createHandle (Object o);
 
-    private static Logger logger = Logger.getLogger(NetworkListener.class);
+    private static Logger logger = Logger.getLogger(ConnectionListener.class);
     private static Network ourInstance;
 
     private Map<Integer, Handle> integerToHandle = new HashMap<Integer, Handle>();
@@ -179,7 +179,7 @@ abstract public class Network extends Consumer {
     }
 
     /**
-     * This is called when the {@link NetworkListener} gets a new connection.
+     * This is called when the {@link ConnectionListener} gets a new connection.
      *
      * <P>
      *     The handle rturned can be used in susequent {@link SendMessageMessage} and

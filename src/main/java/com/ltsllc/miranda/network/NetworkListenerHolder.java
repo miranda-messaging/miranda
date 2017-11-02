@@ -25,7 +25,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 public class NetworkListenerHolder extends Consumer {
     public static String NAME = "network listener";
 
-    private NetworkListener networkListener;
+    private ConnectionListener networkListener;
     private Cluster cluster;
     private Network network;
 
@@ -37,11 +37,11 @@ public class NetworkListenerHolder extends Consumer {
         this.network = network;
     }
 
-    public NetworkListener getNetworkListener() {
+    public ConnectionListener getNetworkListener() {
         return networkListener;
     }
 
-    public void setNetworkListener(NetworkListener networkListener) {
+    public void setNetworkListener(ConnectionListener networkListener) {
         this.networkListener = networkListener;
     }
 
@@ -53,7 +53,7 @@ public class NetworkListenerHolder extends Consumer {
         this.cluster = cluster;
     }
 
-    public NetworkListenerHolder (NetworkListener networkListener, Cluster cluster) {
+    public NetworkListenerHolder (ConnectionListener networkListener, Cluster cluster) {
         super(NAME);
 
         this.networkListener = networkListener;

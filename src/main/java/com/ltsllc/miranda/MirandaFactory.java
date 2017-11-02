@@ -26,7 +26,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import io.netty.handler.ssl.SslContext;
 import org.apache.log4j.Logger;
@@ -108,7 +108,7 @@ public class MirandaFactory {
         }
     }
 
-    public NetworkListener buildNetworkListener (KeyStore keyStore, KeyStore trustStore) {
+    public ConnectionListener buildNetworkListener (KeyStore keyStore, KeyStore trustStore) {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
 
 
@@ -384,15 +384,15 @@ public class MirandaFactory {
         throw new IllegalStateException("not impelmented");
     }
 
-    public NetworkListener buildNettyNetworkListener () {
+    public ConnectionListener buildNettyNetworkListener () {
         throw new IllegalStateException("not impelmented");
     }
 
-    public NetworkListener buildSocketNetworkListener () {
+    public ConnectionListener buildSocketNetworkListener () {
         throw new IllegalStateException("not impelmented");
     }
 
-    public NetworkListener buildNewNetworkListener () {
+    public ConnectionListener buildNewNetworkListener () {
         int port = getProperties().getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         return new MinaNetworkListener(port, getKeyStore(), getKeystorePassword(), getTrustStore());

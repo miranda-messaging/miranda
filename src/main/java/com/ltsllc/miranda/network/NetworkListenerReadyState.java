@@ -23,12 +23,12 @@ import com.ltsllc.miranda.miranda.messages.StopMessage;
  * Created by Clark on 3/10/2017.
  */
 public class NetworkListenerReadyState extends State {
-    public NetworkListenerReadyState (NetworkListener networkListener) {
+    public NetworkListenerReadyState (ConnectionListener networkListener) {
         super(networkListener);
     }
 
-    public NetworkListener getNetworkListener () {
-        return (NetworkListener) getContainer();
+    public ConnectionListener getNetworkListener () {
+        return (ConnectionListener) getContainer();
     }
 
     public State start () {

@@ -53,7 +53,7 @@ public class Writer extends Consumer {
         this.publicKey = publicKey;
     }
 
-    public void write (String filename, byte[] data) throws IOException, EncryptionException {
+    public void write (String filename, byte[] clearText) throws IOException, EncryptionException {
         File file = new File(filename);
 
         if (file.exists())
@@ -62,7 +62,7 @@ public class Writer extends Consumer {
         FileWriter fileWriter = null;
 
         try {
-            EncryptedMessage encryptedMessage = encrypt(data);
+            EncryptedMessage encryptedMessage = encrypt(clearText);
             fileWriter = new FileWriter(filename);
             String json = gson.toJson(encryptedMessage);
             fileWriter.write(json);

@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.ConnectionListener;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -33,7 +33,7 @@ import java.security.cert.Certificate;
 /**
  * Created by Clark on 3/6/2017.
  */
-public class MinaNetworkListener extends NetworkListener {
+public class MinaNetworkListener extends ConnectionListener {
     public static final String NAME = "listener";
 
     private static NioSocketAcceptor nioSocketAcceptor;

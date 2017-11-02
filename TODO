@@ -1,0 +1,28 @@
+auctions
+    create
+    handle
+users
+    CRUD
+    CUD from cluster
+topics
+    CRUD
+    CUD from cluster
+subscriptions
+    CRUD
+    CUD from cluster
+dead letter queues
+    resend
+    resend all
+    list
+    delete message
+    delete all messages
+    delete queue
+    get
+    get all
+    add message
+events
+    CR
+    create from cluster
+deliveries
+    CR
+    create from cluster

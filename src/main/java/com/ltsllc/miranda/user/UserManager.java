@@ -64,15 +64,15 @@ public class UserManager extends StandardManager<User> {
         return new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 
-    public void garbageCollectUsers () {
+//    public void garbageCollectUsers () {
+//
+//    }
 
-    }
-
-    public void performGarbageCollection () {
-        super.performGarbageCollection();
-
-        garbageCollectUsers();
-    }
+//    public void performGarbageCollection () {
+//        super.performGarbageCollection();
+//
+//        garbageCollectUsers();
+//    }
 
     public boolean contains (User user) {
         for (User aUser : getUsers())

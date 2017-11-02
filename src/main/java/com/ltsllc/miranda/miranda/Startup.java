@@ -31,7 +31,7 @@ import com.ltsllc.miranda.http.ServletMapping;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
@@ -771,7 +771,7 @@ public class Startup extends State {
     }
 
     public void startListening() {
-        NetworkListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
+        ConnectionListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
         getMiranda().setNetworkListener(networkListener);
         networkListener.start();
     }

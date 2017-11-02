@@ -16,14 +16,11 @@
 
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.*;
-import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
-import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
@@ -35,7 +32,7 @@ import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.network.Network;
-import com.ltsllc.miranda.network.NetworkListener;
+import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
@@ -98,7 +95,7 @@ public class Miranda extends Consumer {
     private DeliveryManager deliveryManager;
     private Cluster cluster;
     private PanicPolicy panicPolicy;
-    private NetworkListener networkListener;
+    private ConnectionListener networkListener;
     private SessionManager sessionManager;
     private Writer writer;
     private Reader reader;
@@ -177,11 +174,11 @@ public class Miranda extends Consumer {
         this.sessionManager = sessionManager;
     }
 
-    public NetworkListener getNetworkListener() {
+    public ConnectionListener getNetworkListener() {
         return networkListener;
     }
 
-    public void setNetworkListener(NetworkListener networkListener) {
+    public void setNetworkListener(ConnectionListener networkListener) {
         this.networkListener = networkListener;
     }
 
@@ -544,7 +541,7 @@ public class Miranda extends Consumer {
         waitingOn.add(SubscriptionManager.NAME);
         waitingOn.add(EventManager.NAME);
         waitingOn.add(DeliveryManager.NAME);
-        waitingOn.add(NetworkListener.NAME);
+        waitingOn.add(ConnectionListener.NAME);
     }
 
     public void subsystemShutDown (String subsystem) {
