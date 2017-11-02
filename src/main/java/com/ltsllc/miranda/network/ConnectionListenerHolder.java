@@ -22,7 +22,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 /**
  * Created by Clark on 5/23/2017.
  */
-public class NetworkListenerHolder extends Consumer {
+public class ConnectionListenerHolder extends Consumer {
     public static String NAME = "network listener";
 
     private ConnectionListener networkListener;
@@ -53,13 +53,13 @@ public class NetworkListenerHolder extends Consumer {
         this.cluster = cluster;
     }
 
-    public NetworkListenerHolder (ConnectionListener networkListener, Cluster cluster) {
+    public ConnectionListenerHolder(ConnectionListener networkListener, Cluster cluster) {
         super(NAME);
 
         this.networkListener = networkListener;
         this.cluster = cluster;
 
-        NetworkListenerHolderReadyState readyState = new NetworkListenerHolderReadyState(this);
+        ConnectionListenerHolderReadyState readyState = new ConnectionListenerHolderReadyState(this);
         setCurrentState(readyState);
     }
 

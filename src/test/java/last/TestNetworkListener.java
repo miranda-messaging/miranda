@@ -18,7 +18,7 @@ package last;
 
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.ConnectionListener;
-import com.ltsllc.miranda.network.NetworkListenerReadyState;
+import com.ltsllc.miranda.network.ConnectionListenerReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class TestNetworkListener extends TestCase {
 
     @Test
     public void testConstructor () {
-        assert (getTestNetworkListener().getCurrentState() instanceof NetworkListenerReadyState);
+        assert (getTestNetworkListener().getCurrentState() instanceof ConnectionListenerReadyState);
     }
 
     public void startNewConnectionLoop (BlockingQueue<Handle> handleQueue) {

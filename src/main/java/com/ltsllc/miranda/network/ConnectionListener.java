@@ -74,7 +74,7 @@ abstract public class ConnectionListener extends Consumer {
         this.connectionCount = 0;
         this.handleQueue = new LinkedBlockingQueue<Handle>();
 
-        NetworkListenerReadyState readyState = new NetworkListenerReadyState(this);
+        ConnectionListenerReadyState readyState = new ConnectionListenerReadyState(this);
         setCurrentState(readyState);
     }
 

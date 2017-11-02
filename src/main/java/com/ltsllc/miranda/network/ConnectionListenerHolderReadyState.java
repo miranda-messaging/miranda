@@ -21,12 +21,12 @@ import com.ltsllc.miranda.*;
 /**
  * Created by Clark on 5/23/2017.
  */
-public class NetworkListenerHolderReadyState extends State {
-    public NetworkListenerHolder getNetworkListnerHolder () {
-        return (NetworkListenerHolder) getContainer();
+public class ConnectionListenerHolderReadyState extends State {
+    public ConnectionListenerHolder getNetworkListnerHolder () {
+        return (ConnectionListenerHolder) getContainer();
     }
 
-    public NetworkListenerHolderReadyState (NetworkListenerHolder networkListenerHolder) {
+    public ConnectionListenerHolderReadyState(ConnectionListenerHolder networkListenerHolder) {
         super(networkListenerHolder);
     }
 
@@ -53,7 +53,7 @@ public class NetworkListenerHolderReadyState extends State {
         getNetworkListnerHolder().stop();
 
         ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getNetworkListnerHolder().getQueue(),
-                this, NetworkListenerHolder.NAME);
+                this, ConnectionListenerHolder.NAME);
 
         shutdownMessage.reply(shutdownResponseMessage);
 
