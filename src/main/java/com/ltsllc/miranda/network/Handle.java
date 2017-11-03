@@ -69,6 +69,15 @@ abstract public class Handle {
         return jsonToWireMessage(firstPass, json);
     }
 
+    /**
+     * This method is called when a new message is received from the network.
+     *
+     * <p>
+     *     The base behavior is simply to put the message on the queue for the handle.
+     * </p>
+     *
+     * @param wireMessage The new message.
+     */
     public void deliver (WireMessage wireMessage) {
         NetworkMessage message = new NetworkMessage(null,this, wireMessage);
         try {
