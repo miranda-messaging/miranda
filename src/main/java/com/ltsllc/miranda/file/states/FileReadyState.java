@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -38,7 +39,7 @@ public class FileReadyState extends State {
     private MirandaFile file;
 
 
-    public FileReadyState(MirandaFile file) {
+    public FileReadyState(MirandaFile file) throws MirandaException {
         super(file);
 
         this.file = file;
@@ -50,7 +51,7 @@ public class FileReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

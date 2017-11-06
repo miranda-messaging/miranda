@@ -18,6 +18,7 @@ package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -29,7 +30,7 @@ abstract public class HttpServer extends Consumer {
     abstract public void addServlets (List<ServletMapping> servlets);
     abstract public void startServer ();
 
-    public HttpServer () {
+    public HttpServer () throws MirandaException {
         super("http server");
 
         HttpReadyState httpReadyState = new HttpReadyState(this);

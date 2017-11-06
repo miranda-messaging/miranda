@@ -18,6 +18,7 @@ package com.ltsllc.miranda.topics;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.topics.states.TopicsFileReadyState;
@@ -49,7 +50,7 @@ public class TestTopicsFileReadyState extends TestCase {
         return mockTopicsFile;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockTopicsFile = null;
@@ -57,7 +58,7 @@ public class TestTopicsFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -69,7 +70,7 @@ public class TestTopicsFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetVersion () {
+    public void testProcessGetVersion () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetVersionMessage getVersionMessage = new GetVersionMessage(null, this, queue);
 

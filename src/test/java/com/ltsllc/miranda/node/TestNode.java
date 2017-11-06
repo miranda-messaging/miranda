@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.node;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
@@ -40,14 +41,14 @@ public class TestNode extends TestCase {
         return node;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         node = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -67,7 +68,7 @@ public class TestNode extends TestCase {
     }
 
     @Test
-    public void testOtherConstructor () {
+    public void testOtherConstructor () throws MirandaException {
         this.node = new Node (1, getMockNetwork(), getMockCluster());
 
         assert (getNode().getHandle() == 1);

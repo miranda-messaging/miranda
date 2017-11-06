@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.messages.ConnectFailedMessage;
 import com.ltsllc.miranda.network.messages.ConnectSucceededMessage;
 import com.ltsllc.miranda.node.messages.RetryMessage;
@@ -38,14 +39,14 @@ public class TestRetryingState extends TesterNodeState {
         return retryingState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         retryingState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -65,7 +66,7 @@ public class TestRetryingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessRetryMessage () {
+    public void testProcessRetryMessage () throws MirandaException {
         RetryMessage retryMessage = new RetryMessage(null, this);
 
         when(getMockNode().getQueue()).thenReturn(null);
@@ -81,7 +82,7 @@ public class TestRetryingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectSucceeded () {
+    public void testProcessConnectSucceeded () throws MirandaException {
         ConnectSucceededMessage connectSucceededMessage = new ConnectSucceededMessage(null, this, 13);
 
         State nextState = getRetryingState().processMessage(connectSucceededMessage);
@@ -91,7 +92,7 @@ public class TestRetryingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectFailed () {
+    public void testProcessConnectFailed () throws MirandaException {
         setupMockTimer();
         ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, this, null);
 
@@ -108,7 +109,7 @@ public class TestRetryingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectFailedMaxTime () {
+    public void testProcessConnectFailedMaxTime () throws MirandaException {
         setupMockTimer();
         ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, this, null);
 
@@ -122,7 +123,7 @@ public class TestRetryingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectFailedDelayDoubles () {
+    public void testProcessConnectFailedDelayDoubles () throws MirandaException {
         setupMockTimer();
         ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, this, null);
 

@@ -108,7 +108,7 @@ public class MirandaFactory {
         }
     }
 
-    public ConnectionListener buildNetworkListener (KeyStore keyStore, KeyStore trustStore) {
+    public ConnectionListener buildNetworkListener (KeyStore keyStore, KeyStore trustStore) throws MirandaException {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
 
 
@@ -392,7 +392,7 @@ public class MirandaFactory {
         throw new IllegalStateException("not impelmented");
     }
 
-    public ConnectionListener buildNewNetworkListener () {
+    public ConnectionListener buildNewNetworkListener () throws MirandaException {
         int port = getProperties().getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         return new MinaNetworkListener(port, getKeyStore(), getKeystorePassword(), getTrustStore());

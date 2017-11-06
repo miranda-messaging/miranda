@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.manager.ManagerLoadingState;
 import com.ltsllc.miranda.user.UserManager;
 
@@ -28,11 +29,11 @@ public class UserManagerStartState extends ManagerLoadingState {
         return (UserManager) getContainer();
     }
 
-    public UserManagerStartState (UserManager userManager) {
+    public UserManagerStartState (UserManager userManager) throws MirandaException {
         super(userManager);
     }
 
-    public State getReadyState () {
+    public State getReadyState () throws MirandaException {
         return new UserManagerReadyState(getUserManager());
     }
 }

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
@@ -37,14 +38,14 @@ public class TestServletHolderReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         readyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -53,7 +54,7 @@ public class TestServletHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testCheckSessionResponseMethodSessionExists () {
+    public void testCheckSessionResponseMethodSessionExists () throws MirandaException {
         CheckSessionResponseMessage checkSessionResponseMessage = new CheckSessionResponseMessage(null, this,
                 Results.Success, getMockSession());
 

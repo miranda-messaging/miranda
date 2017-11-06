@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.writer;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,14 +36,14 @@ public class TestIgnoreWritesState extends TestCase {
         return ignoreWritesState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         ignoreWritesState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -53,7 +54,7 @@ public class TestIgnoreWritesState extends TestCase {
     public static byte[] TEST_DATA = {1, 2, 3, 4};
 
     @Test
-    public void testProcessWriteMessage () {
+    public void testProcessWriteMessage () throws MirandaException {
         setuplog4j();
         IgnoreWritesState.setLogger(getMockLogger());
         WriteMessage writeMessage = new WriteMessage("whatever", TEST_DATA, null, this);

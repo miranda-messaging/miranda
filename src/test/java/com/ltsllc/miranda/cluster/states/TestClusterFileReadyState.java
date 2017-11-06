@@ -19,6 +19,7 @@ package com.ltsllc.miranda.cluster.states;
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
@@ -80,7 +81,7 @@ public class TestClusterFileReadyState extends TestCase {
         return mockClusterfile;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         ClusterFile.reset();
@@ -100,7 +101,7 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();
@@ -115,13 +116,13 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws MirandaException {
         deleteFile(CLUSTER_FILENAME);
         reset();
     }
 
     @Test
-    public void testProcessLoadMessage () {
+    public void testProcessLoadMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         LoadMessage loadMessage = new LoadMessage (queue, this);
 
@@ -132,7 +133,7 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetVersionMessage () {
+    public void testProcessGetVersionMessage () throws MirandaException {
         Version version = new Version();
         version.setSha1("foo");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
@@ -149,7 +150,7 @@ public class TestClusterFileReadyState extends TestCase {
      * This message is ignored.
      */
     @Test
-    public void testProcessWriteSucceededMesssage () {
+    public void testProcessWriteSucceededMesssage () throws MirandaException {
         WriteSucceededMessage message = new WriteSucceededMessage(null, "whatever", this);
 
         getClusterFileReadyState().processMessage(message);
@@ -161,7 +162,7 @@ public class TestClusterFileReadyState extends TestCase {
      * This message cause a error log event.
      */
     @Test
-    public void testProcessWriteFailedMessage () {
+    public void testProcessWriteFailedMessage () throws MirandaException {
         setupMockLogger();
         WriteFailedMessage message = new WriteFailedMessage(null, "whatever", null, this);
 
@@ -174,7 +175,7 @@ public class TestClusterFileReadyState extends TestCase {
      * The cluster tells the cluster file it has updated the nodes
      */
     @Test
-    public void testProcessNodesUpdatedMessage () {
+    public void testProcessNodesUpdatedMessage () throws MirandaException {
         List<NodeElement> nodeList = new ArrayList<NodeElement>();
         NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         nodeList.add(nodeElement);
@@ -192,7 +193,7 @@ public class TestClusterFileReadyState extends TestCase {
      * cluster file.
      */
     @Test
-    public void testProcessGetClusterFileMessage () {
+    public void testProcessGetClusterFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetClusterFileMessage message = new GetClusterFileMessage(queue, this);
 

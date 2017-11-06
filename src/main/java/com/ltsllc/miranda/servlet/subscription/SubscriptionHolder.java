@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -73,7 +74,7 @@ public class SubscriptionHolder extends ServletHolder {
         ourInstance = subscriptionHolder;
     }
 
-    public static void initialize (long timeout) {
+    public static void initialize (long timeout) throws MirandaException {
         ourInstance = new SubscriptionHolder(timeout);
     }
 
@@ -101,7 +102,7 @@ public class SubscriptionHolder extends ServletHolder {
         this.createResult = createResult;
     }
 
-    public SubscriptionHolder (long timeout) {
+    public SubscriptionHolder (long timeout) throws MirandaException {
         super ("subscription holder", timeout);
 
         SubscriptionHolderReadyState readyState = new SubscriptionHolderReadyState(this);

@@ -49,7 +49,7 @@ public class TestEvent extends TestCase {
             super.setup();
 
             this.event = new Event(Event.Methods.POST, "010203");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

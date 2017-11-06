@@ -19,6 +19,7 @@ package com.ltsllc.miranda.subscriptions;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -52,7 +53,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
         return mockSubscriptionsFile;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockSubscriptionsFile = null;
@@ -60,7 +61,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -72,7 +73,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetVersionMessage () {
+    public void testProcessGetVersionMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetVersionMessage getVersionMessage = new GetVersionMessage(null, this, queue);
 
@@ -87,7 +88,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetFileMessage () {
+    public void testProcessGetFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetFileMessage getFileMessage = new GetFileMessage(queue, this, "whatever");
 

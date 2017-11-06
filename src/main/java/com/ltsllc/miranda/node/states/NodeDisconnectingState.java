@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.networkMessages.*;
 import org.apache.log4j.Logger;
@@ -40,12 +41,12 @@ public class NodeDisconnectingState extends State {
         return (Node) getContainer();
     }
 
-    public NodeDisconnectingState (Node node) {
+    public NodeDisconnectingState (Node node) throws MirandaException {
         super(node);
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -64,7 +65,7 @@ public class NodeDisconnectingState extends State {
         return nextState;
     }
 
-    public State processNetworkMessage(NetworkMessage networkMessage) {
+    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
@@ -89,7 +90,7 @@ public class NodeDisconnectingState extends State {
         return nextState;
     }
 
-    public State processStopResponseWireMessage (StopResponseWireMessage stopResponseWireMessage) {
+    public State processStopResponseWireMessage (StopResponseWireMessage stopResponseWireMessage) throws MirandaException {
         logger.info (getNode() + " got stop response.");
 
         getNode().getNetwork().sendCloseMessage(getNode().getQueue(), this, getNode().getHandle());

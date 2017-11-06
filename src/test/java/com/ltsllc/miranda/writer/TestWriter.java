@@ -21,6 +21,7 @@ import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
@@ -50,14 +51,14 @@ public class TestWriter extends TestCase {
         return writer;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         writer = null;
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();

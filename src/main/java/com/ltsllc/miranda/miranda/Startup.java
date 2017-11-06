@@ -224,7 +224,7 @@ public class Startup extends State {
         return (Miranda) getContainer();
     }
 
-    public Startup(Miranda miranda, String[] argv) {
+    public Startup(Miranda miranda, String[] argv) throws MirandaException {
         super(miranda);
 
         this.arguments = argv;
@@ -254,6 +254,7 @@ public class Startup extends State {
         super.start();
 
         try {
+            performMiscellaneousOperations();
             processCommandLine();
             processPasswords();
             setupProperties();
@@ -284,6 +285,11 @@ public class Startup extends State {
 
         return StopState.getInstance();
     }
+
+    private void performMiscellaneousOperations() throws MirandaException {
+        StopState.initializeClass();
+    }
+
 
     public void checkProperty(String name) {
         String value = getProperties().getProperty(name);
@@ -330,7 +336,7 @@ public class Startup extends State {
         return mappingArray;
     }
 
-    public void setupServlets() {
+    public void setupServlets() throws MirandaException {
         List<ServletMapping> mappings = new ArrayList<ServletMapping>();
 
         ServletMapping servletMapping = new ServletMapping("/servlets/status", StatusServlet.class);
@@ -513,7 +519,7 @@ public class Startup extends State {
      * <li>{@link Miranda#commandLine}</li>
      * </ul>
      */
-    public void startServices() {
+    public void startServices() throws MirandaException {
         MirandaProperties properties = Miranda.properties;
 
         Miranda.fileWatcher = new FileWatcherService(properties.getIntProperty(MirandaProperties.PROPERTY_FILE_CHECK_PERIOD));
@@ -617,7 +623,7 @@ public class Startup extends State {
         miranda.setSessionManager(sessionManager);
     }
 
-    public void startWriter() {
+    public void startWriter() throws MirandaException {
         Writer writer = new Writer(getPublicKey());
         writer.start();
 
@@ -626,7 +632,7 @@ public class Startup extends State {
         getMiranda().setWriter(writer);
     }
 
-    public void startReader() {
+    public void startReader() throws MirandaException {
         Reader reader = new Reader(getPrivateKey());
         reader.start();
 
@@ -770,23 +776,12 @@ public class Startup extends State {
         return filename;
     }
 
-    public void startListening() {
+    public void startListening() throws MirandaException {
         ConnectionListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
         getMiranda().setNetworkListener(networkListener);
         networkListener.start();
     }
 
-    /*
-    public void startNetwork () {
-        try {
-            Network network = getFactory().buildNetwork();
-            Miranda.getInstance().setNetwork(network);
-        } catch (MirandaException e) {
-            StartupPanic startupPanic = new StartupPanic("Exception starting network", e, StartupPanic.StartupReasons.ExceptionStartingNetwork);
-            Miranda.getInstance().panic(startupPanic);
-        }
-    }
-    */
 
     public void processPasswords() {
         if (null != getCommandLine().getPassword()) {

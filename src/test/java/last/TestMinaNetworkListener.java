@@ -17,6 +17,7 @@
 package last;
 
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.mina.core.future.CloseFuture;
@@ -97,7 +98,7 @@ public class TestMinaNetworkListener extends TestCase {
         return minaNetworkListener;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         mockSslServerSocketFactory = null;

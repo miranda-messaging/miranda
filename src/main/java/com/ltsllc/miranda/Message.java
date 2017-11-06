@@ -17,6 +17,7 @@
 package com.ltsllc.miranda;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
@@ -233,7 +234,7 @@ public class Message {
         return ourGson.toJson(this);
     }
 
-    public void reply (Message message) {
+    public void reply (Message message) throws MirandaException {
         try {
             getSender().put(message);
         } catch (InterruptedException e) {

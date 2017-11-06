@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.deliveries;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
@@ -28,7 +29,7 @@ import java.io.IOException;
 public class DeliveryManager extends DirectoryManager {
     public static final String NAME = "delivery manager";
 
-    public DeliveryManager (String directory, int objectLimit, Reader reader, Writer writer) throws IOException {
+    public DeliveryManager (String directory, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directory, objectLimit, reader, writer);
     }
 }

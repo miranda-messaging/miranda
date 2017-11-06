@@ -18,13 +18,14 @@ package com.ltsllc.miranda.servlet.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 
 /**
  * Created by Clark on 3/10/2017.
  */
 public class ClusterStatusReadyState extends State {
-    public ClusterStatusReadyState (ClusterStatus clusterStatus) {
+    public ClusterStatusReadyState (ClusterStatus clusterStatus) throws MirandaException {
         super(clusterStatus);
     }
 
@@ -33,7 +34,7 @@ public class ClusterStatusReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

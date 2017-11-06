@@ -18,6 +18,7 @@ package com.ltsllc.miranda.directory;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -84,7 +85,7 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
         this.files = files;
     }
 
-    public MirandaDirectory(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
+    public MirandaDirectory(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(directoryName, reader, writer);
         this.directory = new File(directoryName);
         this.files = new ArrayList<File>();

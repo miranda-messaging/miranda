@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
@@ -55,7 +56,7 @@ public class NodeReadyState extends NodeState {
     private Map<String, Version> versions = new HashMap<String, Version>();
     private Map<String, Conversation> conversations;
 
-    public NodeReadyState(Node node, Network network) {
+    public NodeReadyState(Node node, Network network) throws MirandaException {
         super(node, network);
 
         this.conversations = new HashMap<String, Conversation>();
@@ -70,7 +71,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    public State processNetworkMessage(NetworkMessage networkMessage) {
+    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
@@ -133,7 +134,7 @@ public class NodeReadyState extends NodeState {
 
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         processConversations (message);
@@ -311,7 +312,7 @@ public class NodeReadyState extends NodeState {
         return this;
     }
 
-    public State processStopMessage(StopMessage stopMessage) {
+    public State processStopMessage(StopMessage stopMessage) throws MirandaException {
         StopWireMessage stopWireMessage = new StopWireMessage();
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), stopWireMessage);
 
@@ -356,7 +357,7 @@ public class NodeReadyState extends NodeState {
         return getNode().getCurrentState();
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
         ShuttingDownWireMessage shuttingDownWireMessage = new ShuttingDownWireMessage();
         sendOnWire(shuttingDownWireMessage);
 

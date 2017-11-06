@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.topics.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.manager.ManagerStartState;
 import com.ltsllc.miranda.topics.TopicManager;
 
@@ -28,11 +29,11 @@ public class TopicManagerStartState extends ManagerStartState {
         return (TopicManager) getContainer();
     }
 
-    public TopicManagerStartState (TopicManager topicManager) {
+    public TopicManagerStartState (TopicManager topicManager) throws MirandaException {
         super(topicManager);
     }
 
-    public State getReadyState () {
+    public State getReadyState () throws MirandaException {
         return new TopicManagerReadyState(getTopicManager());
     }
 }

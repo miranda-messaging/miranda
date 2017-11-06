@@ -19,6 +19,7 @@ package com.ltsllc.miranda.miranda.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -50,7 +51,7 @@ public class GettingVersionsState extends State {
     private BlockingQueue<Message> node;
     private Map<String, Version> versions = new HashMap<String, Version>();
 
-    public GettingVersionsState(Miranda miranda, BlockingQueue<Message> node) {
+    public GettingVersionsState(Miranda miranda, BlockingQueue<Message> node) throws MirandaException {
         super(miranda);
 
         getFilesOutstanding().add("cluster");
@@ -77,7 +78,7 @@ public class GettingVersionsState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -108,7 +109,7 @@ public class GettingVersionsState extends State {
 
 
 
-    private State processDoneSynchronizingMessage (DoneSynchronizingMessage doneSynchronizingMessage) {
+    private State processDoneSynchronizingMessage (DoneSynchronizingMessage doneSynchronizingMessage) throws MirandaException {
         State nextState = this;
 
         if (doneSynchronizingMessage.getSender() == ClusterFile.getInstance().getQueue()) {
@@ -129,7 +130,7 @@ public class GettingVersionsState extends State {
     }
 
 
-    private State processVersionMessage (VersionMessage versionMessage) {
+    private State processVersionMessage (VersionMessage versionMessage) throws MirandaException {
         Set<String> drop = new HashSet<String>();
 
         for (String name : getFilesOutstanding()) {
@@ -153,25 +154,6 @@ public class GettingVersionsState extends State {
         return this;
     }
 
-/*
-    private State processVersionsMessage (VersionsMessage versionsMessage) {
-        for (NameVersion nameVersion : versionsMessage.getVersions()) {
-            RemoteVersionMessage remoteVersion = new RemoteVersionMessage(getMiranda().getQueue(), this, versionsMessage);
-
-            if (nameVersion.getName().equalsIgnoreCase("cluster")) {
-                sendToMe(Cluster.getInstance().getQueue(), remoteVersion);
-            } else if (nameVersion.getName().equalsIgnoreCase("users")) {
-                sendToMe(UsersFile.getInstance().getQueue(), remoteVersion);
-            } else if (nameVersion.getName().equalsIgnoreCase("topics")) {
-                sendToMe(TopicsFile.getInstance().getQueue(), remoteVersion);
-            } else if (nameVersion.getName().equalsIgnoreCase("suscriptions")) {
-                sendToMe(SubscriptionsFile.getInstance().getQueue(), remoteVersion);
-            }
-        }
-
-        return this;
-    }
-*/
 
     private List<NameVersion> mapToList (Map<String, Version> map)
     {
@@ -187,7 +169,7 @@ public class GettingVersionsState extends State {
     }
 
 
-    private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) {
+    private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) throws MirandaException {
         GetVersionMessage getVersionMessage = new GetVersionMessage(getMiranda().getQueue(), this, getNode());
 
         send(ClusterFile.getInstance().getQueue(), getVersionMessage);

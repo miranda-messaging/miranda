@@ -19,6 +19,7 @@ package com.ltsllc.miranda.session.operations;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
@@ -32,7 +33,7 @@ public class CreateSessionOperationReadyState extends State {
         return (CreateSessionOperation) getContainer();
     }
 
-    public CreateSessionOperationReadyState (CreateSessionOperation createSessionOperation) {
+    public CreateSessionOperationReadyState (CreateSessionOperation createSessionOperation) throws MirandaException {
         super(createSessionOperation);
     }
 

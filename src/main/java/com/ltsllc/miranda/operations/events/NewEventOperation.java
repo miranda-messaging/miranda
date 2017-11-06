@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.event.EventManager;
@@ -32,7 +33,7 @@ public class NewEventOperation extends Operation {
     private Event event;
 
     public NewEventOperation (EventManager eventManager, TopicManager topicManager, Cluster cluster, Session session,
-                              BlockingQueue<Message> requester, Event event) {
+                              BlockingQueue<Message> requester, Event event) throws MirandaException {
 
         super (NAME, requester, session);
 

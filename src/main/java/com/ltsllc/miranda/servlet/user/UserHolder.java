@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.user;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -94,12 +95,12 @@ public class UserHolder extends ServletHolder {
         ourInstance = userHolder;
     }
 
-    public static void initialize (long timeout) {
+    public static void initialize (long timeout) throws MirandaException {
         UserHolder userHolder = new UserHolder(timeout);
         setInstance(userHolder);
     }
 
-    public UserHolder (long timeout) {
+    public UserHolder (long timeout) throws MirandaException {
         super("user holder", timeout);
 
         UserHolderReadyState readyState = new UserHolderReadyState(this);

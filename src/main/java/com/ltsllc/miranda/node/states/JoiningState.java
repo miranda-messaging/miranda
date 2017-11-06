@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
@@ -38,11 +39,11 @@ public class JoiningState extends NodeState {
     private Logger logger = Logger.getLogger(JoiningState.class);
 
 
-    public JoiningState (Node node, Network network) {
+    public JoiningState (Node node, Network network) throws MirandaException {
         super (node, network);
     }
 
-    public State processMessage (Message m) {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -74,7 +75,7 @@ public class JoiningState extends NodeState {
         return nextState;
     }
 
-    public State processNetworkMessage (NetworkMessage networkMessage) {
+    public State processNetworkMessage (NetworkMessage networkMessage) throws MirandaException {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
@@ -123,7 +124,7 @@ public class JoiningState extends NodeState {
         return this;
     }
 
-    private State processJoinResponse (JoinResponseWireMessage joinResponse) {
+    private State processJoinResponse (JoinResponseWireMessage joinResponse) throws MirandaException {
         State nextState = this;
         if (joinResponse.getResult() == JoinResponseWireMessage.Responses.Success) {
             logger.info ("Successfully joined cluster");

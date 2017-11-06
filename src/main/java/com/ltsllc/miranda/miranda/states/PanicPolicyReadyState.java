@@ -18,6 +18,7 @@ package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.messages.DecrementPanicCountMessage;
 
@@ -25,7 +26,7 @@ import com.ltsllc.miranda.miranda.messages.DecrementPanicCountMessage;
  * Created by Clark on 3/8/2017.
  */
 public class PanicPolicyReadyState extends State {
-    public PanicPolicyReadyState (MirandaPanicPolicy panicPolicy) {
+    public PanicPolicyReadyState (MirandaPanicPolicy panicPolicy) throws MirandaException {
         super(panicPolicy);
     }
 
@@ -34,7 +35,7 @@ public class PanicPolicyReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()){

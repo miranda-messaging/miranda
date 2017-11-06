@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.deliveries;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class TestDeliveriesManager extends TestCase {
         return deliveryManager;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         this.deliveryManager = null;
@@ -49,7 +50,7 @@ public class TestDeliveriesManager extends TestCase {
             setupMockFileWatcher();
 
             this.deliveryManager = new DeliveryManager("testdir", 1000000, getMockReader(), getMockWriter());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

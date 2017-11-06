@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -36,14 +37,14 @@ public class TestVersion extends TestCase {
         return version;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         version = null;
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();

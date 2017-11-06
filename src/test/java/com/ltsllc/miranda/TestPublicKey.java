@@ -20,6 +20,7 @@ import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class TestPublicKey extends TestCase {
         return publicKey;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         publicKey = null;
@@ -83,7 +84,7 @@ public class TestPublicKey extends TestCase {
 
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();

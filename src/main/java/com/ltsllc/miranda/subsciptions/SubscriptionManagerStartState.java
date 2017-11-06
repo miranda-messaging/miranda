@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.manager.ManagerStartState;
 
 /**
@@ -27,11 +28,11 @@ public class SubscriptionManagerStartState extends ManagerStartState{
         return (SubscriptionManager) getContainer();
     }
 
-    public SubscriptionManagerStartState (SubscriptionManager subscriptionManager) {
+    public SubscriptionManagerStartState (SubscriptionManager subscriptionManager) throws MirandaException {
         super(subscriptionManager);
     }
 
-    public State getReadyState () {
+    public State getReadyState () throws MirandaException {
         return new SubscriptionManagerReadyState(getSubscriptionManager());
     }
 }

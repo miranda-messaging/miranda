@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet.topic;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.topics.messages.*;
 
@@ -29,11 +30,11 @@ public class TopicHolderReadyState extends ServletHolderReadyState {
         return (TopicHolder) getContainer();
     }
 
-    public TopicHolderReadyState(TopicHolder topicsHolder) {
+    public TopicHolderReadyState(TopicHolder topicsHolder) throws MirandaException {
         super(topicsHolder);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getTopicHolder().getCurrentState();
 
         switch (message.getSubject()) {

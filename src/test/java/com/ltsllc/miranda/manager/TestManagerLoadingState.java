@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -37,14 +38,14 @@ public class TestManagerLoadingState extends TestCase {
         return loadingState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         loadingState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -55,7 +56,7 @@ public class TestManagerLoadingState extends TestCase {
     }
 
     @Test
-    public void testProcessFileLoadedMessage () {
+    public void testProcessFileLoadedMessage () throws MirandaException {
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         NodeElement nodeElement = new NodeElement("fooo.com", 6789, "a node");
         nodeElementList.add(nodeElement);

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -45,7 +46,7 @@ public class ClusterStoppingState extends State {
         return (Cluster) getContainer();
     }
 
-    public ClusterStoppingState (Cluster cluster) {
+    public ClusterStoppingState (Cluster cluster) throws MirandaException {
         super(cluster);
     }
 

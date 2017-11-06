@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.http;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.status.StatusServlet;
 import com.ltsllc.miranda.test.TestCase;
 import org.eclipse.jetty.server.Handler;
@@ -57,14 +58,14 @@ public class TestJettyHttpServer extends TestCase {
         return mockServer;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         jettyHttpServer = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

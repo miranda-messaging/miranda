@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.holder;
 
 import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.topic.TopicHolder;
@@ -49,14 +50,14 @@ public class TestTopicHolder extends TestCase {
         return topicHolder;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         topicHolder = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

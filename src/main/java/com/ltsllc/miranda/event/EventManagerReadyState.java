@@ -18,6 +18,7 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.events.NewEventOperation;
@@ -30,11 +31,11 @@ public class EventManagerReadyState extends State {
         return (EventManager) getContainer();
     }
 
-    public EventManagerReadyState (EventManager eventManager) {
+    public EventManagerReadyState (EventManager eventManager) throws MirandaException {
         super(eventManager);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getEventManager().getCurrentState();
 
         switch (message.getSubject()) {
@@ -53,7 +54,7 @@ public class EventManagerReadyState extends State {
         return nextState;
     }
 
-    public State processNewEventMessage (NewEventMessage message) {
+    public State processNewEventMessage (NewEventMessage message) throws MirandaException {
         NewEventOperation newEventOperation = new NewEventOperation (getEventManager(),
                 Miranda.getInstance().getTopicManager(), Miranda.getInstance().getCluster(), message.getSession(),
                 message.getSender(), message.getEvent());

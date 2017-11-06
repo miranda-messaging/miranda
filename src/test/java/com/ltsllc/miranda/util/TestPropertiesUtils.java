@@ -18,6 +18,7 @@ package com.ltsllc.miranda.util;
 
 import com.ltsllc.common.util.PropertiesUtils;
 import com.ltsllc.common.util.Property;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
@@ -46,14 +47,14 @@ public class TestPropertiesUtils extends TestCase{
         return propertiesUtils;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         propertiesUtils = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

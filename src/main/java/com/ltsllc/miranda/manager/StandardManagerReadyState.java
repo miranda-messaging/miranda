@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.Updateable;
@@ -28,7 +29,7 @@ public class StandardManagerReadyState<E extends MirandaObject & Equivalent> ext
         return (StandardManager) getContainer();
     }
 
-    public StandardManagerReadyState (StandardManager manager) {
+    public StandardManagerReadyState (StandardManager manager) throws MirandaException {
         super(manager);
     }
 }

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.subsciptions.messages.*;
@@ -54,7 +55,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
         return mockSubscription;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockSubscription = null;
@@ -63,7 +64,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -74,7 +75,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetSubscriptionResponseMessage () {
+    public void testProcessGetSubscriptionResponseMessage () throws MirandaException {
         GetSubscriptionResponseMessage getSubscriptionsResponseMessage = new GetSubscriptionResponseMessage(null,
                 this, Results.Success, getMockSubscription());
 
@@ -88,7 +89,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetSubscriptionsResponseMessage () {
+    public void testProcessGetSubscriptionsResponseMessage () throws MirandaException {
         GetSubscriptionsResponseMessage getSubscriptionsResponseMessage = new GetSubscriptionsResponseMessage(null,
                 this, new ArrayList<Subscription>());
         when(getMockSubscriptionHolder().getCurrentState()).thenReturn(getReadyState());
@@ -100,7 +101,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessCreateSubscriptionResponseMessage () {
+    public void testProcessCreateSubscriptionResponseMessage () throws MirandaException {
         CreateSubscriptionResponseMessage responseMessage = new CreateSubscriptionResponseMessage(null, this,
                 Results.Success);
 
@@ -113,7 +114,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessUpdateSubscriptionResponseMessage () {
+    public void testProcessUpdateSubscriptionResponseMessage () throws MirandaException {
         UpdateSubscriptionResponseMessage response = new UpdateSubscriptionResponseMessage(null,this,
                 Results.Success);
 
@@ -126,7 +127,7 @@ public class TestSubscriptionHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessDeleteSubscriptionResponseMessage () {
+    public void testProcessDeleteSubscriptionResponseMessage () throws MirandaException {
         DeleteSubscriptionResponseMessage response = new DeleteSubscriptionResponseMessage(null, this,
                 Results.Success);
 

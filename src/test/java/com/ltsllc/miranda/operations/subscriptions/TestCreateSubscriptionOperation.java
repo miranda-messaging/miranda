@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.operations.subscriptions;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class TestCreateSubscriptionOperation extends TestCase {
         return mockSubscription;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockSubscription = null;
@@ -60,7 +61,7 @@ public class TestCreateSubscriptionOperation extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

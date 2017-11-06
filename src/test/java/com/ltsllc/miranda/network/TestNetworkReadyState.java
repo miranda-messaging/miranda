@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
@@ -40,14 +41,14 @@ public class TestNetworkReadyState extends TestCase {
         return networkReadyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         networkReadyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -58,7 +59,7 @@ public class TestNetworkReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessConnectToMessage () {
+    public void testProcessConnectToMessage () throws MirandaException {
         ConnectToMessage connectToMessage = new ConnectToMessage("foo.com", 6789, null, this);
 
         getNetworkReadyState().processMessage(connectToMessage);
@@ -67,7 +68,7 @@ public class TestNetworkReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessSendNetworkMessageSuccess () {
+    public void testProcessSendNetworkMessageSuccess () throws MirandaException {
         JoinWireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(null, this, joinWireMessage, -1);
 
@@ -82,7 +83,7 @@ public class TestNetworkReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessSendNetworkMessageExceptionUnrecognizedHandle () {
+    public void testProcessSendNetworkMessageExceptionUnrecognizedHandle () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         JoinWireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(queue, this, joinWireMessage, -1);
@@ -108,7 +109,7 @@ public class TestNetworkReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessSendNetworkMessageException () {
+    public void testProcessSendNetworkMessageException () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         JoinWireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(queue, this, joinWireMessage, -1);

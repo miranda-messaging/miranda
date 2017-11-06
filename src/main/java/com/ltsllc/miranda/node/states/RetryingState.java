@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.ConnectFailedMessage;
@@ -50,7 +51,7 @@ public class RetryingState extends NodeState {
         this.retryCount = retryCount;
     }
 
-    public RetryingState (Node node, Network network) {
+    public RetryingState (Node node, Network network) throws MirandaException {
         super(node, network);
     }
 
@@ -65,7 +66,7 @@ public class RetryingState extends NodeState {
         return this;
     }
 
-    public State processMessage (Message m) {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -126,7 +127,7 @@ public class RetryingState extends NodeState {
     }
 
 
-    private State processConnectSuceeededMessage (ConnectSucceededMessage connectSucceededMessage) {
+    private State processConnectSuceeededMessage (ConnectSucceededMessage connectSucceededMessage) throws MirandaException {
         getNode().setHandle(connectSucceededMessage.getHandle());
 
         JoiningState joiningState = new JoiningState(getNode(), getNetwork());

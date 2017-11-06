@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
@@ -52,7 +53,7 @@ public class TestSingleFileReadyState extends TestCase {
 
     private ClusterFileReadyState clusterFileReadyState;
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         this.mockClusterFile = null;
@@ -69,7 +70,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         super.setup();
 
         setuplog4j();
@@ -79,7 +80,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessLoadMessage () {
+    public void testProcessLoadMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         LoadMessage loadMessage = new LoadMessage(queue, this);
         List<NodeElement> emptyList = new ArrayList<NodeElement>();
@@ -103,7 +104,7 @@ public class TestSingleFileReadyState extends TestCase {
     private byte[] FILE_BYTES = {91, 93};
 
     @Test
-    public void testGetFileMessage () {
+    public void testGetFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         Gson gson = new Gson();
         String json = gson.toJson(queue);
@@ -120,7 +121,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGarbageCollectionMessage () {
+    public void testProcessGarbageCollectionMessage () throws MirandaException {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(null, this);
         getClusterFileReadyState().processMessage(garbageCollectionMessage);
 
@@ -128,7 +129,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessAddObjectsMessage () {
+    public void testProcessAddObjectsMessage () throws MirandaException {
         SecureRandom secureRandom = new SecureRandom();
         ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
         List<NodeElement> nodeElements = new ArrayList<NodeElement>();
@@ -168,7 +169,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessDeleteObjectsMessage () {
+    public void testProcessDeleteObjectsMessage () throws MirandaException {
         SecureRandom secureRandom = new SecureRandom();
         ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
         List<NodeElement> nodeElements = new ArrayList<NodeElement>();

@@ -44,7 +44,7 @@ public class EventManager extends DirectoryManager {
 
     private Map<String, Event> eventMap;
 
-    public EventManager(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
+    public EventManager(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directoryName, objectLimit, reader, writer);
 
         EventManagerReadyState eventManagerReadyState = new EventManagerReadyState(this);

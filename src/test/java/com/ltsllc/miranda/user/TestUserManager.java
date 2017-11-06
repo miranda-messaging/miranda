@@ -18,6 +18,7 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
@@ -58,7 +59,7 @@ public class TestUserManager extends TestCase {
         return userManager;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         userManager = null;
@@ -77,7 +78,7 @@ public class TestUserManager extends TestCase {
     };
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();

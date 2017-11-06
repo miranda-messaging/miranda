@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.topics;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
@@ -44,7 +45,7 @@ public class TopicsFile extends SingleFile<Topic> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException {
+    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         if (null == ourInstance) {
             ourInstance = new TopicsFile(filename, reader, writer);
             ourInstance.start();
@@ -56,7 +57,7 @@ public class TopicsFile extends SingleFile<Topic> {
         ourInstance = topicsFile;
     }
 
-    public TopicsFile(String filename, Reader reader, Writer writer) throws IOException {
+    public TopicsFile(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         TopicsFileStartingState topicsFileStartingState = new TopicsFileStartingState(this);

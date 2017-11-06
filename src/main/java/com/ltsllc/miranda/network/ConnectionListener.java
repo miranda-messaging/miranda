@@ -19,6 +19,7 @@ package com.ltsllc.miranda.network;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 
@@ -67,7 +68,7 @@ abstract public class ConnectionListener extends Consumer {
         connectionCount++;
     }
 
-    public ConnectionListener(int port) {
+    public ConnectionListener(int port) throws MirandaException {
         super("network listener");
 
         this.port = port;
@@ -78,7 +79,7 @@ abstract public class ConnectionListener extends Consumer {
         setCurrentState(readyState);
     }
 
-    public void newConnectionLoop (BlockingQueue<Handle> handleQueue) {
+    public void newConnectionLoop (BlockingQueue<Handle> handleQueue) throws MirandaException {
         while (keepGoing()) {
             Handle newConnection = null;
 

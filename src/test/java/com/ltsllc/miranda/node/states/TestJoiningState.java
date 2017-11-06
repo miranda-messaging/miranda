@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
@@ -44,14 +45,14 @@ public class TestJoiningState extends TesterNodeState {
         return joiningState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         joiningState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -60,7 +61,7 @@ public class TestJoiningState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessJoinResponseSuccess () {
+    public void testProcessJoinResponseSuccess () throws MirandaException {
         JoinResponseWireMessage joinResponseWireMessage = new JoinResponseWireMessage(JoinResponseWireMessage.Responses.Success);
         NetworkMessage networkMessage = new NetworkMessage(null, this, joinResponseWireMessage);
 
@@ -70,7 +71,7 @@ public class TestJoiningState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessJoinResponseFailure () {
+    public void testProcessJoinResponseFailure () throws MirandaException {
         JoinResponseWireMessage joinResponseWireMessage = new JoinResponseWireMessage(JoinResponseWireMessage.Responses.Failure);
         NetworkMessage networkMessage = new NetworkMessage(null, this, joinResponseWireMessage);
 
@@ -81,7 +82,7 @@ public class TestJoiningState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessGetVersions () {
+    public void testProcessGetVersions () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
@@ -98,7 +99,7 @@ public class TestJoiningState extends TesterNodeState {
      * Someone wants to send the {@link com.ltsllc.miranda.node.networkMessages.GetFileWireMessage}
      */
     @Test
-    public void testProcessGetClusterFile () {
+    public void testProcessGetClusterFile () throws MirandaException {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.NAME);
         GetClusterFileMessage getClusterFileMessage = new GetClusterFileMessage(null, this);
 
@@ -114,7 +115,7 @@ public class TestJoiningState extends TesterNodeState {
      * Someone wants all the versions of the remote node.
      */
     @Test
-    public void testProcessGetVersionsMessage () {
+    public void testProcessGetVersionsMessage () throws MirandaException {
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         GetVersionsMessage getVersionsMessage = new GetVersionsMessage(null, this);
 

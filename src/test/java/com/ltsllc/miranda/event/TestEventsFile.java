@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.event;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.states.SingleFileLoadingState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
@@ -34,7 +35,7 @@ public class TestEventsFile extends TestCase {
         return eventsFile;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         eventsFile = null;
@@ -43,7 +44,7 @@ public class TestEventsFile extends TestCase {
     public static final String TEST_FILE = "testFile";
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

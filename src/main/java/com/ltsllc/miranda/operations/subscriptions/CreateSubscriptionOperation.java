@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.operations.subscriptions;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
@@ -54,7 +55,7 @@ public class CreateSubscriptionOperation extends Operation {
         return subscription;
     }
 
-    public CreateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) {
+    public CreateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) throws MirandaException {
         super(NAME, requester, session);
 
         CreateSubscriptionOperationReadyState readyState = new CreateSubscriptionOperationReadyState(this);

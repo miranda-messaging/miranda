@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.subscriptions;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -33,7 +34,7 @@ public class DeleteSubscriptionOperationReadyState extends State {
         return (DeleteSubscriptionOperation) getContainer();
     }
 
-    public DeleteSubscriptionOperationReadyState (DeleteSubscriptionOperation deleteSubscriptionOperation) {
+    public DeleteSubscriptionOperationReadyState (DeleteSubscriptionOperation deleteSubscriptionOperation) throws MirandaException {
         super(deleteSubscriptionOperation);
     }
 

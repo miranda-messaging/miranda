@@ -41,14 +41,14 @@ public class TestMirandaServlet extends TestServlet {
         return mirandaServlet;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mirandaServlet = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

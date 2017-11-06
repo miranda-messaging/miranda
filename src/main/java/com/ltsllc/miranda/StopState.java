@@ -17,6 +17,8 @@
 package com.ltsllc.miranda;
 
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
+
 /**
  * A stop state for a Miranda Subsystem.
  *
@@ -26,14 +28,17 @@ package com.ltsllc.miranda;
  * Created by Clark on 12/31/2016.
  */
 public class StopState extends State {
-    private static StopState ourInstance = new StopState();
+    public static void initializeClass () throws MirandaException {
+        ourInstance = new StopState();
+    }
+
+    private static StopState ourInstance;
 
     public static StopState getInstance () {
         return ourInstance;
     }
 
-    public StopState()
-    {
+    public StopState() throws MirandaException {
         super(null);
     }
 

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
@@ -57,7 +58,7 @@ public class MirandaTimerReadyState extends State {
 
     private Logger logger = Logger.getLogger(MirandaTimerReadyState.class);
 
-    public MirandaTimerReadyState (MirandaTimer timer) {
+    public MirandaTimerReadyState (MirandaTimer timer) throws MirandaException {
         super(timer);
     }
 
@@ -66,7 +67,7 @@ public class MirandaTimerReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

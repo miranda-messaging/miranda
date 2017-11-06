@@ -18,6 +18,7 @@ package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.messages.DecrementPanicCountMessage;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;

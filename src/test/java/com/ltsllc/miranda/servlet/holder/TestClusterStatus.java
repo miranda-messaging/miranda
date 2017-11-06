@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.holder;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
@@ -38,14 +39,14 @@ public class TestClusterStatus extends TestCase {
         return clusterStatus;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         clusterStatus = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

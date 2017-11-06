@@ -65,7 +65,7 @@ public class TestReadyState extends TestCase {
 
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -77,7 +77,7 @@ public class TestReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessNewConnectionMessage () {
+    public void testProcessNewConnectionMessage () throws MirandaException {
         Node node = new Node(-1, getMockNetwork(), getMockCluster());
         NewConnectionMessage message = new NewConnectionMessage(null, this, 13);
 
@@ -139,7 +139,7 @@ public class TestReadyState extends TestCase {
     public static final String TEST_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpjR9MH5cTEPIXR/0cLp/Lw3QDK4RMPIygL8Aqh0yQ/MOpQtXrBzwSph4N1NURg1tB3EuyCVGsTfSfrbR5nqsN5IiaJyBuvhThBLwHyKN+PEUQ/rB6qUyg+jcPigTfqj6gksNxnC6CmCJ6XpBOiBOORgFQvdISo7pOqxZKxmaTqwIDAQAB";
 
     @Test
-    public void testProcessShutdownMessage () {
+    public void testProcessShutdownMessage () throws MirandaException {
         ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
 
         State nextState = getReadyState().processMessage(shutdownMessage);

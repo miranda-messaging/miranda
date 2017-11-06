@@ -19,6 +19,7 @@ package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.Session;
 import org.apache.log4j.Logger;
@@ -59,7 +60,7 @@ public class ServletHolder extends Consumer {
         this.timeoutPeriod = timeoutPeriod;
     }
 
-    public ServletHolder (String name, long timeoutPeriod) {
+    public ServletHolder (String name, long timeoutPeriod) throws MirandaException {
         super (name);
 
         this.timeoutPeriod = timeoutPeriod;

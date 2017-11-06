@@ -49,7 +49,7 @@ public class TestMirandaProperties extends TestCase {
         return properties;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
     }
 

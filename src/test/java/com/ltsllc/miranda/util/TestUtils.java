@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.util;
 
 import com.ltsllc.common.util.Utils;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -64,14 +65,14 @@ public class TestUtils extends TestCase {
         return utils;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         utils = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

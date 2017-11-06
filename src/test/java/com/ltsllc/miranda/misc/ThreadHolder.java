@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.misc;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 /**
  * Created by Clark on 5/15/2017.
@@ -34,7 +35,7 @@ abstract public class ThreadHolder extends Consumer {
         return mirandaThread;
     }
 
-    public void setMirandaThread(MirandaThread mirandaThread) {
+    public void setMirandaThread(MirandaThread mirandaThread) throws MirandaException {
         this.mirandaThread = mirandaThread;
 
         ThreadHolderReadyState threadHolderReadyState = new ThreadHolderReadyState(this);

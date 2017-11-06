@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class TestConsumer extends TestCase {
             this.startException = error;
         }
 
-        public TestState (Consumer consumer) {
+        public TestState (Consumer consumer) throws MirandaException {
             super(consumer);
         }
 
@@ -81,7 +82,7 @@ public class TestConsumer extends TestCase {
         return mockState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockState = null;
@@ -90,7 +91,7 @@ public class TestConsumer extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -116,7 +117,7 @@ public class TestConsumer extends TestCase {
     }
 
     @Test
-    public void testStartCurrentStateNullCurrentState () {
+    public void testStartCurrentStateNullCurrentState () throws MirandaException {
         setupMockMiranda();
         getConsumer().setCurrentState(null);
 
@@ -126,7 +127,7 @@ public class TestConsumer extends TestCase {
     }
 
     @Test
-    public void testStartCurrentStateException () {
+    public void testStartCurrentStateException () throws MirandaException {
         setupMockMiranda();
         Error error = new Error ("test");
         getTestState().setStartException(error);
@@ -155,7 +156,7 @@ public class TestConsumer extends TestCase {
     }
 
     @Test
-    public void testProcessMessageSuccess () {
+    public void testProcessMessageSuccess () throws MirandaException {
         setupMockMiranda();
         getConsumer().setCurrentState(getMockState());
 
@@ -167,7 +168,7 @@ public class TestConsumer extends TestCase {
     }
 
     @Test
-    public void testProcessMessageNullCurrentState () {
+    public void testProcessMessageNullCurrentState () throws MirandaException {
         setupMockMiranda();
 
         getConsumer().setCurrentState(null);
@@ -180,7 +181,7 @@ public class TestConsumer extends TestCase {
     }
 
     @Test
-    public void testProcessMessageException () {
+    public void testProcessMessageException () throws MirandaException {
         setupMockMiranda();
 
         Error error = new Error("test");

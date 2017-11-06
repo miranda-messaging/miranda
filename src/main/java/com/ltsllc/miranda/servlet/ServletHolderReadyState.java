@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
 
 /**
@@ -28,11 +29,11 @@ public class ServletHolderReadyState extends State {
         return (ServletHolder) getContainer();
     }
 
-    public ServletHolderReadyState (ServletHolder servletHolder) {
+    public ServletHolderReadyState (ServletHolder servletHolder) throws MirandaException {
         super(servletHolder);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getServletHolder().getCurrentState();
 
         switch (message.getSubject()) {

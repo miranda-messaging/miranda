@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 abstract public class SingleFileSyncingState extends State {
     abstract public Type getListType();
-    abstract public State getReadyState();
+    abstract public State getReadyState() throws MirandaException;
     abstract public List getData();
     abstract public boolean contains(Object o);
     abstract public SingleFile getFile();
@@ -40,12 +41,12 @@ abstract public class SingleFileSyncingState extends State {
 
     private static Gson ourGson = new Gson();
 
-    public SingleFileSyncingState (Consumer consumer) {
+    public SingleFileSyncingState (Consumer consumer) throws MirandaException {
         super(consumer);
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -77,7 +78,7 @@ abstract public class SingleFileSyncingState extends State {
         return this;
     }
 
-    private State processGetFileMessage (GetFileMessage getFileMessage) {
+    private State processGetFileMessage (GetFileMessage getFileMessage) throws MirandaException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getName(),
                 getFile().getBytes());
 

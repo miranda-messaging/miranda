@@ -19,6 +19,7 @@ package com.ltsllc.miranda.writer;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -31,12 +32,11 @@ public class WriterReadyState extends State {
         return (Writer) getContainer();
     }
 
-    public WriterReadyState(Writer writer) {
+    public WriterReadyState(Writer writer) throws MirandaException {
         super(writer);
     }
 
-    public State processMessage (Message m)
-    {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -55,7 +55,7 @@ public class WriterReadyState extends State {
         return nextState;
     }
 
-    private State processWriteMessage (WriteMessage writeMessage) {
+    private State processWriteMessage (WriteMessage writeMessage) throws MirandaException {
         try{
             getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
             WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getWriter().getQueue(), writeMessage.getFilename(), this);

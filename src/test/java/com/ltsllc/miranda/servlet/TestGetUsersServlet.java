@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.servlet.user.ListUsersServlet;
 import com.ltsllc.miranda.servlet.user.UserHolder;
@@ -76,7 +77,7 @@ public class TestGetUsersServlet extends TestServlet {
         return mockUserHolder;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockUserHolder = null;
@@ -84,7 +85,7 @@ public class TestGetUsersServlet extends TestServlet {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -34,11 +35,11 @@ public class ClusterStartState extends State {
         return (Cluster) getContainer();
     }
 
-    public ClusterStartState (Cluster cluster) {
+    public ClusterStartState (Cluster cluster) throws MirandaException {
         super(cluster);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getCluster().getCurrentState();
 
         switch (message.getSubject()) {
@@ -57,7 +58,7 @@ public class ClusterStartState extends State {
         return nextState;
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
+    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) throws MirandaException {
         List<NodeElement> nodeElements = (List<NodeElement>) fileLoadedMessage.getData();
         List<Node> nodes = new ArrayList<Node>();
 

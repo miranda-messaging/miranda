@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet.login;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.session.LoginResponseMessage;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
@@ -30,11 +31,11 @@ public class LoginHolderReadyState extends State {
         return (LoginHolder) getContainer();
     }
 
-    public LoginHolderReadyState (LoginHolder loginHolder) {
+    public LoginHolderReadyState (LoginHolder loginHolder) throws MirandaException {
         super(loginHolder);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getLoginHolder().getCurrentState();
 
         switch (message.getSubject()) {

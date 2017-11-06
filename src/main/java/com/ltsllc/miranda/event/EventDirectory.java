@@ -18,6 +18,7 @@ package com.ltsllc.miranda.event;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.directory.MirandaDirectory;
 import com.ltsllc.miranda.directory.MirandaDirectoryLoadingState;
@@ -45,7 +46,7 @@ public class EventDirectory extends MirandaDirectory<Event> {
         return new ArrayList(getMap().values());
     }
 
-    public EventDirectory (String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException {
+    public EventDirectory (String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(directoryName, objectLimit, reader, writer);
 
         MirandaDirectoryLoadingState mirandaDirectoryLoadingState = new MirandaDirectoryLoadingState(this);

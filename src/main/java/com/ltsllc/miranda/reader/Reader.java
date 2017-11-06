@@ -21,6 +21,7 @@ import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
@@ -61,7 +62,7 @@ public class Reader extends Consumer {
         this.privateKey = privateKey;
     }
 
-    public Reader (PrivateKey privateKey) {
+    public Reader (PrivateKey privateKey) throws MirandaException {
         super (NAME);
 
         this.privateKey = privateKey;

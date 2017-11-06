@@ -80,7 +80,7 @@ public class TestClusterReadyState extends TestCase {
         return mockNode;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         this.mockClusterFile = null;
@@ -115,7 +115,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessLoad() {
+    public void testProcessLoad() throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         LoadMessage message = new LoadMessage(queue, this);
 
@@ -129,7 +129,7 @@ public class TestClusterReadyState extends TestCase {
      * and connect.
      */
     @Test
-    public void testProcessMessageConnect() {
+    public void testProcessMessageConnect() throws MirandaException {
         ConnectMessage message = new ConnectMessage(null, this);
 
         getClusterReadyState().processMessage(message);
@@ -145,7 +145,7 @@ public class TestClusterReadyState extends TestCase {
      * we sendToMe it to the right place.
      */
     @Test
-    public void testProcessMessageGetVersion() {
+    public void testProcessMessageGetVersion() throws MirandaException {
         GetVersionMessage message = new GetVersionMessage(null, this, null);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
@@ -164,7 +164,7 @@ public class TestClusterReadyState extends TestCase {
      * is sent to the cluster file.
      */
     @Test
-    public void testProcessMessageHealthCheck() {
+    public void testProcessMessageHealthCheck() throws MirandaException {
         HealthCheckMessage message = new HealthCheckMessage(null, this);
 
         getClusterReadyState().processMessage(message);
@@ -173,7 +173,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessConnect () {
+    public void testProcessConnect () throws MirandaException {
         List<Node> nodeList = new ArrayList<Node>();
         nodeList.add(getMockNode());
         ConnectMessage connectMessage = new ConnectMessage(null, this);
@@ -184,7 +184,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessLoadResponseMessage () {
+    public void testProcessLoadResponseMessage () throws MirandaException {
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
         nodeElementList.add(nodeElement);
@@ -196,7 +196,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetVersionMessage () {
+    public void testProcessGetVersionMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
         GetVersionMessage getVersionMessage = new GetVersionMessage(queue, this, queue);
@@ -212,7 +212,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testClusterFileChangedMessage () {
+    public void testClusterFileChangedMessage () throws MirandaException {
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
         nodeElementList.add(nodeElement);
@@ -226,7 +226,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessDropNodeMessage () {
+    public void testProcessDropNodeMessage () throws MirandaException {
         NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
         DropNodeMessage dropNodeMessage = new DropNodeMessage(null, this, nodeElement);
         List<Node> nodeList = new ArrayList<Node>();
@@ -257,7 +257,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetStatusMessage () {
+    public void testProcessGetStatusMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         List<NodeStatus> nodeStatusList = new ArrayList<NodeStatus>();
         GetStatusMessage getStatusMessage = new GetStatusMessage(queue, this);
@@ -343,7 +343,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessDeleteUserMessage () {
+    public void testProcessDeleteUserMessage () throws MirandaException {
         DeleteUserMessage deleteUserMessage = new DeleteUserMessage(null, this, getMockSession(), "test");
 
         when(getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
@@ -364,7 +364,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessNewNodeMessage () {
+    public void testProcessNewNodeMessage () throws MirandaException {
         NodeElement nodeElement = new NodeElement("foo.com",6789, "a test node");
         Node node = new Node(nodeElement, getMockNetwork(), getMockCluster());
         NewNodeMessage newNodeMessage = new NewNodeMessage(null, this, node);
@@ -377,7 +377,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessShutdownMessage () {
+    public void testProcessShutdownMessage () throws MirandaException {
         ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
 
         when(getMockCluster().getClusterFile()).thenReturn(getMockClusterFile());

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -60,7 +61,7 @@ public class TestFileWatcher extends TestCase {
         return watcher;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         fileWatcher = null;
@@ -87,7 +88,7 @@ public class TestFileWatcher extends TestCase {
 
             File file = new File(TEST_FILENAME);
             fileWatcher = new SimpleFileWatcher(file, watcher);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

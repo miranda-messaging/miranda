@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
@@ -37,14 +38,14 @@ public class FileWatcherReadyState extends State {
         return fileWatcherService;
     }
 
-    public FileWatcherReadyState (FileWatcherService fileWatcherService) {
+    public FileWatcherReadyState (FileWatcherService fileWatcherService) throws MirandaException {
         super(fileWatcherService);
 
         this.fileWatcherService = fileWatcherService;
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

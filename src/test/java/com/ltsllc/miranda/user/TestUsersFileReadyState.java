@@ -18,6 +18,7 @@ package com.ltsllc.miranda.user;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -43,14 +44,14 @@ public class TestUsersFileReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         readyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -61,7 +62,7 @@ public class TestUsersFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetVersionMessage () {
+    public void testProcessGetVersionMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetVersionMessage getVersionMessage = new GetVersionMessage(null, this, queue);
 
@@ -72,7 +73,7 @@ public class TestUsersFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessNewUserMessage () {
+    public void testProcessNewUserMessage () throws MirandaException {
         User user = new User("whtever", "whatever");
         NewUserMessage newUserMessage = new NewUserMessage(null, this, user);
 
@@ -83,7 +84,7 @@ public class TestUsersFileReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetFileMessage () {
+    public void testProcessGetFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetFileMessage getFileMessage = new GetFileMessage(queue, this, "whatever");
 

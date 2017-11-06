@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.login;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.test.ServletHolderRunner;
 import com.ltsllc.miranda.test.TestCase;
@@ -59,14 +60,14 @@ public class TestLoginHolder extends TestCase {
         return loginHolder;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         loginHolder = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

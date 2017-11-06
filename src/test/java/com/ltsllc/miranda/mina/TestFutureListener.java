@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.mina.core.future.ConnectFuture;
@@ -70,7 +71,7 @@ public class TestFutureListener extends TestCase {
         return mockSession;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockSession = null;
@@ -80,7 +81,7 @@ public class TestFutureListener extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -95,7 +96,7 @@ public class TestFutureListener extends TestCase {
     }
 
     @Test
-    public void testOperationComplete () {
+    public void testOperationComplete () throws MirandaException {
         InetSocketAddress inetSocketAddress = new InetSocketAddress("foo.com", 6789);
         when (getMockConnectFuture().isConnected()).thenReturn(true);
         when (getMockConnectFuture().getSession()).thenReturn(getMockIoSession());

@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.topic;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.topics.messages.CreateTopicResponseMessage;
@@ -32,11 +33,11 @@ public class CreateTopicOperationReadyState extends State {
         return (CreateTopicOperation) getContainer();
     }
 
-    public CreateTopicOperationReadyState (CreateTopicOperation createTopicOperation) {
+    public CreateTopicOperationReadyState (CreateTopicOperation createTopicOperation) throws MirandaException {
         super(createTopicOperation);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getCreateTopicOperation().getCurrentState();
 
         switch (message.getSubject()) {

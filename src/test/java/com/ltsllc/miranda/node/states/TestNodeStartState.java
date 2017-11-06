@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +35,14 @@ public class TestNodeStartState extends TesterNodeState {
         return nodeStartState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         nodeStartState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -50,7 +51,7 @@ public class TestNodeStartState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectMessage () {
+    public void testProcessConnectMessage () throws MirandaException {
         ConnectMessage connectMessage = new ConnectMessage(null, this);
 
         State nextState = getNodeStartState().processMessage(connectMessage);

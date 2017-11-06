@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +31,14 @@ public class TestSubsystem extends TestCase {
         return subsystem;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         subsystem = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

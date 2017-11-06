@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.property.SetPropertyServlet;
 import com.ltsllc.miranda.test.TestCase;
@@ -59,7 +60,7 @@ public class TestSetPropertyServlet extends TestCase {
         return mockServletRequest;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockServletRequest = null;
@@ -68,7 +69,7 @@ public class TestSetPropertyServlet extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

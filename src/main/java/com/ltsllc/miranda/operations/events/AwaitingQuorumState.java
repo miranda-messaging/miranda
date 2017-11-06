@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.operations.NetworkConversationMessage;
 import com.ltsllc.miranda.operations.Operation;
@@ -18,7 +19,7 @@ abstract public class AwaitingQuorumState extends OperationState {
 
     private Quorum quorum;
 
-    public AwaitingQuorumState(Operation operation, Quorum quorum) {
+    public AwaitingQuorumState(Operation operation, Quorum quorum) throws MirandaException {
         super(operation);
 
         this.quorum = quorum;
@@ -32,7 +33,7 @@ abstract public class AwaitingQuorumState extends OperationState {
         return (Operation) getContainer();
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getOperation().getCurrentState();
 
         switch (message.getSubject()) {

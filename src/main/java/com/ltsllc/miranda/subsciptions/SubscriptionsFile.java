@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
@@ -39,7 +40,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException {
+    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         if (null == ourInstance) {
             ourInstance = new SubscriptionsFile(reader, writer, filename);
             ourInstance.start();
@@ -51,7 +52,7 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         ourInstance = subscriptionsFile;
     }
 
-    public SubscriptionsFile (Reader reader, Writer writer, String filename) throws IOException {
+    public SubscriptionsFile (Reader reader, Writer writer, String filename) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         SubscriptionsFileStartingState subscriptionsFileStartingState = new SubscriptionsFileStartingState(this);

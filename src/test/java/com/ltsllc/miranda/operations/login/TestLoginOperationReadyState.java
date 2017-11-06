@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.login;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
@@ -50,7 +51,7 @@ public class TestLoginOperationReadyState extends TestCase {
         return mockLoginOperation;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockLoginOperation = null;
@@ -58,7 +59,7 @@ public class TestLoginOperationReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -70,7 +71,7 @@ public class TestLoginOperationReadyState extends TestCase {
     }
 
     @Test
-    public void testGetSessionResponseMessageSessionCreated () {
+    public void testGetSessionResponseMessageSessionCreated () throws MirandaException {
         BlockingQueue<Message> temp = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
         GetSessionResponseMessage getSessionResponseMessage = new GetSessionResponseMessage(null, this,
@@ -87,7 +88,7 @@ public class TestLoginOperationReadyState extends TestCase {
     }
 
     @Test
-    public void testGetSessionResponseMessageSessionExisted () {
+    public void testGetSessionResponseMessageSessionExisted () throws MirandaException {
         BlockingQueue<Message> temp = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
         GetSessionResponseMessage getSessionResponseMessage = new GetSessionResponseMessage(null, this,
@@ -104,7 +105,7 @@ public class TestLoginOperationReadyState extends TestCase {
     }
 
     @Test
-    public void testGetSessionResponseMessageException () {
+    public void testGetSessionResponseMessageException () throws MirandaException {
         BlockingQueue<Message> temp = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
         GetSessionResponseMessage getSessionResponseMessage = new GetSessionResponseMessage(null, this,

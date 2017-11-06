@@ -23,6 +23,7 @@ import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -42,7 +43,7 @@ public class Writer extends Consumer {
     }
 
 
-    public Writer (PublicKey publicKey) {
+    public Writer (PublicKey publicKey) throws MirandaException {
         super("writer");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);

@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
@@ -19,7 +20,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
     private String conversation;
     private Cluster cluster;
 
-    public NewEventOperationVerifyingTopic(NewEventOperation newEventOperation, Cluster cluster, String conversation) {
+    public NewEventOperationVerifyingTopic(NewEventOperation newEventOperation, Cluster cluster, String conversation) throws MirandaException {
         super(newEventOperation);
 
         this.conversation = conversation;
@@ -42,7 +43,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return (NewEventOperation) getContainer();
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getNewEventOperation().getCurrentState();
 
         switch (message.getSubject()) {
@@ -92,7 +93,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return nextState;
     }
 
-    public State processGetTopicResponseMessage (GetTopicResponseMessage message) {
+    public State processGetTopicResponseMessage (GetTopicResponseMessage message) throws MirandaException {
         State nextState = getOperation().getCurrentState();
 
         //

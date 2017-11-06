@@ -50,6 +50,7 @@ public class Panic extends Exception {
         ExceptionPaesingJson,
         ExceptionSendingMessage,
         ExceptionShuttingDownServletContainer,
+        ExceptionInStart,
         ExceptionTryingToCalculateVersion, // an exception was thrown while calculating a new version.
         ExceptionTryingToRectify,
         ExceptionWaitingForNextConnection, // an exception was thrown while waiting for a new node

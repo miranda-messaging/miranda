@@ -64,7 +64,7 @@ public class MinaNetwork extends Network {
         return keyStore;
     }
 
-    public MinaNetwork (KeyStore keyStore, KeyStore truststore, String keyStorePassword) {
+    public MinaNetwork (KeyStore keyStore, KeyStore truststore, String keyStorePassword) throws MirandaException {
         this.keyStore = keyStore;
         this.truststore = truststore;
         this.keyStorePassword = keyStorePassword;

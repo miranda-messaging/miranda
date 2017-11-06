@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.user;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.states.UsersFileStartingState;
@@ -52,7 +53,7 @@ public class TestUsersFile extends TestCase {
         return usersFile;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         usersFile = null;
@@ -73,7 +74,7 @@ public class TestUsersFile extends TestCase {
     };
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -152,7 +153,7 @@ public class TestUsersFile extends TestCase {
     };
 
     @Test
-    public void testLoad () {
+    public void testLoad () throws MirandaException {
         setupMiranda();
         setupMockReader();
 

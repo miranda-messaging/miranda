@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.operations.topic;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.session.Session;
@@ -33,7 +34,7 @@ public class DeleteTopicOperation extends Operation {
         return topicName;
     }
 
-    public DeleteTopicOperation (BlockingQueue<Message> requester, Session session, String topicName) {
+    public DeleteTopicOperation (BlockingQueue<Message> requester, Session session, String topicName) throws MirandaException {
         super("delete topic operations", requester, session);
 
         DeleteTopicOperationReadyState deleteTopicOperationReadyState = new DeleteTopicOperationReadyState(this);

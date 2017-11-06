@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
@@ -41,7 +42,7 @@ public class NodeState extends State {
         return network;
     }
 
-    public NodeState (Node node, Network network) {
+    public NodeState (Node node, Network network) throws MirandaException {
         super(node);
 
         this.network = network;
@@ -51,7 +52,7 @@ public class NodeState extends State {
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
     }
 
-    public State processNetworkMessage (NetworkMessage networkMessage) {
+    public State processNetworkMessage (NetworkMessage networkMessage) throws MirandaException {
         String message = this + " does but understand network message " + networkMessage.getWireMessage().getWireSubject();
         logger.error (message);
         logger.error ("message created at", networkMessage.getWhere());

@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
@@ -50,7 +51,7 @@ public class FileWatcherService extends Consumer {
         return period;
     }
 
-    public FileWatcherService(int period) {
+    public FileWatcherService(int period) throws MirandaException {
         super("file watcher");
 
         this.watchers = new ArrayList<Watcher>();

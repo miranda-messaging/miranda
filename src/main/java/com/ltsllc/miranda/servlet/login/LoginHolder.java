@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.login;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
@@ -47,7 +48,7 @@ public class LoginHolder extends ServletHolder {
         return ourInstance;
     }
 
-    public static void initialize (long timeout) {
+    public static void initialize (long timeout) throws MirandaException {
         ourInstance = new LoginHolder(timeout);
     }
 
@@ -70,7 +71,7 @@ public class LoginHolder extends ServletHolder {
         this.session = session;
     }
 
-    public LoginHolder (long timeout) {
+    public LoginHolder (long timeout) throws MirandaException {
         super("login", timeout);
 
         LoginHolderReadyState readyState = new LoginHolderReadyState(this);

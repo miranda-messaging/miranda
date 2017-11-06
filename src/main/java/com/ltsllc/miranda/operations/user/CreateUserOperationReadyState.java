@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.user;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.user.messages.CreateUserResponseMessage;
@@ -31,11 +32,11 @@ public class CreateUserOperationReadyState extends State {
         return (CreateUserOperation) getContainer();
     }
 
-    public CreateUserOperationReadyState (CreateUserOperation createUserOperation) {
+    public CreateUserOperationReadyState (CreateUserOperation createUserOperation) throws MirandaException {
         super(createUserOperation);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getCreateUserOperation().getCurrentState();
 
         switch (message.getSubject()) {

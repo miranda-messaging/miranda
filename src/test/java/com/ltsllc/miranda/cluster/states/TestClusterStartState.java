@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -44,7 +45,7 @@ public class TestClusterStartState extends TestCase {
         return clusterStartState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         clusterStartState = null;
@@ -56,7 +57,7 @@ public class TestClusterStartState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -69,7 +70,7 @@ public class TestClusterStartState extends TestCase {
     }
 
     @Test
-    public void testProcessFileLoadedMessage () {
+    public void testProcessFileLoadedMessage () throws MirandaException {
         NodeElement nodeElement = new NodeElement("foo.com", 6789, "a test node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);

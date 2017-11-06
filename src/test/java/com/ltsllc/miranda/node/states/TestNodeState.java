@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import org.junit.Before;
@@ -36,14 +37,14 @@ public class TestNodeState extends TesterNodeState {
         return nodeState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         nodeState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -53,7 +54,7 @@ public class TestNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessNetworkMessage () {
+    public void testProcessNetworkMessage () throws MirandaException {
         setupMockMiranda();
 
         JoinWireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");

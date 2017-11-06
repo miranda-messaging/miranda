@@ -19,6 +19,7 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -34,11 +35,11 @@ public class ManagerReadyState<E,F> extends State {
         return (Manager) getContainer();
     }
 
-    public ManagerReadyState (Manager manager) {
+    public ManagerReadyState (Manager manager) throws MirandaException {
         super(manager);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getManager().getCurrentState();
 
         switch (message.getSubject()) {
@@ -81,14 +82,14 @@ public class ManagerReadyState<E,F> extends State {
         return nextState;
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
         ManagerShuttingDownState managerShuttingDownState = new ManagerShuttingDownState(getManager(),
                 shutdownMessage.getSender());
 
         return managerShuttingDownState;
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
+    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) throws MirandaException {
         List<F> data = (List<F>) fileLoadedMessage.getData();
         List<E> newList = getManager().convertList(data);
         getManager().setData(newList);
@@ -108,7 +109,7 @@ public class ManagerReadyState<E,F> extends State {
         return getManager().getCurrentState();
     }
 
-    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
+    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) throws MirandaException {
         getManager().fileChanged();
 
         return getManager().getCurrentState();

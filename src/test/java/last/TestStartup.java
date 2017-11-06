@@ -18,6 +18,7 @@ package last;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.PanicPolicy;
@@ -85,7 +86,7 @@ public class TestStartup extends TestCase {
         return startup;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         Miranda miranda = Miranda.getInstance();
@@ -126,7 +127,7 @@ public class TestStartup extends TestCase {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();
@@ -292,7 +293,7 @@ public class TestStartup extends TestCase {
     }
 
     @Test
-    public void testGetKeysWrongPassword() {
+    public void testGetKeysWrongPassword() throws MirandaException {
         Miranda miranda = new Miranda("-p wrong -t wrong");
         Miranda.setInstance(miranda);
 

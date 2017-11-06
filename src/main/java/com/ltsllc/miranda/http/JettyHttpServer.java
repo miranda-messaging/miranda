@@ -18,6 +18,7 @@ package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.catchall.CatchallServlet;
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ public class JettyHttpServer extends HttpServer {
     private static Logger logger = Logger.getLogger(JettyHttpServer.class);
     private Server jetty;
 
-    public JettyHttpServer (Server jetty, HandlerCollection handlerCollection) {
+    public JettyHttpServer (Server jetty, HandlerCollection handlerCollection) throws MirandaException {
         super();
 
         this.jetty = jetty;

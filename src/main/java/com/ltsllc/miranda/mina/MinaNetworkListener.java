@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.mina;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.ConnectionListener;
 import org.apache.mina.core.session.IoSession;
@@ -67,7 +68,7 @@ public class MinaNetworkListener extends ConnectionListener {
         return truststore;
     }
 
-    public MinaNetworkListener(int port, KeyStore keyStore, String getKeyStorePassword, KeyStore truststore) {
+    public MinaNetworkListener(int port, KeyStore keyStore, String getKeyStorePassword, KeyStore truststore) throws MirandaException {
         super(port);
         this.keystore = keyStore;
         this.keyStorePassword = getKeyStorePassword;

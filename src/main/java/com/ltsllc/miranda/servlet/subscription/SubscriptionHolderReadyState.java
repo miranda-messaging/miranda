@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet.subscription;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
@@ -29,11 +30,11 @@ public class SubscriptionHolderReadyState extends ServletHolderReadyState {
         return (SubscriptionHolder) getContainer();
     }
 
-    public SubscriptionHolderReadyState (SubscriptionHolder subscriptionHolder) {
+    public SubscriptionHolderReadyState (SubscriptionHolder subscriptionHolder) throws MirandaException {
         super (subscriptionHolder);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getSubscriptionHolder().getCurrentState();
 
         switch (message.getSubject()) {

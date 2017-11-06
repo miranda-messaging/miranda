@@ -22,6 +22,7 @@ import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class TestReader extends TestCase {
         return mockPrivateKey;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         mockPrivateKey = null;
@@ -60,7 +61,7 @@ public class TestReader extends TestCase {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();

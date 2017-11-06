@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.mina;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -55,7 +56,7 @@ public class TestMinaHandler extends TestCase {
         return mockMinaHandle;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockMinaHandle = null;
@@ -64,7 +65,7 @@ public class TestMinaHandler extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

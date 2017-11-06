@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.node.Node;
@@ -41,14 +42,14 @@ public class TestManager extends TestCase {
         return manager;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         manager = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -66,7 +67,7 @@ public class TestManager extends TestCase {
     }
 
     @Test
-    public void testConvertList () {
+    public void testConvertList () throws MirandaException {
         List<NodeElement> temp = new ArrayList<NodeElement>();
         NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         temp.add(nodeElement);
@@ -77,7 +78,7 @@ public class TestManager extends TestCase {
     }
 
     @Test
-    public void testConvert () {
+    public void testConvert () throws MirandaException {
         NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         Node node = (Node) getManager().convert(nodeElement);
 

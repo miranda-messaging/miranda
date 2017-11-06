@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.states.SingleFileStartingState;
 import com.ltsllc.miranda.user.UsersFile;
 
@@ -28,11 +29,11 @@ public class UsersFileStartingState extends SingleFileStartingState {
         return (UsersFile) getContainer();
     }
 
-    public UsersFileStartingState (UsersFile usersFile) {
+    public UsersFileStartingState (UsersFile usersFile) throws MirandaException {
         super(usersFile);
     }
 
-    public State getReadyState () {
+    public State getReadyState () throws MirandaException {
         return new UsersFileReadyState(getUsersFile());
     }
 }

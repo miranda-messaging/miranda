@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.event;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
 
@@ -37,7 +38,7 @@ public class EventsFileReadyState extends SingleFileReadyState<Event> {
         return NAME;
     }
 
-    public EventsFileReadyState (EventsFile eventsFile) {
+    public EventsFileReadyState (EventsFile eventsFile) throws MirandaException {
         super(eventsFile);
     }
 }

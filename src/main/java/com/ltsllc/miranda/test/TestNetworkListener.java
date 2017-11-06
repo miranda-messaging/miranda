@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.test;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.ConnectionListener;
@@ -156,7 +157,7 @@ public class TestNetworkListener extends ConnectionListener {
         return null != getStartupCalltrace();
     }
 
-    public TestNetworkListener (int port) {
+    public TestNetworkListener (int port) throws MirandaException {
         super(port);
     }
 

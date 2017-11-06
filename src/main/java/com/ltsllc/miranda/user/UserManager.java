@@ -52,27 +52,18 @@ public class UserManager extends StandardManager<User> {
         return (UsersFile) getFile();
     }
 
-    public UserManager(String filename) throws IOException {
+    public UserManager(String filename) throws IOException, MirandaException {
         super(NAME, filename);
     }
 
-    public State createStartState () {
+    public State createStartState () throws MirandaException {
         return new UserManagerStartState(this);
     }
 
-    public SingleFile<User> createFile (String filename) throws IOException {
+    public SingleFile<User> createFile (String filename) throws IOException, MirandaException {
         return new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 
-//    public void garbageCollectUsers () {
-//
-//    }
-
-//    public void performGarbageCollection () {
-//        super.performGarbageCollection();
-//
-//        garbageCollectUsers();
-//    }
 
     public boolean contains (User user) {
         for (User aUser : getUsers())

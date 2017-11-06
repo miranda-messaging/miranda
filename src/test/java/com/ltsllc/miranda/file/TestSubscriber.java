@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -41,14 +42,14 @@ public class TestSubscriber extends TestCase {
         return subscriber;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         subscriber = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.reset();

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.ConnectFailedMessage;
 import com.ltsllc.miranda.network.messages.ConnectSucceededMessage;
@@ -31,12 +32,12 @@ import org.apache.log4j.Logger;
 public class ConnectingState extends NodeState {
     private Logger logger = Logger.getLogger(ConnectingState.class);
 
-    public ConnectingState (Node node, Network network) {
+    public ConnectingState (Node node, Network network) throws MirandaException {
         super(node, network);
     }
 
 
-    public State processMessage (Message m) {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -61,7 +62,7 @@ public class ConnectingState extends NodeState {
     }
 
 
-    private State processConnectSucceededMessage (ConnectSucceededMessage connectSucceededMessage) {
+    private State processConnectSucceededMessage (ConnectSucceededMessage connectSucceededMessage) throws MirandaException {
         logger.info("got connection");
 
         getNode().setHandle(connectSucceededMessage.getHandle());
@@ -73,7 +74,7 @@ public class ConnectingState extends NodeState {
     }
 
 
-    private State processConnectFailedMessage (ConnectFailedMessage connectFailedMessage) {
+    private State processConnectFailedMessage (ConnectFailedMessage connectFailedMessage) throws MirandaException {
         String message = "Failed to get connection to " + getNode().getDns() + ":" + getNode().getPort();
         logger.info(message, connectFailedMessage.getCause());
 

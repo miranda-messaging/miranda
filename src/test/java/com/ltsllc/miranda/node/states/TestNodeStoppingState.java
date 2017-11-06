@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.network.messages.CloseResponseMessage;
 import org.junit.Before;
@@ -38,14 +39,14 @@ public class TestNodeStoppingState extends TesterNodeState {
         return nodeStoppingState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         nodeStoppingState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

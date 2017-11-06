@@ -47,7 +47,7 @@ public class TestEventManager extends TestCase {
             setupMockFileWatcherService();
             createDirectory("testDirectory");
             eventManager = new EventManager("testDirectory", 1000000, getMockReader(), getMockWriter());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

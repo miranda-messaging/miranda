@@ -19,6 +19,7 @@ package com.ltsllc.miranda.miranda.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.cluster.ClusterFile;
@@ -82,7 +83,7 @@ public class ReadyState extends State {
         ReadyState.logger = logger;
     }
 
-    public ReadyState (Miranda miranda) {
+    public ReadyState (Miranda miranda) throws MirandaException {
         super(miranda);
     }
 
@@ -107,7 +108,7 @@ public class ReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -281,7 +282,7 @@ public class ReadyState extends State {
     }
 
 
-    private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) {
+    private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) throws MirandaException {
         GetVersionMessage getVersionMessage = new GetVersionMessage(getMiranda().getQueue(), this, getMiranda().getQueue());
 
         send(Miranda.getInstance().getCluster().getQueue(), getVersionMessage);
@@ -307,7 +308,7 @@ public class ReadyState extends State {
         return this;
     }
 
-    private State processGetStatusMessage (GetStatusMessage getStatusMessage) {
+    private State processGetStatusMessage (GetStatusMessage getStatusMessage) throws MirandaException {
         NodeStatus statusObject = getMiranda().getStatusImpl();
 
         GetStatusResponseMessage response = new GetStatusResponseMessage(getMiranda().getQueue(), this, statusObject);
@@ -328,7 +329,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) {
+    public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) throws MirandaException {
         DeleteUserOperation deleteUserOperation = new DeleteUserOperation(deleteUserMessage.getSender(),
                 deleteUserMessage.getSession(), deleteUserMessage.getName());
 
@@ -337,7 +338,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processCreateUserMessage (CreateUserMessage createUserMessage) {
+    public State processCreateUserMessage (CreateUserMessage createUserMessage) throws MirandaException {
         CreateUserOperation createUserOperation = new CreateUserOperation(createUserMessage.getSender(),
                 createUserMessage.getSession(), createUserMessage.getUser());
         createUserOperation.start();
@@ -345,7 +346,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
+    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) throws MirandaException {
         UpdateUserOperation updateUserOperation = new UpdateUserOperation(updateUserMessage.getSender(),
                 updateUserMessage.getSession(), updateUserMessage.getUser());
 
@@ -372,14 +373,14 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processLoginMessage (LoginMessage loginMessage) {
+    public State processLoginMessage (LoginMessage loginMessage) throws MirandaException {
         LoginOperation loginOperation = new LoginOperation(loginMessage.getName(), loginMessage.getSender());
         loginOperation.start();
 
         return getMiranda().getCurrentState();
     }
 
-    public State processCreateTopicMessage (CreateTopicMessage createTopicMessage) {
+    public State processCreateTopicMessage (CreateTopicMessage createTopicMessage) throws MirandaException {
         CreateTopicOperation createTopicOperation = new CreateTopicOperation(createTopicMessage.getSender(),
                 createTopicMessage.getSession(), createTopicMessage.getTopic());
 
@@ -388,7 +389,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) {
+    public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) throws MirandaException {
         CreateSubscriptionOperation createSubscriptionOperation = new CreateSubscriptionOperation(createSubscriptionMessage.getSender(),
                 createSubscriptionMessage.getSession(), createSubscriptionMessage.getSubscription());
 
@@ -397,7 +398,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processUpdateSubscriptionMessage (UpdateSubscriptionMessage updateSubscriptionMessage) {
+    public State processUpdateSubscriptionMessage (UpdateSubscriptionMessage updateSubscriptionMessage) throws MirandaException {
         UpdateSubscriptionOperation updateSubscriptionOperation = new UpdateSubscriptionOperation(updateSubscriptionMessage.getSender(),
                 updateSubscriptionMessage.getSession(), updateSubscriptionMessage.getSubscription());
 
@@ -406,7 +407,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
+    public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) throws MirandaException {
         DeleteSubscriptionOperation deleteSubscriptionOperation = new DeleteSubscriptionOperation(deleteSubscriptionMessage.getSender(),
                 deleteSubscriptionMessage.getSession(), deleteSubscriptionMessage.getSubscriptionName());
 
@@ -415,14 +416,14 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processAuctionMessage (AuctionMessage auctionMessage) {
+    public State processAuctionMessage (AuctionMessage auctionMessage) throws MirandaException {
         AuctionOperation auctionOperation = new AuctionOperation();
         auctionOperation.start();
 
         return getMiranda().getCurrentState();
     }
 
-    public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) {
+    public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) throws MirandaException {
         UpdateTopicOperation updateTopicOperation = new UpdateTopicOperation(updateTopicMessage.getSender(),
                 updateTopicMessage.getSession(), updateTopicMessage.getTopic());
 
@@ -431,7 +432,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) {
+    public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) throws MirandaException {
         DeleteTopicOperation deleteTopicOperation = new DeleteTopicOperation(deleteTopicMessage.getSender(),
                 deleteTopicMessage.getSession(), deleteTopicMessage.getTopicName());
 
@@ -440,7 +441,7 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
         getMiranda().shutdown();
 
         ShuttingDownState shuttingDownState = new ShuttingDownState(getMiranda());

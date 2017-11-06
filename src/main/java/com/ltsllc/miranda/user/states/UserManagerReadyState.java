@@ -47,11 +47,11 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return (UserManager) getContainer();
     }
 
-    public UserManagerReadyState (UserManager userManager) {
+    public UserManagerReadyState (UserManager userManager) throws MirandaException {
         super(userManager);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getUserManager().getCurrentState();
 
         switch (message.getSubject()) {
@@ -118,7 +118,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUserMessage (GetUserMessage getUserMessage) {
+    public State processGetUserMessage (GetUserMessage getUserMessage) throws MirandaException {
         User user = getUserManager().getUser(getUserMessage.getName());
 
         Results result = user == null ? Results.UserNotFound : Results.Success;
@@ -139,7 +139,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUsersMessage (ListUsersMessage getUsersMessage) {
+    public State processGetUsersMessage (ListUsersMessage getUsersMessage) throws MirandaException {
         List<User> users = getUserManager().getUsers();
 
         GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(getUserManager().getQueue(),
@@ -150,7 +150,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processCreateUserMessage (CreateUserMessage createUserMessage) {
+    public State processCreateUserMessage (CreateUserMessage createUserMessage) throws MirandaException {
         CreateUserResponseMessage reply = null;
         try {
             getUserManager().addUser(createUserMessage.getUser());
@@ -173,7 +173,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
+    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) throws MirandaException {
         Results result = Results.Unknown;
 
         try {
@@ -196,7 +196,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processDeleteUserMessage(DeleteUserMessage deleteUserMessage) {
+    public State processDeleteUserMessage(DeleteUserMessage deleteUserMessage) throws MirandaException {
         User existingUser = getUserManager().getUser(deleteUserMessage.getName());
         DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(getUserManager().getQueue(),
                 this, deleteUserMessage.getName());

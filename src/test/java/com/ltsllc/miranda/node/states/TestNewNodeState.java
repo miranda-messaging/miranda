@@ -19,6 +19,7 @@ package com.ltsllc.miranda.node.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
@@ -52,14 +53,14 @@ public class TestNewNodeState extends TesterNodeState {
         return newNodeState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         newNodeState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -68,7 +69,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessJoinWireMessage () {
+    public void testProcessJoinWireMessage () throws MirandaException {
         JoinResponseWireMessage joinResponseWireMessage = new JoinResponseWireMessage(JoinResponseWireMessage.Responses.Success);
         JoinWireMessage joinWireMessage = new JoinWireMessage("foo.com", "192.168.1.1", 6789, "a node");
         NetworkMessage networkMessage = new NetworkMessage(null, this, joinWireMessage);
@@ -82,7 +83,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessVersionsWireMessage () {
+    public void testProcessVersionsWireMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
 
@@ -102,7 +103,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testGetFileResponseWireMessageCluster () {
+    public void testGetFileResponseWireMessageCluster () throws MirandaException {
         setupMockMiranda();
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockCluster();
@@ -119,7 +120,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testGetFileResponseWireMessageUsers () {
+    public void testGetFileResponseWireMessageUsers () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockUsersFile();
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(UsersFile.FILE_NAME, "whatever");
@@ -134,7 +135,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testGetFileResponseWireMessageTopics () {
+    public void testGetFileResponseWireMessageTopics () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockTopicsFile();
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(TopicsFile.FILE_NAME, "whatever");
@@ -149,7 +150,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testGetFileResponseWireMessageSubscriptions () {
+    public void testGetFileResponseWireMessageSubscriptions () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockSubscriptionsFile();
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(SubscriptionsFile.FILE_NAME, "whatever");
@@ -164,7 +165,7 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
 
-    public void testProcessGetFileMessage (String file) {
+    public void testProcessGetFileMessage (String file) throws MirandaException {
         Message message = null;
 
         if (file.equalsIgnoreCase(UsersFile.FILE_NAME))
@@ -191,27 +192,27 @@ public class TestNewNodeState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessGetUsersFileMessage () {
+    public void testProcessGetUsersFileMessage () throws MirandaException {
         testProcessGetFileMessage(UsersFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetClusterFileMessage () {
+    public void testProcessGetClusterFileMessage () throws MirandaException {
         testProcessGetFileMessage(Cluster.NAME);
     }
 
     @Test
-    public void testProcessGetTopicsFileMessage () {
+    public void testProcessGetTopicsFileMessage () throws MirandaException {
         testProcessGetFileMessage(TopicsFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetSubscriptionsFileMessage () {
+    public void testProcessGetSubscriptionsFileMessage () throws MirandaException {
         testProcessGetFileMessage(SubscriptionsFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessConnectMessage () {
+    public void testProcessConnectMessage () throws MirandaException {
         NewNodeState.setLogger(getMockLogger());
         ConnectMessage connectMessage = new ConnectMessage(null, this);
 

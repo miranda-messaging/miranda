@@ -19,6 +19,7 @@ package com.ltsllc.miranda.cluster.states;
 import com.ltsllc.miranda.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.NewNodeMessage;
@@ -41,14 +42,14 @@ public class TestClusterStoppingState extends TestCase {
         return clusterStoppingState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         clusterStoppingState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -64,7 +65,7 @@ public class TestSingleFile extends TestCase {
         return queue;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         this.queue = null;
@@ -72,7 +73,7 @@ public class TestSingleFile extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         super.setup();
 
         setuplog4j();
@@ -137,7 +138,7 @@ public class TestSingleFile extends TestCase {
     private static final String TEST_FILENAME2 = TEST_DIRECTORY + "/test2";
 
     @Test
-    public void testLoad () throws IOException {
+    public void testLoad () throws IOException, MirandaException {
         NodeElement nodeElement = new NodeElement("foo.com", 6789, "a node");
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
         nodeElementList.add(nodeElement);
@@ -186,7 +187,7 @@ public class TestSingleFile extends TestCase {
     }
 
     @Test
-    public void testEquals () throws IOException {
+    public void testEquals () throws IOException, MirandaException {
         ImprovedRandom random = new ImprovedRandom(new SecureRandom());
         NodeElement nodeElement = NodeElement.random(random);
         List<NodeElement> nodeElementList = new ArrayList<NodeElement>();

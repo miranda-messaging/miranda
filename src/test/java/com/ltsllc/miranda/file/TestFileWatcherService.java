@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
-import com.ltsllc.miranda.file.messages.UnwatchFileMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.file.states.FileWatcherReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -60,7 +60,7 @@ public class TestFileWatcherService extends TestCase {
         return fileWatcherService;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         if (null != Miranda.getInstance())
@@ -72,7 +72,7 @@ public class TestFileWatcherService extends TestCase {
 
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

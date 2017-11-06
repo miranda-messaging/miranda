@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.file.messages;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,14 +33,14 @@ public class TestGetFileResponseMessage extends TestCase {
         return getFileResponseMessage;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         getFileResponseMessage = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         super.setup();
 
         setuplog4j();

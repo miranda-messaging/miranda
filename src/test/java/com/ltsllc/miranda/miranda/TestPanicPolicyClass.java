@@ -18,6 +18,7 @@ package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +38,14 @@ public class TestPanicPolicyClass extends TestCase {
         return panicPolicyClass;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         panicPolicyClass = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.operations;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.session.Session;
 
 import java.util.concurrent.BlockingQueue;
@@ -34,7 +35,7 @@ public class Operation extends Consumer {
         return requester;
     }
 
-    public Operation(String name, BlockingQueue<Message> requester, Session session) {
+    public Operation(String name, BlockingQueue<Message> requester, Session session) throws MirandaException {
         super(name);
 
         this.requester = requester;

@@ -19,6 +19,7 @@ package com.ltsllc.miranda.user.states;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
@@ -35,7 +36,7 @@ import java.util.List;
 public class UsersFileReadyState extends SingleFileReadyState {
     private static Logger logger = Logger.getLogger(UsersFileReadyState.class);
 
-    public UsersFileReadyState (UsersFile usersFile) {
+    public UsersFileReadyState (UsersFile usersFile) throws MirandaException {
         super(usersFile);
     }
 
@@ -44,7 +45,7 @@ public class UsersFileReadyState extends SingleFileReadyState {
     }
 
 
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

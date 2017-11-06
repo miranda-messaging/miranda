@@ -18,6 +18,7 @@ package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.network.messages.*;
 import org.apache.log4j.Logger;
@@ -30,7 +31,7 @@ public class NetworkReadyState extends State {
 
     private Network network;
 
-    public NetworkReadyState(Network network) {
+    public NetworkReadyState(Network network) throws MirandaException {
         super(null);
         this.network = network;
     }
@@ -39,8 +40,7 @@ public class NetworkReadyState extends State {
         return network;
     }
 
-    public State processMessage (Message m)
-    {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject())
@@ -73,7 +73,7 @@ public class NetworkReadyState extends State {
     }
 
 
-    private State processConnectToMessage (ConnectToMessage connectToMessage) {
+    private State processConnectToMessage (ConnectToMessage connectToMessage) throws MirandaException {
         State nextState = this;
 
         logger.info ("Connecting to " + connectToMessage.getHost() + ":" + connectToMessage.getPort());
@@ -84,7 +84,7 @@ public class NetworkReadyState extends State {
     }
 
 
-    private State processCloseMessage(CloseMessage closeMessage) {
+    private State processCloseMessage(CloseMessage closeMessage) throws MirandaException {
         getNetwork().disconnect(closeMessage);
 
         CloseResponseMessage reply = new CloseResponseMessage(getNetwork().getQueue(), this, closeMessage.getHandle(),
@@ -94,7 +94,7 @@ public class NetworkReadyState extends State {
         return this;
     }
 
-    private State processSendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
+    private State processSendNetworkMessage (SendNetworkMessage sendNetworkMessage) throws MirandaException {
         try {
             getNetwork().sendOnNetwork(sendNetworkMessage);
         } catch (NetworkException e) {

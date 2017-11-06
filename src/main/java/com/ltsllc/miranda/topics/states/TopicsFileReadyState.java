@@ -18,6 +18,7 @@ package com.ltsllc.miranda.topics.states;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
@@ -37,7 +38,7 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     private TopicsFile topicsFile;
 
 
-    public TopicsFileReadyState(TopicsFile topicsFile) {
+    public TopicsFileReadyState(TopicsFile topicsFile) throws MirandaException {
         super(topicsFile);
 
         this.topicsFile = topicsFile;

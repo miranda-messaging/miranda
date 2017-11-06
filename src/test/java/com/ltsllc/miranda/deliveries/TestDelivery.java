@@ -47,7 +47,7 @@ public class TestDelivery extends TestCase {
             Subscription subscription = new Subscription();
 
             this.delivery = new Delivery(event, System.currentTimeMillis(), subscription);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

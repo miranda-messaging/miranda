@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file.states;
 import com.google.gson.Gson;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
@@ -47,7 +48,7 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
     private static Gson ourGson = new Gson();
 
-    public SingleFileReadyState (SingleFile file) {
+    public SingleFileReadyState (SingleFile file) throws MirandaException {
         super(file);
     }
 
@@ -56,7 +57,7 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -163,7 +164,7 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     }
 
 
-    private State processLoadMessage (LoadMessage loadMessage) {
+    private State processLoadMessage (LoadMessage loadMessage) throws MirandaException {
         getFile().load();
         LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getFile().getQueue(), this, getFile().getData());
         loadMessage.reply(loadResponseMessage);
@@ -171,7 +172,7 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
         return this;
     }
 
-    public State processStopMessage (StopMessage stopMessage) {
+    public State processStopMessage (StopMessage stopMessage) throws MirandaException {
         if (getFile().isDirty())
             getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(), getFile().getBytes());
 

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Network;
@@ -40,13 +41,13 @@ public class NodeIncomingStartState extends NodeState {
         return cluster;
     }
 
-    public NodeIncomingStartState (Node node, Network network, Cluster cluster) {
-        super(node, network);
+    public NodeIncomingStartState (Node node, Network network, Cluster cluster) throws MirandaException {
+        super (node, network);
 
         this.cluster = cluster;
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -66,7 +67,7 @@ public class NodeIncomingStartState extends NodeState {
     }
 
     @Override
-    public State processNetworkMessage(NetworkMessage networkMessage) {
+    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
@@ -97,7 +98,7 @@ public class NodeIncomingStartState extends NodeState {
      * @return The next state.  In normal circumstances, this should be the ready
      * state.
      */
-    private State processJoinWireMessage (JoinWireMessage joinWireMessage) {
+    private State processJoinWireMessage (JoinWireMessage joinWireMessage) throws MirandaException {
         getNode().setDns(joinWireMessage.getDns());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());

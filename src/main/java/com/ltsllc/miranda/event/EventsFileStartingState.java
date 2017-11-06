@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.states.SingleFileStartingState;
 
 /**
@@ -27,11 +28,11 @@ public class EventsFileStartingState extends SingleFileStartingState {
         return (EventsFile) getContainer();
     }
 
-    public EventsFileStartingState (EventsFile eventsFile) {
+    public EventsFileStartingState (EventsFile eventsFile) throws MirandaException {
         super(eventsFile);
     }
 
-    public State getReadyState () {
+    public State getReadyState () throws MirandaException {
         return new EventsFileReadyState(getEventsFile());
     }
 }

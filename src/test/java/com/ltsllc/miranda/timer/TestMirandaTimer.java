@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,14 +32,14 @@ public class TestMirandaTimer extends TestCase {
         return timer;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         timer = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

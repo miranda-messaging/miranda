@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.StopResponseWireMessage;
 import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
@@ -38,14 +39,14 @@ public class TestNodeDisconnectingState extends TesterNodeState {
         return disconnecting;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         disconnecting = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -54,7 +55,7 @@ public class TestNodeDisconnectingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessStopResponseWireMessage () {
+    public void testProcessStopResponseWireMessage () throws MirandaException {
         StopResponseWireMessage stopResponseWireMessage = new StopResponseWireMessage();
         NetworkMessage networkMessage = new NetworkMessage(null, this, stopResponseWireMessage);
 
@@ -67,7 +68,7 @@ public class TestNodeDisconnectingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessStopWireMessage () {
+    public void testProcessStopWireMessage () throws MirandaException {
         StopWireMessage stopWireMessage = new StopWireMessage();
         NetworkMessage networkMessage = new NetworkMessage(null, this, stopWireMessage);
 

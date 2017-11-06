@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet.user;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.ServletHolderReadyState;
 import com.ltsllc.miranda.user.messages.*;
 
@@ -29,11 +30,11 @@ public class UserHolderReadyState extends ServletHolderReadyState {
         return (UserHolder) getContainer();
     }
 
-    public UserHolderReadyState(UserHolder userHolder) {
+    public UserHolderReadyState(UserHolder userHolder) throws MirandaException {
         super(userHolder);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getUserHolder().getCurrentState();
 
         switch (message.getSubject()) {

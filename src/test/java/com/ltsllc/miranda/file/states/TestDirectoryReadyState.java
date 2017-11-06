@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.file.states;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -64,7 +65,7 @@ public class TestDirectoryReadyState extends TestCase {
         return mockMirandaFile;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         this.mockMirandaFile = null;
@@ -73,7 +74,7 @@ public class TestDirectoryReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -95,12 +96,12 @@ public class TestDirectoryReadyState extends TestCase {
     /**
      * Garbage collection is not so much of an issue with things that subclass
      * the {@link Directory} class.  This is because the two types of objects
-     * that live in directories, {@link com.ltsllc.miranda.event.Event} and
-     * {@link com.ltsllc.miranda.deliveries.Delivery}, don't expire or get
+     * that live in directories, {@link com.ltsllc.miranda.clientinterface.basicclasses.Event} and
+     * {@link com.ltsllc.miranda.clientinterface.basicclasses.Delivery}, don't expire or get
      * collected.  Nevertheless, test that garbage collection gets done.
      */
     @Test
-    public void testProcessGarbageCollectionMessage () {
+    public void testProcessGarbageCollectionMessage () throws MirandaException {
         setuplog4j();
 
         List<MirandaFile> files = new ArrayList<MirandaFile>();

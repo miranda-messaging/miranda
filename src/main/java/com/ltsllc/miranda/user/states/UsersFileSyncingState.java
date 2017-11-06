@@ -18,6 +18,7 @@ package com.ltsllc.miranda.user.states;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.SingleFileSyncingState;
@@ -33,7 +34,7 @@ import java.util.List;
 public class UsersFileSyncingState extends SingleFileSyncingState {
     private UsersFile usersFile;
 
-    public UsersFileSyncingState(UsersFile usersFile) {
+    public UsersFileSyncingState(UsersFile usersFile) throws MirandaException {
         super(usersFile);
         this.usersFile = usersFile;
     }
@@ -48,8 +49,7 @@ public class UsersFileSyncingState extends SingleFileSyncingState {
     }
 
 
-    public State getReadyState ()
-    {
+    public State getReadyState () throws MirandaException {
         return new UsersFileReadyState(getUsersFile());
     }
 

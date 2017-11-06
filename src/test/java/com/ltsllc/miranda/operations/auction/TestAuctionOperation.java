@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.operations.auction;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 
@@ -29,14 +30,14 @@ public class TestAuctionOperation extends TestCase{
         return auctionOperation;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         auctionOperation = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

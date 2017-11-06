@@ -18,6 +18,7 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
@@ -80,13 +81,13 @@ public class Cluster extends Manager<Node, NodeElement> {
     }
 
 
-    public Cluster(Network network, String filename) throws IOException {
+    public Cluster(Network network, String filename) throws IOException, MirandaException {
         super(NAME, filename);
 
         this.network = network;
     }
 
-    public Cluster(Network network, boolean testMode) {
+    public Cluster(Network network, boolean testMode) throws MirandaException {
         super(NAME, testMode);
 
         this.network = network;
@@ -104,11 +105,11 @@ public class Cluster extends Manager<Node, NodeElement> {
         return network;
     }
 
-    public SingleFile<NodeElement> createFile (String filename) throws IOException {
+    public SingleFile<NodeElement> createFile (String filename) throws IOException, MirandaException {
         return new ClusterFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), getQueue());
     }
 
-    public State createStartState () {
+    public State createStartState () throws MirandaException {
         return new ClusterStartState(this);
     }
 
@@ -158,7 +159,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         return new ClusterStatusObject(statusOfNodes);
     }
 
-    public void merge (List<NodeElement> newNodes) {
+    public void merge (List<NodeElement> newNodes) throws MirandaException {
         boolean update = false;
 
         List<NodeElement> reallyNewNodes = new ArrayList<NodeElement>();
@@ -325,7 +326,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         sendToMe(deleteSubscriptionMessage);
     }
 
-    public Node convert (NodeElement nodeElement) {
+    public Node convert (NodeElement nodeElement) throws MirandaException {
         Node node = new Node(nodeElement, getNetwork(), this);
         return node;
     }
@@ -376,9 +377,16 @@ public class Cluster extends Manager<Node, NodeElement> {
     }
 
     @Override
-    public void fileChanged() {
+    public void fileChanged() throws MirandaException {
         disconnect();
         super.fileChanged();
         connect();
+    }
+
+    /**
+     * Attempt to join the cluster
+     */
+    public void join () {
+
     }
 }

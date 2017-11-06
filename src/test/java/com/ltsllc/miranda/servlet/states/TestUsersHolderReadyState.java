@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.servlet.user.UserHolderReadyState;
@@ -49,7 +50,7 @@ public class TestUsersHolderReadyState extends TestCase {
         return usersHolderReadyState;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         mockUserHolder = null;
@@ -57,7 +58,7 @@ public class TestUsersHolderReadyState extends TestCase {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();
@@ -67,7 +68,7 @@ public class TestUsersHolderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetUsersResponseMessage() {
+    public void testProcessGetUsersResponseMessage() throws MirandaException {
         User user = new User("whatever", "whatever");
         List<User> users = new ArrayList<User>();
         users.add(user);

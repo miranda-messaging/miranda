@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.event;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -39,7 +40,7 @@ public class TestEventManagerReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockEventManager = null;
@@ -47,7 +48,7 @@ public class TestEventManagerReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

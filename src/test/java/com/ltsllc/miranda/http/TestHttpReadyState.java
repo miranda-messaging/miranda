@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.http;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class TestHttpReadyState extends TestCase {
 
     private HttpReadyState httpReadyState;
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         this.mockHttpServer = null;
@@ -53,7 +54,7 @@ public class TestHttpReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -64,7 +65,7 @@ public class TestHttpReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessSetupServletsMessage () {
+    public void testProcessSetupServletsMessage () throws MirandaException {
         List<ServletMapping> mappings = new ArrayList<ServletMapping>();
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(null, this, mappings);
 
@@ -74,7 +75,7 @@ public class TestHttpReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessStartHttpServerMessage () {
+    public void testProcessStartHttpServerMessage () throws MirandaException {
         StartHttpServerMessage startHttpServerMessage = new StartHttpServerMessage(null, this);
 
         getHttpReadyState().processMessage(startHttpServerMessage);

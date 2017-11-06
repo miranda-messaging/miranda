@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.operations.subscriptions;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
@@ -45,7 +46,7 @@ public class DeleteSubscriptionOperation extends Operation {
         return subscriptionName;
     }
 
-    public DeleteSubscriptionOperation (BlockingQueue<Message> requester, Session session, String subscriptionName) {
+    public DeleteSubscriptionOperation (BlockingQueue<Message> requester, Session session, String subscriptionName) throws MirandaException {
         super(NAME, requester, session);
 
         this.subscriptionName = subscriptionName;

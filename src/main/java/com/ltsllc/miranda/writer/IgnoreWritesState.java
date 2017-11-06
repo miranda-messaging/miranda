@@ -19,6 +19,7 @@ package com.ltsllc.miranda.writer;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,12 +32,11 @@ public class IgnoreWritesState extends State {
         IgnoreWritesState.logger = logger;
     }
 
-    public IgnoreWritesState (Consumer consumer) {
+    public IgnoreWritesState (Consumer consumer) throws MirandaException {
         super(consumer);
     }
 
-    public State processMessage (Message m)
-    {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {

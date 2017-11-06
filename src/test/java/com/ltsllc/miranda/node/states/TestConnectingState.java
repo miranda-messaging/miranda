@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.messages.ConnectFailedMessage;
 import com.ltsllc.miranda.network.messages.ConnectSucceededMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
@@ -38,14 +39,14 @@ public class TestConnectingState extends TesterNodeState {
         return connectingState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         connectingState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -54,7 +55,7 @@ public class TestConnectingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectSucceededMessage () {
+    public void testProcessConnectSucceededMessage () throws MirandaException {
         ConnectSucceededMessage connectSucceededMessage = new ConnectSucceededMessage(null, this, 13);
 
         when(getMockNode().getHandle()).thenReturn(13);
@@ -66,7 +67,7 @@ public class TestConnectingState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessConnectFailedMessage () {
+    public void testProcessConnectFailedMessage () throws MirandaException {
         ConnectFailedMessage connectFailed = new ConnectFailedMessage(null, this, null);
 
         when(getMockNode().getDns()).thenReturn("foo.com");

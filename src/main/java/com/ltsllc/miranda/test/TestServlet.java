@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.test;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import org.mockito.Mock;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,14 +41,14 @@ public class TestServlet extends TestCase {
         return mockHttpServletResponse;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockHttpServletRequest = null;
         mockHttpServletResponse = null;
     }
 
-    public void setup () {
+    public void setup () throws MirandaException {
         super.setup();
 
         mockHttpServletRequest = mock(HttpServletRequest.class);

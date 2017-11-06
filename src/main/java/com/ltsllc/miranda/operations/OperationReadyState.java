@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,7 +29,7 @@ import org.apache.log4j.Logger;
 public class OperationReadyState extends State {
     private static Logger logger = Logger.getLogger(OperationReadyState.class);
 
-    public OperationReadyState (Consumer consumer) {
+    public OperationReadyState (Consumer consumer) throws MirandaException {
         super (consumer);
     }
 

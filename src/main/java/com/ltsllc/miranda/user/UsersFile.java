@@ -58,7 +58,7 @@ public class UsersFile extends SingleFile<User> {
         ourInstance = usersFile;
     }
 
-    public UsersFile(com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) throws IOException {
+    public UsersFile(com.ltsllc.miranda.reader.Reader reader, Writer writer, String filename) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         UsersFileStartingState usersFileStartingState = new UsersFileStartingState(this);
@@ -86,7 +86,7 @@ public class UsersFile extends SingleFile<User> {
         }
     }
 
-    public static synchronized void initialize(String filename, Reader reader, Writer writer) throws IOException {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         if (null == ourInstance) {
             ourInstance = new UsersFile(reader, writer, filename);
             ourInstance.start();

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
@@ -54,7 +55,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
     public static synchronized void initialize(String filename, Reader reader, Writer writer,
-                                               BlockingQueue<Message> cluster) throws IOException {
+                                               BlockingQueue<Message> cluster) throws IOException, MirandaException {
         if (null == ourInstance) {
             ourInstance = new ClusterFile(filename, reader, writer, cluster);
             ourInstance.start();
@@ -73,12 +74,12 @@ public class ClusterFile extends SingleFile<NodeElement> {
         return cluster;
     }
 
-    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) throws IOException {
+    public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) throws IOException, MirandaException {
         basicConstructor (filename, reader, writer, cluster);
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue,
-                       List<NodeElement> nodeElementList) throws IOException {
+                       List<NodeElement> nodeElementList) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         this.cluster = queue;
@@ -90,8 +91,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
     public void basicConstructor (String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster)
-            throws IOException
-    {
+            throws IOException, MirandaException {
         super.basicConstructor(filename, reader, writer);
 
         this.cluster = cluster;

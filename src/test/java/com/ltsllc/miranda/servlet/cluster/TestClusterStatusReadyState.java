@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.servlet.cluster;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class TestClusterStatusReadyState extends TestCase {
         return mockClusterStatus;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockClusterStatus = null;
@@ -51,7 +52,7 @@ public class TestClusterStatusReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -61,7 +62,7 @@ public class TestClusterStatusReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetStatusResponseMessage () {
+    public void testProcessGetStatusResponseMessage () throws MirandaException {
         GetStatusResponseMessage getStatusResponseMessage = new GetStatusResponseMessage(null, this,
                 null);
 

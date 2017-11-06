@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.operations.login;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +38,14 @@ public class TestLoginOperation extends TestCase {
         return loginOperation;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         loginOperation = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

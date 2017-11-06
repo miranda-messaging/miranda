@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 /**
  * Created by Clark on 5/15/2017.
@@ -29,11 +30,11 @@ public class ThreadHolderReadyState extends State {
         return (ThreadHolder) getContainer();
     }
 
-    public ThreadHolderReadyState (ThreadHolder threadHolder) {
+    public ThreadHolderReadyState (ThreadHolder threadHolder) throws MirandaException {
         super(threadHolder);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getThreadHolder().getCurrentState();
 
         switch (message.getSubject()) {
@@ -52,7 +53,7 @@ public class ThreadHolderReadyState extends State {
         return nextState;
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
         getThreadHolder().shutdown();
 
         return StopState.getInstance();

@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -66,7 +67,7 @@ public class TestState extends TestCase {
         return queue;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockConsumer = null;
@@ -75,7 +76,7 @@ public class TestState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -84,7 +85,7 @@ public class TestState extends TestCase {
     }
 
     @Test
-    public void testProcessStopMessage () {
+    public void testProcessStopMessage () throws MirandaException {
         StopMessage stopMessage = new StopMessage(null, this);
 
         State nextState = getState().processMessage(stopMessage);

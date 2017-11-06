@@ -3,6 +3,7 @@ package com.ltsllc.miranda.directory;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
@@ -23,13 +24,13 @@ public class MirandaDirectoryLoadingState extends State {
         this.filesToLoad = filesToLoad;
     }
 
-    public MirandaDirectoryLoadingState(MirandaDirectory mirandaDirectory, int filesToLoad) {
+    public MirandaDirectoryLoadingState(MirandaDirectory mirandaDirectory, int filesToLoad) throws MirandaException {
         super(mirandaDirectory);
 
         this.filesToLoad = filesToLoad;
     }
 
-    public MirandaDirectoryLoadingState(MirandaDirectory mirandaDirectory) {
+    public MirandaDirectoryLoadingState(MirandaDirectory mirandaDirectory) throws MirandaException {
         super(mirandaDirectory);
     }
 
@@ -45,7 +46,7 @@ public class MirandaDirectoryLoadingState extends State {
         return (MirandaDirectory) getContainer();
     }
 
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getMirandaDirectory().getCurrentState();
         switch (message.getSubject()) {
             case ReadResponse: {
@@ -69,7 +70,7 @@ public class MirandaDirectoryLoadingState extends State {
         return nextState;
     }
 
-    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) {
+    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
         getMirandaDirectory().fileLoaded(readResponseMessage.getFilename(), readResponseMessage.getData());
         decrementFilesToLoad();
         if (loadedAllFiles()) {

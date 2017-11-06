@@ -19,6 +19,7 @@ package com.ltsllc.miranda.cluster;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
@@ -83,7 +84,7 @@ public class TestClusterFile extends TestCase {
         return cluster;
     }
 
-    public void setupClusterFile() throws IOException {
+    public void setupClusterFile() throws IOException, MirandaException {
         MirandaProperties properties = Miranda.properties;
         String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
 
@@ -100,7 +101,7 @@ public class TestClusterFile extends TestCase {
         this.clusterFile.setData(nodeElementList);
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         Miranda.properties = null;
@@ -109,7 +110,7 @@ public class TestClusterFile extends TestCase {
 
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();

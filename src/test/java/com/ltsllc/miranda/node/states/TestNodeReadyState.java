@@ -64,14 +64,14 @@ public class TestNodeReadyState extends TesterNodeState {
         return readyState;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         readyState = null;
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();
@@ -80,7 +80,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessVersionMessage() {
+    public void testProcessVersionMessage() throws MirandaException {
         Version version = new Version();
         NameVersion nameVersion = new NameVersion("whatever", version);
         List<NameVersion> nameVersions = new ArrayList<NameVersion>();
@@ -95,7 +95,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
 
-    public void testGetFileMessage(String file) {
+    public void testGetFileMessage(String file) throws MirandaException {
         Message message = null;
 
         if (file.equalsIgnoreCase(UsersFile.FILE_NAME))
@@ -122,17 +122,17 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testGetClusterFile() {
+    public void testGetClusterFile() throws MirandaException {
         testGetFileMessage(Cluster.NAME);
     }
 
     @Test
-    public void testGetUsersFile() {
+    public void testGetUsersFile() throws MirandaException {
         testGetFileMessage(UsersFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessVersionsMessage() {
+    public void testProcessVersionsMessage() throws MirandaException {
         Version version = new Version();
         NameVersion nameVersion = new NameVersion("whatever", version);
         List<NameVersion> nameVersionList = new ArrayList<NameVersion>();
@@ -149,7 +149,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessGetFileResonseMessage() {
+    public void testProcessGetFileResonseMessage() throws MirandaException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "whatever", "whtever");
         GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage("whatever", "whatever");
 
@@ -161,7 +161,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testGetVersionsWireMessage() {
+    public void testGetVersionsWireMessage() throws MirandaException {
         setupMockMiranda();
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         NetworkMessage networkMessage = new NetworkMessage(null, this, getVersionsWireMessage);
@@ -175,7 +175,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessVersionsWireMessage() {
+    public void testProcessVersionsWireMessage() throws MirandaException {
         setupMockMiranda();
         setupMockCluster();
         Version version = new Version();
@@ -195,7 +195,7 @@ public class TestNodeReadyState extends TesterNodeState {
         assert (contains(Message.Subjects.Versions, queue));
     }
 
-    public void testProcessGetFileWireMessage(String file) {
+    public void testProcessGetFileWireMessage(String file) throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
 
@@ -236,7 +236,7 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessGetFileWireMessageCluster() {
+    public void testProcessGetFileWireMessageCluster() throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
         setupMockCluster();
@@ -248,17 +248,17 @@ public class TestNodeReadyState extends TesterNodeState {
     }
 
     @Test
-    public void testProcessGetFileWireMessageUsers() {
+    public void testProcessGetFileWireMessageUsers() throws MirandaException {
         testProcessGetFileWireMessage(UsersFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetFileWireMessageTopics() {
+    public void testProcessGetFileWireMessageTopics() throws MirandaException {
         testProcessGetFileWireMessage(TopicsFile.FILE_NAME);
     }
 
     @Test
-    public void testProcessGetFileWireMessageSubscriptions() {
+    public void testProcessGetFileWireMessageSubscriptions() throws MirandaException {
         testProcessGetFileWireMessage(SubscriptionsFile.FILE_NAME);
     }
 

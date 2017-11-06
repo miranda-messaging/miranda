@@ -2,6 +2,7 @@ package com.ltsllc.miranda.servlet.event;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.event.messages.CreateEventResponseMessage;
 import com.ltsllc.miranda.event.messages.ReadEventResponseMessage;
 import com.ltsllc.miranda.servlet.ServletHolderReadyState;
@@ -10,7 +11,7 @@ import com.ltsllc.miranda.servlet.ServletHolderReadyState;
  * Created by Clark on 6/7/2017.
  */
 public class EventHolderReadyState extends ServletHolderReadyState {
-    public EventHolderReadyState (EventHolder eventHolder) {
+    public EventHolderReadyState (EventHolder eventHolder) throws MirandaException {
         super(eventHolder);
     }
 
@@ -18,7 +19,7 @@ public class EventHolderReadyState extends ServletHolderReadyState {
         return (EventHolder) getContainer();
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getEventHolder().getCurrentState();
 
         switch (message.getSubject()) {

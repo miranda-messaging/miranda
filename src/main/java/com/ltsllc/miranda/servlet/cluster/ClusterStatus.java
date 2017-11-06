@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet.cluster;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
@@ -34,7 +35,7 @@ public class ClusterStatus extends Consumer {
         return ourInstance;
     }
 
-    public static synchronized void initialize () {
+    public static synchronized void initialize () throws MirandaException {
         if (null == ourInstance) {
             ourInstance = new ClusterStatus();
         }
@@ -49,7 +50,7 @@ public class ClusterStatus extends Consumer {
         this.clusterStatusObject = clusterStatusObject;
     }
 
-    public ClusterStatus () {
+    public ClusterStatus () throws MirandaException {
         super("cluster status");
 
         ClusterStatusReadyState clusterStatusReadyState = new ClusterStatusReadyState(this);

@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.topic;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -91,13 +92,13 @@ public class TopicHolder extends ServletHolder {
         TopicHolder.ourInstance = instance;
     }
 
-    public static synchronized void initialize (long timeout) {
+    public static synchronized void initialize (long timeout) throws MirandaException {
         if (null == ourInstance) {
             ourInstance = new TopicHolder(timeout);
         }
     }
 
-    public TopicHolder(long timeout) {
+    public TopicHolder(long timeout) throws MirandaException {
         super("topics holder", timeout);
 
         TopicHolderReadyState readyState = new TopicHolderReadyState(this);

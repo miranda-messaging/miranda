@@ -18,6 +18,7 @@ package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +38,14 @@ public class TestMirandaTimerReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         readyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -56,7 +57,7 @@ public class TestMirandaTimerReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessScheduleOnce () {
+    public void testProcessScheduleOnce () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         TimeoutMessage timeoutMessage = new TimeoutMessage(null, this);
         ScheduleOnceMessage scheduleOnceMessage = new ScheduleOnceMessage(null, this, 250, timeoutMessage, queue);
@@ -71,7 +72,7 @@ public class TestMirandaTimerReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessSchedulePeriodic () {
+    public void testProcessSchedulePeriodic () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         TimeoutMessage timeoutMessage = new TimeoutMessage(null, this);
         SchedulePeriodicMessage schedulePeriodicMessage = new SchedulePeriodicMessage(null, this, 250, timeoutMessage, queue);

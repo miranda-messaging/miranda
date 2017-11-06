@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
 import com.ltsllc.miranda.test.TestServlet;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class TestCreateKeyPairServlet extends TestServlet {
         return createKeyPairServlet;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockHttpServletResponse = null;
@@ -49,7 +50,7 @@ public class TestCreateKeyPairServlet extends TestServlet {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

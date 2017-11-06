@@ -19,6 +19,7 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.ShutdownException;
 import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
 

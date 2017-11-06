@@ -18,6 +18,7 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
@@ -61,7 +62,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
     private Cluster cluster;
 
-    public ClusterReadyState(Cluster cluster) {
+    public ClusterReadyState(Cluster cluster) throws MirandaException {
         super(cluster);
 
         this.cluster = cluster;
@@ -73,7 +74,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return cluster;
     }
 
-    public State processMessage(Message m) {
+    public State processMessage(Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -233,8 +234,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     }
 
 
-    private State processNodesLoaded(NodesLoadedMessage nodesLoadedMessage)
-    {
+    private State processNodesLoaded(NodesLoadedMessage nodesLoadedMessage) throws MirandaException {
         getCluster().merge(nodesLoadedMessage.getNodes());
 
         return this;
@@ -256,7 +256,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
      * @param clusterFileChangedMessage
      * @return
      */
-    private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) {
+    private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) throws MirandaException {
         getCluster().merge(clusterFileChangedMessage.getFile());
 
         return this;
@@ -298,7 +298,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     }
 
 
-    private State processGetStatusMessage (GetStatusMessage getStatusMessage) {
+    private State processGetStatusMessage (GetStatusMessage getStatusMessage) throws MirandaException {
         ClusterStatusObject clusterStatusObject = getCluster().getStatus();
         GetStatusResponseMessage response = new GetStatusResponseMessage(getCluster().getQueue(), this, clusterStatusObject);
         getStatusMessage.reply(response);
@@ -312,7 +312,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return this;
     }
 
-    private State processLoadResponseMessage (LoadResponseMessage loadResponseMessage) {
+    private State processLoadResponseMessage (LoadResponseMessage loadResponseMessage) throws MirandaException {
         getCluster().merge(loadResponseMessage.getData());
 
         return this;
@@ -363,7 +363,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return getCluster().getCurrentState();
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
         getCluster().shutdown();
         getCluster().setClusterFileResponded(false);
         getCluster().getClusterFile().sendShutdown(getCluster().getQueue(), this);

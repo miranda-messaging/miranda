@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.holder;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -30,14 +31,14 @@ public class TestUserHolder extends TestCase {
         return userHolder;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         userHolder = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import org.apache.log4j.Logger;
@@ -53,9 +54,17 @@ public abstract class State {
         return container;
     }
 
-    public State (Consumer container) {
-        this.container = container;
+    public State (Consumer container) throws MirandaException {
+        setContainer (container);
         this.deferredQueue = new LinkedList<Message>();
+    }
+
+    public void setContainer(Consumer container) throws MirandaException {
+        this.container = container;
+
+        if (null == container) {
+            throw new MirandaException("null container");
+        }
     }
 
     public State start ()
@@ -82,8 +91,7 @@ public abstract class State {
      *
      * @return The next state.  Default behavior is to return this.
      */
-    public State processMessage (Message m)
-    {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = getContainer().getCurrentState();
 
         switch (m.getSubject()) {
@@ -137,7 +145,7 @@ public abstract class State {
         return getContainer().compare(map, other.getContainer());
     }
 
-    public State processStopMessage(StopMessage stopMessage) {
+    public State processStopMessage(StopMessage stopMessage) throws MirandaException {
         getContainer().stop();
 
         StopState stopState = StopState.getInstance();

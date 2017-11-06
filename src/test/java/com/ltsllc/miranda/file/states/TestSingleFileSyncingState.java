@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -49,7 +50,7 @@ public class TestSingleFileSyncingState extends TestCase {
         return usersFileSyncingState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         this.mockUsesFile = null;
@@ -58,7 +59,7 @@ public class TestSingleFileSyncingState extends TestCase {
 
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -69,7 +70,7 @@ public class TestSingleFileSyncingState extends TestCase {
 
 
     @Test
-    public void testProcessGetFileResponse () {
+    public void testProcessGetFileResponse () throws MirandaException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "whatever");
         getUsersFileSyncingState().processMessage(getFileResponseMessage);
 
@@ -79,7 +80,7 @@ public class TestSingleFileSyncingState extends TestCase {
     private static final byte[] TEST_FILE_CONTENTS = "whatever".getBytes();
 
     @Test
-    public void testProcessGetFileMessage () {
+    public void testProcessGetFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetFileMessage getFileMessage = new GetFileMessage(queue, this, "whatever");
 

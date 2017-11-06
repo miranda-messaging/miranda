@@ -16,6 +16,7 @@
 
 package last;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.ConnectionListenerReadyState;
@@ -51,7 +52,11 @@ public class TestNetworkListener extends TestCase {
         }
 
         public void run () {
-            getNetworkListener().newConnectionLoop(getHandleQueue());
+            try {
+                getNetworkListener().newConnectionLoop(getHandleQueue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -77,7 +82,7 @@ public class TestNetworkListener extends TestCase {
         this.thread = thread;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockHandle = null;
@@ -85,7 +90,7 @@ public class TestNetworkListener extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

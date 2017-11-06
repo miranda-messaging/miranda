@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
@@ -38,7 +39,7 @@ public class ShuttingDownState extends State {
         return (Miranda) getContainer();
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getMiranda().getCurrentState();
 
         switch (message.getSubject()) {
@@ -57,7 +58,7 @@ public class ShuttingDownState extends State {
     }
 
 
-    public ShuttingDownState (Miranda miranda) {
+    public ShuttingDownState (Miranda miranda) throws MirandaException {
         super(miranda);
     }
 

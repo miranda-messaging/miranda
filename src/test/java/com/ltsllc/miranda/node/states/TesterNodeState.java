@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.node.states;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.test.TestCase;
 import org.mockito.Mock;
@@ -30,13 +31,13 @@ public class TesterNodeState extends TestCase {
         return mockNode;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockNode = null;
     }
 
-    public void setup () {
+    public void setup () throws MirandaException {
         super.setup();
 
         setuplog4j();

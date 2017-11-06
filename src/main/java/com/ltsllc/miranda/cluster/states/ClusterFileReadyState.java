@@ -21,6 +21,7 @@ import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
@@ -43,7 +44,7 @@ import java.util.List;
 public class ClusterFileReadyState extends SingleFileReadyState {
     private static Logger logger = Logger.getLogger(ClusterFileReadyState.class);
 
-    public ClusterFileReadyState(ClusterFile clusterFile) {
+    public ClusterFileReadyState(ClusterFile clusterFile) throws MirandaException {
         super(clusterFile);
     }
 
@@ -56,7 +57,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -104,7 +105,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
+    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) throws MirandaException {
         List<NodeElement> newList = new ArrayList<NodeElement>(getClusterFile().getData());
 
         ClusterFileMessage clusterFileMessage = new ClusterFileMessage (getClusterFile().getQueue(), this,
@@ -245,7 +246,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return nextState;
     }
 
-    private State processLoadMessage (LoadMessage loadMessage) {
+    private State processLoadMessage (LoadMessage loadMessage) throws MirandaException {
         getClusterFile().load();
 
         LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getClusterFile().getCluster(), this, getClusterFile().getData());

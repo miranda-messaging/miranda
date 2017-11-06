@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.util;
 
 import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +34,14 @@ public class TestImprovedRandom extends TestCase {
         return improvedRandom;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         improvedRandom = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

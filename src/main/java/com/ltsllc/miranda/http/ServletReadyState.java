@@ -2,6 +2,7 @@ package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 
 /**
@@ -15,7 +16,7 @@ import com.ltsllc.miranda.miranda.messages.StopMessage;
  * </ul>
  */
 public class ServletReadyState extends State {
-    public ServletReadyState (ServletContainer servletContainer) {
+    public ServletReadyState (ServletContainer servletContainer) throws MirandaException {
         super(servletContainer);
     }
 
@@ -24,7 +25,7 @@ public class ServletReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getServletContainer().getCurrentState();
 
         switch (message.getSubject()) {
@@ -67,7 +68,7 @@ public class ServletReadyState extends State {
         return getServletContainer().getCurrentState();
     }
 
-    public State processStopMessage (StopMessage stopMessage) {
+    public State processStopMessage (StopMessage stopMessage) throws MirandaException {
         getServletContainer().stopContainer();
 
         return super.processStopMessage(stopMessage);

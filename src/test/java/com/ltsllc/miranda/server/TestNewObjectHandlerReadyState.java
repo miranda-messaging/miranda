@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.NewUserHandler;
 import com.ltsllc.miranda.user.states.NewUserHandlerReadyState;
@@ -50,7 +51,7 @@ public class TestNewObjectHandlerReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockNewUserHandler = null;
@@ -59,7 +60,7 @@ public class TestNewObjectHandlerReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

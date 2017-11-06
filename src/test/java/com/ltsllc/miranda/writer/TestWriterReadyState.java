@@ -18,6 +18,7 @@ package com.ltsllc.miranda.writer;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -41,14 +42,14 @@ public class TestWriterReadyState extends TestCase {
         return writerReadyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         writerReadyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -66,7 +67,7 @@ public class TestWriterReadyState extends TestCase {
     public static final byte[] TEST_DATA = { 1, 2, 3, 4 };
 
     @Test
-    public void testProcessWriteMessageSuccess () {
+    public void testProcessWriteMessageSuccess () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         WriteMessage writeMessage = new WriteMessage(TEST_FILE_NAME, TEST_DATA, queue, this);
 

@@ -17,13 +17,14 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 
 /**
  * Created by Clark on 3/10/2017.
  */
 public class ConnectionListenerReadyState extends State {
-    public ConnectionListenerReadyState(ConnectionListener networkListener) {
+    public ConnectionListenerReadyState(ConnectionListener networkListener) throws MirandaException {
         super(networkListener);
     }
 

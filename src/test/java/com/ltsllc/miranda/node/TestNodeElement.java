@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -34,14 +35,14 @@ public class TestNodeElement extends TestCase {
         return nodeElement;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         nodeElement = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

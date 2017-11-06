@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.server;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.topics.TopicsFile;
 
@@ -30,7 +31,7 @@ public class NewTopicHandlerReadyState extends NewObjectHandlerReadyState<Topics
         return Topic.class;
     }
 
-    public NewTopicHandlerReadyState (Consumer consumer, TopicsFile file, NewTopicHandler handler) {
+    public NewTopicHandlerReadyState (Consumer consumer, TopicsFile file, NewTopicHandler handler) throws MirandaException {
         super(consumer, file, handler);
     }
 }

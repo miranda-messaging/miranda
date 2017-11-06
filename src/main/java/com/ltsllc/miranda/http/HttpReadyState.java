@@ -18,12 +18,13 @@ package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 /**
  * Created by Clark on 3/9/2017.
  */
 public class HttpReadyState extends State {
-    public HttpReadyState (HttpServer httpServer) {
+    public HttpReadyState (HttpServer httpServer) throws MirandaException {
         super (httpServer);
     }
 
@@ -32,7 +33,7 @@ public class HttpReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

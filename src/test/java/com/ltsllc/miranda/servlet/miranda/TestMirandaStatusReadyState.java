@@ -18,6 +18,7 @@ package com.ltsllc.miranda.servlet.miranda;
 
 import com.ltsllc.common.util.Property;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
@@ -48,7 +49,7 @@ public class TestMirandaStatusReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         mockMirandaStatus = null;
@@ -56,7 +57,7 @@ public class TestMirandaStatusReadyState extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -68,7 +69,7 @@ public class TestMirandaStatusReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetStatusResponseMessage () {
+    public void testProcessGetStatusResponseMessage () throws MirandaException {
         StatusObject statusObject = new StatusObject(
                 null,
                 new ArrayList<Property>(),

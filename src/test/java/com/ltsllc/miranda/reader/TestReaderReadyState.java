@@ -18,6 +18,7 @@ package com.ltsllc.miranda.reader;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,14 +41,14 @@ public class TestReaderReadyState extends TestCase {
         return readerReadyState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         readerReadyState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -56,7 +57,7 @@ public class TestReaderReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessReadMessage () throws GeneralSecurityException, IOException {
+    public void testProcessReadMessage () throws GeneralSecurityException, IOException, MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         ReadMessage readMessage = new ReadMessage(queue, this, "whatever");
         Reader.ReadResult result = new Reader.ReadResult();

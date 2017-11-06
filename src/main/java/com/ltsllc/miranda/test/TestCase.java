@@ -23,6 +23,7 @@ import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.ImprovedRandom;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
@@ -354,7 +355,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         return mockHttpServer;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         network = null;
         writerQueue = null;
 
@@ -386,7 +387,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         this.mockHttpServer = null;
     }
 
-    public void setup() {
+    public void setup() throws MirandaException {
         network = new LinkedBlockingQueue<Message>();
         writerQueue = new LinkedBlockingQueue<Message>();
 
@@ -696,11 +697,11 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         Miranda.properties = new MirandaProperties();
     }
 
-    public void setupMiranda() {
+    public void setupMiranda() throws MirandaException {
         new Miranda("-p whatever");
     }
 
-    public static void setupTimer() {
+    public static void setupTimer() throws MirandaException {
         Miranda.timer = new MirandaTimer();
     }
 
@@ -784,7 +785,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         return true;
     }
 
-    public static void setupFileWatcher(int period) {
+    public static void setupFileWatcher(int period) throws MirandaException {
         Miranda.fileWatcher = new FileWatcherService(period);
         Miranda.fileWatcher.start();
     }
@@ -797,7 +798,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         return 0 == queue.size();
     }
 
-    public void setupWriter() {
+    public void setupWriter() throws MirandaException {
         com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer(getMockPublicKey());
 
         this.writerQueue = new LinkedBlockingQueue<Message>();

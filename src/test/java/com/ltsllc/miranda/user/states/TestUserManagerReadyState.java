@@ -18,6 +18,7 @@ package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -53,7 +54,7 @@ public class TestUserManagerReadyState extends TestCase {
         return mockUserManager;
     }
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         mockUserManager = null;
@@ -61,7 +62,7 @@ public class TestUserManagerReadyState extends TestCase {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws MirandaException {
         reset();
 
         super.setup();
@@ -71,7 +72,7 @@ public class TestUserManagerReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGarbageCollection() {
+    public void testProcessGarbageCollection() throws MirandaException {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(null, this);
 
         when(getMockUserManager().getCurrentState()).thenReturn(getReadyState());
@@ -83,7 +84,7 @@ public class TestUserManagerReadyState extends TestCase {
     }
 
     @Test
-    public void testGetUser() {
+    public void testGetUser() throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetUserMessage getUserMessage = new GetUserMessage(queue, this, "whatever");
 
@@ -97,7 +98,7 @@ public class TestUserManagerReadyState extends TestCase {
     }
 
     @Test
-    public void testProcessGetUsersMessage() {
+    public void testProcessGetUsersMessage() throws MirandaException {
         User user = new User("whatever", "whatever");
         List<User> users = new ArrayList<User>();
         users.add(user);

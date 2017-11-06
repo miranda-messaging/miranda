@@ -45,14 +45,14 @@ public class TestLoginHolder extends TestCase {
         this.loginHolder = loginHolder;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         loginHolder = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

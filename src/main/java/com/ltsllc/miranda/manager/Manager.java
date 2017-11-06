@@ -19,6 +19,7 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.Updateable;
@@ -34,9 +35,9 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 4/26/2017.
  */
 public abstract class Manager<E, F extends MirandaObject> extends Consumer {
-    abstract public SingleFile<F> createFile (String filename) throws IOException;
-    abstract public State createStartState ();
-    abstract public E convert (F f);
+    abstract public SingleFile<F> createFile (String filename) throws IOException, MirandaException;
+    abstract public State createStartState () throws MirandaException;
+    abstract public E convert (F f) throws MirandaException;
 
     private SingleFile<F> file;
     private List<E> data;
@@ -74,7 +75,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         this.data = data;
     }
 
-    public List<E> convertList (List<F> data) {
+    public List<E> convertList (List<F> data) throws MirandaException {
         ArrayList<E> newList = new ArrayList<E>();
 
         for (F f : data) {
@@ -85,7 +86,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         return newList;
     }
 
-    public Manager (String name, String filename) throws IOException {
+    public Manager (String name, String filename) throws IOException, MirandaException {
         super(name);
 
         SingleFile<F> file = createFile(filename);
@@ -100,7 +101,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         this.data = newList;
     }
 
-    public Manager (String name, boolean testMode) {
+    public Manager (String name, boolean testMode) throws MirandaException {
         super(name);
 
         State startState = createStartState();
@@ -123,7 +124,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         getFile().sendLoad(getQueue(), this);
     }
 
-    public void fileChanged () {
+    public void fileChanged () throws MirandaException {
         List<F> fileData = getFile().getData();
         List<E> newData = convertList(fileData);
         setData(newData);

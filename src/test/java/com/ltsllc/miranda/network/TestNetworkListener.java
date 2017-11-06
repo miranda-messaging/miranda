@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.network;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 
 /**
@@ -28,7 +29,7 @@ public class TestNetworkListener extends TestCase {
         return networkListener;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
     }

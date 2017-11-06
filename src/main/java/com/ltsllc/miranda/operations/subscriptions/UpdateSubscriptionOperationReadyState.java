@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.subscriptions;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -34,11 +35,11 @@ public class UpdateSubscriptionOperationReadyState extends State {
         return (UpdateSubscriptionOperation) getContainer();
     }
 
-    public UpdateSubscriptionOperationReadyState (UpdateSubscriptionOperation updateSubscriptionOperation) {
+    public UpdateSubscriptionOperationReadyState (UpdateSubscriptionOperation updateSubscriptionOperation) throws MirandaException {
         super(updateSubscriptionOperation);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getUpdateSubscriptionOperation().getCurrentState();
 
         switch (message.getSubject()) {

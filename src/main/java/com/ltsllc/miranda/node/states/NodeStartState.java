@@ -18,6 +18,7 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.messages.ConnectMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
@@ -28,11 +29,11 @@ import com.ltsllc.miranda.node.Node;
  * the remote host.
  */
 public class NodeStartState extends NodeState {
-    public NodeStartState (Node node, Network network) {
+    public NodeStartState (Node node, Network network) throws MirandaException {
         super(node, network);
     }
 
-    public State processMessage (Message m) {
+    public State processMessage (Message m) throws MirandaException {
         State nextState = null;
 
         switch (m.getSubject()) {
@@ -51,7 +52,7 @@ public class NodeStartState extends NodeState {
     }
 
 
-    private State processConnectMessage (ConnectMessage connectMessage) {
+    private State processConnectMessage (ConnectMessage connectMessage) throws MirandaException {
         getNode().connect();
 
         ConnectingState connectingState = new ConnectingState(getNode(), getNetwork());

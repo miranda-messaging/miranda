@@ -19,6 +19,7 @@ package com.ltsllc.miranda.directory;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 
 import java.io.File;
@@ -33,11 +34,11 @@ public class DirectoryStartState extends State {
         return (MirandaDirectory) getContainer();
     }
 
-    public DirectoryStartState (MirandaDirectory directory) {
+    public DirectoryStartState (MirandaDirectory directory) throws MirandaException {
         super (directory);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getDirectory().getCurrentState();
 
         switch (message.getSubject()) {

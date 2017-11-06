@@ -18,6 +18,7 @@ package com.ltsllc.miranda.reader;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 /**
  * Created by Clark on 5/3/2017.
@@ -27,11 +28,11 @@ public class ReaderReadyState extends State {
         return (Reader) getContainer();
     }
 
-    public ReaderReadyState (Reader reader) {
+    public ReaderReadyState (Reader reader) throws MirandaException {
         super(reader);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage (Message message) throws MirandaException {
         State nextState = getReader().getCurrentState();
 
         switch (message.getSubject()) {
@@ -50,7 +51,7 @@ public class ReaderReadyState extends State {
         return nextState;
     }
 
-    public State processReadMessage (ReadMessage readMessage) {
+    public State processReadMessage (ReadMessage readMessage) throws MirandaException {
         ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this);
         response.setFilename(readMessage.getFilename());
 

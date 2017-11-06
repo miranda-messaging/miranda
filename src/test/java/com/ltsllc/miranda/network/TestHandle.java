@@ -18,6 +18,7 @@ package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.mina.MinaHandle;
 import com.ltsllc.miranda.mina.MinaHandler;
 import com.ltsllc.miranda.node.networkMessages.ClusterFileWireMessage;
@@ -59,7 +60,7 @@ public class TestHandle extends TestCase {
         return mockMinaHandler;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         queue = null;
@@ -68,7 +69,7 @@ public class TestHandle extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 
 /**
@@ -53,7 +54,7 @@ public class ConnectionListenerHolder extends Consumer {
         this.cluster = cluster;
     }
 
-    public ConnectionListenerHolder(ConnectionListener networkListener, Cluster cluster) {
+    public ConnectionListenerHolder(ConnectionListener networkListener, Cluster cluster) throws MirandaException {
         super(NAME);
 
         this.networkListener = networkListener;

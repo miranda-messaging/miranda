@@ -17,12 +17,13 @@
 package com.ltsllc.miranda.operations.auction;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 /**
  * Created by Clark on 4/22/2017.
  */
 public class AuctionOperation extends Consumer {
-    public AuctionOperation () {
+    public AuctionOperation () throws MirandaException {
         super("auction operations");
         AuctionOperationReadyState auctionOperationReadyState = new AuctionOperationReadyState(this);
         setCurrentState(auctionOperationReadyState);

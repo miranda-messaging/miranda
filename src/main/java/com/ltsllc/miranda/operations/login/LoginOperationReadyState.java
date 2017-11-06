@@ -19,6 +19,7 @@ package com.ltsllc.miranda.operations.login;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.LoginResponseMessage;
@@ -33,11 +34,11 @@ public class LoginOperationReadyState extends State {
         return (LoginOperation) getContainer();
     }
 
-    public LoginOperationReadyState(LoginOperation loginOperation) {
+    public LoginOperationReadyState(LoginOperation loginOperation) throws MirandaException {
         super(loginOperation);
     }
 
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getLoginOperation().getCurrentState();
 
         switch (message.getSubject()) {

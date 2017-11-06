@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.io.IOException;
  * Created by Clark on 5/14/2017.
  */
 abstract public class StandardManager<E extends MirandaObject> extends Manager<E, E> {
-    public StandardManager (String name, String filename) throws IOException {
+    public StandardManager (String name, String filename) throws IOException, MirandaException {
         super (name, filename);
     }
 

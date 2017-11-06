@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.servlet.event;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -30,7 +31,7 @@ public class NewEventHolder extends ServletHolder {
     private Map<String, Event> eventMap;
     private Map<String, Results> resultMap;
 
-    public NewEventHolder (String name, long timeout, String base) {
+    public NewEventHolder (String name, long timeout, String base) throws MirandaException {
         super(name, timeout);
 
         this.base = base;
@@ -50,7 +51,7 @@ public class NewEventHolder extends ServletHolder {
         NewEventHolder.ourInstance = ourInstance;
     }
 
-    public static void initialize (long timeout, String base) {
+    public static void initialize (long timeout, String base) throws MirandaException {
         ourInstance = new NewEventHolder(NAME, timeout, base);
     }
 

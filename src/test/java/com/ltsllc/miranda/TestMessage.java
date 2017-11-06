@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,14 +58,14 @@ public class TestMessage extends TestCase {
         return queue;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         message = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -82,7 +83,7 @@ public class TestMessage extends TestCase {
     }
 
     @Test
-    public void testReplySuccess () {
+    public void testReplySuccess () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
         getMessage().setSender(queue);
@@ -95,7 +96,7 @@ public class TestMessage extends TestCase {
     }
 
     @Test
-    public void testReplyException () {
+    public void testReplyException () throws MirandaException {
         setupMockMiranda();
         TestBlockingQueue testBlockingQueue = new TestBlockingQueue();
         InterruptedException interruptedException = new InterruptedException("test");

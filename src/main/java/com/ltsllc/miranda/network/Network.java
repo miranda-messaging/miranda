@@ -56,7 +56,7 @@ abstract public class Network extends Consumer {
         this.truststorePassword = truststorePassword;
     }
 
-    public Network () {
+    public Network () throws MirandaException {
         super("network");
 
         NetworkReadyState networkReadyState = new NetworkReadyState(this);
@@ -98,7 +98,7 @@ abstract public class Network extends Consumer {
         integerToHandle.put(handle, null);
     }
 
-    public void connect (ConnectToMessage connectToMessage) {
+    public void connect (ConnectToMessage connectToMessage) throws MirandaException {
         try {
             Handle handle = basicConnectTo(connectToMessage.getHost(), connectToMessage.getPort());
 
@@ -119,7 +119,7 @@ abstract public class Network extends Consumer {
     }
 
 
-    public void disconnect (CloseMessage closeMessage) {
+    public void disconnect (CloseMessage closeMessage) throws MirandaException {
         Handle handle = getHandle(closeMessage.getHandle());
 
         if (null == handle) {

@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.operations.topic;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.Operation;
@@ -40,7 +41,7 @@ public class UpdateTopicOperation extends Operation {
         this.topic = topic;
     }
 
-    public UpdateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) {
+    public UpdateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) throws MirandaException {
         super(NAME, requester, session);
 
         UpdateTopicOperationReadyState updateTopicOperationReadyState = new UpdateTopicOperationReadyState(this);

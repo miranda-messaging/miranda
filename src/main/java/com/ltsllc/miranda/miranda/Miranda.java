@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.*;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
@@ -254,7 +255,7 @@ public class Miranda extends Consumer {
         this.deliveryManager = deliveryManager;
     }
 
-    public Miranda (String arguments) {
+    public Miranda (String arguments) throws MirandaException {
         String[] argv = arguments.split(" |\t");
         basicConstructor(argv);
     }
@@ -263,7 +264,7 @@ public class Miranda extends Consumer {
         Miranda.ourInstance = ourInstance;
     }
 
-    public void basicConstructor (String[] argv) {
+    public void basicConstructor (String[] argv) throws MirandaException {
         super.basicConstructor(NAME);
 
         ourInstance = this;
@@ -277,11 +278,11 @@ public class Miranda extends Consumer {
         inputStream = System.in;
     }
 
-    public Miranda (String[] argv) {
+    public Miranda (String[] argv) throws MirandaException {
         basicConstructor(argv);
     }
 
-    public Miranda () {
+    public Miranda () throws MirandaException {
         basicConstructor(new String[0]);
     }
 
@@ -310,7 +311,7 @@ public class Miranda extends Consumer {
         panicPolicy.panic(panic);
     }
 
-    public static void main(String[] argv) {
+    public static void main(String[] argv) throws Exception {
         logger.info ("Starting");
         Miranda miranda = new Miranda(argv);
         Miranda.ourInstance = miranda;
@@ -446,7 +447,13 @@ public class Miranda extends Consumer {
         if (null != getNetworkListener())
             getNetworkListener().sendShutdown(getQueue(), this);
 
-        setCurrentState(new ShuttingDownState(this));
+        try {
+            setCurrentState(new ShuttingDownState(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Exception while trying to shut down");
+            System.exit(1);
+        }
     }
 
     public void sendAddSessionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session) {

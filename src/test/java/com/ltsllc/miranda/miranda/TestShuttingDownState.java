@@ -19,6 +19,7 @@ package com.ltsllc.miranda.miranda;
 import com.ltsllc.miranda.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.test.TestCase;
@@ -43,21 +44,21 @@ public class TestShuttingDownState extends TestCase {
         this.shuttingDownState = shuttingDownState;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         shuttingDownState = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         super.setup();
 
         shuttingDownState = new ShuttingDownState(getMockMiranda());
     }
 
     @Test
-    public void testShutdownResponseIntermediate () {
+    public void testShutdownResponseIntermediate () throws MirandaException {
         ShutdownResponseMessage shutdownMessage = new ShutdownResponseMessage(null, this, Cluster.NAME);
 
         when(getMockMiranda().getCurrentState()).thenReturn(getShuttingDownState());
@@ -74,7 +75,7 @@ public class TestShuttingDownState extends TestCase {
     }
 
     @Test
-    public void testShuttingDownFinal () {
+    public void testShuttingDownFinal () throws MirandaException {
         setupMockLogger();
         ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(null, this, Cluster.NAME);
 

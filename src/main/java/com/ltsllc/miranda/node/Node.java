@@ -19,6 +19,7 @@ package com.ltsllc.miranda.node;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
@@ -38,7 +39,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Node extends Consumer
 {
-    public Node(NodeElement element, Network network, Cluster cluster) {
+    public Node(NodeElement element, Network network, Cluster cluster) throws MirandaException {
         super("node");
         dns = element.getDns();
         port = element.getPort();
@@ -55,7 +56,7 @@ public class Node extends Consumer
      *
      * @param handle
      */
-    public Node (int handle, Network network, Cluster cluster) {
+    public Node (int handle, Network network, Cluster cluster) throws MirandaException {
         super("node");
 
         this.handle = handle;

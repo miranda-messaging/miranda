@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.file.states.MirandaFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -41,7 +42,7 @@ public class TestDeliveriesFile extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();
@@ -75,7 +76,7 @@ public class TestDeliveriesFile extends TestCase {
     }
 
     @Test
-    public void testBuildEmptyList () {
+    public void testBuildEmptyList () throws MirandaException {
         setupMiranda();
         setupMockReader();
         List<Delivery> local = new ArrayList<Delivery>();

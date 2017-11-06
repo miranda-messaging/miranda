@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.encrypt;
 
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -31,14 +32,14 @@ public class TestCreateKeyPairServlet extends TestCase {
         return servlet;
     }
 
-    public void reset () {
+    public void reset () throws MirandaException {
         super.reset();
 
         servlet = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws MirandaException {
         reset();
 
         super.setup();

@@ -19,6 +19,7 @@ package com.ltsllc.miranda.server;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
 import org.apache.log4j.Logger;
 
@@ -35,7 +36,7 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, W extends
     private W handler;
     private T file;
 
-    public NewObjectHandlerReadyState (Consumer consumer, T file, W handler) {
+    public NewObjectHandlerReadyState (Consumer consumer, T file, W handler) throws MirandaException {
         super(consumer);
 
         this.file = file;
@@ -51,7 +52,7 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, W extends
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getContainer().getCurrentState();
 
         switch (message.getSubject()) {

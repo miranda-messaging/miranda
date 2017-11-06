@@ -18,6 +18,7 @@ package com.ltsllc.miranda.topics;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
@@ -48,18 +49,18 @@ public class TopicManager extends StandardManager <Topic> {
         return getData();
     }
 
-    public TopicManager (String filename) throws IOException {
+    public TopicManager (String filename) throws IOException, MirandaException {
         super("topics manager", filename);
 
         TopicManagerStartState topicManagerStartState = new TopicManagerStartState(this);
         setCurrentState(topicManagerStartState);
     }
 
-    public SingleFile<Topic> createFile (String filename) throws IOException {
+    public SingleFile<Topic> createFile (String filename) throws IOException, MirandaException {
         return new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter());
     }
 
-    public State createStartState () {
+    public State createStartState () throws MirandaException {
         return new TopicManagerStartState(this);
     }
 

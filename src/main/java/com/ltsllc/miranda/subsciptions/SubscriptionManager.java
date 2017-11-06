@@ -18,6 +18,7 @@ package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.file.SingleFile;
@@ -48,18 +49,18 @@ public class SubscriptionManager extends StandardManager<Subscription> {
         setData(subscriptions);
     }
 
-    public SubscriptionManager(String filename) throws IOException {
+    public SubscriptionManager(String filename) throws IOException, MirandaException {
         super("subscription manager", filename);
 
         SubscriptionManagerStartState subscriptionManagerStartState = new SubscriptionManagerStartState(this);
         setCurrentState(subscriptionManagerStartState);
     }
 
-    public SingleFile createFile(String filename) throws IOException {
+    public SingleFile createFile(String filename) throws IOException, MirandaException {
         return new SubscriptionsFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
 
-    public State createStartState () {
+    public State createStartState () throws MirandaException {
         return new SubscriptionManagerStartState(this);
     }
 

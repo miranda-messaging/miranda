@@ -18,6 +18,7 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.Directory;
 import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -31,7 +32,7 @@ public class DirectoryReadyState extends State {
 
     private Directory directory;
 
-    public DirectoryReadyState(Directory directory) {
+    public DirectoryReadyState(Directory directory) throws MirandaException {
         super(directory);
 
         this.directory = directory;
@@ -42,7 +43,7 @@ public class DirectoryReadyState extends State {
     }
 
     @Override
-    public State processMessage(Message message) {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {

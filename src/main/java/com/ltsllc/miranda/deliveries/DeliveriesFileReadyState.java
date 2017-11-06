@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
 
@@ -38,7 +39,7 @@ public class DeliveriesFileReadyState extends SingleFileReadyState {
         return NAME;
     }
 
-    public DeliveriesFileReadyState (DeliveriesFile deliveriesFile) {
+    public DeliveriesFileReadyState (DeliveriesFile deliveriesFile) throws MirandaException {
         super(deliveriesFile);
     }
 

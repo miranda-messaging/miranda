@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.deliveries;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.MirandaFileReadyState;
@@ -35,7 +36,7 @@ import java.util.Map;
  */
 public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
 
-    public DeliveriesFile (String filename, Reader reader, Writer writer) throws IOException {
+    public DeliveriesFile (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         setCurrentState(new MirandaFileReadyState(this));

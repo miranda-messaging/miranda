@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkReadyState;
 import com.ltsllc.miranda.test.TestCase;
@@ -328,7 +329,7 @@ public class TestMinaNetwork extends TestCase {
 
 
 
-    public void reset() {
+    public void reset() throws MirandaException {
         super.reset();
 
         mockKeyStore = null;

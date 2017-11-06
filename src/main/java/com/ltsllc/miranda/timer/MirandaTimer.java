@@ -18,6 +18,7 @@ package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.util.Timer;
 import java.util.concurrent.BlockingQueue;
@@ -28,7 +29,7 @@ import java.util.concurrent.BlockingQueue;
 public class MirandaTimer extends Consumer {
     private Timer timer;
 
-    public MirandaTimer () {
+    public MirandaTimer () throws MirandaException {
         super("timer");
         timer = new Timer("timer", true);
         MirandaTimerReadyState mirandaTimerReadyState = new MirandaTimerReadyState(this);

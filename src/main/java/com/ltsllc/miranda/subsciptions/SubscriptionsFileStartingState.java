@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.subsciptions;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.states.SingleFileStartingState;
 
 /**
@@ -27,11 +28,11 @@ public class SubscriptionsFileStartingState extends SingleFileStartingState {
         return (SubscriptionsFile) getContainer();
     }
 
-    public SubscriptionsFileStartingState (SubscriptionsFile subscriptionsFile) {
+    public SubscriptionsFileStartingState (SubscriptionsFile subscriptionsFile) throws MirandaException {
         super(subscriptionsFile);
     }
 
-    public State getReadyState () {
+    public State getReadyState () throws MirandaException {
         return new SubscriptionsFileReadyState(getSubscriptionsFile());
     }
 }
