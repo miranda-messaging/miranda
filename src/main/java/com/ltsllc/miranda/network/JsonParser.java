@@ -46,12 +46,12 @@ public class JsonParser {
         this.messages = messages;
     }
 
-    public JsonParser (String json) {
+    public JsonParser(String json) {
         String[] fields = json.split("\n");
         parse(fields);
     }
 
-    private void parse (String[] fields) {
+    private void parse(String[] fields) {
         for (String s : fields) {
             WireMessage wireMessage = ourGson.fromJson(s, WireMessage.class);
 

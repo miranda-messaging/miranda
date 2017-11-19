@@ -28,12 +28,12 @@ public class NewSessionWireMessage extends WireMessage {
         return session;
     }
 
-    public NewSessionWireMessage (Session session) {
+    public NewSessionWireMessage(Session session) {
         super(WireSubjects.NewSession);
         this.session = session;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (null == o || !(o instanceof NewSessionWireMessage))
             return false;
 

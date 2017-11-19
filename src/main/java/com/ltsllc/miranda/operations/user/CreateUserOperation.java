@@ -38,16 +38,16 @@ public class CreateUserOperation extends Operation {
         return user;
     }
 
-    public CreateUserOperation (BlockingQueue<Message> requester, Session session, User user) throws MirandaException {
-        super( NAME, requester, session);
+    public CreateUserOperation(BlockingQueue<Message> requester, Session session, User user) throws MirandaException {
+        super(NAME, requester, session);
 
-        CreateUserOperationReadyState readyState = new CreateUserOperationReadyState( this);
+        CreateUserOperationReadyState readyState = new CreateUserOperationReadyState(this);
         setCurrentState(readyState);
 
         this.user = user;
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda.getInstance().getUserManager().sendCreateUserMessage(getQueue(), this, getUser());

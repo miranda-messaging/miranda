@@ -31,7 +31,7 @@ public class ExpiredMessage extends Message {
         return expired;
     }
 
-    public ExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, Collection expired) {
+    public ExpiredMessage(BlockingQueue<Message> senderQueue, Object sender, Collection expired) {
         super(Subjects.Expired, senderQueue, sender);
 
         this.expired = expired;

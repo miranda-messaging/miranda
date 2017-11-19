@@ -25,7 +25,8 @@ public class EncryptedMessage {
     private String key;
     private String message;
 
-    public EncryptedMessage() {}
+    public EncryptedMessage() {
+    }
 
     public EncryptedMessage(String algorithm, String key, String message) {
         this.algorithm = algorithm;

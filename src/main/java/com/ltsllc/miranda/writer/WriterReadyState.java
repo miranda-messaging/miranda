@@ -28,7 +28,7 @@ import java.security.GeneralSecurityException;
  * Created by Clark on 1/3/2017.
  */
 public class WriterReadyState extends State {
-    public Writer getWriter () {
+    public Writer getWriter() {
         return (Writer) getContainer();
     }
 
@@ -36,7 +36,7 @@ public class WriterReadyState extends State {
         super(writer);
     }
 
-    public State processMessage (Message m) throws MirandaException {
+    public State processMessage(Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -55,8 +55,8 @@ public class WriterReadyState extends State {
         return nextState;
     }
 
-    private State processWriteMessage (WriteMessage writeMessage) throws MirandaException {
-        try{
+    private State processWriteMessage(WriteMessage writeMessage) throws MirandaException {
+        try {
             getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
             WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getWriter().getQueue(), writeMessage.getFilename(), this);
             writeMessage.reply(writeSucceededMessage);

@@ -65,8 +65,8 @@ public class DirectoryManager<T> extends Consumer {
         this.reader = reader;
     }
 
-    public DirectoryManager (String name, String directory, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
-        super (name);
+    public DirectoryManager(String name, String directory, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
+        super(name);
 
         this.directory = new EventDirectory(directory, objectLimit, reader, writer);
         this.reader = reader;
@@ -74,11 +74,11 @@ public class DirectoryManager<T> extends Consumer {
         this.map = new HashMap<String, T>();
     }
 
-    public void add (String key, T value) {
+    public void add(String key, T value) {
         getMap().put(key, value);
     }
 
-    public void fileChanged (Map<String, Event> map) {
+    public void fileChanged(Map<String, Event> map) {
         map = new HashMap<String, Event>(map);
     }
 

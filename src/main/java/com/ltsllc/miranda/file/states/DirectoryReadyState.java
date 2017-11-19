@@ -53,7 +53,7 @@ public class DirectoryReadyState extends State {
                 break;
             }
 
-            default :
+            default:
                 nextState = super.processMessage(message);
                 break;
         }
@@ -61,11 +61,10 @@ public class DirectoryReadyState extends State {
     }
 
 
-    private State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
-        logger.info ("Garbage collecting " + getDirectory().getFilename());
+    private State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
+        logger.info("Garbage collecting " + getDirectory().getFilename());
 
-        for (MirandaFile mirandaFile : getDirectory().getFiles())
-        {
+        for (MirandaFile mirandaFile : getDirectory().getFiles()) {
             mirandaFile.performGarbageCollection();
         }
 

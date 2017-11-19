@@ -9,6 +9,7 @@ public class SslException extends Exception {
         Exception,
         CertificateNotFound
     }
+
     private Reasons reason;
 
     public SslException(Reasons reason) {

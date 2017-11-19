@@ -136,13 +136,7 @@ public class Consumer extends Subsystem implements Comparer {
         State nextState = null;
         State stop = StopState.getInstance();
 
-        while (nextState != stop && !Miranda.panicking && nextState != null && !getStopped()) {
-            State currentState = getCurrentState();
-            setCurrentState(nextState);
-            if (currentState != nextState) {
-                setCurrentState(nextState.start());
-            }
-
+        while (nextState != stop && !Miranda.panicking && !getStopped()) {
             Message m = getNextMessage();
 
             try {
@@ -154,6 +148,8 @@ public class Consumer extends Subsystem implements Comparer {
                 ExceptionPanic panic = new ExceptionPanic(e, Panic.Reasons.ExceptionInProcessMessage);
                 Miranda.panicMiranda(panic);
             }
+
+            setCurrentState(nextState);
         }
 
         if (Miranda.panicking) {

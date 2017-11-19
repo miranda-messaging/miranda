@@ -28,7 +28,7 @@ public class NewNodeMessage extends Message {
         return node;
     }
 
-    public NewNodeMessage (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+    public NewNodeMessage(BlockingQueue<Message> senderQueue, Object sender, Node node) {
         super(Subjects.NewNode, senderQueue, sender);
 
         this.node = node;

@@ -23,11 +23,11 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
  * Created by Clark on 4/22/2017.
  */
 public class AuctionOperationReadyState extends State {
-    public AuctionOperation getAuctionOperation () {
+    public AuctionOperation getAuctionOperation() {
         return (AuctionOperation) getContainer();
     }
 
-    public AuctionOperationReadyState (AuctionOperation auctionOperation) throws MirandaException {
+    public AuctionOperationReadyState(AuctionOperation auctionOperation) throws MirandaException {
         super(auctionOperation);
     }
 }

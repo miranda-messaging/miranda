@@ -198,7 +198,7 @@ public class Message {
     private Object senderObject;
     private Exception where;
 
-    public BlockingQueue<Message> getSender () {
+    public BlockingQueue<Message> getSender() {
         return sender;
     }
 
@@ -206,14 +206,16 @@ public class Message {
         return subject;
     }
 
-    public Object getSenderObject() { return senderObject; }
+    public Object getSenderObject() {
+        return senderObject;
+    }
 
     public Exception getWhere() {
         return where;
     }
 
 
-    public Message (Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
+    public Message(Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
         this.subject = subject;
         this.sender = sender;
         this.senderObject = senderObject;
@@ -221,7 +223,7 @@ public class Message {
         this.where = new Exception();
     }
 
-    public void respond (Message m) throws InterruptedException {
+    public void respond(Message m) throws InterruptedException {
         getSender().put(m);
     }
 
@@ -234,7 +236,7 @@ public class Message {
         return ourGson.toJson(this);
     }
 
-    public void reply (Message message) throws MirandaException {
+    public void reply(Message message) throws MirandaException {
         try {
             getSender().put(message);
         } catch (InterruptedException e) {
@@ -243,7 +245,7 @@ public class Message {
         }
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (null == o || !(o instanceof Message))
             return false;
 
@@ -254,11 +256,11 @@ public class Message {
                 && getSenderObject() == other.getSenderObject();
     }
 
-    public void setSender (BlockingQueue<Message> queue) {
+    public void setSender(BlockingQueue<Message> queue) {
         this.sender = queue;
     }
 
-    public void setSenderObject (Object object) {
+    public void setSenderObject(Object object) {
         this.senderObject = object;
     }
 }

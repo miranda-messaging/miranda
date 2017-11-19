@@ -25,11 +25,11 @@ import com.ltsllc.miranda.file.Updateable;
  * Created by Clark on 5/18/2017.
  */
 public class StandardManagerReadyState<E extends MirandaObject & Equivalent> extends ManagerReadyState<E, E> {
-    public StandardManager<E> getManager () {
+    public StandardManager<E> getManager() {
         return (StandardManager) getContainer();
     }
 
-    public StandardManagerReadyState (StandardManager manager) throws MirandaException {
+    public StandardManagerReadyState(StandardManager manager) throws MirandaException {
         super(manager);
     }
 }

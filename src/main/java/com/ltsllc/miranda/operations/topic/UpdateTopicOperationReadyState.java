@@ -30,21 +30,21 @@ import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
  * Created by Clark on 4/23/2017.
  */
 public class UpdateTopicOperationReadyState extends State {
-    public UpdateTopicOperation getUpdateTopicOperation () {
+    public UpdateTopicOperation getUpdateTopicOperation() {
         return (UpdateTopicOperation) getContainer();
     }
 
-    public UpdateTopicOperationReadyState (UpdateTopicOperation updateTopicOperation) throws MirandaException {
+    public UpdateTopicOperationReadyState(UpdateTopicOperation updateTopicOperation) throws MirandaException {
         super(updateTopicOperation);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getUpdateTopicOperation().getCurrentState();
 
-        switch(message.getSubject()) {
+        switch (message.getSubject()) {
             case GetUserResponse: {
                 GetUserResponseMessage getUserResponseMessage = (GetUserResponseMessage) message;
-                nextState = processGetUserResponseMessage (getUserResponseMessage);
+                nextState = processGetUserResponseMessage(getUserResponseMessage);
                 break;
             }
 
@@ -73,7 +73,7 @@ public class UpdateTopicOperationReadyState extends State {
         }
 
         if (getUpdateTopicOperation().getSession().getUser().getName().equals(getUpdateTopicOperation().getTopic().getOwner())
-            || getUpdateTopicOperation().getSession().getUser().getCategory() == User.UserTypes.Admin) {
+                || getUpdateTopicOperation().getSession().getUser().getCategory() == User.UserTypes.Admin) {
             Miranda.getInstance().getTopicManager().sendUpdateTopicMessage(getUpdateTopicOperation().getQueue(),
                     this, getUpdateTopicOperation().getTopic());
         } else {
@@ -88,7 +88,7 @@ public class UpdateTopicOperationReadyState extends State {
         return getUpdateTopicOperation().getCurrentState();
     }
 
-    public State processUpdateTopicResponseMessage (UpdateTopicResponseMessage updateTopicResponseMessage) {
+    public State processUpdateTopicResponseMessage(UpdateTopicResponseMessage updateTopicResponseMessage) {
         UpdateTopicResponseMessage responseMessage = new UpdateTopicResponseMessage(getUpdateTopicOperation().getQueue(),
                 this, updateTopicResponseMessage.getResult());
 

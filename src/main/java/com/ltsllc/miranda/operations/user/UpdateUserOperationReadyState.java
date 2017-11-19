@@ -30,27 +30,27 @@ import com.ltsllc.miranda.user.messages.UpdateUserResponseMessage;
  * Created by Clark on 4/16/2017.
  */
 public class UpdateUserOperationReadyState extends State {
-    public UpdateUserOperation getUpdateUserOperation () {
+    public UpdateUserOperation getUpdateUserOperation() {
         return (UpdateUserOperation) getContainer();
     }
 
-    public UpdateUserOperationReadyState (UpdateUserOperation updateUserOperation) throws MirandaException {
+    public UpdateUserOperationReadyState(UpdateUserOperation updateUserOperation) throws MirandaException {
         super(updateUserOperation);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getUpdateUserOperation().getCurrentState();
 
         switch (message.getSubject()) {
             case GetUserResponse: {
                 GetUserResponseMessage getUserResponseMessage = (GetUserResponseMessage) message;
-                nextState = processGetUserResponseMessage (getUserResponseMessage);
+                nextState = processGetUserResponseMessage(getUserResponseMessage);
                 break;
             }
 
             case UpdateUserResponse: {
                 UpdateUserResponseMessage updateUserResponseMessage = (UpdateUserResponseMessage) message;
-                nextState = processUpdateUserResponseMessage (updateUserResponseMessage);
+                nextState = processUpdateUserResponseMessage(updateUserResponseMessage);
                 break;
             }
 
@@ -63,7 +63,7 @@ public class UpdateUserOperationReadyState extends State {
         return nextState;
     }
 
-    public State processUpdateUserResponseMessage (UpdateUserResponseMessage message) {
+    public State processUpdateUserResponseMessage(UpdateUserResponseMessage message) {
         if (message.getResult() == Results.Success) {
             Miranda.getInstance().getCluster().sendUpdateUserMessage(getUpdateUserOperation().getQueue(), this,
                     message.getUser());
@@ -72,26 +72,25 @@ public class UpdateUserOperationReadyState extends State {
         UpdateUserResponseMessage updateUserResponseMessage = new UpdateUserResponseMessage(
                 getUpdateUserOperation().getQueue(), this, message.getUser(), message.getResult());
 
-        send (getUpdateUserOperation().getRequester(), updateUserResponseMessage);
+        send(getUpdateUserOperation().getRequester(), updateUserResponseMessage);
 
         return StopState.getInstance();
     }
 
-    public State processGetUserResponseMessage (GetUserResponseMessage getUserResponseMessage) {
+    public State processGetUserResponseMessage(GetUserResponseMessage getUserResponseMessage) {
         if (getUserResponseMessage.getResult() != Results.Success) {
             UpdateUserResponseMessage updateUserResponseMessage = new UpdateUserResponseMessage(getUpdateUserOperation().getQueue(),
                     this, null, Results.UserNotFound);
 
-            send (getUpdateUserOperation().getRequester(), updateUserResponseMessage);
+            send(getUpdateUserOperation().getRequester(), updateUserResponseMessage);
 
             return StopState.getInstance();
         } else if (getUpdateUserOperation().getSession().getUser().getName() != getUserResponseMessage.getUser().getName() &&
-                getUpdateUserOperation().getSession().getUser().getCategory() != User.UserTypes.Admin)
-        {
+                getUpdateUserOperation().getSession().getUser().getCategory() != User.UserTypes.Admin) {
             UpdateUserResponseMessage updateUserResponseMessage = new UpdateUserResponseMessage(getUpdateUserOperation().getQueue(),
                     this, null, Results.NotOwner);
 
-            send (getUpdateUserOperation().getRequester(), updateUserResponseMessage);
+            send(getUpdateUserOperation().getRequester(), updateUserResponseMessage);
 
             return StopState.getInstance();
         } else {

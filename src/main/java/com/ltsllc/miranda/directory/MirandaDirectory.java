@@ -38,6 +38,7 @@ import java.util.Map;
  */
 abstract public class MirandaDirectory<T extends DirectoryEntry> extends MirandaFile {
     abstract public boolean isInteresting(String name);
+
     abstract public Type getListType();
 
     private File directory;
@@ -134,7 +135,7 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
         try {
             filename = getDirectory().getCanonicalPath();
             List<String> list = new ArrayList<String>();
-            scan (filename, list);
+            scan(filename, list);
             return list;
         } catch (IOException e) {
             String message = "Exception during scan of " + filename;

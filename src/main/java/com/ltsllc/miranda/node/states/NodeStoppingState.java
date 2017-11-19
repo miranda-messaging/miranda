@@ -28,16 +28,16 @@ import org.apache.log4j.Logger;
 
 /**
  * A cluster node that is shutting down.
- *
  * <p>
- *     A Node enters this state when it is the process of shutting down.  It
- *     assumes that a {@link com.ltsllc.miranda.network.messages.CloseMessage}
- *     has already been sent so it waits for a response.
+ * <p>
+ * A Node enters this state when it is the process of shutting down.  It
+ * assumes that a {@link com.ltsllc.miranda.network.messages.CloseMessage}
+ * has already been sent so it waits for a response.
  * </p>
- *
  * <p>
- *     WHEN IN THIS STATE THE NODE WILL DISCARD ANY MESSAGE OTHER THAN A
- *     DISCONNECTED MESSAGE FROM THE NETWORK!
+ * <p>
+ * WHEN IN THIS STATE THE NODE WILL DISCARD ANY MESSAGE OTHER THAN A
+ * DISCONNECTED MESSAGE FROM THE NETWORK!
  * </p>
  */
 public class NodeStoppingState extends State {
@@ -47,15 +47,14 @@ public class NodeStoppingState extends State {
         return (Node) getContainer();
     }
 
-    public NodeStoppingState (Node node) throws MirandaException {
+    public NodeStoppingState(Node node) throws MirandaException {
         super(node);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage(Message message) {
         State nextState = this;
 
-        switch (message.getSubject())
-        {
+        switch (message.getSubject()) {
             case CloseResponse: {
                 CloseResponseMessage closeResponseMessage = (CloseResponseMessage) message;
                 nextState = processCloseResponseMessage(closeResponseMessage);
@@ -71,26 +70,26 @@ public class NodeStoppingState extends State {
         return nextState;
     }
 
-    public State processCloseResponseMessage (CloseResponseMessage closeResponseMessage) {
+    public State processCloseResponseMessage(CloseResponseMessage closeResponseMessage) {
         if (closeResponseMessage.getResult() != Results.Success) {
             logger.error("Got result " + closeResponseMessage.getResult() + " shutting down.  Continuing with shutdown");
         }
 
         String name = getNode().getDns() + ":" + getNode().getPort();
-        getNode().getCluster().sendShutdownResponse(getNode().getQueue(),this, name);
+        getNode().getCluster().sendShutdownResponse(getNode().getQueue(), this, name);
 
         return StopState.getInstance();
     }
 
-    public State discardMessage (Message message) {
-        logger.warn (getNode() + " is shutting down, discarding a message " + message);
+    public State discardMessage(Message message) {
+        logger.warn(getNode() + " is shutting down, discarding a message " + message);
 
         return this;
     }
 
-    public State processDisconnectedMessage (DisconnectedMessage disconnectedMessage) {
+    public State processDisconnectedMessage(DisconnectedMessage disconnectedMessage) {
         String name = getNode().getDns() + ":" + getNode().getPort();
-        getNode().getCluster().sendShutdownResponse(getNode().getQueue(),this, name);
+        getNode().getCluster().sendShutdownResponse(getNode().getQueue(), this, name);
 
         return StopState.getInstance();
     }

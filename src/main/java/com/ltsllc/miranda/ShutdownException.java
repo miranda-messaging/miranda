@@ -4,7 +4,7 @@ package com.ltsllc.miranda;
  * Created by Clark on 6/1/2017.
  */
 public class ShutdownException extends RuntimeException {
-    public ShutdownException (String message) {
+    public ShutdownException(String message) {
         super(message);
     }
 
@@ -12,7 +12,7 @@ public class ShutdownException extends RuntimeException {
         super(throwable);
     }
 
-    public ShutdownException (String message, Throwable throwable) {
+    public ShutdownException(String message, Throwable throwable) {
         super(message, throwable);
     }
 }

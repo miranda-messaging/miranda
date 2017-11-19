@@ -30,7 +30,7 @@ public class UserDeletedMessage extends Message {
         return name;
     }
 
-    public UserDeletedMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public UserDeletedMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.UserDeleted, senderQueue, sender);
 
         this.name = name;

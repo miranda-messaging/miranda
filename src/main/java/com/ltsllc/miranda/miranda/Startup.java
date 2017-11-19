@@ -216,7 +216,7 @@ public class Startup extends State {
         return commandLine;
     }
 
-    public void setCommandLine (MirandaCommandLine commandLine) {
+    public void setCommandLine(MirandaCommandLine commandLine) {
         this.commandLine = commandLine;
     }
 
@@ -592,7 +592,7 @@ public class Startup extends State {
         this.properties = Miranda.properties;
 
         String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-        File file = new File (trustStoreFilename);
+        File file = new File(trustStoreFilename);
         if (!file.exists()) {
             StartupPanic startupPanic = new StartupPanic("trustore, " + trustStoreFilename + ", does not exist",
                     StartupPanic.StartupReasons.TrustStoreMissing);
@@ -801,11 +801,11 @@ public class Startup extends State {
         }
     }
 
-    public KeyStore loadKeyStore (String filename, String password) {
+    public KeyStore loadKeyStore(String filename, String password) {
         try {
             return Utils.loadKeyStore(filename, password);
         } catch (GeneralSecurityException | IOException e) {
-            StartupPanic startupPanic = new StartupPanic("Exception loading keystore from " + filename,e,
+            StartupPanic startupPanic = new StartupPanic("Exception loading keystore from " + filename, e,
                     StartupPanic.StartupReasons.ExceptionLoadingKeystore);
             Miranda.panicMiranda(startupPanic);
         }
@@ -813,7 +813,7 @@ public class Startup extends State {
         return null;
     }
 
-    public void setupKeyStores () throws Panic {
+    public void setupKeyStores() throws Panic {
         if (null == getKeyStore()) {
             String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             this.keyStore = loadKeyStore(filename, getKeystorePasswordString());
@@ -826,11 +826,11 @@ public class Startup extends State {
     }
 
 
-    public void logProperties () {
+    public void logProperties() {
         Miranda.properties.log();
     }
 
-    public void exportCertificate () throws GeneralSecurityException, IOException {
+    public void exportCertificate() throws GeneralSecurityException, IOException {
         KeyStore keyStore = getKeyStore();
         Certificate certificate = keyStore.getCertificate("private");
         Utils.writeAsPem("tempfile", certificate);

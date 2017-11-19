@@ -25,15 +25,15 @@ import com.ltsllc.miranda.topics.TopicsFile;
  * Created by Clark on 5/18/2017.
  */
 public class TopicsFileStartingState extends SingleFileStartingState {
-    public TopicsFile getTopicsFile () {
+    public TopicsFile getTopicsFile() {
         return (TopicsFile) getContainer();
     }
 
-    public TopicsFileStartingState (TopicsFile topicsFile) throws MirandaException {
+    public TopicsFileStartingState(TopicsFile topicsFile) throws MirandaException {
         super(topicsFile);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new TopicsFileReadyState(getTopicsFile());
     }
 }

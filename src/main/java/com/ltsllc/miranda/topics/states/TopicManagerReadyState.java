@@ -88,7 +88,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
 
             case OwnerQuery: {
                 OwnerQueryMessage ownerQueryMessage = (OwnerQueryMessage) message;
-                nextState = processOwnerQueryMessage (ownerQueryMessage);
+                nextState = processOwnerQueryMessage(ownerQueryMessage);
                 break;
             }
 
@@ -101,7 +101,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return nextState;
     }
 
-    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         getTopicManager().performGarbageCollection();
 
         getTopicManager().getTopicsFile().sendGarbageCollectionMessage(getTopicManager().getQueue(), this);
@@ -109,7 +109,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processGetTopicMessage (GetTopicMessage getTopicMessage) throws MirandaException {
+    public State processGetTopicMessage(GetTopicMessage getTopicMessage) throws MirandaException {
         Topic topic = getTopicManager().getTopic(getTopicMessage.getName());
 
         GetTopicResponseMessage getTopicResponseMessage = new GetTopicResponseMessage(getTopicManager().getQueue(),
@@ -120,7 +120,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processGetTopicsMessage (ListTopicsMessage getTopicsMessage) throws MirandaException {
+    public State processGetTopicsMessage(ListTopicsMessage getTopicsMessage) throws MirandaException {
         List<Topic> topics = new ArrayList<Topic>(getTopicManager().getTopics());
 
         GetTopicsResponseMessage getTopicsResponseMessage = new GetTopicsResponseMessage(getTopicManager().getQueue(),
@@ -131,15 +131,14 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage)
-    {
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) {
         List<Topic> topics = (List<Topic>) fileLoadedMessage.getData();
         getTopicManager().setTopics(topics);
 
         return getTopicManager().getCurrentState();
     }
 
-    public State processNewTopicMessage (NewTopicMessage newTopicMessage) throws MirandaException {
+    public State processNewTopicMessage(NewTopicMessage newTopicMessage) throws MirandaException {
         Message reply = null;
 
         try {
@@ -155,7 +154,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) throws MirandaException {
+    public State processDeleteTopicMessage(DeleteTopicMessage deleteTopicMessage) throws MirandaException {
         getTopicManager().deleteTopic(deleteTopicMessage.getTopicName());
         DeleteTopicResponseMessage deleteTopicResponseMessage = new DeleteTopicResponseMessage(getTopicManager().getQueue(),
                 this, Results.Success);
@@ -165,7 +164,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processCreateTopicMessage (CreateTopicMessage createTopicMessage) throws MirandaException {
+    public State processCreateTopicMessage(CreateTopicMessage createTopicMessage) throws MirandaException {
         Results result = Results.Unknown;
 
         try {
@@ -182,7 +181,7 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) throws MirandaException {
+    public State processUpdateTopicMessage(UpdateTopicMessage updateTopicMessage) throws MirandaException {
         Results result = Results.Unknown;
 
         try {
@@ -205,8 +204,8 @@ public class TopicManagerReadyState extends StandardManagerReadyState<Topic> {
         return getTopicManager().getCurrentState();
     }
 
-    public State processOwnerQueryMessage (OwnerQueryMessage ownerQueryMessage) throws MirandaException {
-        List<String> property = getTopicManager().getPropertyOf (ownerQueryMessage.getName());
+    public State processOwnerQueryMessage(OwnerQueryMessage ownerQueryMessage) throws MirandaException {
+        List<String> property = getTopicManager().getPropertyOf(ownerQueryMessage.getName());
         OwnerQueryResponseMessage ownerQueryResponseMessage = new OwnerQueryResponseMessage(getTopicManager().getQueue(),
                 this, ownerQueryMessage.getName(), property, "TopicManager");
 

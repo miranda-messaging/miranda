@@ -29,7 +29,7 @@ public class UpdateUserWireMessage extends WireMessage {
         return userObject;
     }
 
-    public UpdateUserWireMessage (UserObject userObject) {
+    public UpdateUserWireMessage(UserObject userObject) {
         super(WireSubjects.UpdateUser);
 
         this.userObject = userObject;

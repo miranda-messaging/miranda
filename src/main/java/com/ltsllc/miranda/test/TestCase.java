@@ -315,8 +315,16 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
             }
         }
 
+        long lastTime = file.lastModified();
+
         if (!file.setLastModified(time)) {
             Exception e = new Exception("could not set the time of last modification of " + file);
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        if ((file.lastModified() - time) >= 1000) {
+            Exception e = new Exception("time disprency in touch");
             e.printStackTrace();
             System.exit(1);
         }
@@ -351,7 +359,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         return mockLogger;
     }
 
-    public HttpServer getMockHttpServer () {
+    public HttpServer getMockHttpServer() {
         return mockHttpServer;
     }
 
@@ -388,6 +396,8 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
     }
 
     public void setup() throws MirandaException {
+        StopState.initializeClass();
+
         network = new LinkedBlockingQueue<Message>();
         writerQueue = new LinkedBlockingQueue<Message>();
 
@@ -458,7 +468,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
             "</log4j:configuration>",
     };
 
-    public void setupMockHttpServer () {
+    public void setupMockHttpServer() {
         Miranda.getInstance().setHttpServer(getMockHttpServer());
     }
 
@@ -499,7 +509,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         }
     }
 
-    public static void createFile (String filename) {
+    public static void createFile(String filename) {
         SecureRandom random = new SecureRandom();
         byte[] contents = new byte[1024];
         random.nextBytes(contents);
@@ -587,13 +597,12 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
     public static final String TEMP_KEYSTORE = "tempKeyStore";
     public static final String TEMP_KEYSTORE_PASSWORD = "whatever";
 
-    public void setupKeyStore()
-    {
+    public void setupKeyStore() {
         try {
             deleteFile(TEMP_KEYSTORE);
             createFile(TEMP_KEYSTORE, TEMP_KEY_STORE_CONTENTS);
             this.keyStore = Utils.loadKeyStore(TEMP_KEYSTORE, TEMP_KEYSTORE_PASSWORD);
-            Miranda.properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE,TEMP_KEYSTORE);
+            Miranda.properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, TEMP_KEYSTORE);
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
         }
@@ -657,7 +666,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         }
     }
 
-    public static void pause () {
+    public static void pause() {
         pause(1);
     }
 
@@ -785,10 +794,11 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         return true;
     }
 
-    public static void setupFileWatcher(int period) throws MirandaException {
+    public static void setupFileWatcherService(int period) throws MirandaException {
         Miranda.fileWatcher = new FileWatcherService(period);
         Miranda.fileWatcher.start();
     }
+
 
     public Network getMockNetwork() {
         return mockNetwork;
@@ -864,7 +874,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         Miranda.getInstance().setWriter(getMockWriter());
     }
 
-    public String loadHexString (String filename) throws IOException {
+    public String loadHexString(String filename) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         FileInputStream fileInputStream = null;

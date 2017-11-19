@@ -46,7 +46,7 @@ public class DeleteSubscriptionOperation extends Operation {
         return subscriptionName;
     }
 
-    public DeleteSubscriptionOperation (BlockingQueue<Message> requester, Session session, String subscriptionName) throws MirandaException {
+    public DeleteSubscriptionOperation(BlockingQueue<Message> requester, Session session, String subscriptionName) throws MirandaException {
         super(NAME, requester, session);
 
         this.subscriptionName = subscriptionName;
@@ -55,7 +55,7 @@ public class DeleteSubscriptionOperation extends Operation {
         setCurrentState(readyState);
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionMessage(getQueue(), this, getSubscriptionName());

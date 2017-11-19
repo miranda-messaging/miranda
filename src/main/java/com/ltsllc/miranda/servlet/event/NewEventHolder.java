@@ -31,7 +31,7 @@ public class NewEventHolder extends ServletHolder {
     private Map<String, Event> eventMap;
     private Map<String, Results> resultMap;
 
-    public NewEventHolder (String name, long timeout, String base) throws MirandaException {
+    public NewEventHolder(String name, long timeout, String base) throws MirandaException {
         super(name, timeout);
 
         this.base = base;
@@ -51,7 +51,7 @@ public class NewEventHolder extends ServletHolder {
         NewEventHolder.ourInstance = ourInstance;
     }
 
-    public static void initialize (long timeout, String base) throws MirandaException {
+    public static void initialize(long timeout, String base) throws MirandaException {
         ourInstance = new NewEventHolder(NAME, timeout, base);
     }
 
@@ -59,21 +59,21 @@ public class NewEventHolder extends ServletHolder {
         resultMap.put(guid, Results.Unknown);
     }
 
-    public synchronized void setResultAndAwaken (String guid, Results result, Event event) {
+    public synchronized void setResultAndAwaken(String guid, Results result, Event event) {
         if (!resultMap.containsKey(guid)) {
-            logger.warn ("Unrecognized GUID: " + guid);
+            logger.warn("Unrecognized GUID: " + guid);
         }
 
-        resultMap.put (guid, result);
-        eventMap.put (guid, event);
+        resultMap.put(guid, result);
+        eventMap.put(guid, event);
     }
 
-    public synchronized void unregisterGuid (String guid) {
+    public synchronized void unregisterGuid(String guid) {
         resultMap.remove(guid);
         eventMap.remove(guid);
     }
 
-    public NewEvent create (Session session, Event event) throws TimeoutException {
+    public NewEvent create(Session session, Event event) throws TimeoutException {
         try {
             registerGuid(event.getGuid());
             Miranda.getInstance().getEventManager().sendNewEventMessage(getQueue(), this, session, event);
@@ -92,11 +92,11 @@ public class NewEventHolder extends ServletHolder {
         }
     }
 
-    public synchronized Results getResult (String guid) {
+    public synchronized Results getResult(String guid) {
         return resultMap.get(guid);
     }
 
-    public synchronized Event getEvent (String guid) {
+    public synchronized Event getEvent(String guid) {
         return eventMap.get(guid);
     }
 }

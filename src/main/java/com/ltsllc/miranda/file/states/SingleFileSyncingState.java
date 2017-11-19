@@ -33,15 +33,20 @@ import java.util.List;
  */
 abstract public class SingleFileSyncingState extends State {
     abstract public Type getListType();
+
     abstract public State getReadyState() throws MirandaException;
+
     abstract public List getData();
+
     abstract public boolean contains(Object o);
+
     abstract public SingleFile getFile();
+
     abstract public String getName();
 
     private static Gson ourGson = new Gson();
 
-    public SingleFileSyncingState (Consumer consumer) throws MirandaException {
+    public SingleFileSyncingState(Consumer consumer) throws MirandaException {
         super(consumer);
     }
 
@@ -52,13 +57,13 @@ abstract public class SingleFileSyncingState extends State {
         switch (message.getSubject()) {
             case GetFileResponse: {
                 GetFileResponseMessage getFileResponseMessage = (GetFileResponseMessage) message;
-                nextState = processGetFileResponse (getFileResponseMessage);
+                nextState = processGetFileResponse(getFileResponseMessage);
                 break;
             }
 
             case GetFile: {
                 GetFileMessage getFileMessage = (GetFileMessage) message;
-                nextState = processGetFileMessage (getFileMessage);
+                nextState = processGetFileMessage(getFileMessage);
                 break;
             }
 
@@ -71,14 +76,14 @@ abstract public class SingleFileSyncingState extends State {
     }
 
 
-    public State processGetFileResponse (GetFileResponseMessage getFileResponseMessage) {
+    public State processGetFileResponse(GetFileResponseMessage getFileResponseMessage) {
         List list = ourGson.fromJson(getFileResponseMessage.getContents(), getListType());
         getFile().merge(list);
 
         return this;
     }
 
-    private State processGetFileMessage (GetFileMessage getFileMessage) throws MirandaException {
+    private State processGetFileMessage(GetFileMessage getFileMessage) throws MirandaException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getName(),
                 getFile().getBytes());
 

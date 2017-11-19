@@ -37,7 +37,7 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
 
     private SubscriptionsFile subscriptionsFile;
 
-    public SubscriptionsFileReadyState (SubscriptionsFile subscriptionsFile) throws MirandaException {
+    public SubscriptionsFileReadyState(SubscriptionsFile subscriptionsFile) throws MirandaException {
         super(subscriptionsFile);
 
         this.subscriptionsFile = subscriptionsFile;
@@ -77,7 +77,8 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
 
     @Override
     public Type getListType() {
-        return new TypeToken<List<User>>() {}.getType();
+        return new TypeToken<List<User>>() {
+        }.getType();
     }
 
     @Override

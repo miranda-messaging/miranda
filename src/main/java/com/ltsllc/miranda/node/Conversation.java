@@ -12,7 +12,7 @@ public class Conversation {
     private String key;
     private BlockingQueue<Message> receiver;
 
-    public Conversation (String key, BlockingQueue<Message> receiver) {
+    public Conversation(String key, BlockingQueue<Message> receiver) {
         this.key = key;
         this.receiver = receiver;
     }
@@ -25,7 +25,7 @@ public class Conversation {
         return key;
     }
 
-    public void forwardMessage (ConversationMessage message) {
+    public void forwardMessage(ConversationMessage message) {
         Consumer.staticSend(message.getMessage(), getReceiver());
     }
 }

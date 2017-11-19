@@ -30,12 +30,12 @@ public class NetworkMessage extends Message {
         return wireMessage;
     }
 
-    public NetworkMessage (BlockingQueue<Message> senderQueue, Object sender, WireMessage wireMessage) {
+    public NetworkMessage(BlockingQueue<Message> senderQueue, Object sender, WireMessage wireMessage) {
         super(Subjects.NetworkMessage, senderQueue, sender);
         this.wireMessage = wireMessage;
     }
 
-    public NetworkMessage (Subjects subject, BlockingQueue<Message> senderQueue, WireMessage wireMessage) {
+    public NetworkMessage(Subjects subject, BlockingQueue<Message> senderQueue, WireMessage wireMessage) {
         super(subject, senderQueue, null);
 
         this.wireMessage = wireMessage;

@@ -21,8 +21,8 @@ public class NetworkConversationMessage extends NetworkMessage {
         return node;
     }
 
-    public NetworkConversationMessage (Subjects subject, BlockingQueue<Message> senderQueue, WireResponse response,
-                                       String conversation, Node node) {
+    public NetworkConversationMessage(Subjects subject, BlockingQueue<Message> senderQueue, WireResponse response,
+                                      String conversation, Node node) {
 
         super(subject, senderQueue, response);
 

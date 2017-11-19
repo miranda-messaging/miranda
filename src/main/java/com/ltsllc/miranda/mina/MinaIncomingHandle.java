@@ -28,31 +28,31 @@ import java.util.concurrent.BlockingQueue;
 public class MinaIncomingHandle extends Handle {
     private MinaIncomingHandler handler;
 
-    public MinaIncomingHandler getHandler () {
+    public MinaIncomingHandler getHandler() {
         return handler;
     }
 
-    public MinaIncomingHandle (BlockingQueue<Message> notify, MinaIncomingHandler handler) {
+    public MinaIncomingHandle(BlockingQueue<Message> notify, MinaIncomingHandler handler) {
         super(notify);
 
         this.handler = handler;
     }
 
-    public MinaIncomingHandle (MinaIncomingHandler handler) {
+    public MinaIncomingHandle(MinaIncomingHandler handler) {
         super(null);
 
         this.handler = handler;
     }
 
-    public void close () {
+    public void close() {
         getHandler().close();
     }
 
-    public void panic () {
+    public void panic() {
         close();
     }
 
-    public void send (WireMessage wireMessage) {
+    public void send(WireMessage wireMessage) {
         getHandler().send(wireMessage);
     }
 }

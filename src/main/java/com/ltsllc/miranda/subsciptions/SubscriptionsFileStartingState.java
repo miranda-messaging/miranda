@@ -24,15 +24,15 @@ import com.ltsllc.miranda.file.states.SingleFileStartingState;
  * Created by Clark on 5/18/2017.
  */
 public class SubscriptionsFileStartingState extends SingleFileStartingState {
-    public SubscriptionsFile getSubscriptionsFile () {
+    public SubscriptionsFile getSubscriptionsFile() {
         return (SubscriptionsFile) getContainer();
     }
 
-    public SubscriptionsFileStartingState (SubscriptionsFile subscriptionsFile) throws MirandaException {
+    public SubscriptionsFileStartingState(SubscriptionsFile subscriptionsFile) throws MirandaException {
         super(subscriptionsFile);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new SubscriptionsFileReadyState(getSubscriptionsFile());
     }
 }

@@ -32,12 +32,12 @@ import org.apache.log4j.Logger;
 public class ConnectingState extends NodeState {
     private Logger logger = Logger.getLogger(ConnectingState.class);
 
-    public ConnectingState (Node node, Network network) throws MirandaException {
+    public ConnectingState(Node node, Network network) throws MirandaException {
         super(node, network);
     }
 
 
-    public State processMessage (Message m) throws MirandaException {
+    public State processMessage(Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -62,7 +62,7 @@ public class ConnectingState extends NodeState {
     }
 
 
-    private State processConnectSucceededMessage (ConnectSucceededMessage connectSucceededMessage) throws MirandaException {
+    private State processConnectSucceededMessage(ConnectSucceededMessage connectSucceededMessage) throws MirandaException {
         logger.info("got connection");
 
         getNode().setHandle(connectSucceededMessage.getHandle());
@@ -74,7 +74,7 @@ public class ConnectingState extends NodeState {
     }
 
 
-    private State processConnectFailedMessage (ConnectFailedMessage connectFailedMessage) throws MirandaException {
+    private State processConnectFailedMessage(ConnectFailedMessage connectFailedMessage) throws MirandaException {
         String message = "Failed to get connection to " + getNode().getDns() + ":" + getNode().getPort();
         logger.info(message, connectFailedMessage.getCause());
 

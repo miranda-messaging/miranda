@@ -30,7 +30,7 @@ public class ConnectSucceededMessage extends Message {
         return handle;
     }
 
-    public ConnectSucceededMessage (BlockingQueue<Message> senderQueue, Object sender, int handle) {
+    public ConnectSucceededMessage(BlockingQueue<Message> senderQueue, Object sender, int handle) {
         super(Subjects.ConnectSucceeded, senderQueue, sender);
 
         this.handle = handle;

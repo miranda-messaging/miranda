@@ -77,16 +77,16 @@ public class Topic extends MirandaObject {
     }
 
 
-    public Topic (String name) {
+    public Topic(String name) {
         this.name = name;
     }
 
-    public Topic (String name, String owner) {
+    public Topic(String name, String owner) {
         this.name = name;
         this.owner = owner;
     }
 
-    public void updateFrom (Topic other) {
+    public void updateFrom(Topic other) {
         setOwner(other.getOwner());
         setRemotePolicy(other.getRemotePolicy());
     }
@@ -136,7 +136,7 @@ public class Topic extends MirandaObject {
             "clark"
     };
 
-    public static Topic random (ImprovedRandom improvedRandom) {
+    public static Topic random(ImprovedRandom improvedRandom) {
         String name = NAMES[improvedRandom.nextIndex(NAMES)];
         String owner = OWNERS[improvedRandom.nextIndex(OWNERS)];
 

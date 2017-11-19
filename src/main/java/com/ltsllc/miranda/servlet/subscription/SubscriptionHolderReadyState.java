@@ -26,21 +26,21 @@ import com.ltsllc.miranda.subsciptions.messages.*;
  * Created by Clark on 4/22/2017.
  */
 public class SubscriptionHolderReadyState extends ServletHolderReadyState {
-    public SubscriptionHolder getSubscriptionHolder () {
+    public SubscriptionHolder getSubscriptionHolder() {
         return (SubscriptionHolder) getContainer();
     }
 
-    public SubscriptionHolderReadyState (SubscriptionHolder subscriptionHolder) throws MirandaException {
-        super (subscriptionHolder);
+    public SubscriptionHolderReadyState(SubscriptionHolder subscriptionHolder) throws MirandaException {
+        super(subscriptionHolder);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getSubscriptionHolder().getCurrentState();
 
         switch (message.getSubject()) {
             case GetSubscriptionResponse: {
                 GetSubscriptionResponseMessage getSubscriptionResponseMessage = (GetSubscriptionResponseMessage) message;
-                nextState = processGetSubscriptionResponseMessage (getSubscriptionResponseMessage);
+                nextState = processGetSubscriptionResponseMessage(getSubscriptionResponseMessage);
                 break;
             }
 
@@ -48,7 +48,7 @@ public class SubscriptionHolderReadyState extends ServletHolderReadyState {
                 GetSubscriptionsResponseMessage getSubscriptionsResponseMessage = (GetSubscriptionsResponseMessage)
                         message;
 
-                nextState = processGetSubscriptionsResponseMessage (getSubscriptionsResponseMessage);
+                nextState = processGetSubscriptionsResponseMessage(getSubscriptionsResponseMessage);
                 break;
             }
 
@@ -56,7 +56,7 @@ public class SubscriptionHolderReadyState extends ServletHolderReadyState {
                 CreateSubscriptionResponseMessage createSubscriptionResponseMessage = (CreateSubscriptionResponseMessage)
                         message;
 
-                nextState = processCreateSubscriptionResponseMessage (createSubscriptionResponseMessage);
+                nextState = processCreateSubscriptionResponseMessage(createSubscriptionResponseMessage);
                 break;
             }
 
@@ -85,32 +85,32 @@ public class SubscriptionHolderReadyState extends ServletHolderReadyState {
         return nextState;
     }
 
-    public State processGetSubscriptionResponseMessage (GetSubscriptionResponseMessage getSubscriptionResponseMessage) {
+    public State processGetSubscriptionResponseMessage(GetSubscriptionResponseMessage getSubscriptionResponseMessage) {
         getSubscriptionHolder().setSubscriptionAndAwaken(getSubscriptionResponseMessage.getResult(),
                 getSubscriptionResponseMessage.getSubscription());
 
         return getSubscriptionHolder().getCurrentState();
     }
 
-    public State processGetSubscriptionsResponseMessage (GetSubscriptionsResponseMessage getSubscriptionsResponseMessage) {
+    public State processGetSubscriptionsResponseMessage(GetSubscriptionsResponseMessage getSubscriptionsResponseMessage) {
         getSubscriptionHolder().setSubscriptionsAndAwaken(getSubscriptionsResponseMessage.getSubscriptions());
 
         return getSubscriptionHolder().getCurrentState();
     }
 
-    public State processCreateSubscriptionResponseMessage (CreateSubscriptionResponseMessage createSubscriptionResponseMessage) {
+    public State processCreateSubscriptionResponseMessage(CreateSubscriptionResponseMessage createSubscriptionResponseMessage) {
         getSubscriptionHolder().setCreateResultAndAwaken(createSubscriptionResponseMessage.getResult());
 
         return getSubscriptionHolder().getCurrentState();
     }
 
-    public State processUpdateSubscriptionResponseMessage (UpdateSubscriptionResponseMessage updateSubscriptionResponseMessage) {
+    public State processUpdateSubscriptionResponseMessage(UpdateSubscriptionResponseMessage updateSubscriptionResponseMessage) {
         getSubscriptionHolder().setUpdateResultAndAwaken(updateSubscriptionResponseMessage.getResult());
 
         return getSubscriptionHolder().getCurrentState();
     }
 
-    public State processDeleteSubscriptionResponseMessage (DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage) {
+    public State processDeleteSubscriptionResponseMessage(DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage) {
         getSubscriptionHolder().setDeleteResultAndAwaken(deleteSubscriptionResponseMessage.getResult());
 
         return getSubscriptionHolder().getCurrentState();

@@ -33,7 +33,7 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/11/2017.
  */
 public class ReadTopicServlet extends TopicServlet {
-    public ResultObject createResultObject () {
+    public ResultObject createResultObject() {
         return new TopicResultObject();
     }
 

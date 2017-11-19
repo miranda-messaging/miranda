@@ -32,7 +32,7 @@ public class CreateSubscriptionResponseMessage extends Message {
     }
 
     public CreateSubscriptionResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result) {
-        super (Subjects.CreateSubscriptionResponse, senderQueue, sender);
+        super(Subjects.CreateSubscriptionResponse, senderQueue, sender);
 
         this.result = result;
     }

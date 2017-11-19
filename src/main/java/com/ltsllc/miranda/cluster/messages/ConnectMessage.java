@@ -28,11 +28,11 @@ import java.util.concurrent.BlockingQueue;
  * Connect to a host & port
  */
 public class ConnectMessage extends Message {
-    public ConnectMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public ConnectMessage(BlockingQueue<Message> senderQueue, Object sender) {
         super(Subjects.Connect, senderQueue, sender);
     }
 
-    public String toString () {
+    public String toString() {
         return "connect";
     }
 }

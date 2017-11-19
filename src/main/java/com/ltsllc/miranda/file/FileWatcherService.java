@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
@@ -71,17 +72,17 @@ public class FileWatcherService extends Consumer {
         setCurrentState(readyState);
     }
 
-    public synchronized void watchFile (File file, BlockingQueue<Message> listener) throws IOException {
-        SimpleFileWatcher simpleFileWatcher = new SimpleFileWatcher(file, listener);
-        this.watchers.add(simpleFileWatcher);
+    public synchronized void watchFile(File file, BlockingQueue<Message> listener) throws IOException {
+        WatchFileMessage watchFileMessage = new WatchFileMessage(listener, null, file, listener);
+        sendToMe(watchFileMessage);
     }
 
-    public synchronized void watchDirectory (File directory, BlockingQueue<Message> listener) throws IOException {
+    public synchronized void watchDirectory(File directory, BlockingQueue<Message> listener) throws IOException {
         DirectoryWatcher directoryWatcher = new DirectoryWatcher(directory, listener);
         this.watchers.add(directoryWatcher);
     }
 
-    public synchronized void stopWatching (File file, BlockingQueue<Message> listener) {
+    public synchronized void stopWatching(File file, BlockingQueue<Message> listener) {
         List<Watcher> remove = new ArrayList<Watcher>();
 
         for (Watcher watcher : getWatchers()) {
@@ -91,6 +92,12 @@ public class FileWatcherService extends Consumer {
 
         getWatchers().removeAll(remove);
     }
+
+
+    public void check() {
+        checkFiles();
+    }
+
 
     public synchronized void checkFiles() {
         try {
@@ -103,18 +110,36 @@ public class FileWatcherService extends Consumer {
         }
     }
 
-    public void sendWatchFileMessage (BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
+    public void sendWatchFileMessage(BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
         WatchFileMessage watchFileMessage = new WatchFileMessage(senderQueue, sender, file, listener);
         sendToMe(watchFileMessage);
     }
 
-    public void sendWatchDirectoryMessage (BlockingQueue<Message> senderQueue, Object sender, File directory, BlockingQueue<Message> listener) {
+    public void sendWatchDirectoryMessage(BlockingQueue<Message> senderQueue, Object sender, File directory, BlockingQueue<Message> listener) {
         WatchDirectoryMessage watchDirectoryMessage = new WatchDirectoryMessage(senderQueue, sender, directory, listener);
         sendToMe(watchDirectoryMessage);
     }
 
-    public void sendStopWatchingMessage (BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
-        StopWatchingMessage stopWatchingMessage = new StopWatchingMessage (senderQueue, sender, file, listener);
+    public void sendStopWatchingMessage(BlockingQueue<Message> senderQueue, Object sender, File file, BlockingQueue<Message> listener) {
+        StopWatchingMessage stopWatchingMessage = new StopWatchingMessage(senderQueue, sender, file, listener);
         sendToMe(stopWatchingMessage);
     }
+
+    public void watchDirectory(File file, BlockingQueue<Message> listener, Object sender) {
+        WatchFileMessage watchFileMessage = new WatchFileMessage(listener, sender, file, listener);
+        sendToMe(watchFileMessage);
+    }
+
+    public void addWatcher(File file, BlockingQueue<Message> listener) throws IOException {
+        FileWatcher fileWatcher = null;
+
+        if (file.isFile()) {
+            fileWatcher = new SimpleFileWatcher(file, listener);
+        } else if (file.isDirectory()) {
+            fileWatcher = new DirectoryWatcher(file, listener);
+        }
+
+        getWatchers().add(fileWatcher);
+    }
 }
+

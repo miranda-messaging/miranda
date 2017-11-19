@@ -47,7 +47,7 @@ public class NewNodeState extends NodeState {
 
     private Cluster cluster;
 
-    public NewNodeState (Node node, Network network, Cluster cluster) throws MirandaException {
+    public NewNodeState(Node node, Network network, Cluster cluster) throws MirandaException {
         super(node, network);
 
         this.cluster = cluster;
@@ -57,7 +57,7 @@ public class NewNodeState extends NodeState {
         return cluster;
     }
 
-    public static void setLogger (Logger logger) {
+    public static void setLogger(Logger logger) {
         NewNodeState.logger = logger;
     }
 
@@ -69,19 +69,19 @@ public class NewNodeState extends NodeState {
         switch (wireMessage.getWireSubject()) {
             case Join: {
                 JoinWireMessage joinWireMessage = (JoinWireMessage) networkMessage.getWireMessage();
-                nextState = processJoinWireMessage (joinWireMessage);
+                nextState = processJoinWireMessage(joinWireMessage);
                 break;
             }
 
             case Versions: {
                 VersionsWireMessage versionsWireMessage = (VersionsWireMessage) networkMessage.getWireMessage();
-                nextState = processVersionsWireMessage (versionsWireMessage);
+                nextState = processVersionsWireMessage(versionsWireMessage);
                 break;
             }
 
             case GetFileResponse: {
                 GetFileResponseWireMessage getFileResponseWireMessage = (GetFileResponseWireMessage) networkMessage.getWireMessage();
-                nextState = processGetFileResponseWireMessage (getFileResponseWireMessage);
+                nextState = processGetFileResponseWireMessage(getFileResponseWireMessage);
                 break;
             }
 
@@ -112,13 +112,13 @@ public class NewNodeState extends NodeState {
 
             case GetUsersFile: {
                 GetUsersFileMessage getUsersFileMessage = (GetUsersFileMessage) message;
-                nextState = processGetUsersFileMessage (getUsersFileMessage);
+                nextState = processGetUsersFileMessage(getUsersFileMessage);
                 break;
             }
 
             case GetTopicsFile: {
                 GetTopicsFileMessage getTopicsFileMessage = (GetTopicsFileMessage) message;
-                nextState = processGetTopicsFileMessage (getTopicsFileMessage);
+                nextState = processGetTopicsFileMessage(getTopicsFileMessage);
                 break;
             }
 
@@ -130,7 +130,7 @@ public class NewNodeState extends NodeState {
 
             case GetVersion: {
                 GetVersionMessage getVersionMessage = (GetVersionMessage) message;
-                nextState = processGetVersionMessage (getVersionMessage);
+                nextState = processGetVersionMessage(getVersionMessage);
                 break;
             }
 
@@ -154,7 +154,7 @@ public class NewNodeState extends NodeState {
 
             case GetFile: {
                 GetFileMessage getFileMessage = (GetFileMessage) message;
-                nextState = processGetFileMessage (getFileMessage);
+                nextState = processGetFileMessage(getFileMessage);
                 break;
             }
 
@@ -167,14 +167,14 @@ public class NewNodeState extends NodeState {
     }
 
 
-    private State processGetClusterFileMessage (GetClusterFileMessage getClusterFileMessage) {
+    private State processGetClusterFileMessage(GetClusterFileMessage getClusterFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.NAME);
         sendOnWire(getFileWireMessage);
 
         return this;
     }
 
-    private State processJoinWireMessage (JoinWireMessage joinWireMessage) throws MirandaException {
+    private State processJoinWireMessage(JoinWireMessage joinWireMessage) throws MirandaException {
         getNode().setDns(joinWireMessage.getDns());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());
@@ -184,26 +184,26 @@ public class NewNodeState extends NodeState {
         JoinResponseWireMessage joinResponseWireMessage = new JoinResponseWireMessage(JoinResponseWireMessage.Responses.Success);
         sendOnWire(joinResponseWireMessage);
 
-        return new NodeReadyState (getNode(), getNetwork());
+        return new NodeReadyState(getNode(), getNetwork());
     }
 
 
-    private State processGetSubscriptionsFileMessage (GetSubscriptionsFileMessage getSubscriptionsFileMessage) {
+    private State processGetSubscriptionsFileMessage(GetSubscriptionsFileMessage getSubscriptionsFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage("subscriptions");
         sendOnWire(getFileWireMessage);
 
         return this;
     }
 
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+    private State processGetVersionMessage(GetVersionMessage getVersionMessage) {
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         sendOnWire(getVersionsWireMessage);
 
         return this;
     }
 
-    private State processConnectMessage (ConnectMessage connectMessage) {
-        String message = getNode() +  " in state " + this + " was told to connect when it already has a connection!  "
+    private State processConnectMessage(ConnectMessage connectMessage) {
+        String message = getNode() + " in state " + this + " was told to connect when it already has a connection!  "
                 + " ignoring message.";
 
         logger.warn(message, connectMessage.getWhere());
@@ -212,7 +212,7 @@ public class NewNodeState extends NodeState {
     }
 
 
-    private State processVersionsWireMessage (VersionsWireMessage versionsWireMessage) {
+    private State processVersionsWireMessage(VersionsWireMessage versionsWireMessage) {
         VersionsMessage versionsMessage = new VersionsMessage(getNode().getQueue(), this, versionsWireMessage.getVersions());
         send(Miranda.getInstance().getQueue(), versionsMessage);
 
@@ -220,7 +220,7 @@ public class NewNodeState extends NodeState {
     }
 
 
-    private State processGetFileResponseWireMessage (GetFileResponseWireMessage getFileResponseWireMessage) {
+    private State processGetFileResponseWireMessage(GetFileResponseWireMessage getFileResponseWireMessage) {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getNode().getQueue(), this,
                 getFileResponseWireMessage.getRequester(), getFileResponseWireMessage.getContents());
 
@@ -237,35 +237,35 @@ public class NewNodeState extends NodeState {
         return this;
     }
 
-    private State processGetUsersFileMessage (GetUsersFileMessage getUsersFileMessage) {
+    private State processGetUsersFileMessage(GetUsersFileMessage getUsersFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage(UsersFile.FILE_NAME);
         sendOnWire(getFileWireMessage);
 
         return this;
     }
 
-    private State processGetTopicsFileMessage (GetTopicsFileMessage getTopicsFileMessage) {
+    private State processGetTopicsFileMessage(GetTopicsFileMessage getTopicsFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage(TopicsFile.FILE_NAME);
         sendOnWire(getFileWireMessage);
 
         return this;
     }
 
-    private State processGetFileMessage (GetFileMessage getFileMessage) {
+    private State processGetFileMessage(GetFileMessage getFileMessage) {
         GetFileWireMessage getFileWireMessage = new GetFileWireMessage(getFileMessage.getFilename());
         sendOnWire(getFileWireMessage);
 
         return this;
     }
 
-    private State processGetSystemMessagesMessage (GetSystemMessagesMessage getSystemMessagesMessage) {
+    private State processGetSystemMessagesMessage(GetSystemMessagesMessage getSystemMessagesMessage) {
         GetMessagesWireMessage getMessagesWireMessage = new GetMessagesWireMessage(getSystemMessagesMessage.getFilename());
         sendOnWire(getMessagesWireMessage);
 
         return this;
     }
 
-    private State processGetDeliveriesMessage (GetDeliveriesMessage getDeliveriesMessage) {
+    private State processGetDeliveriesMessage(GetDeliveriesMessage getDeliveriesMessage) {
         GetDeliveriesWireMessage getDeliveriesWireMessage = new GetDeliveriesWireMessage(getDeliveriesMessage.getFilename());
         sendOnWire(getDeliveriesWireMessage);
 

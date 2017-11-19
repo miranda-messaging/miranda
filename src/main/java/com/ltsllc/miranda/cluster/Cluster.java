@@ -105,15 +105,15 @@ public class Cluster extends Manager<Node, NodeElement> {
         return network;
     }
 
-    public SingleFile<NodeElement> createFile (String filename) throws IOException, MirandaException {
+    public SingleFile<NodeElement> createFile(String filename) throws IOException, MirandaException {
         return new ClusterFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), getQueue());
     }
 
-    public State createStartState () throws MirandaException {
+    public State createStartState() throws MirandaException {
         return new ClusterStartState(this);
     }
 
-    public boolean contains (NodeElement nodeElement) {
+    public boolean contains(NodeElement nodeElement) {
         for (Node node : getNodes()) {
             if (node.equalsElement(nodeElement))
                 return true;
@@ -123,14 +123,14 @@ public class Cluster extends Manager<Node, NodeElement> {
     }
 
 
-    public void connect () {
+    public void connect() {
         for (Node node : getNodes()) {
             if (!node.isConnected())
                 node.connect();
         }
     }
 
-    public void disconnect () {
+    public void disconnect() {
         for (Node node : getNodes()) {
             node.disconnect();
         }
@@ -139,7 +139,7 @@ public class Cluster extends Manager<Node, NodeElement> {
     /**
      * Return the {@link Node} that matches the {@link NodeElement}
      */
-    public Node matchingNode (NodeElement nodeElement) {
+    public Node matchingNode(NodeElement nodeElement) {
         for (Node node : getNodes()) {
             if (node.matches(nodeElement))
                 return node;
@@ -148,7 +148,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         return null;
     }
 
-    public ClusterStatusObject getStatus () {
+    public ClusterStatusObject getStatus() {
         List<NodeStatus> statusOfNodes = new ArrayList<NodeStatus>(getNodes().size());
 
         for (Node node : getNodes()) {
@@ -159,7 +159,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         return new ClusterStatusObject(statusOfNodes);
     }
 
-    public void merge (List<NodeElement> newNodes) throws MirandaException {
+    public void merge(List<NodeElement> newNodes) throws MirandaException {
         boolean update = false;
 
         List<NodeElement> reallyNewNodes = new ArrayList<NodeElement>();
@@ -186,35 +186,35 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     /**
      * This gets called when a node connects "out of the blue."
-     *
      * <p>
-     *     Add the node, then tell the cluster file we have changed
+     * <p>
+     * Add the node, then tell the cluster file we have changed
      * </p>
      *
      * @param node The node that just connected.
      */
-    public void newNode (Node node) {
+    public void newNode(Node node) {
         getNodes().add(node);
 
         List<NodeElement> nodeElementList = asNodeElements();
         NodesUpdatedMessage message = new NodesUpdatedMessage(getQueue(), this, nodeElementList);
 
-        send (message, getFile().getQueue());
+        send(message, getFile().getQueue());
     }
 
     /**
      * Tell the cluster about the new node.
      */
-    public void sendNewNode (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+    public void sendNewNode(BlockingQueue<Message> senderQueue, Object sender, Node node) {
         NewNodeMessage newNodeMessage = new NewNodeMessage(senderQueue, sender, node);
         sendToMe(newNodeMessage);
     }
 
-    public void load () {
+    public void load() {
         getClusterFile().sendLoad(getQueue(), this);
     }
 
-    public void performHealthCheck () {
+    public void performHealthCheck() {
         long now = System.currentTimeMillis();
 
         boolean updated = false;
@@ -228,12 +228,12 @@ public class Cluster extends Manager<Node, NodeElement> {
         }
 
         if (updated) {
-            NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage (getQueue(), this, nodeList);
+            NodesUpdatedMessage nodesUpdatedMessage = new NodesUpdatedMessage(getQueue(), this, nodeList);
             send(nodesUpdatedMessage, getFile().getQueue());
         }
     }
 
-    public List<NodeElement> asNodeElements () {
+    public List<NodeElement> asNodeElements() {
         List<NodeElement> nodeElements = new ArrayList<NodeElement>(getNodes().size());
 
         for (Node node : getNodes()) {
@@ -244,17 +244,17 @@ public class Cluster extends Manager<Node, NodeElement> {
         return nodeElements;
     }
 
-    public void sendConnect (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendConnect(BlockingQueue<Message> senderQueue, Object sender) {
         ConnectMessage connectMessage = new ConnectMessage(senderQueue, sender);
         sendToMe(connectMessage);
     }
 
-    public void sendGetStatus (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendGetStatus(BlockingQueue<Message> senderQueue, Object sender) {
         GetStatusMessage getStatusMessage = new GetStatusMessage(senderQueue, sender);
         sendToMe(getStatusMessage);
     }
 
-    public void stop () {
+    public void stop() {
         super.stop();
 
         for (Node node : getNodes()) {
@@ -262,76 +262,76 @@ public class Cluster extends Manager<Node, NodeElement> {
         }
     }
 
-    public void sendNodeStopped (BlockingQueue<Message> senderQueue, Object sender, Node node) {
+    public void sendNodeStopped(BlockingQueue<Message> senderQueue, Object sender, Node node) {
         NodeStoppedMessage nodeStoppedMessage = new NodeStoppedMessage(senderQueue, sender, node);
         sendToMe(nodeStoppedMessage);
     }
 
-    public void sendNewSession (BlockingQueue<Message> senderQueue, Object sender, Session session) {
+    public void sendNewSession(BlockingQueue<Message> senderQueue, Object sender, Session session) {
         AddSessionMessage addSessionMessage = new AddSessionMessage(senderQueue, sender, session);
         sendToMe(addSessionMessage);
     }
 
-    public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
+    public void sendSessionsExpiredMessage(BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
         SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(senderQueue, sender, expiredSessions);
         sendToMe(sessionsExpiredMessage);
     }
 
-    public void broadcast (WireMessage wireMessage) {
+    public void broadcast(WireMessage wireMessage) {
         for (Node node : getNodes()) {
-            node.sendSendNetworkMessage (getQueue(), this, wireMessage);
+            node.sendSendNetworkMessage(getQueue(), this, wireMessage);
         }
     }
 
-    public void sendNewUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public void sendNewUserMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         NewUserMessage newUserMessage = new NewUserMessage(senderQueue, sender, user);
         sendToMe(newUserMessage);
     }
 
-    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public void sendUpdateUserMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, null, user);
         sendToMe(updateUserMessage);
     }
 
-    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
+    public void sendDeleteUserMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
         DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, session, name);
         sendToMe(deleteUserMessage);
     }
 
-    public void sendNewTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+    public void sendNewTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
         NewTopicMessage newTopicMessage = new NewTopicMessage(senderQueue, sender, topic);
         sendToMe(newTopicMessage);
     }
 
-    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender,
-                                               Session session, Subscription subscription) {
+    public void sendCreateSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender,
+                                              Session session, Subscription subscription) {
         CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, session,
                 subscription);
 
         sendToMe(createSubscriptionMessage);
     }
 
-    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
-                                               Subscription subscription) {
+    public void sendUpdateSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                              Subscription subscription) {
         UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender,
                 session, subscription);
         sendToMe(updateSubscriptionMessage);
     }
 
-    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
-                                               String name) {
+    public void sendDeleteSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                              String name) {
         DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, session,
                 name);
 
         sendToMe(deleteSubscriptionMessage);
     }
 
-    public Node convert (NodeElement nodeElement) throws MirandaException {
+    public Node convert(NodeElement nodeElement) throws MirandaException {
         Node node = new Node(nodeElement, getNetwork(), this);
         return node;
     }
 
-    public boolean disconnected () {
+    public boolean disconnected() {
         for (Node node : getNodes()) {
             if (node.isConnected())
                 return false;
@@ -340,20 +340,20 @@ public class Cluster extends Manager<Node, NodeElement> {
         return true;
     }
 
-    public void shutdown () {
+    public void shutdown() {
         for (Node node : getNodes()) {
             node.sendShutdown(getQueue(), this);
         }
     }
 
-    public void sendBroadcastNewEventMessage (BlockingQueue<Message> senderQueue, Object sender, String key, Event event) {
+    public void sendBroadcastNewEventMessage(BlockingQueue<Message> senderQueue, Object sender, String key, Event event) {
         NewEventWireMessage newEventWireMessage = new NewEventWireMessage(key, event);
-        BroadcastMessage broadcastMessage = new BroadcastMessage (senderQueue, sender, newEventWireMessage);
+        BroadcastMessage broadcastMessage = new BroadcastMessage(senderQueue, sender, newEventWireMessage);
         sendToMe(broadcastMessage);
     }
 
-    public void sendStartConversationMessage (BlockingQueue<Message> senderQueue, Object sender, String key,
-                                       BlockingQueue<Message> receiver) {
+    public void sendStartConversationMessage(BlockingQueue<Message> senderQueue, Object sender, String key,
+                                             BlockingQueue<Message> receiver) {
 
         StartConversationMessage startConversationMessage = new StartConversationMessage(senderQueue, sender, key,
                 receiver);
@@ -361,7 +361,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         sendToMe(startConversationMessage);
     }
 
-    public void sendEndConversationMessage (BlockingQueue<Message> senderQueue, Object sender, String key) {
+    public void sendEndConversationMessage(BlockingQueue<Message> senderQueue, Object sender, String key) {
         EndConversationMessage endConversationMessage = new EndConversationMessage(senderQueue, sender, key);
         sendToMe(endConversationMessage);
     }
@@ -371,7 +371,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         return new AcknowledgeQuorum(list);
     }
 
-    public WriteQuorum createWriteQuorum () {
+    public WriteQuorum createWriteQuorum() {
         List<Node> list = new ArrayList<Node>(getNodes());
         return new WriteQuorum(list);
     }
@@ -386,7 +386,7 @@ public class Cluster extends Manager<Node, NodeElement> {
     /**
      * Attempt to join the cluster
      */
-    public void join () {
+    public void join() {
 
     }
 }

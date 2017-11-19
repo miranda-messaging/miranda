@@ -29,72 +29,72 @@ import java.io.ObjectInputStream;
 
 /**
  * A user of the Miranda system.
- *
+ * <p>
  * <h3>Attributes</h3>
  * <table border="1">
- *     <th>
- *         <td>Name</td>
- *         <td>Type</td>
- *         <td>Description</td>
- *     </th>
- *     <tr>
- *         <td>name</td>
- *         <td>String</td>
- *         <td>
- *             The name of the user.
- *
- *             <p>
- *                 This must be unique across all Users in the sytem.
- *             </p>
- *         </td>
- *     </tr>
- *     <tr>
- *         <td>category</td>
- *         <td>enum</td>
- *         <td>
- *             The category of the user.
- *
- *             <p>
- *                 Allowable values are Publisher, Subscriber and Admin.
- *                 Unknown should not be used but is there for completeness.
- *             </p>
- *
- *             <p>
- *                 Publishers can create topics and Events.
- *             </p>
- *
- *             <p>
- *                 Subscribers can create Subscriptions.
- *             </p>
- *
- *             <p>
- *                 Admins can do anything.
- *             </p>
- *
- *             <p>
- *                 Users with a category of Unknown cannot do anything.
- *             </p>
- *         </td>
- *     </tr>
- *
- *     <tr>
- *         <td>description</td>
- *         <td>String</td>
- *         <td>A user friendly description of the User.</td>
- *     </tr>
- *
- *     <tr>
- *         <td>publicKey</td>
- *         <td>PublicKey</td>
- *         <td>
- *             The public key associated with the user.
- *
- *             <p>
- *                 The public key is used during logins to encrypt the session ID sent back to the user.
- *                 The user uses their private key in all their requests.
- *             </p>
- *         </td>
- *     </tr>
+ * <th>
+ * <td>Name</td>
+ * <td>Type</td>
+ * <td>Description</td>
+ * </th>
+ * <tr>
+ * <td>name</td>
+ * <td>String</td>
+ * <td>
+ * The name of the user.
+ * <p>
+ * <p>
+ * This must be unique across all Users in the sytem.
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>category</td>
+ * <td>enum</td>
+ * <td>
+ * The category of the user.
+ * <p>
+ * <p>
+ * Allowable values are Publisher, Subscriber and Admin.
+ * Unknown should not be used but is there for completeness.
+ * </p>
+ * <p>
+ * <p>
+ * Publishers can create topics and Events.
+ * </p>
+ * <p>
+ * <p>
+ * Subscribers can create Subscriptions.
+ * </p>
+ * <p>
+ * <p>
+ * Admins can do anything.
+ * </p>
+ * <p>
+ * <p>
+ * Users with a category of Unknown cannot do anything.
+ * </p>
+ * </td>
+ * </tr>
+ * <p>
+ * <tr>
+ * <td>description</td>
+ * <td>String</td>
+ * <td>A user friendly description of the User.</td>
+ * </tr>
+ * <p>
+ * <tr>
+ * <td>publicKey</td>
+ * <td>PublicKey</td>
+ * <td>
+ * The public key associated with the user.
+ * <p>
+ * <p>
+ * The public key is used during logins to encrypt the session ID sent back to the user.
+ * The user uses their private key in all their requests.
+ * </p>
+ * </td>
+ * </tr>
  * </table>
  */
 public class User extends MirandaObject {
@@ -104,7 +104,7 @@ public class User extends MirandaObject {
         Admin,
         Unknown;
 
-        public static boolean isValid (UserTypes type) {
+        public static boolean isValid(UserTypes type) {
             return type != Unknown;
         }
     }
@@ -157,7 +157,7 @@ public class User extends MirandaObject {
         this.category = category;
     }
 
-    public void setCategory (String categoryString) {
+    public void setCategory(String categoryString) {
         UserTypes category = UserTypes.valueOf(categoryString);
         this.category = category;
     }
@@ -180,7 +180,7 @@ public class User extends MirandaObject {
         return name;
     }
 
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -192,19 +192,19 @@ public class User extends MirandaObject {
         this.description = description;
     }
 
-    public User (String name, String description) {
+    public User(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public User (String name, UserTypes category, String description, String publicKeyPem) {
+    public User(String name, UserTypes category, String description, String publicKeyPem) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.publicKeyPem = publicKeyPem;
     }
 
-    public User (String name, String categoryString, String description, String publicKeyPem) {
+    public User(String name, String categoryString, String description, String publicKeyPem) {
         this.name = name;
 
         UserTypes category = UserTypes.valueOf(categoryString);
@@ -215,28 +215,28 @@ public class User extends MirandaObject {
     }
 
 
-    public User (String name, UserTypes category, String description) {
+    public User(String name, UserTypes category, String description) {
         this.name = name;
         this.category = category;
         this.description = description;
     }
 
-    public User (String name, UserTypes category, String description, PublicKey publicKey) {
+    public User(String name, UserTypes category, String description, PublicKey publicKey) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.publicKey = publicKey;
     }
 
-    public void createPublicKey () throws IOException {
+    public void createPublicKey() throws IOException {
         java.security.PublicKey jaPublicKey = Utils.pemStringToPublicKey(publicKeyPem);
         publicKey = new PublicKey(jaPublicKey);
     }
 
-    public User () {
+    public User() {
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (o == null || !(o instanceof User))
             return false;
 
@@ -258,7 +258,7 @@ public class User extends MirandaObject {
     }
 
 
-    public UserObject asUserObject () throws EncryptionException {
+    public UserObject asUserObject() throws EncryptionException {
         UserObject userObject = new UserObject();
 
         userObject.setName(getName());

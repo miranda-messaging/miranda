@@ -43,15 +43,15 @@ import java.util.List;
 public class UserManagerReadyState extends StandardManagerReadyState<User> {
     private Logger logger = Logger.getLogger(UserManagerReadyState.class);
 
-    public UserManager getUserManager () {
+    public UserManager getUserManager() {
         return (UserManager) getContainer();
     }
 
-    public UserManagerReadyState (UserManager userManager) throws MirandaException {
+    public UserManagerReadyState(UserManager userManager) throws MirandaException {
         super(userManager);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getUserManager().getCurrentState();
 
         switch (message.getSubject()) {
@@ -69,37 +69,37 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
 
             case DeleteUser: {
                 DeleteUserMessage deleteUserMessage = (DeleteUserMessage) message;
-                nextState = processDeleteUserMessage (deleteUserMessage);
+                nextState = processDeleteUserMessage(deleteUserMessage);
                 break;
             }
 
             case CreateUser: {
                 CreateUserMessage createUserMessage = (CreateUserMessage) message;
-                nextState = processCreateUserMessage (createUserMessage);
+                nextState = processCreateUserMessage(createUserMessage);
                 break;
             }
 
             case UpdateUser: {
                 UpdateUserMessage updateUserMessage = (UpdateUserMessage) message;
-                nextState = processUpdateUserMessage (updateUserMessage);
+                nextState = processUpdateUserMessage(updateUserMessage);
                 break;
             }
 
             case UserAdded: {
                 UserAddedMessage userAddedMessage = (UserAddedMessage) message;
-                nextState = processUserAddedMessage (userAddedMessage);
+                nextState = processUserAddedMessage(userAddedMessage);
                 break;
             }
 
             case UserUpdated: {
                 UserUpdatedMessage userUpdatedMessage = (UserUpdatedMessage) message;
-                nextState = processUserUpdatedMessage (userUpdatedMessage);
+                nextState = processUserUpdatedMessage(userUpdatedMessage);
                 break;
             }
 
             case UserDeleted: {
                 UserDeletedMessage userDeletedMessage = (UserDeletedMessage) message;
-                nextState = processUserDeletedMessage (userDeletedMessage);
+                nextState = processUserDeletedMessage(userDeletedMessage);
                 break;
             }
 
@@ -112,13 +112,13 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return nextState;
     }
 
-    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         getUserManager().performGarbageCollection();
 
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUserMessage (GetUserMessage getUserMessage) throws MirandaException {
+    public State processGetUserMessage(GetUserMessage getUserMessage) throws MirandaException {
         User user = getUserManager().getUser(getUserMessage.getName());
 
         Results result = user == null ? Results.UserNotFound : Results.Success;
@@ -131,7 +131,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) {
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) {
         List<User> users = (List<User>) fileLoadedMessage.getData();
         List<User> newList = new ArrayList<User>(users);
         getUserManager().setUsers(newList);
@@ -139,7 +139,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUsersMessage (ListUsersMessage getUsersMessage) throws MirandaException {
+    public State processGetUsersMessage(ListUsersMessage getUsersMessage) throws MirandaException {
         List<User> users = getUserManager().getUsers();
 
         GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(getUserManager().getQueue(),
@@ -150,7 +150,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processCreateUserMessage (CreateUserMessage createUserMessage) throws MirandaException {
+    public State processCreateUserMessage(CreateUserMessage createUserMessage) throws MirandaException {
         CreateUserResponseMessage reply = null;
         try {
             getUserManager().addUser(createUserMessage.getUser());
@@ -164,7 +164,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         createUserMessage.reply(reply);
 
         if (reply.getResult() == Results.Success) {
-            List<User> userList =  new ArrayList<User>();
+            List<User> userList = new ArrayList<User>();
             userList.add(createUserMessage.getUser());
 
             getUserManager().getUsersFile().sendAddObjectsMessage(getUserManager().getQueue(), this, userList);
@@ -173,7 +173,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) throws MirandaException {
+    public State processUpdateUserMessage(UpdateUserMessage updateUserMessage) throws MirandaException {
         Results result = Results.Unknown;
 
         try {
@@ -202,7 +202,7 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
                 this, deleteUserMessage.getName());
 
         if (null == existingUser) {
-            deleteUserResponseMessage.setResult (Results.UserNotFound);
+            deleteUserResponseMessage.setResult(Results.UserNotFound);
         } else {
             getUserManager().deleteUser(deleteUserMessage.getName());
             deleteUserResponseMessage.setResult(Results.Success);
@@ -218,8 +218,8 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processUserAddedMessage (UserAddedMessage userAddedMessage) {
-        logger.info ("Adding user " + userAddedMessage.getUser().getName());
+    public State processUserAddedMessage(UserAddedMessage userAddedMessage) {
+        logger.info("Adding user " + userAddedMessage.getUser().getName());
         try {
             getUserManager().addUser(userAddedMessage.getUser());
         } catch (DuplicateUserException e) {
@@ -232,8 +232,8 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
         return getUserManager().getCurrentState();
     }
 
-    public State processUserUpdatedMessage (UserUpdatedMessage userUpdatedMessage) {
-        logger.info ("Updating user " + userUpdatedMessage.getUser().getName());
+    public State processUserUpdatedMessage(UserUpdatedMessage userUpdatedMessage) {
+        logger.info("Updating user " + userUpdatedMessage.getUser().getName());
 
         try {
             getUserManager().updateUser(userUpdatedMessage.getUser());
@@ -243,15 +243,15 @@ public class UserManagerReadyState extends StandardManagerReadyState<User> {
             logger.error("Exception while merging", e);
         }
 
-        getUserManager().getUsersFile().sendUpdateObjectsMessage (getUserManager().getQueue(), this,
+        getUserManager().getUsersFile().sendUpdateObjectsMessage(getUserManager().getQueue(), this,
                 userUpdatedMessage.getUser());
 
         return getUserManager().getCurrentState();
     }
 
-    public State processUserDeletedMessage (UserDeletedMessage userDeletedMessage) {
+    public State processUserDeletedMessage(UserDeletedMessage userDeletedMessage) {
         User existingUser = getUserManager().getUser(userDeletedMessage.getName());
-        logger.info ("Deleting user " + userDeletedMessage.getName());
+        logger.info("Deleting user " + userDeletedMessage.getName());
 
         getUserManager().deleteUser(userDeletedMessage.getName());
 

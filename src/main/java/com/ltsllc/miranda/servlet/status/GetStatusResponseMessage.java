@@ -30,7 +30,7 @@ public class GetStatusResponseMessage extends Message {
         return statusObject;
     }
 
-    public GetStatusResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Object statusObject) {
+    public GetStatusResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Object statusObject) {
         super(Subjects.GetStatusResponse, senderQueue, sender);
 
         this.statusObject = statusObject;

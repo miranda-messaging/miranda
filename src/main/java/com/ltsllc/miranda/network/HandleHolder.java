@@ -39,18 +39,18 @@ public class HandleHolder extends Consumer {
         return recipient;
     }
 
-    public HandleHolder (Handle handle, BlockingQueue<Message> recipient) {
+    public HandleHolder(Handle handle, BlockingQueue<Message> recipient) {
         super();
         this.handle = handle;
         this.recipient = recipient;
     }
 
-    public void newMessage (WireMessage wireMessage) {
+    public void newMessage(WireMessage wireMessage) {
         NetworkMessage networkMessage = new NetworkMessage(getQueue(), this, wireMessage);
         send(networkMessage, getRecipient());
     }
 
-    public void sendNetworkMessage (SendNetworkMessage sendNetworkMessage) {
+    public void sendNetworkMessage(SendNetworkMessage sendNetworkMessage) {
 
     }
 }

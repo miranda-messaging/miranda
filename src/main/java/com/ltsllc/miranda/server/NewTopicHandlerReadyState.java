@@ -31,7 +31,7 @@ public class NewTopicHandlerReadyState extends NewObjectHandlerReadyState<Topics
         return Topic.class;
     }
 
-    public NewTopicHandlerReadyState (Consumer consumer, TopicsFile file, NewTopicHandler handler) throws MirandaException {
+    public NewTopicHandlerReadyState(Consumer consumer, TopicsFile file, NewTopicHandler handler) throws MirandaException {
         super(consumer, file, handler);
     }
 }

@@ -57,13 +57,13 @@ public class MinaIncomingHandler extends IoHandlerAdapter {
         return queue;
     }
 
-    public MinaIncomingHandler (BlockingQueue<Handle> queue) {
+    public MinaIncomingHandler(BlockingQueue<Handle> queue) {
         this.queue = queue;
     }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        logger.info ("Got connection from " + session.getRemoteAddress());
+        logger.info("Got connection from " + session.getRemoteAddress());
 
         setSession(session);
 
@@ -77,7 +77,7 @@ public class MinaIncomingHandler extends IoHandlerAdapter {
     public void messageReceived(IoSession session, Object message) throws Exception {
         String json = message.toString();
 
-        logger.info ("Got " + json);
+        logger.info("Got " + json);
 
         WireMessage pass1 = ourGson.fromJson(json, WireMessage.class);
         Type type = getClass().forName(pass1.getClassName());
@@ -86,14 +86,13 @@ public class MinaIncomingHandler extends IoHandlerAdapter {
         getHandle().deliver(wireMessage);
     }
 
-    public void send (WireMessage wireMessage) {
+    public void send(WireMessage wireMessage) {
         String json = ourGson.toJson(wireMessage);
         getSession().write(json);
     }
 
-    public void close () {
-        if (null != getSession())
-        {
+    public void close() {
+        if (null != getSession()) {
             getSession().closeNow();
             setSession(null);
         }

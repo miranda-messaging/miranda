@@ -30,15 +30,16 @@ import java.util.List;
 public class EventsFileReadyState extends SingleFileReadyState<Event> {
     public static final String NAME = "events file";
 
-    public Type getListType () {
-        return new TypeToken<List<Event>>(){}.getType();
+    public Type getListType() {
+        return new TypeToken<List<Event>>() {
+        }.getType();
     }
 
-    public String getName () {
+    public String getName() {
         return NAME;
     }
 
-    public EventsFileReadyState (EventsFile eventsFile) throws MirandaException {
+    public EventsFileReadyState(EventsFile eventsFile) throws MirandaException {
         super(eventsFile);
     }
 }

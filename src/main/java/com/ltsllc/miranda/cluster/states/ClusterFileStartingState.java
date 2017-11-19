@@ -25,15 +25,15 @@ import com.ltsllc.miranda.file.states.SingleFileStartingState;
  * Created by Clark on 5/18/2017.
  */
 public class ClusterFileStartingState extends SingleFileStartingState {
-    public ClusterFile getClusterFile () {
+    public ClusterFile getClusterFile() {
         return (ClusterFile) getContainer();
     }
 
-    public ClusterFileStartingState (ClusterFile clusterFile) throws MirandaException {
+    public ClusterFileStartingState(ClusterFile clusterFile) throws MirandaException {
         super(clusterFile);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new ClusterFileReadyState(getClusterFile());
     }
 }

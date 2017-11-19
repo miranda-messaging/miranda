@@ -30,7 +30,7 @@ public class ReadMessage extends Message {
         return filename;
     }
 
-    public ReadMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+    public ReadMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
         super(Subjects.Read, senderQueue, sender);
 
         this.filename = filename;

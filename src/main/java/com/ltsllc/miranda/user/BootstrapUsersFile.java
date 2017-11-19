@@ -45,11 +45,11 @@ public class BootstrapUsersFile {
         this.privateKey = privateKey;
     }
 
-    public BootstrapUsersFile (String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
+    public BootstrapUsersFile(String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
         initialize(usersFilename, keyStoreFilename, password);
     }
 
-    public void initialize (String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
+    public void initialize(String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
         KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, password);
 
         java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey("private", password.toCharArray());
@@ -59,7 +59,7 @@ public class BootstrapUsersFile {
         Certificate certificate = keyStore.getCertificate("private");
         java.security.PublicKey jsPublicKey = certificate.getPublicKey();
         PublicKey publicKey = new PublicKey(jsPublicKey);
-        setPublicKey (publicKey);
+        setPublicKey(publicKey);
 
         this.filename = usersFilename;
         this.userList = new ArrayList<User>();
@@ -77,11 +77,11 @@ public class BootstrapUsersFile {
         this.publicKey = publicKey;
     }
 
-    public void create (User user) {
+    public void create(User user) {
         userList.add(user);
     }
 
-    public void read () throws IOException, EncryptionException {
+    public void read() throws IOException, EncryptionException {
         File file = new File(getFilename());
         if (!file.exists())
             return;
@@ -102,7 +102,7 @@ public class BootstrapUsersFile {
         }
     }
 
-    public void write () throws IOException, EncryptionException {
+    public void write() throws IOException, EncryptionException {
         FileWriter fileWriter = null;
 
         try {
@@ -116,7 +116,7 @@ public class BootstrapUsersFile {
         }
     }
 
-    public void createUser (String name, String description) throws GeneralSecurityException, IOException {
+    public void createUser(String name, String description) throws GeneralSecurityException, IOException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         PublicKey publicKey = new PublicKey(keyPair.getPublic());
@@ -125,6 +125,6 @@ public class BootstrapUsersFile {
         String privateKeyFilename = name + ".private.pem.txt";
         Utils.writeAsPem(publicKeyFilename, keyPair.getPublic());
         Utils.writeAsPem(privateKeyFilename, keyPair.getPrivate());
-        userList.add (user);
+        userList.add(user);
     }
 }

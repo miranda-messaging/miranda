@@ -82,17 +82,17 @@ abstract public class PanicPolicyClass extends Consumer implements PanicPolicy {
         PanicPolicyClass.logger = logger;
     }
 
-    public void incrementPanicCount () {
+    public void incrementPanicCount() {
         panicCount++;
     }
 
-    public boolean beyondOrAtMaxCount () {
+    public boolean beyondOrAtMaxCount() {
         return panicCount >= maxPanicCount;
     }
 
-    public void handleCountablePanic (Panic panic) {
+    public void handleCountablePanic(Panic panic) {
         String message = "A panic occurred.";
-        logger.error (message, panic.getCause());
+        logger.error(message, panic.getCause());
 
         incrementPanicCount();
 
@@ -108,13 +108,13 @@ abstract public class PanicPolicyClass extends Consumer implements PanicPolicy {
         }
     }
 
-    public void handleIgnorablePanic (Panic panic) {
+    public void handleIgnorablePanic(Panic panic) {
         String message = "Received network message the receiver does not know how to process.  "
                 + "Will ignore and attempt to continue.";
         logger.error(message, panic.getCause());
     }
 
-    public void decrementPanicCount () {
+    public void decrementPanicCount() {
         panicCount--;
 
         if (panicCount < 0)
@@ -129,7 +129,7 @@ abstract public class PanicPolicyClass extends Consumer implements PanicPolicy {
         return timer;
     }
 
-    public void start () {
+    public void start() {
         DecrementPanicCountMessage decrementPanicCountMessage = new DecrementPanicCountMessage(getQueue(), this);
         getTimer().sendSchedulePeriodic(getTimeout(), getQueue(), decrementPanicCountMessage);
     }

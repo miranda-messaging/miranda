@@ -37,8 +37,8 @@ public class CreateTopicOperation extends Operation {
         return topic;
     }
 
-    public CreateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) throws MirandaException {
-        super (NAME, requester, session);
+    public CreateTopicOperation(BlockingQueue<Message> requester, Session session, Topic topic) throws MirandaException {
+        super(NAME, requester, session);
 
         CreateTopicOperationReadyState readyState = new CreateTopicOperationReadyState(this);
         setCurrentState(readyState);
@@ -46,7 +46,7 @@ public class CreateTopicOperation extends Operation {
         this.topic = topic;
     }
 
-    public void start () {
+    public void start() {
         Miranda.getInstance().getUserManager().sendGetUser(getQueue(), this, getTopic().getOwner());
     }
 }

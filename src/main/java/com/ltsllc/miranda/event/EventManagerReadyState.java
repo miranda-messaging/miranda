@@ -27,21 +27,21 @@ import com.ltsllc.miranda.operations.events.NewEventOperation;
  * Created by Clark on 5/14/2017.
  */
 public class EventManagerReadyState extends State {
-    public EventManager getEventManager () {
+    public EventManager getEventManager() {
         return (EventManager) getContainer();
     }
 
-    public EventManagerReadyState (EventManager eventManager) throws MirandaException {
+    public EventManagerReadyState(EventManager eventManager) throws MirandaException {
         super(eventManager);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getEventManager().getCurrentState();
 
         switch (message.getSubject()) {
             case NewEvent: {
                 NewEventMessage newEventMessage = (NewEventMessage) message;
-                nextState = processNewEventMessage (newEventMessage);
+                nextState = processNewEventMessage(newEventMessage);
                 break;
             }
 
@@ -54,8 +54,8 @@ public class EventManagerReadyState extends State {
         return nextState;
     }
 
-    public State processNewEventMessage (NewEventMessage message) throws MirandaException {
-        NewEventOperation newEventOperation = new NewEventOperation (getEventManager(),
+    public State processNewEventMessage(NewEventMessage message) throws MirandaException {
+        NewEventOperation newEventOperation = new NewEventOperation(getEventManager(),
                 Miranda.getInstance().getTopicManager(), Miranda.getInstance().getCluster(), message.getSession(),
                 message.getSender(), message.getEvent());
 

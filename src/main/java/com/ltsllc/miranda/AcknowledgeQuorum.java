@@ -13,7 +13,7 @@ public class AcknowledgeQuorum extends Quorum {
         super(waitingFor);
     }
 
-    public boolean requiresWrites () {
+    public boolean requiresWrites() {
         return false;
     }
 }

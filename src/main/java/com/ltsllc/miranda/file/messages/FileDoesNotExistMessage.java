@@ -30,7 +30,7 @@ public class FileDoesNotExistMessage extends Message {
         return filename;
     }
 
-    public FileDoesNotExistMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+    public FileDoesNotExistMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
         super(Subjects.FileDoesNotExist, senderQueue, sender);
 
         this.filename = filename;

@@ -26,7 +26,7 @@ import java.util.concurrent.BlockingQueue;
 public class ListenMessage extends Message {
     private int port;
 
-    public ListenMessage (BlockingQueue<Message> queue, int port, Object senderObject) {
+    public ListenMessage(BlockingQueue<Message> queue, int port, Object senderObject) {
         super(Subjects.Listen, queue, senderObject);
         this.port = port;
     }

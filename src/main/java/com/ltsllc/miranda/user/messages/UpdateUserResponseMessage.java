@@ -29,7 +29,7 @@ public class UpdateUserResponseMessage extends Message {
     private User user;
     private Results result;
 
-    public User getUser () {
+    public User getUser() {
         return user;
     }
 
@@ -37,7 +37,7 @@ public class UpdateUserResponseMessage extends Message {
         return result;
     }
 
-    public UpdateUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, User user, Results result) {
+    public UpdateUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, User user, Results result) {
         super(Subjects.UpdateUserResponse, senderQueue, sender);
 
         this.user = user;

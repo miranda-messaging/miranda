@@ -36,11 +36,11 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
 
     private static SubscriptionsFile ourInstance;
 
-    public static SubscriptionsFile getInstance () {
+    public static SubscriptionsFile getInstance() {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         if (null == ourInstance) {
             ourInstance = new SubscriptionsFile(reader, writer, filename);
             ourInstance.start();
@@ -48,30 +48,32 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
         }
     }
 
-    public static void setInstance (SubscriptionsFile subscriptionsFile) {
+    public static void setInstance(SubscriptionsFile subscriptionsFile) {
         ourInstance = subscriptionsFile;
     }
 
-    public SubscriptionsFile (Reader reader, Writer writer, String filename) throws IOException, MirandaException {
+    public SubscriptionsFile(Reader reader, Writer writer, String filename) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         SubscriptionsFileStartingState subscriptionsFileStartingState = new SubscriptionsFileStartingState(this);
         setCurrentState(subscriptionsFileStartingState);
     }
 
-    public Type getBasicType () {
-        return new TypeToken<ArrayList<Subscription>>() {}.getType();
+    public Type getBasicType() {
+        return new TypeToken<ArrayList<Subscription>>() {
+        }.getType();
     }
 
-    public List buildEmptyList () {
+    public List buildEmptyList() {
         return new ArrayList<Subscription>();
     }
 
     public Type getListType() {
-        return new TypeToken<ArrayList<Subscription>>(){}.getType();
+        return new TypeToken<ArrayList<Subscription>>() {
+        }.getType();
     }
 
-    public void checkForDuplicates () {
+    public void checkForDuplicates() {
         List<Subscription> subscriptionsList = new ArrayList<Subscription>(getData());
         List<Subscription> duplicates = new ArrayList<Subscription>();
 

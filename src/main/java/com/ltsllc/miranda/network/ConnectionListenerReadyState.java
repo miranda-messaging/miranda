@@ -28,17 +28,17 @@ public class ConnectionListenerReadyState extends State {
         super(networkListener);
     }
 
-    public ConnectionListener getNetworkListener () {
+    public ConnectionListener getNetworkListener() {
         return (ConnectionListener) getContainer();
     }
 
-    public State start () {
+    public State start() {
         // getNetworkListener().getConnections();
 
         return getNetworkListener().getCurrentState();
     }
 
-    public State processStopMessage (StopMessage stopMessage) {
+    public State processStopMessage(StopMessage stopMessage) {
         getNetworkListener().stopListening();
         return getNetworkListener().getCurrentState();
     }

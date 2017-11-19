@@ -34,13 +34,13 @@ public class TopicHolderReadyState extends ServletHolderReadyState {
         super(topicsHolder);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getTopicHolder().getCurrentState();
 
         switch (message.getSubject()) {
             case GetTopicResponse: {
                 GetTopicResponseMessage getTopicResponseMessage = (GetTopicResponseMessage) message;
-                nextState = processGetTopicResponseMessage (getTopicResponseMessage);
+                nextState = processGetTopicResponseMessage(getTopicResponseMessage);
                 break;
             }
 
@@ -58,12 +58,12 @@ public class TopicHolderReadyState extends ServletHolderReadyState {
 
             case DeleteTopicResponse: {
                 DeleteTopicResponseMessage deleteTopicResponseMessage = (DeleteTopicResponseMessage) message;
-                nextState = processDeleteTopicResponseMessage (deleteTopicResponseMessage);
+                nextState = processDeleteTopicResponseMessage(deleteTopicResponseMessage);
                 break;
             }
             case CreateTopicResponse: {
                 CreateTopicResponseMessage createTopicResponseMessage = (CreateTopicResponseMessage) message;
-                nextState = processCreateTopicResponseMessage (createTopicResponseMessage);
+                nextState = processCreateTopicResponseMessage(createTopicResponseMessage);
                 break;
             }
 
@@ -76,32 +76,32 @@ public class TopicHolderReadyState extends ServletHolderReadyState {
         return nextState;
     }
 
-    public State processGetTopicsResponseMessage (GetTopicsResponseMessage getTopicsResponseMessage) {
+    public State processGetTopicsResponseMessage(GetTopicsResponseMessage getTopicsResponseMessage) {
         getTopicHolder().setTopicsAndAwaken(getTopicsResponseMessage.getTopics());
 
         return getTopicHolder().getCurrentState();
     }
 
 
-    public State processCreateTopicResponseMessage (CreateTopicResponseMessage createTopicResponseMessage) {
+    public State processCreateTopicResponseMessage(CreateTopicResponseMessage createTopicResponseMessage) {
         getTopicHolder().setCreateResultAndAwaken(createTopicResponseMessage.getResult());
 
         return getTopicHolder().getCurrentState();
     }
 
-    public State processUpdateTopicResponseMessage (UpdateTopicResponseMessage updateTopicResponseMessage) {
+    public State processUpdateTopicResponseMessage(UpdateTopicResponseMessage updateTopicResponseMessage) {
         getTopicHolder().setUpdateResultAndAwaken(updateTopicResponseMessage.getResult());
 
         return getTopicHolder().getCurrentState();
     }
 
-    public State processDeleteTopicResponseMessage (DeleteTopicResponseMessage deleteTopicResponseMessage) {
+    public State processDeleteTopicResponseMessage(DeleteTopicResponseMessage deleteTopicResponseMessage) {
         getTopicHolder().setDeleteResultAndAwaken(deleteTopicResponseMessage.getResult());
 
         return getTopicHolder().getCurrentState();
     }
 
-    public State processGetTopicResponseMessage (GetTopicResponseMessage getTopicResponseMessage) {
+    public State processGetTopicResponseMessage(GetTopicResponseMessage getTopicResponseMessage) {
         getTopicHolder().setTopicAndAwaken(getTopicResponseMessage.getTopic());
 
         return getTopicHolder().getCurrentState();

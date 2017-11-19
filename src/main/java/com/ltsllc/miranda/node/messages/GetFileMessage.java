@@ -26,13 +26,13 @@ import java.util.concurrent.BlockingQueue;
 public class GetFileMessage extends Message {
     private String filename;
 
-    public GetFileMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+    public GetFileMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
         super(Subjects.GetFile, senderQueue, sender);
 
         this.filename = filename;
     }
 
-    public String getFilename () {
+    public String getFilename() {
         return filename;
     }
 }

@@ -31,21 +31,21 @@ import com.ltsllc.miranda.user.messages.DeleteUserResponseMessage;
  * Created by Clark on 4/16/2017.
  */
 public class DeleteUserOperationReadyState extends State {
-    public DeleteUserOperation getDeleteUserOperation () {
+    public DeleteUserOperation getDeleteUserOperation() {
         return (DeleteUserOperation) getContainer();
     }
 
-    public DeleteUserOperationReadyState (DeleteUserOperation deleteUserOperation) throws MirandaException {
+    public DeleteUserOperationReadyState(DeleteUserOperation deleteUserOperation) throws MirandaException {
         super(deleteUserOperation);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getDeleteUserOperation().getCurrentState();
 
         switch (message.getSubject()) {
             case OwnerQueryResponse: {
                 OwnerQueryResponseMessage ownerQueryResponseMessage = (OwnerQueryResponseMessage) message;
-                nextState = processOwnerQueryResponseMessage (ownerQueryResponseMessage);
+                nextState = processOwnerQueryResponseMessage(ownerQueryResponseMessage);
                 break;
             }
 
@@ -64,7 +64,7 @@ public class DeleteUserOperationReadyState extends State {
         return nextState;
     }
 
-    public State processOwnerQueryResponseMessage (OwnerQueryResponseMessage message) {
+    public State processOwnerQueryResponseMessage(OwnerQueryResponseMessage message) {
         if (message.getProperty().size() > 0) {
             Results result = Results.Unknown;
             if (message.getSendingManager().equalsIgnoreCase(TopicManager.NAME))
@@ -76,7 +76,7 @@ public class DeleteUserOperationReadyState extends State {
                     this, getDeleteUserOperation().getName());
             deleteUserResponseMessage.setResult(Results.UserOwnsProperty);
 
-            send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
+            send(getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
             return StopState.getInstance();
         } else {
             getDeleteUserOperation().subsystemResponded(message.getSendingManager());
@@ -90,14 +90,14 @@ public class DeleteUserOperationReadyState extends State {
         return getDeleteUserOperation().getCurrentState();
     }
 
-    public State processDeleteUserResponseMessage (DeleteUserResponseMessage message) {
+    public State processDeleteUserResponseMessage(DeleteUserResponseMessage message) {
         if (message.getResult() == Results.Success) {
             DeleteUserResponseMessage deleteUserResponseMessage = new DeleteUserResponseMessage(
                     getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getName());
 
             deleteUserResponseMessage.setResult(Results.Success);
 
-            send (getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
+            send(getDeleteUserOperation().getRequester(), deleteUserResponseMessage);
 
             Miranda.getInstance().getCluster().sendDeleteUserMessage(
                     getDeleteUserOperation().getQueue(), this, getDeleteUserOperation().getSession(),

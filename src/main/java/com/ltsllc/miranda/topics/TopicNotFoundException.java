@@ -20,7 +20,7 @@ package com.ltsllc.miranda.topics;
  * Created by Clark on 4/10/2017.
  */
 public class TopicNotFoundException extends Exception {
-    public TopicNotFoundException (String message) {
+    public TopicNotFoundException(String message) {
         super(message);
     }
 }

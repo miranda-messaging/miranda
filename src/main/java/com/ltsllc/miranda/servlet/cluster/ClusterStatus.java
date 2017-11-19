@@ -31,11 +31,11 @@ public class ClusterStatus extends Consumer {
 
     private ClusterStatusObject clusterStatusObject;
 
-    public static ClusterStatus getInstance () {
+    public static ClusterStatus getInstance() {
         return ourInstance;
     }
 
-    public static synchronized void initialize () throws MirandaException {
+    public static synchronized void initialize() throws MirandaException {
         if (null == ourInstance) {
             ourInstance = new ClusterStatus();
         }
@@ -46,18 +46,18 @@ public class ClusterStatus extends Consumer {
         return clusterStatusObject;
     }
 
-    public void setClusterStatusObject (ClusterStatusObject clusterStatusObject) {
+    public void setClusterStatusObject(ClusterStatusObject clusterStatusObject) {
         this.clusterStatusObject = clusterStatusObject;
     }
 
-    public ClusterStatus () throws MirandaException {
+    public ClusterStatus() throws MirandaException {
         super("cluster status");
 
         ClusterStatusReadyState clusterStatusReadyState = new ClusterStatusReadyState(this);
         setCurrentState(clusterStatusReadyState);
     }
 
-    public void receivedClusterStatus (GetStatusResponseMessage message) {
+    public void receivedClusterStatus(GetStatusResponseMessage message) {
         ClusterStatusObject clusterStatusObject = (ClusterStatusObject) message.getStatusObject();
         setClusterStatusObject(clusterStatusObject);
         synchronized (this) {
@@ -65,7 +65,7 @@ public class ClusterStatus extends Consumer {
         }
     }
 
-    public ClusterStatusObject getClusterStatus () {
+    public ClusterStatusObject getClusterStatus() {
         setClusterStatusObject(null);
 
         Miranda.getInstance().getCluster().sendGetStatus(getQueue(), this);

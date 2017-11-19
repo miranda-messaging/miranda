@@ -27,7 +27,7 @@ import java.util.concurrent.BlockingQueue;
 public class NewTopicMessage extends Message {
     private Topic topic;
 
-    public NewTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+    public NewTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
         super(Subjects.NewTopic, senderQueue, sender);
 
         this.topic = topic;

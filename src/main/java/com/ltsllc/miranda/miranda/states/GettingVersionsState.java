@@ -71,7 +71,9 @@ public class GettingVersionsState extends State {
         return filesOutstanding;
     }
 
-    public BlockingQueue<Message> getNode() { return node; }
+    public BlockingQueue<Message> getNode() {
+        return node;
+    }
 
     public Map<String, Version> getVersions() {
         return versions;
@@ -82,7 +84,7 @@ public class GettingVersionsState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case DoneSynchronizing : {
+            case DoneSynchronizing: {
                 DoneSynchronizingMessage doneSynchronizingMessage = (DoneSynchronizingMessage) message;
                 nextState = processDoneSynchronizingMessage(doneSynchronizingMessage);
                 break;
@@ -100,7 +102,7 @@ public class GettingVersionsState extends State {
                 break;
             }
 
-            default :
+            default:
                 nextState = super.processMessage(message);
         }
 
@@ -108,8 +110,7 @@ public class GettingVersionsState extends State {
     }
 
 
-
-    private State processDoneSynchronizingMessage (DoneSynchronizingMessage doneSynchronizingMessage) throws MirandaException {
+    private State processDoneSynchronizingMessage(DoneSynchronizingMessage doneSynchronizingMessage) throws MirandaException {
         State nextState = this;
 
         if (doneSynchronizingMessage.getSender() == ClusterFile.getInstance().getQueue()) {
@@ -130,7 +131,7 @@ public class GettingVersionsState extends State {
     }
 
 
-    private State processVersionMessage (VersionMessage versionMessage) throws MirandaException {
+    private State processVersionMessage(VersionMessage versionMessage) throws MirandaException {
         Set<String> drop = new HashSet<String>();
 
         for (String name : getFilesOutstanding()) {
@@ -155,8 +156,7 @@ public class GettingVersionsState extends State {
     }
 
 
-    private List<NameVersion> mapToList (Map<String, Version> map)
-    {
+    private List<NameVersion> mapToList(Map<String, Version> map) {
         List<NameVersion> list = new ArrayList<NameVersion>();
 
         for (String name : map.keySet()) {
@@ -169,7 +169,7 @@ public class GettingVersionsState extends State {
     }
 
 
-    private State processGetVersionsMessage (GetVersionsMessage getVersionsMessage) throws MirandaException {
+    private State processGetVersionsMessage(GetVersionsMessage getVersionsMessage) throws MirandaException {
         GetVersionMessage getVersionMessage = new GetVersionMessage(getMiranda().getQueue(), this, getNode());
 
         send(ClusterFile.getInstance().getQueue(), getVersionMessage);

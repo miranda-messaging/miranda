@@ -31,7 +31,7 @@ public class CreateTopicResponseMessage extends Message {
         return result;
     }
 
-    public CreateTopicResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result) {
+    public CreateTopicResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result) {
         super(Subjects.CreateTopicResponse, senderQueue, sender);
 
         this.result = result;

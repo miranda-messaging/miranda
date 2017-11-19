@@ -42,16 +42,15 @@ public class CreateUserResponseMessage extends Message {
         return additionalInfo;
     }
 
-    public CreateUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, User user, Results result) {
+    public CreateUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, User user, Results result) {
         super(Subjects.CreateUserResponse, senderQueue, sender);
 
         this.user = user;
         this.result = result;
     }
 
-    public CreateUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, User user, Results result,
-                                      String additionalInfo)
-    {
+    public CreateUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, User user, Results result,
+                                     String additionalInfo) {
         super(Subjects.CreateUserResponse, senderQueue, sender);
 
         this.user = user;

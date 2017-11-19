@@ -20,87 +20,87 @@ import com.google.gson.Gson;
 
 /**
  * A subscription to a topic.
- *
+ * <p>
  * <h3>Attributes</h3>
  * <table border="1">
- *     <th>
- *         <td>Name</td>
- *         <td>Type</td>
- *         <td>Description</td>
- *     </th>
- *     <tr>
- *         <td>name</td>
- *         <td>String</td>
- *         <td>The name of the subscription.  This must be unique among all Subscriptions</td>
- *     </tr>
- *     <tr>
- *         <td>owner</td>
- *         <td>String</td>
- *         <td>The User that owns the Subscription.  This must refer to the name of an existing User.</td>
- *     </tr>
- *     <tr>
- *         <td>topic</td>
- *         <td>String</td>
- *         <td>The name of the Topic that the subscription is for.
- *             A topic name must refer to an existing Topic.</td>
- *     </tr>
- *     <tr>
- *         <td>dataUrl</td>
- *         <td>String</td>
- *         <td>The URL that the system will attempt to deliver Events to.</td>
- *     </tr>
- *     <tr>
- *         <td>livelinessUrl</td>
- *         <td>String</td>
- *         <td>The URL that the system will use to determine if the Subscription is online.
- *             If the system thinks that the Subscription is offline, it will do an
- *             HTTP GET against this URL to determine if it is online.  A successful result
- *             (a 200 code) indicates that the Subscription is online. Any other result and
- *             the system will conclude that the Subascription is offline.</td>
- *     </tr>
- *     <tr>
- *         <td>errorPolicy</td>
- *         <td>enum</td>
- *         <td>How the subscription handles error (non 200 code) results.
- *             The allowable values are Drop, Retry and DeadLetter.
- *
- *             <p>
- *                 When the system has an Event that it wants to deliver to a Subscription,
- *                 it tries to perform an HTTP operation against the Subscription's
- *                 dataUrl.  If the operation succeeds (the HTTP result is a 200 code),
- *                 then the system creates a new Delivery and removes the Event from the
- *                 Subscription's queue.  If the operation fails (a non 200 code),
- *                 the system consults the Suscription's errorPolicy.
- *             </p>
- *
- *             <p>
- *                 When a Subscription has an error policy of Drop,
- *                 a failure to deliver an Event results in that Event being discarded from the
- *                 Subscription's queue.
- *             </p>
- *
- *             <p>
- *                 When a Subscription has an error policy of Retry,
- *                 a failure to deliver an Event results in the system trying to deliver the
- *                 Event again.  Each time the system fails, it waits twice as long before attempting
- *                 a redelivery.  While retrying the Event, other Events will backup behind the retrying Event.
- *                 If a Subscription's queue gets longer than a configurable threshold,
- *                 new Events will be discarded in favor of old events.
- *             </p>
- *
- *             <p>
- *                 After a configurable number of tries, the system will discard the Event.
- *             </p>
- *
- *             <p>
- *                 When a Subscription has an error policy of DeadLetter,
- *                 it will put a failing Event into a "dead letter queue".
- *                 The max size of a dead letter queue is configurable.
- *                 When another Event needs to be added to a full dead letter queue,
- *                 it is discarded instead.
- *             </p>
- *         </td>
- *     </tr>
+ * <th>
+ * <td>Name</td>
+ * <td>Type</td>
+ * <td>Description</td>
+ * </th>
+ * <tr>
+ * <td>name</td>
+ * <td>String</td>
+ * <td>The name of the subscription.  This must be unique among all Subscriptions</td>
+ * </tr>
+ * <tr>
+ * <td>owner</td>
+ * <td>String</td>
+ * <td>The User that owns the Subscription.  This must refer to the name of an existing User.</td>
+ * </tr>
+ * <tr>
+ * <td>topic</td>
+ * <td>String</td>
+ * <td>The name of the Topic that the subscription is for.
+ * A topic name must refer to an existing Topic.</td>
+ * </tr>
+ * <tr>
+ * <td>dataUrl</td>
+ * <td>String</td>
+ * <td>The URL that the system will attempt to deliver Events to.</td>
+ * </tr>
+ * <tr>
+ * <td>livelinessUrl</td>
+ * <td>String</td>
+ * <td>The URL that the system will use to determine if the Subscription is online.
+ * If the system thinks that the Subscription is offline, it will do an
+ * HTTP GET against this URL to determine if it is online.  A successful result
+ * (a 200 code) indicates that the Subscription is online. Any other result and
+ * the system will conclude that the Subascription is offline.</td>
+ * </tr>
+ * <tr>
+ * <td>errorPolicy</td>
+ * <td>enum</td>
+ * <td>How the subscription handles error (non 200 code) results.
+ * The allowable values are Drop, Retry and DeadLetter.
+ * <p>
+ * <p>
+ * When the system has an Event that it wants to deliver to a Subscription,
+ * it tries to perform an HTTP operation against the Subscription's
+ * dataUrl.  If the operation succeeds (the HTTP result is a 200 code),
+ * then the system creates a new Delivery and removes the Event from the
+ * Subscription's queue.  If the operation fails (a non 200 code),
+ * the system consults the Suscription's errorPolicy.
+ * </p>
+ * <p>
+ * <p>
+ * When a Subscription has an error policy of Drop,
+ * a failure to deliver an Event results in that Event being discarded from the
+ * Subscription's queue.
+ * </p>
+ * <p>
+ * <p>
+ * When a Subscription has an error policy of Retry,
+ * a failure to deliver an Event results in the system trying to deliver the
+ * Event again.  Each time the system fails, it waits twice as long before attempting
+ * a redelivery.  While retrying the Event, other Events will backup behind the retrying Event.
+ * If a Subscription's queue gets longer than a configurable threshold,
+ * new Events will be discarded in favor of old events.
+ * </p>
+ * <p>
+ * <p>
+ * After a configurable number of tries, the system will discard the Event.
+ * </p>
+ * <p>
+ * <p>
+ * When a Subscription has an error policy of DeadLetter,
+ * it will put a failing Event into a "dead letter queue".
+ * The max size of a dead letter queue is configurable.
+ * When another Event needs to be added to a full dead letter queue,
+ * it is discarded instead.
+ * </p>
+ * </td>
+ * </tr>
  * </table>
  */
 public class Subscription extends MirandaObject {
@@ -153,16 +153,16 @@ public class Subscription extends MirandaObject {
     }
 
 
-    public Subscription () {
+    public Subscription() {
     }
 
-    public Subscription (String name) {
+    public Subscription(String name) {
         this();
         this.name = name;
     }
 
-    public Subscription (String name, String owner, String topic, String dataUrl, String livelinessUrl,
-                         ErrorPolicies errorPolicy) {
+    public Subscription(String name, String owner, String topic, String dataUrl, String livelinessUrl,
+                        ErrorPolicies errorPolicy) {
         this.name = name;
         this.owner = owner;
         this.topic = topic;
@@ -183,7 +183,7 @@ public class Subscription extends MirandaObject {
         return name;
     }
 
-    public void setName (String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -212,7 +212,7 @@ public class Subscription extends MirandaObject {
         this.dataUrl = dataUrl;
     }
 
-    public void updateFrom (Subscription other) {
+    public void updateFrom(Subscription other) {
         setOwner(other.getOwner());
         setDataUrl(other.getDataUrl());
         setLivelinessUrl(other.getLivelinessUrl());

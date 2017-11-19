@@ -28,7 +28,7 @@ public class DeleteTopicResponseMessage extends Message {
     private Results result;
     private String additionalInfo;
 
-    public Results getResult () {
+    public Results getResult() {
         return result;
     }
 

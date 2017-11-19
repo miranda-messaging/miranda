@@ -91,6 +91,6 @@ public class TestFileWatcherReadyState extends TestCase {
         WatchFileMessage watchFileMessage = new WatchFileMessage(null, this, file, null);
         getFileWatcherReadyState().processMessage(watchFileMessage);
 
-        verify (getMockFileWatcherService(), atLeastOnce()).watchFile(Matchers.any(File.class), Matchers.any());
+        verify(getMockFileWatcherService(), atLeastOnce()).addWatcher(Matchers.any(File.class), Matchers.any());
     }
 }

@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * Created by Clark on 4/18/2017.
  */
 public class FileServlet extends MirandaServlet {
-    public byte[] readInputStream (InputStream inputStream) throws IOException {
+    public byte[] readInputStream(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         int c = inputStream.read();
@@ -48,7 +48,7 @@ public class FileServlet extends MirandaServlet {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public void copy (InputStream inputStream, ServletOutputStream outputStream) throws IOException {
+    public void copy(InputStream inputStream, ServletOutputStream outputStream) throws IOException {
         int c = inputStream.read();
         while (c != -1) {
             outputStream.write(c);
@@ -62,9 +62,9 @@ public class FileServlet extends MirandaServlet {
         Class<?> clazz = c;
 
         Method[] allMethods;
-        for(allMethods = null; !clazz.equals(HttpServlet.class); clazz = clazz.getSuperclass()) {
+        for (allMethods = null; !clazz.equals(HttpServlet.class); clazz = clazz.getSuperclass()) {
             Method[] thisMethods = clazz.getDeclaredMethods();
-            if(allMethods != null && allMethods.length > 0) {
+            if (allMethods != null && allMethods.length > 0) {
                 Method[] subClassMethods = allMethods;
                 allMethods = new Method[thisMethods.length + allMethods.length];
                 System.arraycopy(thisMethods, 0, allMethods, 0, thisMethods.length);
@@ -74,7 +74,7 @@ public class FileServlet extends MirandaServlet {
             }
         }
 
-        return allMethods != null?allMethods:new Method[0];
+        return allMethods != null ? allMethods : new Method[0];
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -28,7 +28,7 @@ abstract public class ServletHolderRunner implements Runnable {
     private Thread thread;
     private ServletHolder servletHolder;
 
-    public ServletHolderRunner (ServletHolder servletHolder) {
+    public ServletHolderRunner(ServletHolder servletHolder) {
         this.servletHolder = servletHolder;
     }
 
@@ -48,7 +48,7 @@ abstract public class ServletHolderRunner implements Runnable {
         this.servletHolder = servletHolder;
     }
 
-    public void start () {
+    public void start() {
         Thread newThread = new Thread(this);
         newThread.start();
     }

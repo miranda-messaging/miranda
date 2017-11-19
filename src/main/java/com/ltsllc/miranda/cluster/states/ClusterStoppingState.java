@@ -29,24 +29,24 @@ import java.util.List;
 
 /**
  * Wait for all nodes to stop.
- *
  * <p>
- *     This state assumes that the nodes have already been told to stop.
+ * <p>
+ * This state assumes that the nodes have already been told to stop.
  * </p>
- *
  * <p>
- *     WHEN IN THIS STATE THE CLUSTER WILL DISCARD MESSAGES OTHER THAN
- *     NodeStopped!
+ * <p>
+ * WHEN IN THIS STATE THE CLUSTER WILL DISCARD MESSAGES OTHER THAN
+ * NodeStopped!
  * </p>
  */
 public class ClusterStoppingState extends State {
     private static Logger logger = Logger.getLogger(ClusterStoppingState.class);
 
-    public Cluster getCluster () {
+    public Cluster getCluster() {
         return (Cluster) getContainer();
     }
 
-    public ClusterStoppingState (Cluster cluster) throws MirandaException {
+    public ClusterStoppingState(Cluster cluster) throws MirandaException {
         super(cluster);
     }
 
@@ -76,8 +76,8 @@ public class ClusterStoppingState extends State {
         return nextState;
     }
 
-    public State processNodeStoppedMessage (NodeStoppedMessage nodeStoppedMessage) {
-        logger.info ("Node stopped " + nodeStoppedMessage.getNode());
+    public State processNodeStoppedMessage(NodeStoppedMessage nodeStoppedMessage) {
+        logger.info("Node stopped " + nodeStoppedMessage.getNode());
 
         List<Node> list = getCluster().getNodes();
         if (!list.remove(nodeStoppedMessage.getNode())) {
@@ -86,21 +86,21 @@ public class ClusterStoppingState extends State {
         }
 
         if (list.size() <= 0) {
-            logger.info ("All nodes stopped, cluster stopping.");
+            logger.info("All nodes stopped, cluster stopping.");
             return StopState.getInstance();
         }
 
         return this;
     }
 
-    public State discardMessage (Message message) {
-        logger.warn (getCluster() + " is discarding " + message);
+    public State discardMessage(Message message) {
+        logger.warn(getCluster() + " is discarding " + message);
 
         return this;
     }
 
-    public State processShutdownResponseMessage (ShutdownResponseMessage shutdownResponseMessage) {
-        logger.info (shutdownResponseMessage.getName() + " stopped");
+    public State processShutdownResponseMessage(ShutdownResponseMessage shutdownResponseMessage) {
+        logger.info(shutdownResponseMessage.getName() + " stopped");
 
         if (shutdownResponseMessage.getName().equals(ClusterFile.NAME))
             getCluster().setClusterFileResponded(true);

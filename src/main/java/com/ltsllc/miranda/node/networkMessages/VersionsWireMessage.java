@@ -30,7 +30,7 @@ public class VersionsWireMessage extends WireMessage {
         return versions;
     }
 
-    public VersionsWireMessage (List<NameVersion> versions) {
+    public VersionsWireMessage(List<NameVersion> versions) {
         super(WireSubjects.Versions);
         this.versions = versions;
     }

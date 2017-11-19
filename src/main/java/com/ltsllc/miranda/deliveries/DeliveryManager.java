@@ -29,7 +29,7 @@ import java.io.IOException;
 public class DeliveryManager extends DirectoryManager {
     public static final String NAME = "delivery manager";
 
-    public DeliveryManager (String directory, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
+    public DeliveryManager(String directory, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directory, objectLimit, reader, writer);
     }
 }

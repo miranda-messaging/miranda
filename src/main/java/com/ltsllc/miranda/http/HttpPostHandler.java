@@ -27,11 +27,11 @@ import java.lang.reflect.Type;
 public class HttpPostHandler extends Consumer {
     private static Gson ourGson = new Gson();
 
-    public Object decodeContent (Type type, String json) {
+    public Object decodeContent(Type type, String json) {
         return ourGson.fromJson(json, type);
     }
 
-    public HttpPostHandler () {
+    public HttpPostHandler() {
         super("http post handler");
     }
 }

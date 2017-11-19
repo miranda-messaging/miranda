@@ -44,7 +44,7 @@ public class DeleteUserResponseMessage extends Message {
         this.result = result;
     }
 
-    public DeleteUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public DeleteUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.DeleteUserResponse, senderQueue, sender);
 
         this.name = name;

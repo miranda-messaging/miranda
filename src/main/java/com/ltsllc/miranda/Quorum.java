@@ -19,7 +19,7 @@ abstract public class Quorum {
     private List<Node> waitingFor;
     private List<Node> responded;
 
-    public Quorum (List<Node> waitingFor) {
+    public Quorum(List<Node> waitingFor) {
         this.waitingFor = waitingFor;
         this.responded = new ArrayList<Node>();
     }
@@ -32,11 +32,11 @@ abstract public class Quorum {
         return waitingFor;
     }
 
-    public boolean complete () {
+    public boolean complete() {
         return getResponded().size() > getWaitingFor().size();
     }
 
-    public void addResponse (Node node, WireResponse response) {
+    public void addResponse(Node node, WireResponse response) {
         if (response.getResult() == Results.Acknowleged && !requiresWrites()) {
             moveWaitingToResponded(node);
         } else if (response.getResult() == Results.Written) {
@@ -44,7 +44,7 @@ abstract public class Quorum {
         }
 
         if (complete()) {
-            logger.info ("Got response, quorum complete!");
+            logger.info("Got response, quorum complete!");
         } else {
             logger.info("Got response, still waiting for " + getWaitingFor().size() + " nodes");
         }

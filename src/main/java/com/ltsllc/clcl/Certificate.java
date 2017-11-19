@@ -39,11 +39,11 @@ public class Certificate {
         return certificate;
     }
 
-    public Certificate (X509Certificate certificate) {
+    public Certificate(X509Certificate certificate) {
         this.certificate = certificate;
     }
 
-    public String toPem () throws IOException {
+    public String toPem() throws IOException {
         StringWriter stringWriter = new StringWriter();
         PEMWriter pemWriter = new PEMWriter(stringWriter);
         pemWriter.writeObject(getCertificate());
@@ -51,7 +51,7 @@ public class Certificate {
         return stringWriter.toString();
     }
 
-    public static Certificate fromPEM (String pem) throws IOException, GeneralSecurityException {
+    public static Certificate fromPEM(String pem) throws IOException, GeneralSecurityException {
         StringReader stringReader = new StringReader(pem);
         PEMParser pemParser = new PEMParser(stringReader);
         X509CertificateHolder x509CertificateHolder = (X509CertificateHolder) pemParser.readObject();
@@ -64,7 +64,7 @@ public class Certificate {
         return new Certificate(x509Certificate);
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (o == null || !(o instanceof Certificate))
             return false;
 
@@ -82,14 +82,14 @@ public class Certificate {
     }
 
     public BigInteger getSerialnumber() {
-        return  getCertificate().getSerialNumber();
+        return getCertificate().getSerialNumber();
     }
 
-    public DistinguishedName getSubject () {
+    public DistinguishedName getSubject() {
         return new DistinguishedName(getCertificate().getSubjectDN());
     }
 
-    public DistinguishedName getIssuer () {
+    public DistinguishedName getIssuer() {
         return new DistinguishedName(getCertificate().getIssuerDN());
     }
 }

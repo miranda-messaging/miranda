@@ -30,7 +30,7 @@ public class GetDeliveriesMessage extends Message {
         return filename;
     }
 
-    public GetDeliveriesMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+    public GetDeliveriesMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
         super(Subjects.GetDeliveries, senderQueue, sender);
 
         this.filename = filename;

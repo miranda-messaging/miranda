@@ -20,7 +20,8 @@ package com.ltsllc.common.commadline;
 import java.util.Properties;
 
 abstract public class CommandLine {
-    abstract public Switches toSwitch (String argument);
+    abstract public Switches toSwitch(String argument);
+
     abstract public String getUsageString();
 
     public enum Switches {
@@ -34,7 +35,7 @@ abstract public class CommandLine {
             return index;
         }
 
-        public void setIndex (int index) {
+        public void setIndex(int index) {
             this.index = index;
         }
 
@@ -47,7 +48,7 @@ abstract public class CommandLine {
     private String[] argv;
     private int argIndex = 0;
 
-    public CommandLine (String[] argv) {
+    public CommandLine(String[] argv) {
         this.argv = argv;
         this.argIndex = 0;
     }
@@ -56,7 +57,7 @@ abstract public class CommandLine {
         return argIndex;
     }
 
-    public boolean hasMoreArgs () {
+    public boolean hasMoreArgs() {
         return getArg() != null;
     }
 
@@ -64,17 +65,17 @@ abstract public class CommandLine {
         this.argIndex = argIndex;
     }
 
-    public void advance () {
+    public void advance() {
         argIndex++;
     }
 
-    public String getArgAndAdvance () {
+    public String getArgAndAdvance() {
         String value = argv[argIndex];
         advance();
         return value;
     }
 
-    public String getArgAndAdvanceOrError (String message) {
+    public String getArgAndAdvanceOrError(String message) {
         String value = getArg();
 
         if (null == value)
@@ -92,18 +93,18 @@ abstract public class CommandLine {
         this.argv = argv;
     }
 
-    public String getArg () {
+    public String getArg() {
         if (argIndex >= argv.length)
             return null;
 
         return argv[argIndex];
     }
 
-    public Properties asProperties () {
+    public Properties asProperties() {
         return new Properties();
     }
 
-    public void parse () {
+    public void parse() {
         while (hasMoreArgs()) {
             Switches aSwitch = toSwitch(getArg());
             processSwitch(aSwitch);
@@ -111,12 +112,12 @@ abstract public class CommandLine {
         }
     }
 
-    public void backup () {
+    public void backup() {
         if (argIndex > 0)
             argIndex--;
     }
 
-    public int getUnrecognizedSwitchExitCode () {
+    public int getUnrecognizedSwitchExitCode() {
         return -1;
     }
 
@@ -125,13 +126,13 @@ abstract public class CommandLine {
         printErrorAndUsageAndExit(message, getUnrecognizedSwitchExitCode());
     }
 
-    public void printErrorAndUsageAndExit (String message, int status) {
+    public void printErrorAndUsageAndExit(String message, int status) {
         System.err.println(message);
         System.err.println(getUsageString());
         System.exit(status);
     }
 
-    public void printErrorAndUsageAndExit (String message) {
+    public void printErrorAndUsageAndExit(String message) {
         printErrorAndUsageAndExit(message, -1);
     }
 }

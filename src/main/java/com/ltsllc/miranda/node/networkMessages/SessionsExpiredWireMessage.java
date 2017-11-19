@@ -30,7 +30,7 @@ public class SessionsExpiredWireMessage extends WireMessage {
         return expiredSessions;
     }
 
-    public SessionsExpiredWireMessage (List<Session> expiredSessions) {
+    public SessionsExpiredWireMessage(List<Session> expiredSessions) {
         super(WireSubjects.ExpiredSessions);
 
         this.expiredSessions = expiredSessions;

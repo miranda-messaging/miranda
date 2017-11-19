@@ -30,7 +30,7 @@ public class MirandaTimerTask extends TimerTask {
         return scheduleMessage;
     }
 
-    public void run () {
+    public void run() {
         Consumer.staticSend(scheduleMessage.getMessage(), scheduleMessage.getSender());
     }
 }

@@ -18,13 +18,17 @@ public class SimpleFileWatcher extends FileWatcher {
         this.modificationTime = modificationTime;
     }
 
-    public SimpleFileWatcher (File file, BlockingQueue<Message> listener) throws IOException {
+    public SimpleFileWatcher(File file, BlockingQueue<Message> listener) throws IOException {
         super(file, listener);
         scan();
     }
 
     @Override
     boolean scan() throws IOException {
+        long lastmodification = -1;
+        lastmodification = (getModificationTime() == null) ? -1 : getModificationTime().longValue();
+        long filetime = getFile().lastModified();
+
         boolean changed = false;
 
         if (getFile().exists()) {
@@ -33,7 +37,7 @@ public class SimpleFileWatcher extends FileWatcher {
             else
                 changed = getModificationTime().longValue() != getFile().lastModified();
 
-            Long lastModified = new Long (getFile().lastModified());
+            Long lastModified = new Long(getFile().lastModified());
             setModificationTime(lastModified);
         } else {
             changed = getModificationTime() != null;

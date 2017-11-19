@@ -8,7 +8,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 public class ConversationWireMessage extends WireMessage {
     private String key;
 
-    public ConversationWireMessage (WireSubjects subject, String key) {
+    public ConversationWireMessage(WireSubjects subject, String key) {
         super(subject);
 
         this.key = key;

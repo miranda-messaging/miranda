@@ -199,15 +199,15 @@ public class JavaKeyStore {
     }
 
 
-    public void add (String alias, Certificate certificate) {
+    public void add(String alias, Certificate certificate) {
         getCertificates().put(alias, certificate);
     }
 
-    public Certificate[] getCertificateChain (String alias) {
+    public Certificate[] getCertificateChain(String alias) {
         return getCertificateChains().get(alias);
     }
 
-    public void addKeysToKeystore (KeyStore keyStore, String alias, KeyPair keyPair, Certificate[] chain) throws EncryptionException {
+    public void addKeysToKeystore(KeyStore keyStore, String alias, KeyPair keyPair, Certificate[] chain) throws EncryptionException {
         try {
             java.security.cert.Certificate[] jscChain = toJscChain(chain);
             keyStore.setKeyEntry(alias, keyPair.getPrivateKey().getSecurityPrivateKey(), getPasswordString().toCharArray(), jscChain);
@@ -229,7 +229,7 @@ public class JavaKeyStore {
             // there must be at least one certificate in the chain, because that is how a keystore stores a public key
             //
             if (chain == null || chain.length < 1) {
-                chain = new Certificate[]{ keyPair.createCertificate() };
+                chain = new Certificate[]{keyPair.createCertificate()};
             }
 
             addKeysToKeystore(keyStore, alias, keyPair, chain);
@@ -353,7 +353,7 @@ public class JavaKeyStore {
         }
     }
 
-    public void extractKeys (KeyStore keyStore, String alias, java.security.PrivateKey jsPrivateKey) throws EncryptionException {
+    public void extractKeys(KeyStore keyStore, String alias, java.security.PrivateKey jsPrivateKey) throws EncryptionException {
         try {
             java.security.cert.Certificate[] certificates = keyStore.getCertificateChain(alias);
             Certificate[] chain = toClclChain(certificates);
@@ -368,7 +368,7 @@ public class JavaKeyStore {
         }
     }
 
-    public KeyPair getKeyPair (String alias) {
+    public KeyPair getKeyPair(String alias) {
         return getKeys().get(alias);
     }
 

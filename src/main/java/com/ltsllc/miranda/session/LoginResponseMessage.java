@@ -37,7 +37,7 @@ public class LoginResponseMessage extends Message {
         return result;
     }
 
-    public LoginResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, Session session) {
+    public LoginResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result, Session session) {
         super(Subjects.LoginResponse, senderQueue, sender);
 
         this.result = result;

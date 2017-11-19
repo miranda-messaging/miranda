@@ -31,7 +31,7 @@ public class ServletMapping {
         return servletClass;
     }
 
-    public ServletMapping (String path, Class servletClass) {
+    public ServletMapping(String path, Class servletClass) {
         this.path = path;
         this.servletClass = servletClass;
     }

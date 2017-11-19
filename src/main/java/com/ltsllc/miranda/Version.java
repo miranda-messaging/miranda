@@ -32,29 +32,30 @@ import java.security.NoSuchAlgorithmException;
 /**
  * This represents a version of a file.  It is used to determine if something
  * is out of date and needs to be updated.
- *
- * <P>
- *     If the sha1 values do not match then the two objects are not equal ---
- *     The lastChange determines which object is out of date.
+ * <p>
+ * <p>
+ * If the sha1 values do not match then the two objects are not equal ---
+ * The lastChange determines which object is out of date.
  * </P>
  */
-public class Version  {
+public class Version {
     private static Logger logger = Logger.getLogger(Version.class);
 
     private String sha1;
 
-    public Version () {}
+    public Version() {
+    }
 
-    public Version (String content) throws NoSuchAlgorithmException {
+    public Version(String content) throws NoSuchAlgorithmException {
         this.sha1 = Utils.calculateSha1(content);
     }
 
-    public Version (byte[] data) throws NoSuchAlgorithmException {
+    public Version(byte[] data) throws NoSuchAlgorithmException {
         this.sha1 = Utils.calculateSha1(data);
     }
 
-    public static Version createWithSha1 (String sha1) {
-        Version version = new Version ();
+    public static Version createWithSha1(String sha1) {
+        Version version = new Version();
         version.sha1 = sha1;
 
         return version;
@@ -62,9 +63,10 @@ public class Version  {
 
     /**
      * When we are getting the version of an existing file.
+     *
      * @param singleFile
      */
-    public Version (SingleFile singleFile) throws NoSuchAlgorithmException, IOException {
+    public Version(SingleFile singleFile) throws NoSuchAlgorithmException, IOException {
         FileInputStream fileInputStream = null;
 
         try {
@@ -82,11 +84,11 @@ public class Version  {
         return sha1;
     }
 
-    public void setSha1 (String sha1) {
+    public void setSha1(String sha1) {
         this.sha1 = sha1;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (null == o || !(o instanceof Version))
             return false;
 

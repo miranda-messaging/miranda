@@ -26,11 +26,11 @@ import org.apache.log4j.Logger;
 public class MirandaPanicPolicy extends PanicPolicyClass {
     private static Logger logger = Logger.getLogger(MirandaPanicPolicy.class);
 
-    public MirandaPanicPolicy (int maxPanicCount, long timeout, Miranda miranda, MirandaTimer timer) {
+    public MirandaPanicPolicy(int maxPanicCount, long timeout, Miranda miranda, MirandaTimer timer) {
         super("panic policy", maxPanicCount, miranda, timeout, timer);
     }
 
-    public void panic (Panic panic) throws ShutdownException {
+    public void panic(Panic panic) throws ShutdownException {
         String fatalMessage = "The system is terminating due to a panic";
         boolean continuePanic = false;
 
@@ -40,13 +40,12 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
             continuePanic = true;
         } else if (
                 panic.getReason() == Panic.Reasons.DoesNotUnderstand ||
-                panic.getReason() == Panic.Reasons.ExceptionGettingNextMessage ||
-                panic.getReason() == Panic.Reasons.ExceptionDuringNetworkSend ||
-                panic.getReason() == Panic.Reasons.ExceptionTryingToRectify ||
-                panic.getReason() == Panic.Reasons.ExceptionWritingFile ||
-                panic.getReason() == Panic.Reasons.CouldNotWrite
-        )
-        {
+                        panic.getReason() == Panic.Reasons.ExceptionGettingNextMessage ||
+                        panic.getReason() == Panic.Reasons.ExceptionDuringNetworkSend ||
+                        panic.getReason() == Panic.Reasons.ExceptionTryingToRectify ||
+                        panic.getReason() == Panic.Reasons.ExceptionWritingFile ||
+                        panic.getReason() == Panic.Reasons.CouldNotWrite
+                ) {
             handleCountablePanic(panic);
         } else if (panic.getReason() == Panic.Reasons.DoesNotUnderstandNetworkMessage) {
             handleIgnorablePanic(panic);

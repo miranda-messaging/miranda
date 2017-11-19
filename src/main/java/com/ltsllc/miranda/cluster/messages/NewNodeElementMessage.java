@@ -32,7 +32,7 @@ import java.util.concurrent.BlockingQueue;
 public class NewNodeElementMessage extends Message {
     private NodeElement node;
 
-    public NewNodeElementMessage (BlockingQueue<Message> senderQueue, Object sender, NodeElement newNode) {
+    public NewNodeElementMessage(BlockingQueue<Message> senderQueue, Object sender, NodeElement newNode) {
         super(Subjects.NewNodeElement, senderQueue, sender);
 
         this.node = newNode;

@@ -36,7 +36,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/9/2017.
  */
-public class TopicManager extends StandardManager <Topic> {
+public class TopicManager extends StandardManager<Topic> {
     public static final String NAME = "TopicManager";
 
     private static Logger logger = Logger.getLogger(TopicManager.class);
@@ -49,31 +49,31 @@ public class TopicManager extends StandardManager <Topic> {
         return getData();
     }
 
-    public TopicManager (String filename) throws IOException, MirandaException {
+    public TopicManager(String filename) throws IOException, MirandaException {
         super("topics manager", filename);
 
         TopicManagerStartState topicManagerStartState = new TopicManagerStartState(this);
         setCurrentState(topicManagerStartState);
     }
 
-    public SingleFile<Topic> createFile (String filename) throws IOException, MirandaException {
+    public SingleFile<Topic> createFile(String filename) throws IOException, MirandaException {
         return new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter());
     }
 
-    public State createStartState () throws MirandaException {
+    public State createStartState() throws MirandaException {
         return new TopicManagerStartState(this);
     }
 
-    public void sendGetTopicsMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendGetTopicsMessage(BlockingQueue<Message> senderQueue, Object sender) {
         ListTopicsMessage getTopicsMessage = new ListTopicsMessage(senderQueue, sender);
         sendToMe(getTopicsMessage);
     }
 
-    public void performGarbageCollection () {
-        logger.info ("performGarbageCollection called");
+    public void performGarbageCollection() {
+        logger.info("performGarbageCollection called");
     }
 
-    public Topic getTopic (String name) {
+    public Topic getTopic(String name) {
         for (Topic topic : getTopics()) {
             if (topic.getName().equals(name))
                 return topic;
@@ -82,11 +82,11 @@ public class TopicManager extends StandardManager <Topic> {
         return null;
     }
 
-    public boolean contains (String name) {
+    public boolean contains(String name) {
         return getTopic(name) != null;
     }
 
-    public void addTopic (Topic topic) throws DuplicateTopicException {
+    public void addTopic(Topic topic) throws DuplicateTopicException {
         if (contains(topic.getName())) {
             throw new DuplicateTopicException("Duplicate topic named: " + topic.getName());
         } else {
@@ -98,7 +98,7 @@ public class TopicManager extends StandardManager <Topic> {
         }
     }
 
-    public boolean deleteTopic (String name) {
+    public boolean deleteTopic(String name) {
         boolean deleted = false;
 
         Topic topic = getTopic(name);
@@ -111,30 +111,30 @@ public class TopicManager extends StandardManager <Topic> {
         return deleted;
     }
 
-    public void setTopics (List<Topic> topics) {
+    public void setTopics(List<Topic> topics) {
         setData(topics);
     }
 
-    public void sendCreateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+    public void sendCreateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
         CreateTopicMessage createTopicMessage = new CreateTopicMessage(senderQueue, sender, null, topic);
         sendToMe(createTopicMessage);
     }
 
-    public void sendUpdateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
+    public void sendUpdateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
         UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, null, topic);
         sendToMe(updateTopicMessage);
     }
 
-    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String topicName) {
+    public void sendDeleteTopicMessage(BlockingQueue<Message> senderQueue, Object sender, String topicName) {
         DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, null, topicName);
         sendToMe(deleteTopicMessage);
     }
 
-    public void updateTopic (Topic topic) throws TopicNotFoundException {
+    public void updateTopic(Topic topic) throws TopicNotFoundException {
         Topic existingTopic = getTopic(topic.getName());
 
         if (null == existingTopic)
-            throw new TopicNotFoundException ("Could not find " + topic.getName());
+            throw new TopicNotFoundException("Could not find " + topic.getName());
         else {
             existingTopic.updateFrom(topic);
 
@@ -142,7 +142,7 @@ public class TopicManager extends StandardManager <Topic> {
         }
     }
 
-    public void deleteTopic (Topic topic) {
+    public void deleteTopic(Topic topic) {
         Topic existingTopic = getTopic(topic.getName());
         if (null != existingTopic) {
             getTopics().remove(existingTopic);
@@ -153,17 +153,17 @@ public class TopicManager extends StandardManager <Topic> {
         }
     }
 
-    public void sendGetTopicMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public void sendGetTopicMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         GetTopicMessage getTopicMessage = new GetTopicMessage(senderQueue, sender, name);
         sendToMe(getTopicMessage);
     }
 
-    public void sendOwnerQueryMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public void sendOwnerQueryMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         OwnerQueryMessage ownerQueryMessage = new OwnerQueryMessage(senderQueue, sender, name);
         sendToMe(ownerQueryMessage);
     }
 
-    public List<String> getPropertyOf (String name) {
+    public List<String> getPropertyOf(String name) {
         List<String> property = new ArrayList<String>();
         for (Topic topic : getTopics()) {
             if (topic.getOwner().equals(name)) {
@@ -174,7 +174,7 @@ public class TopicManager extends StandardManager <Topic> {
         return property;
     }
 
-    public Topic convert (Topic topic) {
+    public Topic convert(Topic topic) {
         return topic;
     }
 }

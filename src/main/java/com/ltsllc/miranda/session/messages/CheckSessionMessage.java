@@ -32,7 +32,7 @@ public class CheckSessionMessage extends Message {
         return sessionId;
     }
 
-    public CheckSessionMessage (BlockingQueue<Message> senderQueue, Object sender, long sessionId) {
+    public CheckSessionMessage(BlockingQueue<Message> senderQueue, Object sender, long sessionId) {
         super(CheckSession, senderQueue, sender);
 
         this.sessionId = sessionId;

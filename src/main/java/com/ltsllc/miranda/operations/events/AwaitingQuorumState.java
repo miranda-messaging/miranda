@@ -29,11 +29,11 @@ abstract public class AwaitingQuorumState extends OperationState {
         return quorum;
     }
 
-    public Operation getOperation () {
+    public Operation getOperation() {
         return (Operation) getContainer();
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getOperation().getCurrentState();
 
         switch (message.getSubject()) {
@@ -52,11 +52,11 @@ abstract public class AwaitingQuorumState extends OperationState {
         return nextState;
     }
 
-    public String toString () {
+    public String toString() {
         return NAME;
     }
 
-    public State processNetworkMessage (NetworkConversationMessage message) {
+    public State processNetworkMessage(NetworkConversationMessage message) {
         if (!(message.getWireMessage() instanceof WireResponse)) {
             logger.warn("Got non-response network message: " + message + ", ignoring.");
             return getOperation().getCurrentState();

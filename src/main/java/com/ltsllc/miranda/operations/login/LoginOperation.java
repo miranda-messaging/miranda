@@ -40,8 +40,8 @@ public class LoginOperation extends Consumer {
         return requester;
     }
 
-    public LoginOperation (String name, BlockingQueue<Message> requester) throws MirandaException {
-        super (NAME);
+    public LoginOperation(String name, BlockingQueue<Message> requester) throws MirandaException {
+        super(NAME);
 
         this.requester = requester;
         this.user = name;
@@ -50,7 +50,7 @@ public class LoginOperation extends Consumer {
         setCurrentState(readyState);
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda.getInstance().getSessionManager().sendGetSessionMessage(getQueue(), this, getUser());

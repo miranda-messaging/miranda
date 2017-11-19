@@ -37,8 +37,8 @@ public class GetSessionResponseMessage extends Message {
         return session;
     }
 
-    public GetSessionResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result,
-                                      Session session) {
+    public GetSessionResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result,
+                                     Session session) {
         super(Subjects.GetSessionResponse, senderQueue, sender);
 
         this.result = result;

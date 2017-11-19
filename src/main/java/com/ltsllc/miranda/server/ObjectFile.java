@@ -29,7 +29,7 @@ public class ObjectFile<T> {
         return data;
     }
 
-    public boolean contains (T t) {
+    public boolean contains(T t) {
         for (T instance : getData()) {
             if (instance.equals(t))
                 return true;
@@ -38,7 +38,7 @@ public class ObjectFile<T> {
         return false;
     }
 
-    public void add (T t) {
+    public void add(T t) {
         getData().add(t);
     }
 }

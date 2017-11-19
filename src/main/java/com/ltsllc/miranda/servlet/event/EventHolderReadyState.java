@@ -11,27 +11,27 @@ import com.ltsllc.miranda.servlet.ServletHolderReadyState;
  * Created by Clark on 6/7/2017.
  */
 public class EventHolderReadyState extends ServletHolderReadyState {
-    public EventHolderReadyState (EventHolder eventHolder) throws MirandaException {
+    public EventHolderReadyState(EventHolder eventHolder) throws MirandaException {
         super(eventHolder);
     }
 
-    public EventHolder getEventHolder () {
+    public EventHolder getEventHolder() {
         return (EventHolder) getContainer();
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getEventHolder().getCurrentState();
 
         switch (message.getSubject()) {
-            case ReadResponse : {
+            case ReadResponse: {
                 ReadEventResponseMessage readEventResponseMessage = (ReadEventResponseMessage) message;
-                nextState = processReadEventResponseMessage (readEventResponseMessage);
+                nextState = processReadEventResponseMessage(readEventResponseMessage);
                 break;
             }
 
             case CreateResponse: {
                 CreateEventResponseMessage createEventResponseMessage = (CreateEventResponseMessage) message;
-                nextState = processCreateEventResponseMessage (createEventResponseMessage);
+                nextState = processCreateEventResponseMessage(createEventResponseMessage);
                 break;
             }
 
@@ -43,13 +43,13 @@ public class EventHolderReadyState extends ServletHolderReadyState {
         return nextState;
     }
 
-    public State processReadEventResponseMessage (ReadEventResponseMessage readEventResponseMessage) {
+    public State processReadEventResponseMessage(ReadEventResponseMessage readEventResponseMessage) {
         getEventHolder().setReadResultAndAwaken(readEventResponseMessage.getResult(), readEventResponseMessage.getEvent());
 
         return getEventHolder().getCurrentState();
     }
 
-    public State processCreateEventResponseMessage (CreateEventResponseMessage createEventResponseMessage) {
+    public State processCreateEventResponseMessage(CreateEventResponseMessage createEventResponseMessage) {
         getEventHolder().setCreateResultAndAwaken(createEventResponseMessage.getResult(),
                 createEventResponseMessage.getGuid());
 

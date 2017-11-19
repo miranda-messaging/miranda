@@ -31,21 +31,21 @@ import org.apache.log4j.Logger;
 public class ShuttingDownState extends State {
     private static Logger logger = Logger.getLogger(ShuttingDownState.class);
 
-    public static void setLogger (Logger logger) {
+    public static void setLogger(Logger logger) {
         ShuttingDownState.logger = logger;
     }
 
-    public Miranda getMiranda () {
+    public Miranda getMiranda() {
         return (Miranda) getContainer();
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getMiranda().getCurrentState();
 
         switch (message.getSubject()) {
             case ShutdownResponse: {
                 ShutdownResponseMessage shutdownResponseMessage = (ShutdownResponseMessage) message;
-                nextState = processShutdownResponseMessage (shutdownResponseMessage);
+                nextState = processShutdownResponseMessage(shutdownResponseMessage);
                 break;
             }
 
@@ -58,15 +58,15 @@ public class ShuttingDownState extends State {
     }
 
 
-    public ShuttingDownState (Miranda miranda) throws MirandaException {
+    public ShuttingDownState(Miranda miranda) throws MirandaException {
         super(miranda);
     }
 
-    public State processShutdownResponseMessage (ShutdownResponseMessage shutdownResponseMessage) {
+    public State processShutdownResponseMessage(ShutdownResponseMessage shutdownResponseMessage) {
         getMiranda().subsystemShutDown(shutdownResponseMessage.getName());
 
         if (getMiranda().readyToShutDown()) {
-            logger.info ("System is shutting down");
+            logger.info("System is shutting down");
             return StopState.getInstance();
         }
 

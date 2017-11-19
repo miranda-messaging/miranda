@@ -26,33 +26,33 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A Miranda subsystem.
- *
+ * <p>
  * <H2>Attributes</H2>
  * <UL>
- *     <LI>map - unlike most other attributes</LI>
- *     <LI>name - the name of the subsystem</LI>
- *     <LI>queue - the queue that the subsystem gets messages from.</LI>
- *     <LI>thre - the thread the subystem is running in.</LI>
+ * <LI>map - unlike most other attributes</LI>
+ * <LI>name - the name of the subsystem</LI>
+ * <LI>queue - the queue that the subsystem gets messages from.</LI>
+ * <LI>thre - the thread the subystem is running in.</LI>
  * </UL>
- *
+ * <p>
  * <H2>Methods</H2>
  * <UL>
- *     <LI></LI>
+ * <LI></LI>
  * </UL>
  * Created by Clark on 12/30/2016.
  */
-public abstract class Subsystem implements Runnable,Comparer {
+public abstract class Subsystem implements Runnable, Comparer {
     private static Map<String, BlockingQueue<Message>> ourMap = new HashMap<String, BlockingQueue<Message>>();
 
-    public static synchronized void register (String name, BlockingQueue<Message> queue)
-    {
+    public static synchronized void register(String name, BlockingQueue<Message> queue) {
         ourMap.put(name, queue);
     }
-    public static synchronized void unregister (String name)
-    {
+
+    public static synchronized void unregister(String name) {
         ourMap.remove(name);
     }
-    public synchronized BlockingQueue<Message> find (String name) {
+
+    public synchronized BlockingQueue<Message> find(String name) {
         return ourMap.get(name);
     }
 
@@ -68,15 +68,15 @@ public abstract class Subsystem implements Runnable,Comparer {
         return stopped;
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 
-    public BlockingQueue<Message> getQueue () {
+    public BlockingQueue<Message> getQueue() {
         return queue;
     }
 
-    public void setQueue (BlockingQueue<Message> newQueue) {
+    public void setQueue(BlockingQueue<Message> newQueue) {
         queue = newQueue;
     }
 
@@ -92,16 +92,18 @@ public abstract class Subsystem implements Runnable,Comparer {
         this.started = started;
     }
 
-    public Subsystem () {}
-    public Subsystem (String name) {
+    public Subsystem() {
+    }
+
+    public Subsystem(String name) {
         basicConstructor(name, new LinkedBlockingQueue<Message>());
     }
 
-    public Subsystem (String name, BlockingQueue<Message> queue) {
+    public Subsystem(String name, BlockingQueue<Message> queue) {
         basicConstructor(name, queue);
     }
 
-    public void basicConstructor (String name, BlockingQueue<Message> queue) {
+    public void basicConstructor(String name, BlockingQueue<Message> queue) {
         if (null == queue)
             queue = new LinkedBlockingQueue<Message>();
 
@@ -113,9 +115,9 @@ public abstract class Subsystem implements Runnable,Comparer {
 
     /**
      * Start the subsystem.
-     *
-     * <P>
-     *     This version of the method starts a new thread.
+     * <p>
+     * <p>
+     * This version of the method starts a new thread.
      * </P>
      */
     public void start() {
@@ -124,11 +126,11 @@ public abstract class Subsystem implements Runnable,Comparer {
         setStarted(true);
     }
 
-    public void stop () {
+    public void stop() {
         this.stopped = true;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
 

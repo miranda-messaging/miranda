@@ -37,10 +37,10 @@ import java.util.Properties;
 
 /**
  * The Miranda system's properties.
- *
- * <P>
- *     This class is a SingleFile object that knows a lot about {@link Properties}
- *     objects.
+ * <p>
+ * <p>
+ * This class is a SingleFile object that knows a lot about {@link Properties}
+ * objects.
  * </P>
  */
 public class MirandaProperties {
@@ -51,7 +51,7 @@ public class MirandaProperties {
     public static final String ONE_DAY = (new Long(1000 * 60 * 60 * 24)).toString();
     public static final String ONE_WEEK = (new Long(1000 * 60 * 60 * 24 * 7)).toString();
     public static final String ONE_MONTH = (new Long(1000 * 60 * 60 * 24 * 30)).toString();
-    public static final String ONE_YEAR = (new Long(1000 * 60 * 60 * 24 *365)).toString();
+    public static final String ONE_YEAR = (new Long(1000 * 60 * 60 * 24 * 365)).toString();
 
     private static Logger logger = Logger.getLogger(MirandaProperties.class);
 
@@ -165,7 +165,7 @@ public class MirandaProperties {
 
     public static final String PROPERTY_DELIVERY_OBJECT_LIMIT = DELIVERY_PACKAGE + "ObjectLimit";
 
-    public static final String DEFAULT_FILE_CHECK_PERIOD  = "1000";
+    public static final String DEFAULT_FILE_CHECK_PERIOD = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
     public static final String DEFAULT_TOPICS_FILE = "data/topics.json";
@@ -289,7 +289,7 @@ public class MirandaProperties {
         return instance;
     }
 
-    public static synchronized void setInstance (MirandaProperties mirandaProperties) {
+    public static synchronized void setInstance(MirandaProperties mirandaProperties) {
         if (null != instance) {
             StartupPanic startupPanic = new StartupPanic("Attempt to create multiple instances of MirandaProperties",
                     StartupPanic.StartupReasons.MultipleProperties);
@@ -299,7 +299,7 @@ public class MirandaProperties {
         }
     }
 
-    public MirandaProperties (String filename) {
+    public MirandaProperties(String filename) {
         properties = new Properties();
         this.filename = filename;
 
@@ -308,23 +308,22 @@ public class MirandaProperties {
         load();
     }
 
-    public MirandaProperties (Properties p) {
+    public MirandaProperties(Properties p) {
         properties = p;
     }
 
-    public MirandaProperties()
-    {
+    public MirandaProperties() {
         properties = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
     }
 
     /**
      * Set the properties to their default values.
-     *
-     * <P>
-     *     This method is intended only for use in testing.
+     * <p>
+     * <p>
+     * This method is intended only for use in testing.
      * </P>
      */
-    public void setupDefaults () {
+    public void setupDefaults() {
         Properties systemProperties = PropertiesUtils.copy(System.getProperties());
         Properties defaultProperties = PropertiesUtils.buildFrom(DEFAULT_PROPERTIES);
 
@@ -333,7 +332,7 @@ public class MirandaProperties {
         this.properties = PropertiesUtils.copy(properties);
     }
 
-    public void load (MirandaCommandLine mirandaCommandLine) throws IOException {
+    public void load(MirandaCommandLine mirandaCommandLine) throws IOException {
         //
         // start with the defaults
         //
@@ -361,13 +360,12 @@ public class MirandaProperties {
     }
 
 
-    public void updateSystemProperties()
-    {
+    public void updateSystemProperties() {
         PropertiesUtils.overwrite(System.getProperties(), asProperties());
     }
 
 
-    public int getIntegerProperty (String name) {
+    public int getIntegerProperty(String name) {
         String temp = getProperty(name);
 
         if (null == temp)
@@ -377,11 +375,11 @@ public class MirandaProperties {
         }
     }
 
-    public int getIntProperty (String name) {
+    public int getIntProperty(String name) {
         return getIntegerProperty(name);
     }
 
-    public EncryptionModes getEncryptionModeProperty (String name) {
+    public EncryptionModes getEncryptionModeProperty(String name) {
         String value = getProperty(name);
 
         EncryptionModes mode = EncryptionModes.Unknown;
@@ -399,7 +397,7 @@ public class MirandaProperties {
         return mode;
     }
 
-    public Networks getNetworkProperty (String name) {
+    public Networks getNetworkProperty(String name) {
         String value = getProperty(name);
         Networks network = Networks.Unknown;
 
@@ -410,7 +408,7 @@ public class MirandaProperties {
         return network;
     }
 
-    public WebSevers getHttpServerProperty (String name) {
+    public WebSevers getHttpServerProperty(String name) {
         String value = getProperty(name);
         value.trim();
         WebSevers webServer = WebSevers.Jetty;
@@ -421,36 +419,37 @@ public class MirandaProperties {
         return webServer;
     }
 
-    public Networks getNetworkProperty () {
+    public Networks getNetworkProperty() {
         return getNetworkProperty(PROPERTY_NETWORK);
     }
 
-    public String getProperty (String name) {
+    public String getProperty(String name) {
         return properties.getProperty(name);
     }
 
-    public void setProperty (String name, String value) {
+    public void setProperty(String name, String value) {
         properties.setProperty(name, value);
     }
 
-    public Type listType () {
-        return new TypeToken<List<String>>() {} .getType();
+    public Type listType() {
+        return new TypeToken<List<String>>() {
+        }.getType();
     }
 
-    public List buildEmptyList () {
+    public List buildEmptyList() {
         return new ArrayList<String>();
     }
 
-    public void log () {
-        logger.info ("Properties\n" + PropertiesUtils.toString(getProperties()));
+    public void log() {
+        logger.info("Properties\n" + PropertiesUtils.toString(getProperties()));
     }
 
-    public Properties asProperties () {
+    public Properties asProperties() {
         Properties temp = new Properties(properties);
         return temp;
     }
 
-    public void load () {
+    public void load() {
         String[] argv = new String[0];
         MirandaCommandLine commandLine = new MirandaCommandLine(argv);
 
@@ -462,11 +461,11 @@ public class MirandaProperties {
         }
     }
 
-    public void setProperties (Properties properties) {
+    public void setProperties(Properties properties) {
         this.properties = properties;
     }
 
-    public List<Property> asPropertyList () {
+    public List<Property> asPropertyList() {
         Properties properties = asProperties();
         List<Property> list = new ArrayList<Property>(properties.size());
         for (String name : properties.stringPropertyNames()) {
@@ -478,7 +477,7 @@ public class MirandaProperties {
         return list;
     }
 
-    public void write () {
+    public void write() {
         FileOutputStream fileOutputStream = null;
 
         try {
@@ -492,7 +491,7 @@ public class MirandaProperties {
         }
     }
 
-    public long getLongProperty (String name) throws MirandaException {
+    public long getLongProperty(String name) throws MirandaException {
         String value = null;
 
         try {
@@ -507,8 +506,7 @@ public class MirandaProperties {
         }
     }
 
-    public long getLongProperty (String name, String defaultValue)
-    {
+    public long getLongProperty(String name, String defaultValue) {
         String value = getProperties().getProperty(name);
         if (null == value)
             value = defaultValue;
@@ -523,11 +521,11 @@ public class MirandaProperties {
         return -1;
     }
 
-    public void remove (String property) {
+    public void remove(String property) {
         getProperties().remove(property);
     }
 
-    public byte[] getBytes () {
+    public byte[] getBytes() {
         return MirandaFile.getGson().toJson(getProperties()).getBytes();
     }
 }

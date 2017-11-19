@@ -27,7 +27,7 @@ import java.util.concurrent.BlockingQueue;
 public class DropNodeMessage extends Message {
     private NodeElement droppedNode;
 
-    public DropNodeMessage (BlockingQueue<Message> senderQueue, Object sender, NodeElement droppedNode) {
+    public DropNodeMessage(BlockingQueue<Message> senderQueue, Object sender, NodeElement droppedNode) {
         super(Subjects.DropNode, senderQueue, sender);
 
         this.droppedNode = droppedNode;

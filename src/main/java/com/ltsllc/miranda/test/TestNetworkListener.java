@@ -41,7 +41,7 @@ public class TestNetworkListener extends ConnectionListener {
             return type;
         }
 
-        public Event (EventTypes type) {
+        public Event(EventTypes type) {
             this.type = type;
         }
     }
@@ -53,7 +53,7 @@ public class TestNetworkListener extends ConnectionListener {
             return handle;
         }
 
-        public NewHandleEvent (Handle handle) {
+        public NewHandleEvent(Handle handle) {
             super(EventTypes.NewHandle);
 
             this.handle = handle;
@@ -61,7 +61,7 @@ public class TestNetworkListener extends ConnectionListener {
     }
 
     public static class StopEvent extends Event {
-        public StopEvent () {
+        public StopEvent() {
             super(EventTypes.Stop);
         }
     }
@@ -73,7 +73,7 @@ public class TestNetworkListener extends ConnectionListener {
             return throwable;
         }
 
-        public ExceptionEvent (Throwable throwable) {
+        public ExceptionEvent(Throwable throwable) {
             super(EventTypes.Exception);
 
             this.throwable = throwable;
@@ -97,12 +97,12 @@ public class TestNetworkListener extends ConnectionListener {
             return handleQueue;
         }
 
-        public TestConnector (BlockingQueue<Event> eventsQueue, BlockingQueue<Handle> handleQueue) {
+        public TestConnector(BlockingQueue<Event> eventsQueue, BlockingQueue<Handle> handleQueue) {
             this.eventsQueue = eventsQueue;
             this.handleQueue = handleQueue;
         }
 
-        public void run () {
+        public void run() {
             while (keepGoing()) {
                 Event event = null;
 
@@ -153,11 +153,11 @@ public class TestNetworkListener extends ConnectionListener {
         startupCalltrace = throwable;
     }
 
-    public boolean startupCalled () {
+    public boolean startupCalled() {
         return null != getStartupCalltrace();
     }
 
-    public TestNetworkListener (int port) throws MirandaException {
+    public TestNetworkListener(int port) throws MirandaException {
         super(port);
     }
 
@@ -169,7 +169,7 @@ public class TestNetworkListener extends ConnectionListener {
         this.eventsQueue = eventsQueue;
     }
 
-    public void startup (BlockingQueue<Handle> queue) throws NetworkException {
+    public void startup(BlockingQueue<Handle> queue) throws NetworkException {
         LinkedBlockingQueue<Event> eventsQueue = new LinkedBlockingQueue<Event>();
         setEventsQueue(eventsQueue);
 
@@ -188,7 +188,7 @@ public class TestNetworkListener extends ConnectionListener {
         }
     }
 
-    public void putEvent (Event event) {
+    public void putEvent(Event event) {
         try {
             getEventsQueue().put(event);
         } catch (InterruptedException e) {
@@ -197,7 +197,7 @@ public class TestNetworkListener extends ConnectionListener {
         }
     }
 
-    public void putHandle (Handle handle) {
+    public void putHandle(Handle handle) {
         try {
             getHandleQueue().put(handle);
         } catch (InterruptedException e) {
@@ -206,7 +206,7 @@ public class TestNetworkListener extends ConnectionListener {
         }
     }
 
-    public void stopListening () {
+    public void stopListening() {
         // TODO: implement this
     }
 }

@@ -43,7 +43,7 @@ public class StatusObject {
         return local;
     }
 
-    public StatusObject (NodeElement local, List<Property> properties, List<NodeElement> cluster) {
+    public StatusObject(NodeElement local, List<Property> properties, List<NodeElement> cluster) {
         this.local = local;
         this.properties = properties;
         this.cluster = cluster;

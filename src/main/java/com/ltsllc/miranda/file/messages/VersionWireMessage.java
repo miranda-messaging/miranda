@@ -25,7 +25,7 @@ import com.ltsllc.miranda.node.networkMessages.WireMessage;
 public class VersionWireMessage extends WireMessage {
     private NameVersion nameVersion;
 
-    public VersionWireMessage (NameVersion nameVersion) {
+    public VersionWireMessage(NameVersion nameVersion) {
         super(WireSubjects.Version);
 
         this.nameVersion = nameVersion;

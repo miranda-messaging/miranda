@@ -32,7 +32,7 @@ public class DeleteUserMessage extends SessionMessage {
         return name;
     }
 
-    public DeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
+    public DeleteUserMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
         super(Subjects.DeleteUser, senderQueue, sender, session);
 
         this.name = name;

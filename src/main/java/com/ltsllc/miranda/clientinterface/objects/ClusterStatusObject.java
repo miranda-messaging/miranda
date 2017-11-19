@@ -33,7 +33,7 @@ public class ClusterStatusObject {
         this.nodes = nodes;
     }
 
-    public ClusterStatusObject (List<NodeStatus> nodes) {
+    public ClusterStatusObject(List<NodeStatus> nodes) {
         this.nodes = new ArrayList<NodeStatus>(nodes);
     }
 }

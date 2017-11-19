@@ -137,7 +137,7 @@ public class NodeReadyState extends NodeState {
     public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
-        processConversations (message);
+        processConversations(message);
 
         switch (message.getSubject()) {
             case NetworkMessage: {
@@ -213,7 +213,7 @@ public class NodeReadyState extends NodeState {
         return nextState;
     }
 
-    public void processConversations (Object object) {
+    public void processConversations(Object object) {
         if (!(object instanceof ConversationMessage))
             return;
 
@@ -357,7 +357,7 @@ public class NodeReadyState extends NodeState {
         return getNode().getCurrentState();
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
         ShuttingDownWireMessage shuttingDownWireMessage = new ShuttingDownWireMessage();
         sendOnWire(shuttingDownWireMessage);
 
@@ -367,14 +367,14 @@ public class NodeReadyState extends NodeState {
         return nodeStoppingState;
     }
 
-    public State processStartConversationMessage (StartConversationMessage message) {
-        Conversation conversation = new Conversation (message.getKey(), message.getRespondTo());
+    public State processStartConversationMessage(StartConversationMessage message) {
+        Conversation conversation = new Conversation(message.getKey(), message.getRespondTo());
         getConversations().put(message.getKey(), conversation);
 
         return getNode().getCurrentState();
     }
 
-    public State processEndConversation (EndConversationMessage message) {
+    public State processEndConversation(EndConversationMessage message) {
         getConversations().remove(message.getKey());
 
         return getNode().getCurrentState();

@@ -36,11 +36,11 @@ public class NewUserHandlerReadyState extends NewObjectHandlerReadyState<UsersFi
         return User.class;
     }
 
-    public NewUserHandlerReadyState (Consumer consumer, UsersFile usersFile, NewUserHandler newUserHandler) throws MirandaException {
+    public NewUserHandlerReadyState(Consumer consumer, UsersFile usersFile, NewUserHandler newUserHandler) throws MirandaException {
         super(consumer, usersFile, newUserHandler);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         return super.processMessage(message);
     }
 }

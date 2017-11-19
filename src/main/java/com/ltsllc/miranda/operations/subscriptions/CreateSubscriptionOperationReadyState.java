@@ -30,11 +30,11 @@ import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
  * Created by Clark on 4/22/2017.
  */
 public class CreateSubscriptionOperationReadyState extends State {
-    public CreateSubscriptionOperation getCreateSubscriptionOperation () {
+    public CreateSubscriptionOperation getCreateSubscriptionOperation() {
         return (CreateSubscriptionOperation) getContainer();
     }
 
-    public CreateSubscriptionOperationReadyState (CreateSubscriptionOperation createSubscriptionOperation) throws MirandaException {
+    public CreateSubscriptionOperationReadyState(CreateSubscriptionOperation createSubscriptionOperation) throws MirandaException {
         super(createSubscriptionOperation);
     }
 
@@ -47,13 +47,13 @@ public class CreateSubscriptionOperationReadyState extends State {
                 CreateSubscriptionResponseMessage createSubscriptionResponseMessage = (CreateSubscriptionResponseMessage)
                         message;
 
-                nextState = processCreateSubscriptionResponseMessage (createSubscriptionResponseMessage);
+                nextState = processCreateSubscriptionResponseMessage(createSubscriptionResponseMessage);
                 break;
             }
 
             case GetUserResponse: {
                 GetUserResponseMessage getUserResponseMessage = (GetUserResponseMessage) message;
-                nextState = processGetUserResponseMessage (getUserResponseMessage);
+                nextState = processGetUserResponseMessage(getUserResponseMessage);
                 break;
             }
 
@@ -72,9 +72,9 @@ public class CreateSubscriptionOperationReadyState extends State {
         return nextState;
     }
 
-    public State processCreateSubscriptionResponseMessage (CreateSubscriptionResponseMessage createSubscriptionResponseMessage) {
+    public State processCreateSubscriptionResponseMessage(CreateSubscriptionResponseMessage createSubscriptionResponseMessage) {
         if (createSubscriptionResponseMessage.getResult() == Results.Success) {
-            Miranda.getInstance().getCluster().sendCreateSubscriptionMessage (getCreateSubscriptionOperation().getQueue(),
+            Miranda.getInstance().getCluster().sendCreateSubscriptionMessage(getCreateSubscriptionOperation().getQueue(),
                     this, getCreateSubscriptionOperation().getSession(),
                     getCreateSubscriptionOperation().getSubscription());
 
@@ -90,12 +90,12 @@ public class CreateSubscriptionOperationReadyState extends State {
         return StopState.getInstance();
     }
 
-    public State processGetUserResponseMessage (GetUserResponseMessage getUserResponseMessage) {
+    public State processGetUserResponseMessage(GetUserResponseMessage getUserResponseMessage) {
         if (getUserResponseMessage.getResult() != Results.Success) {
             CreateSubscriptionResponseMessage response = new CreateSubscriptionResponseMessage(getCreateSubscriptionOperation().getQueue(),
                     this, Results.UserNotFound);
 
-            send (getCreateSubscriptionOperation().getRequester(), response);
+            send(getCreateSubscriptionOperation().getRequester(), response);
 
             return StopState.getInstance();
         }
@@ -111,7 +111,7 @@ public class CreateSubscriptionOperationReadyState extends State {
         return getCreateSubscriptionOperation().getCurrentState();
     }
 
-    public State processGetTopicResponseMessage (GetTopicResponseMessage getTopicResponseMessage) {
+    public State processGetTopicResponseMessage(GetTopicResponseMessage getTopicResponseMessage) {
         if (getTopicResponseMessage.getTopic() == null) {
             CreateSubscriptionResponseMessage response = new CreateSubscriptionResponseMessage(getCreateSubscriptionOperation().getQueue(),
                     this, Results.TopicNotFound);

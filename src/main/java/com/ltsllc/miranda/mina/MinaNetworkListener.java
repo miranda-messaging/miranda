@@ -75,22 +75,22 @@ public class MinaNetworkListener extends ConnectionListener {
         this.truststore = truststore;
     }
 
-    public static void allStopListening () {
+    public static void allStopListening() {
         if (null != getNioSocketAcceptor()) {
             getNioSocketAcceptor().unbind();
             setNioSocketAcceptor(null);
         }
     }
 
-    public void stopListening () {
+    public void stopListening() {
         stop();
     }
 
-    public void stop () {
+    public void stop() {
         getThread().interrupt();
     }
 
-    public void basicStart () throws Exception {
+    public void basicStart() throws Exception {
         NioSocketAcceptor nioSocketAcceptor = new NioSocketAcceptor();
         setNioSocketAcceptor(nioSocketAcceptor);
 
@@ -99,7 +99,7 @@ public class MinaNetworkListener extends ConnectionListener {
         keyManagerFactory.init(getKeystore(), getKeyStorePassword().toCharArray());
 
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init (getTruststore());
+        trustManagerFactory.init(getTruststore());
 
         sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
         SslFilter sslFilter = new SslFilter(sslContext);
@@ -118,7 +118,7 @@ public class MinaNetworkListener extends ConnectionListener {
 
     }
 
-    public void start () {
+    public void start() {
         try {
             basicStart();
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class MinaNetworkListener extends ConnectionListener {
         }
     }
 
-    public void newConnection (IoSession session) {
+    public void newConnection(IoSession session) {
 
     }
 

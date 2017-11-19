@@ -26,7 +26,7 @@ public class JettyServletContainer extends ServletContainer {
     /**
      * Start the container, registering all the servlets first.
      */
-    public void startContainer () {
+    public void startContainer() {
         try {
             ServletHandler servletHandler = new ServletHandler();
 
@@ -48,11 +48,11 @@ public class JettyServletContainer extends ServletContainer {
     /**
      * Stop the servlet container.
      */
-    public void stopContainer () {
+    public void stopContainer() {
         try {
             getJetty().stop();
         } catch (Exception e) {
-            Panic panic = new Panic ("Exception shutting down servlet container", e,
+            Panic panic = new Panic("Exception shutting down servlet container", e,
                     Panic.Reasons.ExceptionShuttingDownServletContainer);
         }
     }

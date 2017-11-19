@@ -32,7 +32,7 @@ public class ScanCompleteMessage extends Message {
         return files;
     }
 
-    public ScanCompleteMessage (BlockingQueue<Message> senderQueue, Object sender, List<File> files) {
+    public ScanCompleteMessage(BlockingQueue<Message> senderQueue, Object sender, List<File> files) {
         super(Subjects.ScanCompleteMessage, senderQueue, sender);
 
         this.files = files;

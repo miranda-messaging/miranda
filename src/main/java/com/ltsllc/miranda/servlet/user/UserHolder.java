@@ -87,27 +87,27 @@ public class UserHolder extends ServletHolder {
         this.userUpdateResults = userUpdateResults;
     }
 
-    public static UserHolder getInstance () {
+    public static UserHolder getInstance() {
         return ourInstance;
     }
 
-    public static void setInstance (UserHolder userHolder) {
+    public static void setInstance(UserHolder userHolder) {
         ourInstance = userHolder;
     }
 
-    public static void initialize (long timeout) throws MirandaException {
+    public static void initialize(long timeout) throws MirandaException {
         UserHolder userHolder = new UserHolder(timeout);
         setInstance(userHolder);
     }
 
-    public UserHolder (long timeout) throws MirandaException {
+    public UserHolder(long timeout) throws MirandaException {
         super("user holder", timeout);
 
         UserHolderReadyState readyState = new UserHolderReadyState(this);
         setCurrentState(readyState);
     }
 
-    public List<User> getUsers () throws TimeoutException {
+    public List<User> getUsers() throws TimeoutException {
         Miranda.getInstance().getUserManager().sendGetUsers(getQueue(), this);
 
         sleep();
@@ -115,13 +115,13 @@ public class UserHolder extends ServletHolder {
         return getUserList();
     }
 
-    public void setUsersAndAwaken (List<User> users) {
+    public void setUsersAndAwaken(List<User> users) {
         List<User> userList = new ArrayList<User>(users);
         setUserList(userList);
         wake();
     }
 
-    public User getUser (String name) throws TimeoutException {
+    public User getUser(String name) throws TimeoutException {
         setUser(null);
         Miranda.getInstance().getUserManager().sendGetUserMessage(getQueue(), this, name);
 
@@ -130,7 +130,7 @@ public class UserHolder extends ServletHolder {
         return getUser();
     }
 
-    public Results createUser (User user) throws TimeoutException {
+    public Results createUser(User user) throws TimeoutException {
         setUserCreateResults(Results.Unknown);
         Miranda.getInstance().sendCreateUserMessage(getQueue(), this, getSession(), user);
 
@@ -139,40 +139,40 @@ public class UserHolder extends ServletHolder {
         return getUserCreateResults();
     }
 
-    public void setUserCreatedAndAwaken (Results result) {
+    public void setUserCreatedAndAwaken(Results result) {
         setUserCreateResults(result);
         wake();
     }
 
-    public void setUserAndAwaken (User user) {
+    public void setUserAndAwaken(User user) {
         setUser(user);
         wake();
     }
 
-    public Results updateUser (User user) throws TimeoutException {
+    public Results updateUser(User user) throws TimeoutException {
         setUserUpdateResults(Results.Unknown);
-        Miranda.getInstance().sendUpdateUserMessage (getQueue(), this, getSession(), user);
+        Miranda.getInstance().sendUpdateUserMessage(getQueue(), this, getSession(), user);
 
         sleep();
 
         return getUserUpdateResults();
     }
 
-    public void setUserUpdatedAndAwaken (Results result) {
+    public void setUserUpdatedAndAwaken(Results result) {
         setUserUpdateResults(result);
         wake();
     }
 
-    public Results deleteUser (String name) throws TimeoutException {
+    public Results deleteUser(String name) throws TimeoutException {
         setUserDeleteResults(Results.Unknown);
-        Miranda.getInstance().sendDeleteUserMessage (getQueue(), this, getSession(), name);
+        Miranda.getInstance().sendDeleteUserMessage(getQueue(), this, getSession(), name);
 
         sleep();
 
         return getUserDeleteResults();
     }
 
-    public void setUserDeletedAndAwaken (Results result) {
+    public void setUserDeletedAndAwaken(Results result) {
         setUserDeleteResults(result);
         wake();
     }

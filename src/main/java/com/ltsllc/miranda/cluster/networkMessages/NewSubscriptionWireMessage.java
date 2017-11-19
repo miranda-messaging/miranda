@@ -29,7 +29,7 @@ public class NewSubscriptionWireMessage extends WireMessage {
         return subscription;
     }
 
-    public NewSubscriptionWireMessage (Subscription subscription) {
+    public NewSubscriptionWireMessage(Subscription subscription) {
         super(WireSubjects.NewSubscription);
 
         this.subscription = subscription;

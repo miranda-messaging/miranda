@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 public class EndConversationMessage extends Message {
     private String key;
 
-    public EndConversationMessage (BlockingQueue<Message> senderQueue, Object sender, String key) {
+    public EndConversationMessage(BlockingQueue<Message> senderQueue, Object sender, String key) {
         super(Subjects.EndConversation, senderQueue, sender);
 
         this.key = key;

@@ -75,7 +75,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) throws IOException, MirandaException {
-        basicConstructor (filename, reader, writer, cluster);
+        basicConstructor(filename, reader, writer, cluster);
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue,
@@ -90,7 +90,7 @@ public class ClusterFile extends SingleFile<NodeElement> {
         setData(nodeElementList);
     }
 
-    public void basicConstructor (String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster)
+    public void basicConstructor(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster)
             throws IOException, MirandaException {
         super.basicConstructor(filename, reader, writer);
 

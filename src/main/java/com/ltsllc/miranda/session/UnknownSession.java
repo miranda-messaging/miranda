@@ -26,7 +26,7 @@ public class UnknownSession extends Exception {
         return id;
     }
 
-    public UnknownSession (long id) {
+    public UnknownSession(long id) {
         this.id = id;
     }
 }

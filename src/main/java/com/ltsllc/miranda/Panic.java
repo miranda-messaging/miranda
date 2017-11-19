@@ -22,10 +22,10 @@ import java.io.StringWriter;
 
 /**
  * A request to shutdown.
- *
- * <P>
- *     Use of this class means that something Very Bad happend and that some
- *     part of the system thinks that we should stop.
+ * <p>
+ * <p>
+ * Use of this class means that something Very Bad happend and that some
+ * part of the system thinks that we should stop.
  * </P>
  */
 public class Panic extends Exception {
@@ -82,29 +82,29 @@ public class Panic extends Exception {
         return reason;
     }
 
-    public Panic (String message, Throwable cause, Reasons reason) {
+    public Panic(String message, Throwable cause, Reasons reason) {
         super(message, cause);
         basicConstructor(reason, cause);
     }
 
-    public Panic (Throwable cause, Reasons reason) {
+    public Panic(Throwable cause, Reasons reason) {
         super(cause);
         basicConstructor(reason, cause);
     }
 
-    public Panic (String message, Reasons reason) {
-        super (message);
+    public Panic(String message, Reasons reason) {
+        super(message);
         basicConstructor(reason, null);
     }
 
-    public Panic (String message, Reasons reason, String additionalInfo) {
+    public Panic(String message, Reasons reason, String additionalInfo) {
         super(message);
 
         this.reason = reason;
         this.additionalInfo = additionalInfo;
     }
 
-    public void basicConstructor (Reasons reason, Throwable throwable) {
+    public void basicConstructor(Reasons reason, Throwable throwable) {
         this.reason = reason;
 
         if (throwable instanceof OutOfMemoryError) {
@@ -118,7 +118,8 @@ public class Panic extends Exception {
             printWriter.close();
             try {
                 stringWriter.close();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
             this.additionalInfo = stringWriter.toString();
         }
     }

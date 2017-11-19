@@ -37,11 +37,11 @@ public class MirandaStatusReadyState extends State {
         this.statusServlet = statusServlet;
     }
 
-    public MirandaStatusReadyState (MirandaStatus mirandaStatus) throws MirandaException {
+    public MirandaStatusReadyState(MirandaStatus mirandaStatus) throws MirandaException {
         super(mirandaStatus);
     }
 
-    public MirandaStatus getMirandaStatus () {
+    public MirandaStatus getMirandaStatus() {
         return (MirandaStatus) getContainer();
     }
 
@@ -65,7 +65,7 @@ public class MirandaStatusReadyState extends State {
         return nextState;
     }
 
-    private State processGetStatusResponseMessage (GetStatusResponseMessage getStatusResponseMessage) {
+    private State processGetStatusResponseMessage(GetStatusResponseMessage getStatusResponseMessage) {
         StatusObject statusObject = (StatusObject) getStatusResponseMessage.getStatusObject();
         getMirandaStatus().receivedStatus(statusObject);
 

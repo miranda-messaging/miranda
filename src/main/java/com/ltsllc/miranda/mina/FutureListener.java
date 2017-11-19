@@ -67,28 +67,28 @@ public class FutureListener implements IoFutureListener<ConnectFuture> {
         if (connectFuture.isConnected()) {
             logger.info("connect to " + connectFuture.getSession().getRemoteAddress() + " completed successfully");
             sendConnectSuceeded();
-            getNetwork().mapHandle (getHandleID(), getHandle());
+            getNetwork().mapHandle(getHandleID(), getHandle());
         } else {
             logger.info("connect failed");
             sendConnectFailed(connectFuture.getException());
         }
     }
 
-    public void sendConnectSuceeded () {
+    public void sendConnectSuceeded() {
         ConnectSucceededMessage connectSucceededMessage = new ConnectSucceededMessage(null, this, getHandleID());
         send(connectSucceededMessage);
     }
 
-    public void sendConnectFailed (Throwable throwable) {
+    public void sendConnectFailed(Throwable throwable) {
         ConnectFailedMessage connectFailedMessage = new ConnectFailedMessage(null, this, throwable);
         send(connectFailedMessage);
     }
 
-    public void send (Message message) {
+    public void send(Message message) {
         try {
             getNotify().put(message);
         } catch (InterruptedException e) {
-            Panic panic = new Panic("Interrupted while sending meesage",e, Panic.Reasons.ExceptionSendingMessage);
+            Panic panic = new Panic("Interrupted while sending meesage", e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.getInstance().panic(panic);
         }
     }

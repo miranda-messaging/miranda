@@ -45,7 +45,7 @@ public class TopicsFile extends SingleFile<Topic> {
         return ourInstance;
     }
 
-    public static synchronized void initialize (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
+    public static synchronized void initialize(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         if (null == ourInstance) {
             ourInstance = new TopicsFile(filename, reader, writer);
             ourInstance.start();
@@ -53,7 +53,7 @@ public class TopicsFile extends SingleFile<Topic> {
         }
     }
 
-    public static void setInstance (TopicsFile topicsFile) {
+    public static void setInstance(TopicsFile topicsFile) {
         ourInstance = topicsFile;
     }
 
@@ -64,33 +64,32 @@ public class TopicsFile extends SingleFile<Topic> {
         setCurrentState(topicsFileStartingState);
     }
 
-    public TopicsFile () throws IOException {
+    public TopicsFile() throws IOException {
         super(null, null, null);
     }
 
-    public Type getBasicType ()
-    {
-        return new TypeToken<ArrayList<User>>() {}.getType();
+    public Type getBasicType() {
+        return new TypeToken<ArrayList<User>>() {
+        }.getType();
     }
 
-    public List buildEmptyList () {
-        return new ArrayList<Topic> ();
+    public List buildEmptyList() {
+        return new ArrayList<Topic>();
     }
 
     public Type getListType() {
-        return new TypeToken<ArrayList<Topic>>(){}.getType();
+        return new TypeToken<ArrayList<Topic>>() {
+        }.getType();
     }
 
-    public void checkForDuplicates () {
+    public void checkForDuplicates() {
         List<Topic> topicList = new ArrayList<Topic>(getData());
         List<Topic> duplicates = new ArrayList<Topic>();
 
         for (Topic current : topicList) {
-            for (Topic topic : getData())
-            {
-                if (current.getName().equals(topic.getName()) && current != topic)
-                {
-                    logger.info ("Removing duplicate topic named " + topic.getName());
+            for (Topic topic : getData()) {
+                if (current.getName().equals(topic.getName()) && current != topic) {
+                    logger.info("Removing duplicate topic named " + topic.getName());
                     duplicates.add(current);
                 }
             }
@@ -99,7 +98,7 @@ public class TopicsFile extends SingleFile<Topic> {
         getData().removeAll(duplicates);
     }
 
-    public Topic find (Topic topic) {
+    public Topic find(Topic topic) {
         for (Topic candidate : getData()) {
             if (candidate.getName().equals(topic.getName()))
                 return candidate;

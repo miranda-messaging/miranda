@@ -44,17 +44,18 @@ public class UsersFileSyncingState extends SingleFileSyncingState {
     }
 
 
-    public Type getListType () {
-        return new TypeToken<ArrayList<User>>(){}.getType();
+    public Type getListType() {
+        return new TypeToken<ArrayList<User>>() {
+        }.getType();
     }
 
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new UsersFileReadyState(getUsersFile());
     }
 
 
-    public boolean contains (Object o) {
+    public boolean contains(Object o) {
         User otherUser = (User) o;
 
         for (User user : getUsersFile().getData()) {

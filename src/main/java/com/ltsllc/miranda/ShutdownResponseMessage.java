@@ -28,7 +28,7 @@ public class ShutdownResponseMessage extends Message {
         return name;
     }
 
-    public ShutdownResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public ShutdownResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.ShutdownResponse, senderQueue, sender);
 
         this.name = name;

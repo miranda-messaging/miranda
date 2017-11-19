@@ -37,7 +37,7 @@ public class Property {
         this.value = value;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (null == o || !(o instanceof Property))
             return false;
 

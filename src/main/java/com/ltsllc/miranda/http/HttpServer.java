@@ -27,23 +27,24 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 3/4/2017.
  */
 abstract public class HttpServer extends Consumer {
-    abstract public void addServlets (List<ServletMapping> servlets);
-    abstract public void startServer ();
+    abstract public void addServlets(List<ServletMapping> servlets);
 
-    public HttpServer () throws MirandaException {
+    abstract public void startServer();
+
+    public HttpServer() throws MirandaException {
         super("http server");
 
         HttpReadyState httpReadyState = new HttpReadyState(this);
         setCurrentState(httpReadyState);
     }
 
-    public void sendStart (BlockingQueue<Message> senderQueue) {
+    public void sendStart(BlockingQueue<Message> senderQueue) {
         StartHttpServerMessage startHttpServerMessage = new StartHttpServerMessage(senderQueue, this);
         sendToMe(startHttpServerMessage);
     }
 
-    public void sendSetupServletsMessage (BlockingQueue<Message> senderQueue, Object sender,
-                                          List<ServletMapping> servletMappings) {
+    public void sendSetupServletsMessage(BlockingQueue<Message> senderQueue, Object sender,
+                                         List<ServletMapping> servletMappings) {
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(senderQueue, sender, servletMappings);
         sendToMe(setupServletsMessage);
     }

@@ -30,7 +30,7 @@ public class OwnerQueryMessage extends Message {
         return name;
     }
 
-    public OwnerQueryMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public OwnerQueryMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.OwnerQuery, senderQueue, sender);
 
         this.name = name;

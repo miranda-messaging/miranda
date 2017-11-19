@@ -60,8 +60,8 @@ public class ServletHolder extends Consumer {
         this.timeoutPeriod = timeoutPeriod;
     }
 
-    public ServletHolder (String name, long timeoutPeriod) throws MirandaException {
-        super (name);
+    public ServletHolder(String name, long timeoutPeriod) throws MirandaException {
+        super(name);
 
         this.timeoutPeriod = timeoutPeriod;
 
@@ -69,7 +69,7 @@ public class ServletHolder extends Consumer {
         setCurrentState(servletHolderReadyState);
     }
 
-    public ServletHolder (String name, State state) {
+    public ServletHolder(String name, State state) {
         super(name);
 
         setCurrentState(state);
@@ -83,13 +83,13 @@ public class ServletHolder extends Consumer {
      * @param timeout The minimum amount of time to wait.
      * @return See above.
      */
-    public synchronized void waitFor (long timeout) throws TimeoutException {
+    public synchronized void waitFor(long timeout) throws TimeoutException {
         setAwakened(false);
 
-        try  {
+        try {
             wait(timeout);
         } catch (InterruptedException e) {
-            logger.error ("Interrupted while waiting", e);
+            logger.error("Interrupted while waiting", e);
         }
 
         if (!getAwakened()) {
@@ -97,30 +97,30 @@ public class ServletHolder extends Consumer {
         }
     }
 
-    public void waitFor () throws TimeoutException {
+    public void waitFor() throws TimeoutException {
         waitFor(getTimeoutPeriod());
     }
 
-    public void sleep () throws TimeoutException {
+    public void sleep() throws TimeoutException {
         waitFor(getTimeoutPeriod());
     }
 
-    public synchronized void wake () {
+    public synchronized void wake() {
         setAwakened(true);
         notifyAll();
     }
 
-    public Session getSession (long sessionId) throws TimeoutException {
+    public Session getSession(long sessionId) throws TimeoutException {
         setSession(null);
 
-        Miranda.getInstance().getSessionManager().sendCheckSessionMessage (getQueue(), this, sessionId);
+        Miranda.getInstance().getSessionManager().sendCheckSessionMessage(getQueue(), this, sessionId);
 
         sleep();
 
         return getSession();
     }
 
-    public void setSessionAndAwaken (Session session) {
+    public void setSessionAndAwaken(Session session) {
         setSession(session);
         wake();
     }

@@ -11,11 +11,11 @@ import java.io.IOException;
 
 /**
  * Handler for new events
- *
+ * <p>
  * When an HTTP POST/PUT or DELETE to a topic occurs, this servlet is invoked.  It looks for
  * a header, {@link #HEADER_SESSION_ID} that contains the session ID for the user.  The user
  * must be the owner of the topic or an admin to create new events.
- *
+ * <p>
  * The topic name is obtained from the URL
  */
 public class NewEventServlet extends HttpServlet {
@@ -33,11 +33,12 @@ public class NewEventServlet extends HttpServlet {
 
     /**
      * Return the topic this event pertains to,
-     * @param url The URL the event is being published to.
+     *
+     * @param url  The URL the event is being published to.
      * @param base The base URL used to publish the even.
      * @return The name of the topic the event is being published to.
      */
-    public String getTopicName (String url, String base) {
+    public String getTopicName(String url, String base) {
         if (!(url.startsWith(base))) {
             Panic panic = new Panic("URL, " + url + ", does not start with base URL, " + base,
                     Panic.Reasons.BadURL);

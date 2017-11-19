@@ -53,7 +53,7 @@ public class CertificateSigningRequest {
         initialize(publicKey, privateKey);
     }
 
-    public CertificateSigningRequest (PKCS10 pkcs10) {
+    public CertificateSigningRequest(PKCS10 pkcs10) {
         this.pkcs10 = pkcs10;
     }
 
@@ -105,7 +105,7 @@ public class CertificateSigningRequest {
             byte[] encoded = pkcs10CertificationRequest.getEncoded();
             PKCS10 pkcs10 = new PKCS10(encoded);
             return new CertificateSigningRequest(pkcs10);
-        } catch (IOException|GeneralSecurityException e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new EncryptionException("Exception tryin to read from a PEM", e);
         }
     }

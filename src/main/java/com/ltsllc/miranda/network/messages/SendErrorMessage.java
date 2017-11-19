@@ -30,7 +30,7 @@ public class SendErrorMessage extends Message {
         return cause;
     }
 
-    public SendErrorMessage (BlockingQueue<Message> senderQueue, Object sender, Throwable cause) {
+    public SendErrorMessage(BlockingQueue<Message> senderQueue, Object sender, Throwable cause) {
         super(Subjects.SendError, senderQueue, sender);
 
         this.cause = cause;

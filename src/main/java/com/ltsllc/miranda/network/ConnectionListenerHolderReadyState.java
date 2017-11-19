@@ -23,7 +23,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
  * Created by Clark on 5/23/2017.
  */
 public class ConnectionListenerHolderReadyState extends State {
-    public ConnectionListenerHolder getNetworkListnerHolder () {
+    public ConnectionListenerHolder getNetworkListnerHolder() {
         return (ConnectionListenerHolder) getContainer();
     }
 
@@ -31,7 +31,7 @@ public class ConnectionListenerHolderReadyState extends State {
         super(networkListenerHolder);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getNetworkListnerHolder().getCurrentState();
 
         switch (message.getSubject()) {
@@ -50,7 +50,7 @@ public class ConnectionListenerHolderReadyState extends State {
         return nextState;
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
         getNetworkListnerHolder().stop();
 
         ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getNetworkListnerHolder().getQueue(),

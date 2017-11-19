@@ -383,14 +383,20 @@ public class TestMinaNetwork extends TestCase {
 
     @Test
     public void testConstructor() {
+        pause(500);
         assert (getMinaNetwork().getCurrentState() instanceof NetworkReadyState);
+        pause(500);
     }
 
     @Test
     public void testBasicConnectTo() throws Exception {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
+        pause(500);
+
         setupMinaListener(6789, getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
+
+        pause(500);
 
         Handle handle = getMinaNetwork().basicConnectTo("localhost", 6789);
 
@@ -411,5 +417,7 @@ public class TestMinaNetwork extends TestCase {
         Handle handle = getMinaNetwork().createHandle(getMockIoSession());
 
         assert (handle instanceof MinaHandle);
+
+        pause(500);
     }
 }

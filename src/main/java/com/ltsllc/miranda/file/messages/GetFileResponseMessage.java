@@ -29,7 +29,7 @@ public class GetFileResponseMessage extends Message {
     private String contents;
     private String requester;
 
-    public GetFileResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String requester, byte[] contents) {
+    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester, byte[] contents) {
         super(Subjects.GetFileResponse, senderQueue, sender);
 
         String hexString = Utils.bytesToString(contents);
@@ -38,14 +38,14 @@ public class GetFileResponseMessage extends Message {
         this.contents = hexString;
     }
 
-    public GetFileResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String requester, String contents) {
+    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester, String contents) {
         super(Subjects.GetFileResponse, senderQueue, sender);
 
         this.requester = requester;
         this.contents = contents;
     }
 
-    public GetFileResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String requester) {
+    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester) {
         super(Subjects.GetFileResponse, senderQueue, sender);
 
         this.requester = requester;
@@ -56,7 +56,7 @@ public class GetFileResponseMessage extends Message {
         return contents;
     }
 
-    public byte[] getContentAsBytes () throws IOException {
+    public byte[] getContentAsBytes() throws IOException {
         return Utils.hexStringToBytes(contents);
     }
 

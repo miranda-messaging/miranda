@@ -32,11 +32,11 @@ public class Subscriber {
         return queue;
     }
 
-    public Subscriber (BlockingQueue<Message> queue) {
+    public Subscriber(BlockingQueue<Message> queue) {
         this.queue = queue;
     }
 
-    public void notifySubscriber (Message message) {
+    public void notifySubscriber(Message message) {
         try {
             getQueue().put(message);
         } catch (InterruptedException e) {

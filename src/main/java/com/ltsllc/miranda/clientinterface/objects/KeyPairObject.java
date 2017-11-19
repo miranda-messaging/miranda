@@ -44,7 +44,7 @@ public class KeyPairObject {
         this.publicKey = publicKey;
     }
 
-    public String insertLineBreaks (String s) {
+    public String insertLineBreaks(String s) {
         StringBuffer stringBuffer = new StringBuffer();
         char[] input = s.toCharArray();
         for (int i = 0; i < input.length; i++) {
@@ -57,7 +57,7 @@ public class KeyPairObject {
         return stringBuffer.toString();
     }
 
-    public String asJson () {
+    public String asJson() {
         try {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append("{ \"publicKey\" :");

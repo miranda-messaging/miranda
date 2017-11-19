@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 /**
  * An Object that knows how to merge itself with another object.
  * <p>
- *     This class
+ * This class
  * </p>
  * <p>
  * <h3>Properties</h3>
@@ -25,16 +25,16 @@ import com.google.gson.Gson;
 abstract public class MirandaObject extends Mergeable implements Equivalent {
     private static Gson gson;
 
-    public static Gson getGson () {
+    public static Gson getGson() {
         return gson;
     }
 
 
     /**
      * Are two strings equal?
-     *
      * <p>
-     *     This method is null safe --- one or both parameters can be null.
+     * <p>
+     * This method is null safe --- one or both parameters can be null.
      * </p>
      *
      * @param s1 The first string to be compared.
@@ -104,7 +104,7 @@ abstract public class MirandaObject extends Mergeable implements Equivalent {
     }
 
 
-    public String toJson () {
+    public String toJson() {
         return gson.toJson(this);
     }
 }

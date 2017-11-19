@@ -29,7 +29,7 @@ public class NewUserWireMessage extends WireMessage {
         return userObject;
     }
 
-    public NewUserWireMessage (UserObject userObject) {
+    public NewUserWireMessage(UserObject userObject) {
         super(WireSubjects.NewUser);
 
         this.userObject = userObject;

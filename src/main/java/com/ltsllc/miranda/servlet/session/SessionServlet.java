@@ -44,6 +44,7 @@ abstract public class SessionServlet extends MirandaServlet {
     abstract public ServletHolder getServletHolder();
 
     abstract public ResultObject createResultObject();
+
     private Session session;
 
     public Session getSession() {
@@ -54,7 +55,7 @@ abstract public class SessionServlet extends MirandaServlet {
         this.session = session;
     }
 
-    public User getUser () {
+    public User getUser() {
         return getSession().getUser();
     }
 

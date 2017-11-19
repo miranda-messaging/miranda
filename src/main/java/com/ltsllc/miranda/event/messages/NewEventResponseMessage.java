@@ -13,14 +13,14 @@ public class NewEventResponseMessage extends Message {
     private Results result;
     private Event event;
 
-    public NewEventResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, Event event) {
+    public NewEventResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result, Event event) {
         super(Subjects.NewEventResponse, senderQueue, sender);
 
         this.event = event;
         this.result = result;
     }
 
-    public NewEventResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result) {
+    public NewEventResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result) {
         super(Subjects.NewEventResponse, senderQueue, sender);
 
         this.result = result;
@@ -30,7 +30,7 @@ public class NewEventResponseMessage extends Message {
         return event;
     }
 
-    public void setEvent (Event event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 

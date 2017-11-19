@@ -43,7 +43,7 @@ public class Writer extends Consumer {
     }
 
 
-    public Writer (PublicKey publicKey) throws MirandaException {
+    public Writer(PublicKey publicKey) throws MirandaException {
         super("writer");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
@@ -54,7 +54,7 @@ public class Writer extends Consumer {
         this.publicKey = publicKey;
     }
 
-    public void write (String filename, byte[] clearText) throws IOException, EncryptionException {
+    public void write(String filename, byte[] clearText) throws IOException, EncryptionException {
         File file = new File(filename);
 
         if (file.exists())
@@ -74,7 +74,7 @@ public class Writer extends Consumer {
 
     private static final int BUFFER_SIZE = 8192;
 
-    public void copyFile (String srcFileName, String destFileName) throws IOException {
+    public void copyFile(String srcFileName, String destFileName) throws IOException {
         FileInputStream fileInputStream = null;
         FileOutputStream fileOutputStream = null;
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -94,14 +94,13 @@ public class Writer extends Consumer {
         }
     }
 
-    public void backup (File file) throws IOException
-    {
+    public void backup(File file) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
 
         File backup = new File(file.getCanonicalPath() + ".backup");
         if (backup.exists()) {
             if (!backup.delete()) {
-                throw new IOException ("Could not remove backup file: " + backup);
+                throw new IOException("Could not remove backup file: " + backup);
             }
         }
 
@@ -111,12 +110,12 @@ public class Writer extends Consumer {
         copyFile(filename, backupFilename);
     }
 
-    public void sendWrite (BlockingQueue<Message> senderQueue, Object sender, String filename, byte[] data) {
+    public void sendWrite(BlockingQueue<Message> senderQueue, Object sender, String filename, byte[] data) {
         WriteMessage writeMessage = new WriteMessage(filename, data, senderQueue, sender);
         sendToMe(writeMessage);
     }
 
-    public EncryptedMessage encrypt (byte[] plaintext) throws EncryptionException {
+    public EncryptedMessage encrypt(byte[] plaintext) throws EncryptionException {
         return getPublicKey().encryptToMessage(plaintext);
     }
 }

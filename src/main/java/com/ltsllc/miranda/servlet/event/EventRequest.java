@@ -9,7 +9,7 @@ import com.ltsllc.miranda.clientinterface.requests.Request;
 public class EventRequest extends Request {
     private Event event;
 
-    public EventRequest (String sessionId, Event event){
+    public EventRequest(String sessionId, Event event) {
         super(sessionId);
 
         this.event = event;

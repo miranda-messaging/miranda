@@ -28,7 +28,7 @@ import java.util.concurrent.BlockingQueue;
 public class HealthCheckUpdateMessage extends Message {
     private List<NodeElement> updates;
 
-    public HealthCheckUpdateMessage (BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> updates) {
+    public HealthCheckUpdateMessage(BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> updates) {
         super(Subjects.HealthCheckUpdate, senderQueue, sender);
 
         this.updates = updates;

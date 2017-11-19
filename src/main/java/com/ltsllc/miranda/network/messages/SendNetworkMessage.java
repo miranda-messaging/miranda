@@ -36,7 +36,7 @@ public class SendNetworkMessage extends Message {
         return handle;
     }
 
-    public SendNetworkMessage (BlockingQueue<Message> senderQueue, Object sender, WireMessage wireMessage, int handle) {
+    public SendNetworkMessage(BlockingQueue<Message> senderQueue, Object sender, WireMessage wireMessage, int handle) {
         super(Subjects.SendNetworkMessage, senderQueue, sender);
 
         this.wireMessage = wireMessage;

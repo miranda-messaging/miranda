@@ -8,7 +8,7 @@ import java.io.*;
  * Created by ltsllc on 7/3/2017.
  */
 public class TestCase extends com.ltsllc.miranda.test.TestCase {
-    public boolean byteArraysAreEqual (byte[] a1, byte[] a2) {
+    public boolean byteArraysAreEqual(byte[] a1, byte[] a2) {
         if (a1 == a2)
             return true;
 
@@ -27,10 +27,13 @@ public class TestCase extends com.ltsllc.miranda.test.TestCase {
     }
 
 
-    public void reset () {}
-    public void setup () {}
+    public void reset() {
+    }
 
-    public String fileToHexString (String filename) throws IOException {
+    public void setup() {
+    }
+
+    public String fileToHexString(String filename) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = null;
         FileInputStream fileInputStream = null;
 

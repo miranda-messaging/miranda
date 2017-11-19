@@ -31,8 +31,8 @@ public class NodeStoppedMessage extends Message {
         return node;
     }
 
-    public NodeStoppedMessage (BlockingQueue<Message> senderQueue, Object sender, Node node) {
-        super (Subjects.NodeStopped,senderQueue, sender);
+    public NodeStoppedMessage(BlockingQueue<Message> senderQueue, Object sender, Node node) {
+        super(Subjects.NodeStopped, senderQueue, sender);
 
         this.node = node;
     }

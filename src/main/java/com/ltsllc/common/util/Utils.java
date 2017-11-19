@@ -420,7 +420,7 @@ public class Utils {
 
     public static PublicKey pemStringToPublicKey(String pemString) throws IOException {
         StringReader stringReader = new StringReader(pemString);
-        
+
         PEMParser pemParser = new PEMParser(stringReader);
         SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) pemParser.readObject();
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider(new BouncyCastleProvider());
@@ -532,7 +532,7 @@ public class Utils {
         }
     }
 
-    public static PublicKey convertPemStringToPublicKey (String pemString, String password) {
+    public static PublicKey convertPemStringToPublicKey(String pemString, String password) {
         return null;
     }
 
@@ -592,7 +592,7 @@ public class Utils {
     }
     */
 
-    public static String toStacktrace (Throwable t) {
+    public static String toStacktrace(Throwable t) {
         PrintWriter printWriter = null;
         try {
             StringWriter stringWriter = new StringWriter();
@@ -605,7 +605,7 @@ public class Utils {
         }
     }
 
-    public static String readTextFile (String filename) throws IOException {
+    public static String readTextFile(String filename) throws IOException {
         StringWriter stringWriter = new StringWriter();
         FileReader fileReader = null;
         try {
@@ -622,7 +622,7 @@ public class Utils {
         return fileReader.toString();
     }
 
-    public static void writeTextFile (String filename, String content) throws IOException {
+    public static void writeTextFile(String filename, String content) throws IOException {
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(filename);
@@ -632,7 +632,7 @@ public class Utils {
         }
     }
 
-    public static PublicKey toPublicKey (String pem) throws IOException {
+    public static PublicKey toPublicKey(String pem) throws IOException {
         StringReader stringReader = new StringReader(pem);
         PEMParser parser = new PEMParser(stringReader);
         SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) parser.readObject();
@@ -641,7 +641,7 @@ public class Utils {
         return converter.getPublicKey(subjectPublicKeyInfo);
     }
 
-    public static PrivateKey toPrivateKey (String pem) throws IOException, GeneralSecurityException {
+    public static PrivateKey toPrivateKey(String pem) throws IOException, GeneralSecurityException {
         StringReader stringReader = new StringReader(pem);
         PEMParser parser = new PEMParser(stringReader);
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = (PKCS8EncodedKeySpec) parser.readObject();
@@ -649,7 +649,7 @@ public class Utils {
         return kf.generatePrivate(pkcs8EncodedKeySpec);
     }
 
-    public static String toPem (PublicKey publicKey) throws IOException {
+    public static String toPem(PublicKey publicKey) throws IOException {
         StringWriter stringWriter = new StringWriter();
         PEMWriter pemWriter = new PEMWriter(stringWriter);
         pemWriter.writeObject(publicKey);
@@ -657,7 +657,7 @@ public class Utils {
         return stringWriter.toString();
     }
 
-    public static String toPem (PrivateKey privateKey) throws IOException {
+    public static String toPem(PrivateKey privateKey) throws IOException {
         StringWriter stringWriter = new StringWriter();
         PEMWriter pemWriter = new PEMWriter(stringWriter);
         pemWriter.writeObject(privateKey);
@@ -674,7 +674,7 @@ public class Utils {
         return copy;
     }
 
-    public static List copy (List src) {
+    public static List copy(List src) {
         if (src == null)
             return null;
 

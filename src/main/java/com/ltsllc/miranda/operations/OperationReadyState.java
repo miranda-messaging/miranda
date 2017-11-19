@@ -16,10 +16,7 @@
 
 package com.ltsllc.miranda.operations;
 
-import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StopState;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import org.apache.log4j.Logger;
 
@@ -29,12 +26,30 @@ import org.apache.log4j.Logger;
 public class OperationReadyState extends State {
     private static Logger logger = Logger.getLogger(OperationReadyState.class);
 
-    public OperationReadyState (Consumer consumer) throws MirandaException {
-        super (consumer);
+    public OperationReadyState(Consumer consumer) throws MirandaException {
+        super(consumer);
     }
 
-    public State processMessage (Message message) {
-        logger.error (this + " does not understand " + message + ".  Terminating.", message.getWhere());
+    public State processMessage(Message message) throws MirandaException {
+        State nextState = StopState.getInstance();
+
+        switch (message.getSubject()) {
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage(shutdownMessage);
+                break;
+            }
+
+            default: {
+                nextState = super.processMessage(message);
+            }
+        }
+
+        return nextState;
+    }
+
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
+        logger.warn(this + " is shutting down");
         return StopState.getInstance();
     }
 }

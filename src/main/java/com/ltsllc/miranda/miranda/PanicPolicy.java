@@ -24,5 +24,5 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
  * Created by Clark on 3/7/2017.
  */
 public interface PanicPolicy {
-    public void panic (Panic panic) throws ShutdownException;
+    public void panic(Panic panic) throws ShutdownException;
 }

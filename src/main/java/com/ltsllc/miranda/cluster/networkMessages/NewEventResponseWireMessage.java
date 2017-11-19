@@ -16,7 +16,7 @@ public class NewEventResponseWireMessage extends WireMessage {
     private String guid;
     private NewEventResponses response;
 
-    public NewEventResponseWireMessage (String guid, NewEventResponses response) {
+    public NewEventResponseWireMessage(String guid, NewEventResponses response) {
         super(WireSubjects.NewEventResponse);
 
         this.guid = guid;

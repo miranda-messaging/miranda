@@ -25,11 +25,11 @@ import java.io.IOException;
  * Created by Clark on 5/14/2017.
  */
 abstract public class StandardManager<E extends MirandaObject> extends Manager<E, E> {
-    public StandardManager (String name, String filename) throws IOException, MirandaException {
-        super (name, filename);
+    public StandardManager(String name, String filename) throws IOException, MirandaException {
+        super(name, filename);
     }
 
-    public E convert (E e) {
+    public E convert(E e) {
         return e;
     }
 }

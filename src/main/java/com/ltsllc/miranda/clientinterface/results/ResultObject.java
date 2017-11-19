@@ -37,18 +37,18 @@ public class ResultObject {
     }
 
     public String getAddionalInfo() {
-        return  additionalInfo;
+        return additionalInfo;
     }
 
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
 
-    public void setAdditionalInfo (Throwable t) {
-        this.additionalInfo = Utils.toStacktrace (t);
+    public void setAdditionalInfo(Throwable t) {
+        this.additionalInfo = Utils.toStacktrace(t);
     }
 
-    public void setException (Throwable t) {
+    public void setException(Throwable t) {
         setAdditionalInfo(t);
     }
 }

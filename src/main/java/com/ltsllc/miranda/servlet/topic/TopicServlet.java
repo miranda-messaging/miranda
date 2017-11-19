@@ -32,26 +32,25 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/28/2017.
  */
 abstract public class TopicServlet extends SessionServlet {
-    abstract ResultObject basicPerformService (HttpServletRequest request, HttpServletResponse response,
-                                               TopicRequest requestObject) throws IOException, ServletException, TimeoutException;
+    abstract ResultObject basicPerformService(HttpServletRequest request, HttpServletResponse response,
+                                              TopicRequest requestObject) throws IOException, ServletException, TimeoutException;
 
-    public boolean allowAccess () {
+    public boolean allowAccess() {
         return true;
     }
 
-    public Class getRequestClass () {
+    public Class getRequestClass() {
         return TopicRequest.class;
     }
 
-    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, Request requestObject)
-            throws IOException, ServletException, TimeoutException
-    {
+    public ResultObject performService(HttpServletRequest request, HttpServletResponse response, Request requestObject)
+            throws IOException, ServletException, TimeoutException {
         TopicRequest topicRequestObject = (TopicRequest) requestObject;
         ResultObject resultObject = basicPerformService(request, response, topicRequestObject);
         return resultObject;
     }
 
-    public ServletHolder getServletHolder () {
+    public ServletHolder getServletHolder() {
         return TopicHolder.getInstance();
     }
 }

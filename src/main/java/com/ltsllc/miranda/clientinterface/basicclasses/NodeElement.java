@@ -33,7 +33,7 @@ public class NodeElement extends MirandaObject {
     private String description;
     private long lastConnected;
 
-    public NodeElement (ImprovedRandom random) {
+    public NodeElement(ImprovedRandom random) {
         this.dns = randomDnsName(random);
         this.port = random.nextNonNegativeInteger();
         this.description = random.randomString(16);
@@ -99,7 +99,7 @@ public class NodeElement extends MirandaObject {
         this.port = port;
     }
 
-    public NodeElement (String dns, int port, String description) {
+    public NodeElement(String dns, int port, String description) {
         this.dns = dns;
         this.port = port;
         this.description = description;
@@ -178,10 +178,10 @@ public class NodeElement extends MirandaObject {
             "org"
     };
 
-    public static String randomDnsName (ImprovedRandom random) {
+    public static String randomDnsName(ImprovedRandom random) {
         int numberOfDomains = random.nextInt(2, 6);
         StringBuffer sb = new StringBuffer();
-        sb.append (FISRT_DOMAINS[random.nextIndex(FISRT_DOMAINS)]);
+        sb.append(FISRT_DOMAINS[random.nextIndex(FISRT_DOMAINS)]);
 
         int i = 1;
         while (i < (numberOfDomains - 1)) {
@@ -196,11 +196,11 @@ public class NodeElement extends MirandaObject {
         return sb.toString();
     }
 
-    public static NodeElement random (ImprovedRandom random) {
+    public static NodeElement random(ImprovedRandom random) {
         return new NodeElement(random);
     }
 
-    public boolean equivalent (Object o) {
+    public boolean equivalent(Object o) {
         if (null == o || !(o instanceof NodeElement))
             return false;
 
@@ -208,12 +208,12 @@ public class NodeElement extends MirandaObject {
         return matches(other);
     }
 
-    public void updateFrom (NodeElement other) {
+    public void updateFrom(NodeElement other) {
         setLastConnected(other.getLastConnected());
         setDescription(other.getDescription());
     }
 
-    public boolean matches (NodeElement other) {
+    public boolean matches(NodeElement other) {
         return getDns().equals(other.getDns()) && getPort() == other.getPort();
     }
 }

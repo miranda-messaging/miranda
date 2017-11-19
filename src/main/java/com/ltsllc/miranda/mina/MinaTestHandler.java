@@ -45,7 +45,7 @@ public class MinaTestHandler extends IoHandlerAdapter {
         this.testMessage = testMessage;
     }
 
-    public MinaTestHandler (String testMessage) {
+    public MinaTestHandler(String testMessage) {
         setTestMessage(testMessage);
         setSuccessfulTest(false);
     }

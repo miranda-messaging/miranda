@@ -15,7 +15,7 @@ public class CreateEventMessage extends Message {
         return event;
     }
 
-    public CreateEventMessage (BlockingQueue<Message> senderQueue, Object sender, Event event) {
+    public CreateEventMessage(BlockingQueue<Message> senderQueue, Object sender, Event event) {
         super(Subjects.CreateEvent, senderQueue, sender);
 
         this.event = event;

@@ -28,10 +28,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A class to make switching between netty and sockets easier.
- *
- * <P>
- *     This class has the responsiblity of listening for new connections from
- *     other nodes. Subclases need to define the listen method.
+ * <p>
+ * <p>
+ * This class has the responsiblity of listening for new connections from
+ * other nodes. Subclases need to define the listen method.
  * </P>
  */
 abstract public class ConnectionListener extends Consumer {
@@ -52,11 +52,11 @@ abstract public class ConnectionListener extends Consumer {
         return port;
     }
 
-    public boolean keepGoing () {
+    public boolean keepGoing() {
         return keepGoing;
     }
 
-    public void setKeepGoing (boolean keepGoing) {
+    public void setKeepGoing(boolean keepGoing) {
         this.keepGoing = keepGoing;
     }
 
@@ -64,7 +64,7 @@ abstract public class ConnectionListener extends Consumer {
         return connectionCount;
     }
 
-    public void incrementConnectionCount () {
+    public void incrementConnectionCount() {
         connectionCount++;
     }
 
@@ -79,7 +79,7 @@ abstract public class ConnectionListener extends Consumer {
         setCurrentState(readyState);
     }
 
-    public void newConnectionLoop (BlockingQueue<Handle> handleQueue) throws MirandaException {
+    public void newConnectionLoop(BlockingQueue<Handle> handleQueue) throws MirandaException {
         while (keepGoing()) {
             Handle newConnection = null;
 
@@ -102,7 +102,7 @@ abstract public class ConnectionListener extends Consumer {
         }
     }
 
-    public void shutdown () {
+    public void shutdown() {
         setKeepGoing(false);
         getThread().interrupt();
         setCurrentState(StopState.getInstance());

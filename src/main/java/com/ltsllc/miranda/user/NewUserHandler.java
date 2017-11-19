@@ -25,7 +25,7 @@ import com.ltsllc.miranda.user.states.NewUserHandlerReadyState;
  */
 public class NewUserHandler extends NewObjectPostHandler<UsersFile> {
 
-    public NewUserHandler (UsersFile usersFile) throws MirandaException {
+    public NewUserHandler(UsersFile usersFile) throws MirandaException {
         super(usersFile);
 
         NewUserHandlerReadyState readyState = new NewUserHandlerReadyState(this, usersFile, this);

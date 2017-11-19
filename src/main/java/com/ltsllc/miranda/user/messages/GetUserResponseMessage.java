@@ -42,7 +42,7 @@ public class GetUserResponseMessage extends Message {
         return result;
     }
 
-    public GetUserResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String name, Results result, User user) {
+    public GetUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String name, Results result, User user) {
         super(Subjects.GetUserResponse, senderQueue, sender);
 
         this.result = result;

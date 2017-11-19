@@ -37,24 +37,24 @@ public class MirandaStatus extends Consumer {
         this.statusObject = statusObject;
     }
 
-    public static synchronized void initialize () throws MirandaException {
+    public static synchronized void initialize() throws MirandaException {
         if (null == ourInstance) {
             ourInstance = new MirandaStatus();
         }
     }
 
-    public static MirandaStatus getInstance () {
+    public static MirandaStatus getInstance() {
         return ourInstance;
     }
 
-    private MirandaStatus () throws MirandaException {
+    private MirandaStatus() throws MirandaException {
         super("miranda status");
 
         MirandaStatusReadyState mirandaStatusReadyState = new MirandaStatusReadyState(this);
         setCurrentState(mirandaStatusReadyState);
     }
 
-    public void receivedStatus (StatusObject statusObject) {
+    public void receivedStatus(StatusObject statusObject) {
         setStatusObject(statusObject);
 
         synchronized (this) {
@@ -62,7 +62,7 @@ public class MirandaStatus extends Consumer {
         }
     }
 
-    public StatusObject getStatus () {
+    public StatusObject getStatus() {
         StatusObject statusObject = null;
 
         try {

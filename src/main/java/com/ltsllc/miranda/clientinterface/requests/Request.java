@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 
 /**
  * A request sent to the Miranda system.
- *
  * <p>
- *     A request has a session ID associated with it.
+ * <p>
+ * A request has a session ID associated with it.
  * </p>
- *
  * <p>
- *     Requests are generally sent as JSON objects to Miranda.
+ * <p>
+ * Requests are generally sent as JSON objects to Miranda.
  * </p>
  */
 public class Request {
@@ -34,7 +34,7 @@ public class Request {
         }
     }
 
-    public String toJson () {
+    public String toJson() {
         return gson.toJson(this);
     }
 }

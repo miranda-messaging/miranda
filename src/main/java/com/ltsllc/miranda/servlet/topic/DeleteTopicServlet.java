@@ -30,7 +30,7 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/9/2017.
  */
 public class DeleteTopicServlet extends TopicServlet {
-    public ResultObject createResultObject () {
+    public ResultObject createResultObject() {
         return new ResultObject();
     }
 

@@ -24,15 +24,15 @@ import com.ltsllc.miranda.file.states.SingleFileStartingState;
  * Created by Clark on 5/18/2017.
  */
 public class EventsFileStartingState extends SingleFileStartingState {
-    public EventsFile getEventsFile () {
+    public EventsFile getEventsFile() {
         return (EventsFile) getContainer();
     }
 
-    public EventsFileStartingState (EventsFile eventsFile) throws MirandaException {
+    public EventsFileStartingState(EventsFile eventsFile) throws MirandaException {
         super(eventsFile);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new EventsFileReadyState(getEventsFile());
     }
 }

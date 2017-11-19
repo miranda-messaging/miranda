@@ -20,7 +20,7 @@ package com.ltsllc.miranda.user;
  * Created by Clark on 4/7/2017.
  */
 public class DuplicateUserException extends Exception {
-    public DuplicateUserException (String message) {
+    public DuplicateUserException(String message) {
         super(message);
     }
 }

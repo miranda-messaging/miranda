@@ -23,11 +23,11 @@ import com.ltsllc.common.commadline.CommandLine;
  * A command line application.
  */
 abstract public class Application {
-    abstract public CommandLine createCommandLine (String[] argv);
+    abstract public CommandLine createCommandLine(String[] argv);
 
     private CommandLine commandLine;
 
-    public Application (String[] argv) {
+    public Application(String[] argv) {
         CommandLine commandLine = createCommandLine(argv);
         setCommandLine(commandLine);
     }
@@ -40,7 +40,7 @@ abstract public class Application {
         this.commandLine = commandLine;
     }
 
-    public void go () {
+    public void go() {
         getCommandLine().parse();
     }
 }

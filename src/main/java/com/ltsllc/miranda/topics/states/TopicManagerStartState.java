@@ -25,15 +25,15 @@ import com.ltsllc.miranda.topics.TopicManager;
  * Created by Clark on 5/14/2017.
  */
 public class TopicManagerStartState extends ManagerStartState {
-    public TopicManager getTopicManager () {
+    public TopicManager getTopicManager() {
         return (TopicManager) getContainer();
     }
 
-    public TopicManagerStartState (TopicManager topicManager) throws MirandaException {
+    public TopicManagerStartState(TopicManager topicManager) throws MirandaException {
         super(topicManager);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new TopicManagerReadyState(getTopicManager());
     }
 }

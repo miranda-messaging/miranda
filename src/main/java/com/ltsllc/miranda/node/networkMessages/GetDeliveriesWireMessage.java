@@ -26,7 +26,7 @@ public class GetDeliveriesWireMessage extends WireMessage {
         return filename;
     }
 
-    public GetDeliveriesWireMessage (String filename) {
+    public GetDeliveriesWireMessage(String filename) {
         super(WireSubjects.GetDeliveries);
 
         this.filename = filename;

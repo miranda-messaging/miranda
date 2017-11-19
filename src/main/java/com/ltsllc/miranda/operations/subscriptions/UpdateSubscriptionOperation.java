@@ -55,7 +55,7 @@ public class UpdateSubscriptionOperation extends Operation {
         return subscription;
     }
 
-    public UpdateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) throws MirandaException {
+    public UpdateSubscriptionOperation(BlockingQueue<Message> requester, Session session, Subscription subscription) throws MirandaException {
         super(NAME, requester, session);
 
         this.subscription = subscription;
@@ -67,7 +67,7 @@ public class UpdateSubscriptionOperation extends Operation {
     }
 
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda miranda = Miranda.getInstance();

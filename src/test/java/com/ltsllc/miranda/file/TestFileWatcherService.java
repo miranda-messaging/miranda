@@ -29,9 +29,12 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Clark on 2/26/2017.
@@ -56,10 +59,6 @@ public class TestFileWatcherService extends TestCase {
         return queue;
     }
 
-    public FileWatcherService getFileWatcherService() {
-        return fileWatcherService;
-    }
-
     public void reset () throws MirandaException {
         super.reset();
 
@@ -79,12 +78,10 @@ public class TestFileWatcherService extends TestCase {
 
         setuplog4j();
         setupMirandaProperties();
-        setupFileWatcher(100);
+        setupFileWatcherService(100);
 
+        queue = new LinkedBlockingQueue<Message>();
         createFileSystem(ROOT, FILE_SYSTEM_SPEC);
-
-        this.fileWatcherService = Miranda.fileWatcher;
-        this.queue = new LinkedBlockingQueue<Message>();
     }
 
     @After
@@ -94,40 +91,34 @@ public class TestFileWatcherService extends TestCase {
 
     @Test
     public void testConstructor () {
-        assert (getFileWatcherService().getCurrentState() instanceof FileWatcherReadyState);
+        assert (Miranda.fileWatcher.getCurrentState() instanceof FileWatcherReadyState);
     }
 
     @Test
-    public void testStopWatching () {
+    public void testStopWatching() throws IOException {
         File file = new File(FILENAME);
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        WatchFileMessage watchMessage = new WatchFileMessage(getQueue(), this, file, getQueue());
-        send(watchMessage, getFileWatcherService().getQueue());
+        Miranda.fileWatcher.watchFile(file, getQueue());
 
-        pause(500);
+        pause(1000);
 
-        long time = touch(file);
-        time++;
-        touch (file, time);
+        touch(file);
 
-        pause(500);
+        pause(1500);
 
-        getFileWatcherService().checkFiles();
+        Miranda.fileWatcher.checkFiles();
 
         assert (contains(Message.Subjects.FileChanged, getQueue()));
 
         StopWatchingMessage stopWatchingMessage = new StopWatchingMessage(getQueue(), this, file, getQueue());
-        send(stopWatchingMessage, getFileWatcherService().getQueue());
+        send(stopWatchingMessage, Miranda.fileWatcher.getQueue());
 
         pause (250);
 
         getQueue().clear();
 
-        time = touch(file);
-        time++;
-        touch(file, time);
+        touch(file);
 
-        pause(250);
+        pause(1500);
 
         assert (!(contains(Message.Subjects.FileChanged, getQueue())));
     }

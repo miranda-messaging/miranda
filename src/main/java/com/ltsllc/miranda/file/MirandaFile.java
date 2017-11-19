@@ -44,6 +44,7 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class MirandaFile extends Consumer implements Comparer {
     abstract public byte[] getBytes();
+
     abstract public List getData();
 
     private static Logger logger = Logger.getLogger(MirandaFile.class);
@@ -60,7 +61,8 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     private boolean dirty;
 
 
-    public MirandaFile () {}
+    public MirandaFile() {
+    }
 
     public MirandaFile(String filename, Reader reader, Writer writer) throws IOException {
         basicConstructor(filename, reader, writer);
@@ -119,7 +121,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     }
 
 
-    public void recalculateVersion () {
+    public void recalculateVersion() {
         version = calculateVersion();
     }
 
@@ -135,7 +137,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         this.dirty = dirty;
     }
 
-    public void basicConstructor (String filename, Reader reader, Writer writer) throws IOException {
+    public void basicConstructor(String filename, Reader reader, Writer writer) throws IOException {
         super.basicConstructor("file");
 
         this.filename = filename;
@@ -168,7 +170,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
 
     public void watch() {
         File file = new File(getFilename());
-        Miranda.fileWatcher.sendWatchFileMessage (getQueue(), this, file, getQueue());
+        Miranda.fileWatcher.sendWatchFileMessage(getQueue(), this, file, getQueue());
     }
 
     public void updateVersion() throws NoSuchAlgorithmException {
@@ -178,7 +180,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         setVersion(version);
     }
 
-    public String asJson () {
+    public String asJson() {
         return ourGson.toJson(getElements());
     }
 
@@ -218,16 +220,16 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return filename;
     }
 
-    public void performGarbageCollection () {
+    public void performGarbageCollection() {
         setLastCollection(System.currentTimeMillis());
     }
 
-    public void sendGarbageCollectionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendGarbageCollectionMessage(BlockingQueue<Message> senderQueue, Object sender) {
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(senderQueue, sender);
         sendToMe(garbageCollectionMessage);
     }
 
-    public Version calculateVersion () {
+    public Version calculateVersion() {
         try {
             byte[] data = getBytes();
             return new Version(data);
@@ -239,7 +241,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return null;
     }
 
-    public void fireMessage (Message message) {
+    public void fireMessage(Message message) {
         for (Subscriber subscriber : getSubscribers()) {
             subscriber.notifySubscriber(message);
         }
@@ -250,13 +252,13 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         fireMessage(fileLoadedMessage);
     }
 
-    public void fireFileDoesNotExist () {
+    public void fireFileDoesNotExist() {
         FileDoesNotExistMessage fileDoesNotExistMessage = new FileDoesNotExistMessage(getQueue(), this,
                 getFilename());
         fireMessage(fileDoesNotExistMessage);
     }
 
-    public void load () {
+    public void load() {
         getReader().sendReadMessage(getQueue(), this, getFilename());
     }
 }

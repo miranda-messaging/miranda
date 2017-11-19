@@ -9,15 +9,15 @@ import com.ltsllc.miranda.file.messages.FileChangedMessage;
  * Created by Clark on 6/8/2017.
  */
 public class DirectoryManagerReadyState extends State {
-    public DirectoryManagerReadyState (DirectoryManager directoryManager) throws MirandaException {
+    public DirectoryManagerReadyState(DirectoryManager directoryManager) throws MirandaException {
         super(directoryManager);
     }
 
-    public DirectoryManager getDirectoryManager () {
+    public DirectoryManager getDirectoryManager() {
         return (DirectoryManager) getContainer();
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getDirectoryManager().getCurrentState();
 
         switch (message.getSubject()) {

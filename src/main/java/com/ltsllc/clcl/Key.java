@@ -31,17 +31,20 @@ import java.security.Security;
 
 /**
  * A class that can be used to encrypt or decrypt messages.
- *
  * <p>
- *     This class provides utility methods for its subclasses like the {@link #encrypt(String, byte[])}
- *     and {@link #decrypt(EncryptedMessage)} methods.
+ * <p>
+ * This class provides utility methods for its subclasses like the {@link #encrypt(String, byte[])}
+ * and {@link #decrypt(EncryptedMessage)} methods.
  * </p>
  */
 abstract public class Key implements Serializable {
-    abstract public String getSessionAlgorithm ();
-    abstract public byte[] encrypt (byte[] plainText) throws EncryptionException;
-    abstract public byte[] decrypt (byte[] cipherText) throws EncryptionException;
-    abstract public String toPem () throws EncryptionException;
+    abstract public String getSessionAlgorithm();
+
+    abstract public byte[] encrypt(byte[] plainText) throws EncryptionException;
+
+    abstract public byte[] decrypt(byte[] cipherText) throws EncryptionException;
+
+    abstract public String toPem() throws EncryptionException;
 
     public static String SESSION_ALGORITHM = "AES";
 
@@ -55,30 +58,29 @@ abstract public class Key implements Serializable {
         this.dn = dn;
     }
 
-    public EncryptedMessage encryptToMessage (byte[] plainText) throws EncryptionException {
+    public EncryptedMessage encryptToMessage(byte[] plainText) throws EncryptionException {
         return encrypt(getSessionAlgorithm(), plainText);
     }
 
-    public byte[] decryptFromMessage (EncryptedMessage encryptedMessage) throws EncryptionException {
+    public byte[] decryptFromMessage(EncryptedMessage encryptedMessage) throws EncryptionException {
         return decrypt(encryptedMessage);
     }
 
     /**
      * Encrypt a message.
-     *
      * <p>
-     *     This is a utility method for encrypting messages.
-     *     It encrypts messages with a "fast" algorithm and the session key used is encrypted
-     *     with the object to provide security.
+     * <p>
+     * This is a utility method for encrypting messages.
+     * It encrypts messages with a "fast" algorithm and the session key used is encrypted
+     * with the object to provide security.
      * </p>
      *
      * @param algorithm The algorithm that should be used to encrypt the message.
      * @param plainText The message to be encrypted.
      * @return An object containing the encrypted message and the encrypted session key.
      */
-    public EncryptedMessage encrypt (String algorithm, byte[] plainText)
-            throws EncryptionException
-    {
+    public EncryptedMessage encrypt(String algorithm, byte[] plainText)
+            throws EncryptionException {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
             SecretKey sessionKey = keyGenerator.generateKey();
@@ -98,16 +100,16 @@ abstract public class Key implements Serializable {
             EncryptedMessage encryptedMessage = new EncryptedMessage(algorithm, sessionKeyCipherTextString, cipherTextString);
 
             return encryptedMessage;
-        } catch (GeneralSecurityException|IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new EncryptionException("Exception trying to encrypt message", e);
         }
     }
 
     /**
      * A convenience method for encrypting Strings.
-     *
      * <p>
-     *     This method calls {@link #encrypt(byte[])} under the covers.
+     * <p>
+     * This method calls {@link #encrypt(byte[])} under the covers.
      * </p>
      *
      * @param plainTextString The string to be encrypted.
@@ -115,7 +117,7 @@ abstract public class Key implements Serializable {
      * input encrypted.
      * @throws EncryptionException If there is a problem encrypting.
      */
-    public String encryptString (String plainTextString) throws EncryptionException {
+    public String encryptString(String plainTextString) throws EncryptionException {
         byte[] plainText = plainTextString.getBytes();
         byte[] cipherText = encrypt(plainText);
         return Utils.bytesToString(cipherText);
@@ -123,19 +125,18 @@ abstract public class Key implements Serializable {
 
     /**
      * A convenience method for decrypting strings.
-     *
      * <p>
-     *     This method assumes that the input is a hexadecimal string that represents the encrypted string.
-     *     This method calls {@link Utils#hexStringToBytes(String)} to convert the input to bytes before decrypting it.
+     * <p>
+     * This method assumes that the input is a hexadecimal string that represents the encrypted string.
+     * This method calls {@link Utils#hexStringToBytes(String)} to convert the input to bytes before decrypting it.
      * </p>
      *
      * @param hexString A hexadecimal string that represents the encrypted string.
      * @return The decrypted string.
-     * @throws IOException If there is a problem converting the input string to bytes.
+     * @throws IOException         If there is a problem converting the input string to bytes.
      * @throws EncryptionException If there is a problem decrypting the string.
-     * @return The decrypted string.
      */
-    public String decryptString (String hexString) throws IOException, EncryptionException {
+    public String decryptString(String hexString) throws IOException, EncryptionException {
         byte[] cipherText = Utils.hexStringToBytes(hexString);
         byte[] plainText = decrypt(cipherText);
         return new String(plainText);
@@ -143,19 +144,18 @@ abstract public class Key implements Serializable {
 
     /**
      * Decrypt a message.
-     *
      * <p>
-     *     This is a utility method for decrypting messages.
-     *     A message is encrypted with a "fast" algorithm whose key is part of the message object.
+     * <p>
+     * This is a utility method for decrypting messages.
+     * A message is encrypted with a "fast" algorithm whose key is part of the message object.
      * </p>
      *
      * @param encryptedMessage The message to be decrypted.
      * @return The decrypted message.
      * @throws EncryptionException If there is a problem decrypting the message.
      */
-    public byte[] decrypt (EncryptedMessage encryptedMessage)
-        throws EncryptionException
-    {
+    public byte[] decrypt(EncryptedMessage encryptedMessage)
+            throws EncryptionException {
         try {
             checkProviders();
 
@@ -174,20 +174,20 @@ abstract public class Key implements Serializable {
             cipherOutputStream.close();
 
             return byteArrayOutputStream.toByteArray();
-        } catch (GeneralSecurityException|IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new EncryptionException("Exception trying to decrypt message", e);
         }
     }
 
     /**
      * Make sure the {@link BouncyCastleProvider} is available.
-     *
      * <p>
-     *     This method uses {@link Security#getProviders()} to determine if the BouncyCastleProvider is present.
-     *     If is missing then the method adds it with {@link Security#addProvider(Provider)}.
+     * <p>
+     * This method uses {@link Security#getProviders()} to determine if the BouncyCastleProvider is present.
+     * If is missing then the method adds it with {@link Security#addProvider(Provider)}.
      * </p>
      */
-    public void checkProviders () {
+    public void checkProviders() {
         Provider[] providers = Security.getProviders();
 
         boolean hasBouncyCastle = false;

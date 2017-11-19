@@ -33,7 +33,7 @@ public class LoadResponseMessage extends Message {
         this.data = data;
     }
 
-    public LoadResponseMessage (BlockingQueue<Message> senderQueue, Object sender, List data) {
+    public LoadResponseMessage(BlockingQueue<Message> senderQueue, Object sender, List data) {
         super(Subjects.LoadResponse, senderQueue, sender);
 
         this.data = data;

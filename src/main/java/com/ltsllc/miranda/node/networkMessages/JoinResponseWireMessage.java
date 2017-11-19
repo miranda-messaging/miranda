@@ -31,13 +31,13 @@ public class JoinResponseWireMessage extends WireMessage {
         return result;
     }
 
-    public JoinResponseWireMessage (Responses result) {
+    public JoinResponseWireMessage(Responses result) {
         super(WireSubjects.JoinResponse);
 
         this.result = result;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (null == o || !(o instanceof JoinResponseWireMessage))
             return false;
 
@@ -45,7 +45,7 @@ public class JoinResponseWireMessage extends WireMessage {
         return getResult().equals(other.getResult());
     }
 
-    public String toString () {
+    public String toString() {
         String s = "joinResponse{" + getResult() + "}";
         return s;
     }

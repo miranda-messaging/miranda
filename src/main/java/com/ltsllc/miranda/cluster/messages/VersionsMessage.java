@@ -32,7 +32,7 @@ public class VersionsMessage extends Message {
         return versions;
     }
 
-    public VersionsMessage (BlockingQueue<Message> senderQueue, Object sender, List<NameVersion> versions) {
+    public VersionsMessage(BlockingQueue<Message> senderQueue, Object sender, List<NameVersion> versions) {
         super(Subjects.Versions, senderQueue, sender);
 
         this.versions = versions;

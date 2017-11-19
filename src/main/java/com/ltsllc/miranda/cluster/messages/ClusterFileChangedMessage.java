@@ -30,7 +30,7 @@ public class ClusterFileChangedMessage extends Message {
     private List<NodeElement> file;
     private Version version;
 
-    public ClusterFileChangedMessage (BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> file, Version version) {
+    public ClusterFileChangedMessage(BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> file, Version version) {
         super(Subjects.ClusterFileChanged, senderQueue, sender);
 
         this.file = file;

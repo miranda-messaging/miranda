@@ -29,7 +29,7 @@ public class TopicResultObject extends ResultObject {
         return topic;
     }
 
-    public void setTopic (Topic topic) {
+    public void setTopic(Topic topic) {
         this.topic = topic;
     }
 }

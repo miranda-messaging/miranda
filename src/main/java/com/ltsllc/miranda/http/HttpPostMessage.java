@@ -31,8 +31,7 @@ public class HttpPostMessage extends Message {
     private ChannelHandlerContext channelHandlerContext;
 
 
-    public HttpPostMessage (BlockingQueue<Message> senderQueue, Object sender, HttpRequest request, String content, ChannelHandlerContext ctx)
-    {
+    public HttpPostMessage(BlockingQueue<Message> senderQueue, Object sender, HttpRequest request, String content, ChannelHandlerContext ctx) {
         super(Subjects.HttpPost, senderQueue, sender);
 
         this.request = request;

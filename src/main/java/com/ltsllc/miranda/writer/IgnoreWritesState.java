@@ -28,15 +28,15 @@ import org.apache.log4j.Logger;
 public class IgnoreWritesState extends State {
     private static Logger logger = Logger.getLogger(IgnoreWritesState.class);
 
-    public static void setLogger (Logger logger) {
+    public static void setLogger(Logger logger) {
         IgnoreWritesState.logger = logger;
     }
 
-    public IgnoreWritesState (Consumer consumer) throws MirandaException {
+    public IgnoreWritesState(Consumer consumer) throws MirandaException {
         super(consumer);
     }
 
-    public State processMessage (Message m) throws MirandaException {
+    public State processMessage(Message m) throws MirandaException {
         State nextState = this;
 
         switch (m.getSubject()) {
@@ -55,8 +55,8 @@ public class IgnoreWritesState extends State {
         return nextState;
     }
 
-    private State processWriteMessage (WriteMessage writeMessage) {
-        logger.warn ("Ignoring write to " + writeMessage.getFilename());
+    private State processWriteMessage(WriteMessage writeMessage) {
+        logger.warn("Ignoring write to " + writeMessage.getFilename());
         return this;
     }
 

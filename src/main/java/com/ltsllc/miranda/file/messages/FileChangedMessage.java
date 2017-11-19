@@ -31,7 +31,7 @@ public class FileChangedMessage extends Message {
         return file;
     }
 
-    public FileChangedMessage (BlockingQueue<Message> senderQueue, Object sender, File file) {
+    public FileChangedMessage(BlockingQueue<Message> senderQueue, Object sender, File file) {
         super(Subjects.FileChanged, senderQueue, sender);
 
         this.file = file;

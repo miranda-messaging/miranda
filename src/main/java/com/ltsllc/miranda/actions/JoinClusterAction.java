@@ -28,14 +28,13 @@ public class JoinClusterAction extends Consumer {
         this.cluster = cluster;
     }
 
-    JoinClusterAction (Network network, Cluster cluster) throws MirandaException {
+    JoinClusterAction(Network network, Cluster cluster) throws MirandaException {
         super("join cluster");
         setCluster(cluster);
         setNetwork(network);
         JoinClusterState joinClusterState = new JoinClusterState(this);
         setCurrentState(joinClusterState);
     }
-
 
 
 }

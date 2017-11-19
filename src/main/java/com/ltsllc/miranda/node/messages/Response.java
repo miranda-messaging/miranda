@@ -21,7 +21,7 @@ public class Response extends Message {
         return node;
     }
 
-    public Response (Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Node node, Results result) {
+    public Response(Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Node node, Results result) {
         super(subject, senderQueue, sender);
 
         this.node = node;

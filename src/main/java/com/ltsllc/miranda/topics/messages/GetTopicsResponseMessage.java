@@ -32,7 +32,7 @@ public class GetTopicsResponseMessage extends Message {
         return topics;
     }
 
-    public GetTopicsResponseMessage (BlockingQueue<Message> senderQueue, Object sender, List<Topic> topics) {
+    public GetTopicsResponseMessage(BlockingQueue<Message> senderQueue, Object sender, List<Topic> topics) {
         super(Subjects.GetTopicsResponse, senderQueue, sender);
 
         this.topics = topics;

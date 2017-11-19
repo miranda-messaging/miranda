@@ -64,7 +64,7 @@ public class ConnectionListenerHolder extends Consumer {
         setCurrentState(readyState);
     }
 
-    public void stop () {
-       getNetworkListener().stop();
+    public void stop() {
+        getNetworkListener().stop();
     }
 }

@@ -31,25 +31,24 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 5/1/2017.
  */
 public class ShutdownServlet extends SessionServlet {
-    public Class getRequestClass () {
+    public Class getRequestClass() {
         return Request.class;
     }
 
-    public ResultObject createResultObject () {
+    public ResultObject createResultObject() {
         return new ResultObject();
     }
 
-    public boolean allowAccess () {
+    public boolean allowAccess() {
         return getSession().getUser().getCategory() == User.UserTypes.Admin;
     }
 
-    public ServletHolder getServletHolder () {
+    public ServletHolder getServletHolder() {
         return ShutdownHolder.getInstance();
     }
 
-    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, Request requestObject)
-            throws TimeoutException
-    {
+    public ResultObject performService(HttpServletRequest request, HttpServletResponse response, Request requestObject)
+            throws TimeoutException {
         ShutdownHolder.getInstance().shutdownMirada();
 
         ResultObject resultObject = new ResultObject();

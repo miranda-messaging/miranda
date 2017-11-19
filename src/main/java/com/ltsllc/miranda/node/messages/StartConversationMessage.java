@@ -11,8 +11,8 @@ public class StartConversationMessage extends Message {
     private BlockingQueue<Message> respondTo;
     private String key;
 
-    public StartConversationMessage (BlockingQueue<Message> senderQueue, Object sender, String key,
-                                     BlockingQueue<Message> respondTo) {
+    public StartConversationMessage(BlockingQueue<Message> senderQueue, Object sender, String key,
+                                    BlockingQueue<Message> respondTo) {
         super(Subjects.StartConversation, senderQueue, sender);
 
         this.key = key;

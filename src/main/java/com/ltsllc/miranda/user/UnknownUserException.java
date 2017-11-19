@@ -28,7 +28,7 @@ public class UnknownUserException extends MirandaException {
         return name;
     }
 
-    public UnknownUserException (String name) {
+    public UnknownUserException(String name) {
         this.name = name;
     }
 }

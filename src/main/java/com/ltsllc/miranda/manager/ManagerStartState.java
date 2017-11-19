@@ -31,15 +31,15 @@ import java.util.List;
 abstract public class ManagerStartState extends State {
     abstract public State getReadyState() throws MirandaException;
 
-    public Manager getManager () {
+    public Manager getManager() {
         return (Manager) getContainer();
     }
 
-    public ManagerStartState (Manager manager) throws MirandaException {
+    public ManagerStartState(Manager manager) throws MirandaException {
         super(manager);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getManager().getCurrentState();
 
         switch (message.getSubject()) {
@@ -51,7 +51,7 @@ abstract public class ManagerStartState extends State {
 
             case GarbageCollection: {
                 GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage (garbageCollectionMessage);
+                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
                 break;
             }
 
@@ -70,7 +70,7 @@ abstract public class ManagerStartState extends State {
         return nextState;
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) throws MirandaException {
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {
         List list = (List) fileLoadedMessage.getData();
         getManager().setData(list);
 
@@ -79,13 +79,13 @@ abstract public class ManagerStartState extends State {
         return getReadyState();
     }
 
-    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         defer(garbageCollectionMessage);
 
         return getManager().getCurrentState();
     }
 
-    public State processFileDoesNotExistMessage (FileDoesNotExistMessage fileDoesNotExistMessage) throws MirandaException {
+    public State processFileDoesNotExistMessage(FileDoesNotExistMessage fileDoesNotExistMessage) throws MirandaException {
         getManager().getData().clear();
 
         restoreDeferredMessages();

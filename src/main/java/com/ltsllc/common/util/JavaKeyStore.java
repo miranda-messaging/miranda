@@ -30,7 +30,7 @@ import java.security.cert.Certificate;
 public class JavaKeyStore {
     private KeyStore keyStore;
 
-    public JavaKeyStore (KeyStore keyStore) {
+    public JavaKeyStore(KeyStore keyStore) {
         this.keyStore = keyStore;
     }
 
@@ -38,16 +38,16 @@ public class JavaKeyStore {
         return keyStore;
     }
 
-    public PrivateKey getPrivateKey (String alias) throws GeneralSecurityException {
+    public PrivateKey getPrivateKey(String alias) throws GeneralSecurityException {
         return (PrivateKey) getKeyStore().getKey(alias, "whatever".toCharArray());
     }
 
-    public PublicKey getPublicKey (String alias) throws GeneralSecurityException {
+    public PublicKey getPublicKey(String alias) throws GeneralSecurityException {
         Certificate certificate = getKeyStore().getCertificate(alias);
         return certificate.getPublicKey();
     }
 
-    public Certificate getCertificate (String alias) throws GeneralSecurityException {
+    public Certificate getCertificate(String alias) throws GeneralSecurityException {
         return getKeyStore().getCertificate(alias);
     }
 }

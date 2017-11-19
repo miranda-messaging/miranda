@@ -26,11 +26,11 @@ import com.ltsllc.miranda.miranda.messages.DecrementPanicCountMessage;
  * Created by Clark on 3/8/2017.
  */
 public class PanicPolicyReadyState extends State {
-    public PanicPolicyReadyState (MirandaPanicPolicy panicPolicy) throws MirandaException {
+    public PanicPolicyReadyState(MirandaPanicPolicy panicPolicy) throws MirandaException {
         super(panicPolicy);
     }
 
-    public MirandaPanicPolicy getMirandaPanicPolicy () {
+    public MirandaPanicPolicy getMirandaPanicPolicy() {
         return (MirandaPanicPolicy) getContainer();
     }
 
@@ -38,7 +38,7 @@ public class PanicPolicyReadyState extends State {
     public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
-        switch (message.getSubject()){
+        switch (message.getSubject()) {
             case DecrementPanicCount: {
                 DecrementPanicCountMessage decrementPanicCountMessage = (DecrementPanicCountMessage) message;
                 nextState = processDecrementPanicCountMessage(decrementPanicCountMessage);

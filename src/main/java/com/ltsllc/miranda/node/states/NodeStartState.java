@@ -29,11 +29,11 @@ import com.ltsllc.miranda.node.Node;
  * the remote host.
  */
 public class NodeStartState extends NodeState {
-    public NodeStartState (Node node, Network network) throws MirandaException {
+    public NodeStartState(Node node, Network network) throws MirandaException {
         super(node, network);
     }
 
-    public State processMessage (Message m) throws MirandaException {
+    public State processMessage(Message m) throws MirandaException {
         State nextState = null;
 
         switch (m.getSubject()) {
@@ -43,7 +43,7 @@ public class NodeStartState extends NodeState {
                 break;
             }
 
-            default :
+            default:
                 nextState = super.processMessage(m);
                 break;
         }
@@ -52,7 +52,7 @@ public class NodeStartState extends NodeState {
     }
 
 
-    private State processConnectMessage (ConnectMessage connectMessage) throws MirandaException {
+    private State processConnectMessage(ConnectMessage connectMessage) throws MirandaException {
         getNode().connect();
 
         ConnectingState connectingState = new ConnectingState(getNode(), getNetwork());

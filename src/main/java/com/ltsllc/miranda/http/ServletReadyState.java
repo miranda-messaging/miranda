@@ -7,16 +7,16 @@ import com.ltsllc.miranda.miranda.messages.StopMessage;
 
 /**
  * The ready state for an instance of {@link ServletContainer}.
- *
+ * <p>
  * <h3>Message</h3>
  * <ul>
- *     <li>AddServelets</li>
- *     <li>Start</li>
- *     <li>Stop</li>
+ * <li>AddServelets</li>
+ * <li>Start</li>
+ * <li>Stop</li>
  * </ul>
  */
 public class ServletReadyState extends State {
-    public ServletReadyState (ServletContainer servletContainer) throws MirandaException {
+    public ServletReadyState(ServletContainer servletContainer) throws MirandaException {
         super(servletContainer);
     }
 
@@ -29,9 +29,9 @@ public class ServletReadyState extends State {
         State nextState = getServletContainer().getCurrentState();
 
         switch (message.getSubject()) {
-            case AddServlets : {
+            case AddServlets: {
                 AddServletsMessage addServletsMessage = (AddServletsMessage) message;
-                nextState = processAddServlets (addServletsMessage);
+                nextState = processAddServlets(addServletsMessage);
                 break;
             }
 
@@ -56,19 +56,19 @@ public class ServletReadyState extends State {
         return nextState;
     }
 
-    public State processAddServlets (AddServletsMessage addServletsMessage) {
+    public State processAddServlets(AddServletsMessage addServletsMessage) {
         getServletContainer().addServlets(addServletsMessage.getServlets());
 
         return getServletContainer().getCurrentState();
     }
 
-    public State processStartMessage (StartMessage startMessage) {
+    public State processStartMessage(StartMessage startMessage) {
         getServletContainer().startContainer();
 
         return getServletContainer().getCurrentState();
     }
 
-    public State processStopMessage (StopMessage stopMessage) throws MirandaException {
+    public State processStopMessage(StopMessage stopMessage) throws MirandaException {
         getServletContainer().stopContainer();
 
         return super.processStopMessage(stopMessage);

@@ -10,8 +10,8 @@ import java.util.concurrent.BlockingQueue;
 public class ReadEventMessage extends Message {
     private String guid;
 
-    public ReadEventMessage (BlockingQueue<Message> senderQueue, Object sender, String guid) {
-        super (Subjects.Read, senderQueue, sender);
+    public ReadEventMessage(BlockingQueue<Message> senderQueue, Object sender, String guid) {
+        super(Subjects.Read, senderQueue, sender);
 
         this.guid = guid;
     }

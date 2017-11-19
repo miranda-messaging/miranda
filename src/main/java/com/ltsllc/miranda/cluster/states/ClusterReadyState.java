@@ -67,7 +67,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
         this.cluster = cluster;
 
-        assert(null != this.cluster);
+        assert (null != this.cluster);
     }
 
     public Cluster getCluster() {
@@ -86,7 +86,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case LoadResponse: {
                 LoadResponseMessage loadResponseMessage = (LoadResponseMessage) m;
-                nextState = processLoadResponseMessage (loadResponseMessage);
+                nextState = processLoadResponseMessage(loadResponseMessage);
                 break;
             }
 
@@ -104,7 +104,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case ClusterFileChanged: {
                 ClusterFileChangedMessage clusterFileChangedMessage = (ClusterFileChangedMessage) m;
-                nextState = processClusterFileChangedMessage (clusterFileChangedMessage);
+                nextState = processClusterFileChangedMessage(clusterFileChangedMessage);
                 break;
             }
 
@@ -116,13 +116,13 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case DropNode: {
                 DropNodeMessage dropNodeMessage = (DropNodeMessage) m;
-                nextState = processDropNodeMessage (dropNodeMessage);
+                nextState = processDropNodeMessage(dropNodeMessage);
                 break;
             }
 
             case GetStatus: {
                 GetStatusMessage getStatusMessage = (GetStatusMessage) m;
-                nextState = processGetStatusMessage (getStatusMessage);
+                nextState = processGetStatusMessage(getStatusMessage);
                 break;
             }
 
@@ -134,7 +134,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case AddSession: {
                 AddSessionMessage addSessionMessage = (AddSessionMessage) m;
-                nextState = processAddSessionMessage (addSessionMessage);
+                nextState = processAddSessionMessage(addSessionMessage);
                 break;
             }
 
@@ -146,7 +146,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case NewUser: {
                 NewUserMessage newUserMessage = (NewUserMessage) m;
-                nextState = processNewUserMessage (newUserMessage);
+                nextState = processNewUserMessage(newUserMessage);
                 break;
             }
 
@@ -158,13 +158,13 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case DeleteUser: {
                 DeleteUserMessage deleteUserMessage = (DeleteUserMessage) m;
-                nextState = processDeleteUserMessage (deleteUserMessage);
+                nextState = processDeleteUserMessage(deleteUserMessage);
                 break;
             }
 
             case Shutdown: {
                 ShutdownMessage shutdownMessage = (ShutdownMessage) m;
-                nextState = processShutdownMessage (shutdownMessage);
+                nextState = processShutdownMessage(shutdownMessage);
                 break;
             }
 
@@ -176,19 +176,19 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case UpdateSubscription: {
                 UpdateSubscriptionMessage updateSubscriptionMessage = (UpdateSubscriptionMessage) m;
-                nextState = processUpdateSubscriptionMessage (updateSubscriptionMessage);
+                nextState = processUpdateSubscriptionMessage(updateSubscriptionMessage);
                 break;
             }
 
             case DeleteSubscription: {
                 DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) m;
-                nextState = processDeleteSubscriptionMessage (deleteSubscriptionMessage);
+                nextState = processDeleteSubscriptionMessage(deleteSubscriptionMessage);
                 break;
             }
 
             case UpdateTopic: {
                 UpdateTopicMessage updateTopicMessage = (UpdateTopicMessage) m;
-                nextState = processUpdateTopicMessage (updateTopicMessage);
+                nextState = processUpdateTopicMessage(updateTopicMessage);
                 break;
             }
 
@@ -200,19 +200,19 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
 
             case DeleteTopic: {
                 DeleteTopicMessage deleteTopicMessage = (DeleteTopicMessage) m;
-                nextState = processDeleteTopicMessage (deleteTopicMessage);
+                nextState = processDeleteTopicMessage(deleteTopicMessage);
                 break;
             }
 
             case StartConversation: {
                 StartConversationMessage startConversationMessage = (StartConversationMessage) m;
-                nextState = processStartConversationMessage (startConversationMessage);
+                nextState = processStartConversationMessage(startConversationMessage);
                 break;
             }
 
             case EndConversation: {
                 EndConversationMessage endConversationMessage = (EndConversationMessage) m;
-                nextState = processEndConversationMessage (endConversationMessage);
+                nextState = processEndConversationMessage(endConversationMessage);
                 break;
             }
 
@@ -225,9 +225,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     }
 
 
-
-
-    private State processLoad (LoadMessage loadMessage) {
+    private State processLoad(LoadMessage loadMessage) {
         getCluster().load();
 
         return this;
@@ -256,20 +254,20 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
      * @param clusterFileChangedMessage
      * @return
      */
-    private State processClusterFileChangedMessage (ClusterFileChangedMessage clusterFileChangedMessage) throws MirandaException {
+    private State processClusterFileChangedMessage(ClusterFileChangedMessage clusterFileChangedMessage) throws MirandaException {
         getCluster().merge(clusterFileChangedMessage.getFile());
 
         return this;
     }
 
-    private State processHealthCheck (HealthCheckMessage healthCheckMessage) {
+    private State processHealthCheck(HealthCheckMessage healthCheckMessage) {
         getCluster().performHealthCheck();
 
         return this;
     }
 
 
-    private State processGetVersionMessage (GetVersionMessage getVersionMessage) {
+    private State processGetVersionMessage(GetVersionMessage getVersionMessage) {
         GetVersionMessage getVersionMessage2 = new GetVersionMessage(getCluster().getQueue(), this, getVersionMessage.getRequester());
         send(getCluster().getFile().getQueue(), getVersionMessage2);
 
@@ -282,12 +280,12 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
      * @param dropNodeMessage
      * @return
      */
-    private State processDropNodeMessage (DropNodeMessage dropNodeMessage) {
+    private State processDropNodeMessage(DropNodeMessage dropNodeMessage) {
         Node node = getCluster().matchingNode(dropNodeMessage.getDroppedNode());
 
         if (null != node) {
             if (node.isConnected()) {
-                logger.warn ("Asked to drop a connected node (" + dropNodeMessage.getDroppedNode() + "), ignoring");
+                logger.warn("Asked to drop a connected node (" + dropNodeMessage.getDroppedNode() + "), ignoring");
             } else {
                 logger.info("Dropping node from cluster: " + dropNodeMessage.getDroppedNode());
                 getCluster().getNodes().remove(node);
@@ -298,7 +296,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
     }
 
 
-    private State processGetStatusMessage (GetStatusMessage getStatusMessage) throws MirandaException {
+    private State processGetStatusMessage(GetStatusMessage getStatusMessage) throws MirandaException {
         ClusterStatusObject clusterStatusObject = getCluster().getStatus();
         GetStatusResponseMessage response = new GetStatusResponseMessage(getCluster().getQueue(), this, clusterStatusObject);
         getStatusMessage.reply(response);
@@ -306,21 +304,21 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return this;
     }
 
-    private State processNewNodeMessage (NewNodeMessage newNodeMessage) {
+    private State processNewNodeMessage(NewNodeMessage newNodeMessage) {
         getCluster().getNodes().add(newNodeMessage.getNode());
 
         return this;
     }
 
-    private State processLoadResponseMessage (LoadResponseMessage loadResponseMessage) throws MirandaException {
+    private State processLoadResponseMessage(LoadResponseMessage loadResponseMessage) throws MirandaException {
         getCluster().merge(loadResponseMessage.getData());
 
         return this;
     }
 
-    public State processAddSessionMessage (AddSessionMessage addSessionMessage) {
+    public State processAddSessionMessage(AddSessionMessage addSessionMessage) {
         NewSessionWireMessage newSessionWireMessage = new NewSessionWireMessage(addSessionMessage.getSession());
-        getCluster().broadcast (newSessionWireMessage);
+        getCluster().broadcast(newSessionWireMessage);
 
         return getCluster().getCurrentState();
     }
@@ -332,7 +330,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return getCluster().getCurrentState();
     }
 
-    public State processNewUserMessage (NewUserMessage newUserMessage) {
+    public State processNewUserMessage(NewUserMessage newUserMessage) {
         try {
             NewUserWireMessage newUserWireMessage = new NewUserWireMessage(newUserMessage.getUser().asUserObject());
             getCluster().broadcast(newUserWireMessage);
@@ -343,7 +341,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         }
     }
 
-    public State processUpdateUserMessage (UpdateUserMessage updateUserMessage) {
+    public State processUpdateUserMessage(UpdateUserMessage updateUserMessage) {
         try {
             UserObject userObject = updateUserMessage.getUser().asUserObject();
 
@@ -356,23 +354,23 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         }
     }
 
-    public State processDeleteUserMessage (DeleteUserMessage deleteUserMessage) {
+    public State processDeleteUserMessage(DeleteUserMessage deleteUserMessage) {
         DeleteUserWireMessage deleteUserWireMessage = new DeleteUserWireMessage(deleteUserMessage.getName());
         getCluster().broadcast(deleteUserWireMessage);
 
         return getCluster().getCurrentState();
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
         getCluster().shutdown();
         getCluster().setClusterFileResponded(false);
         getCluster().getClusterFile().sendShutdown(getCluster().getQueue(), this);
 
-        ClusterStoppingState clusterStoppingState = new ClusterStoppingState (getCluster());
+        ClusterStoppingState clusterStoppingState = new ClusterStoppingState(getCluster());
         return clusterStoppingState;
     }
 
-    public State processCreateSubscriptionMessage (CreateSubscriptionMessage createSubscriptionMessage) {
+    public State processCreateSubscriptionMessage(CreateSubscriptionMessage createSubscriptionMessage) {
         NewSubscriptionWireMessage newSubscriptionWireMessage = new NewSubscriptionWireMessage(createSubscriptionMessage.getSubscription());
         getCluster().broadcast(newSubscriptionWireMessage);
 
@@ -386,7 +384,7 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return getCluster().getCurrentState();
     }
 
-    public State processDeleteSubscriptionMessage (DeleteSubscriptionMessage deleteSubscriptionMessage) {
+    public State processDeleteSubscriptionMessage(DeleteSubscriptionMessage deleteSubscriptionMessage) {
         DeleteSubscriptionWireMessage deleteSubscriptionWireMessage = new DeleteSubscriptionWireMessage(
                 deleteSubscriptionMessage.getSubscriptionName());
         getCluster().broadcast(deleteSubscriptionWireMessage);
@@ -394,39 +392,39 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return getCluster().getCurrentState();
     }
 
-    public State processCreateTopicMessage (CreateTopicMessage createTopicMessage) {
+    public State processCreateTopicMessage(CreateTopicMessage createTopicMessage) {
         NewTopicWireMessage newTopicWireMessage = new NewTopicWireMessage(createTopicMessage.getTopic());
         getCluster().broadcast(newTopicWireMessage);
 
         return getCluster().getCurrentState();
     }
 
-    public State processUpdateTopicMessage (UpdateTopicMessage updateTopicMessage) {
+    public State processUpdateTopicMessage(UpdateTopicMessage updateTopicMessage) {
         UpdateTopicWireMessage updateTopicWireMessage = new UpdateTopicWireMessage(updateTopicMessage.getTopic());
         getCluster().broadcast(updateTopicWireMessage);
 
         return getCluster().getCurrentState();
     }
 
-    public State processDeleteTopicMessage (DeleteTopicMessage deleteTopicMessage) {
+    public State processDeleteTopicMessage(DeleteTopicMessage deleteTopicMessage) {
         DeleteTopicWireMessage deleteTopicWireMessage = new DeleteTopicWireMessage(deleteTopicMessage.getTopicName());
         getCluster().broadcast(deleteTopicWireMessage);
 
         return getCluster().getCurrentState();
     }
 
-    public void forwardMessage (Message message) {
+    public void forwardMessage(Message message) {
         for (Node node : getCluster().getNodes()) {
             Consumer.staticSend(message, node.getQueue());
         }
     }
 
-    public State processStartConversationMessage (StartConversationMessage message) {
+    public State processStartConversationMessage(StartConversationMessage message) {
         forwardMessage(message);
         return getCluster().getCurrentState();
     }
 
-    public State processEndConversationMessage (EndConversationMessage message) {
+    public State processEndConversationMessage(EndConversationMessage message) {
         forwardMessage(message);
         return getCluster().getCurrentState();
     }

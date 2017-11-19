@@ -39,14 +39,14 @@ public class SubscriptionHolder extends ServletHolder {
     private Results updateResult;
     private Results deleteResult;
 
-    public List<Subscription> getSubscriptionList () {
+    public List<Subscription> getSubscriptionList() {
         if (subscriptionsList == null)
             subscriptionsList = new ArrayList<Subscription>();
 
         return subscriptionsList;
     }
 
-    public void setSubscriptionsList (List<Subscription> list) {
+    public void setSubscriptionsList(List<Subscription> list) {
         this.subscriptionsList = list;
     }
 
@@ -66,15 +66,15 @@ public class SubscriptionHolder extends ServletHolder {
         this.getResult = getResult;
     }
 
-    public static SubscriptionHolder getInstance () {
+    public static SubscriptionHolder getInstance() {
         return ourInstance;
     }
 
-    public static void setInstance (SubscriptionHolder subscriptionHolder) {
+    public static void setInstance(SubscriptionHolder subscriptionHolder) {
         ourInstance = subscriptionHolder;
     }
 
-    public static void initialize (long timeout) throws MirandaException {
+    public static void initialize(long timeout) throws MirandaException {
         ourInstance = new SubscriptionHolder(timeout);
     }
 
@@ -102,14 +102,14 @@ public class SubscriptionHolder extends ServletHolder {
         this.createResult = createResult;
     }
 
-    public SubscriptionHolder (long timeout) throws MirandaException {
-        super ("subscription holder", timeout);
+    public SubscriptionHolder(long timeout) throws MirandaException {
+        super("subscription holder", timeout);
 
         SubscriptionHolderReadyState readyState = new SubscriptionHolderReadyState(this);
         setCurrentState(readyState);
     }
 
-    public List<Subscription> getSubscriptions () throws TimeoutException {
+    public List<Subscription> getSubscriptions() throws TimeoutException {
         setSubscriptionsList(null);
 
         Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionsMessage(getQueue(), this);
@@ -119,7 +119,7 @@ public class SubscriptionHolder extends ServletHolder {
         return getSubscriptionList();
     }
 
-    public Subscription getSubscription (String name) throws TimeoutException {
+    public Subscription getSubscription(String name) throws TimeoutException {
         setGetResult(Results.Unknown);
 
         Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionMessage(getQueue(), this, name);
@@ -129,7 +129,7 @@ public class SubscriptionHolder extends ServletHolder {
         return getSubscription();
     }
 
-    public Results createSubscription (Subscription subscription) throws TimeoutException {
+    public Results createSubscription(Subscription subscription) throws TimeoutException {
         setCreateResult(Results.Unknown);
 
         Miranda.getInstance().sendCreateSubscriptionMessage(getQueue(), this, getSession(), subscription);
@@ -139,7 +139,7 @@ public class SubscriptionHolder extends ServletHolder {
         return getCreateResult();
     }
 
-    public Results updateSubscription (Subscription subscription) throws TimeoutException {
+    public Results updateSubscription(Subscription subscription) throws TimeoutException {
         setUpdateResult(Results.Unknown);
 
         Miranda.getInstance().sendUpdateSubscriptionMessage(getQueue(), this, getSession(), subscription);
@@ -149,42 +149,42 @@ public class SubscriptionHolder extends ServletHolder {
         return getUpdateResult();
     }
 
-    public Results deleteSubscription (String name) throws TimeoutException {
+    public Results deleteSubscription(String name) throws TimeoutException {
         setDeleteResult(Results.Unknown);
 
-        Miranda.getInstance().sendDeleteSubscriptionMessage (getQueue(), this, getSession(), name);
+        Miranda.getInstance().sendDeleteSubscriptionMessage(getQueue(), this, getSession(), name);
 
         sleep();
 
         return getDeleteResult();
     }
 
-    public void setSubscriptionsAndAwaken (List<Subscription> subscriptions) {
+    public void setSubscriptionsAndAwaken(List<Subscription> subscriptions) {
         setSubscriptionsList(subscriptions);
 
         wake();
     }
 
-    public void setSubscriptionAndAwaken (Results result, Subscription subscription) {
+    public void setSubscriptionAndAwaken(Results result, Subscription subscription) {
         setGetResult(result);
         setSubscription(subscription);
 
         wake();
     }
 
-    public void setCreateResultAndAwaken (Results result) {
+    public void setCreateResultAndAwaken(Results result) {
         setCreateResult(result);
 
         wake();
     }
 
-    public void setUpdateResultAndAwaken (Results result) {
+    public void setUpdateResultAndAwaken(Results result) {
         setUpdateResult(result);
 
         wake();
     }
 
-    public void setDeleteResultAndAwaken (Results result) {
+    public void setDeleteResultAndAwaken(Results result) {
         setDeleteResult(result);
 
         wake();

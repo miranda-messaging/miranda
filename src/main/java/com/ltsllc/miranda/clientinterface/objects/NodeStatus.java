@@ -37,7 +37,7 @@ public class NodeStatus extends NodeElement {
         this.nodeStatus = nodeStatus;
     }
 
-    public NodeStatus (String dns, int port, String descrition, NodeStatuses nodeStatus) {
+    public NodeStatus(String dns, int port, String descrition, NodeStatuses nodeStatus) {
         super(dns, port, descrition);
 
         setNodeStatus(nodeStatus);

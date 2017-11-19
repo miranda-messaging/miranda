@@ -32,7 +32,7 @@ public class NodesUpdatedMessage extends Message {
         return nodeList;
     }
 
-    public NodesUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> nodeList) {
+    public NodesUpdatedMessage(BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> nodeList) {
         super(Subjects.NodesUpdated, senderQueue, sender);
 
         this.nodeList = nodeList;

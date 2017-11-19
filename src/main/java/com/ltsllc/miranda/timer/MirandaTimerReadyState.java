@@ -31,7 +31,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class MirandaTimerReadyState extends State {
     private static class LocalTimerTask extends TimerTask {
-        private  static Logger logger = Logger.getLogger(LocalTimerTask.class);
+        private static Logger logger = Logger.getLogger(LocalTimerTask.class);
 
         private Message message;
         private BlockingQueue<Message> queue;
@@ -41,28 +41,28 @@ public class MirandaTimerReadyState extends State {
             return message;
         }
 
-        public LocalTimerTask (BlockingQueue<Message> queue, BlockingQueue<Message> timer, Message message) {
+        public LocalTimerTask(BlockingQueue<Message> queue, BlockingQueue<Message> timer, Message message) {
             this.queue = queue;
             this.timer = timer;
             this.message = message;
         }
 
-        public void run () {
+        public void run() {
             try {
                 queue.put(getMessage());
             } catch (InterruptedException e) {
-                logger.error ("Interrupted while sending message", e);
+                logger.error("Interrupted while sending message", e);
             }
         }
     }
 
     private Logger logger = Logger.getLogger(MirandaTimerReadyState.class);
 
-    public MirandaTimerReadyState (MirandaTimer timer) throws MirandaException {
+    public MirandaTimerReadyState(MirandaTimer timer) throws MirandaException {
         super(timer);
     }
 
-    public MirandaTimer getTimer () {
+    public MirandaTimer getTimer() {
         return (MirandaTimer) getContainer();
     }
 
@@ -73,7 +73,7 @@ public class MirandaTimerReadyState extends State {
         switch (message.getSubject()) {
             case ScheduleOnce: {
                 ScheduleOnceMessage scheduleOnceMessage = (ScheduleOnceMessage) message;
-                nextState = processScheduleOnceMessage (scheduleOnceMessage);
+                nextState = processScheduleOnceMessage(scheduleOnceMessage);
                 break;
             }
 
@@ -92,7 +92,7 @@ public class MirandaTimerReadyState extends State {
     }
 
 
-    private State processScheduleOnceMessage (ScheduleOnceMessage scheduleOnceMessage) {
+    private State processScheduleOnceMessage(ScheduleOnceMessage scheduleOnceMessage) {
         Timer timer = Miranda.timer.getTimer();
         LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getReceiver(), getTimer().getQueue(),
                 scheduleOnceMessage.getMessage());
@@ -102,7 +102,7 @@ public class MirandaTimerReadyState extends State {
     }
 
 
-    private State processSchedulePeriodicMessage (SchedulePeriodicMessage message) {
+    private State processSchedulePeriodicMessage(SchedulePeriodicMessage message) {
         Timer timer = Miranda.timer.getTimer();
         LocalTimerTask localTimerTask = new LocalTimerTask(message.getReceiver(), getTimer().getQueue(), message.getMessage());
         timer.scheduleAtFixedRate(localTimerTask, message.getPeriod(), message.getPeriod());

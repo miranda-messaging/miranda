@@ -60,14 +60,14 @@ public class StartupPanic extends Panic {
         return startupReason;
     }
 
-    public StartupPanic (String message, Throwable cause, StartupReasons reason) {
-        super (message, cause, Reasons.Startup);
+    public StartupPanic(String message, Throwable cause, StartupReasons reason) {
+        super(message, cause, Reasons.Startup);
 
         this.startupReason = reason;
     }
 
-    public StartupPanic (String message, StartupReasons reason) {
-        super (message, Reasons.Startup);
+    public StartupPanic(String message, StartupReasons reason) {
+        super(message, Reasons.Startup);
 
         this.startupReason = reason;
     }

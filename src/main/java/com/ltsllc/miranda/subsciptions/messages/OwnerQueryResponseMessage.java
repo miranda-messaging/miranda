@@ -42,8 +42,8 @@ public class OwnerQueryResponseMessage extends Message {
         return owner;
     }
 
-    public OwnerQueryResponseMessage (BlockingQueue<Message> senderQueue, Object sender, String owner,
-                                      List<String> property, String sendingManager) {
+    public OwnerQueryResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String owner,
+                                     List<String> property, String sendingManager) {
         super(Subjects.OwnerQueryResponse, senderQueue, sender);
 
         this.owner = owner;

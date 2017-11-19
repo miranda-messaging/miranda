@@ -42,27 +42,27 @@ public class NodeState extends State {
         return network;
     }
 
-    public NodeState (Node node, Network network) throws MirandaException {
+    public NodeState(Node node, Network network) throws MirandaException {
         super(node);
 
         this.network = network;
     }
 
-    public void sendOnWire (WireMessage wireMessage) {
+    public void sendOnWire(WireMessage wireMessage) {
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
     }
 
-    public State processNetworkMessage (NetworkMessage networkMessage) throws MirandaException {
+    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
         String message = this + " does but understand network message " + networkMessage.getWireMessage().getWireSubject();
-        logger.error (message);
-        logger.error ("message created at", networkMessage.getWhere());
+        logger.error(message);
+        logger.error("message created at", networkMessage.getWhere());
         Panic panic = new Panic(message, Panic.Reasons.DoesNotUnderstandNetworkMessage);
         Miranda.getInstance().panic(panic);
 
         return getNode().getCurrentState();
     }
 
-    public void sendOnNetwork (WireMessage wireMessage) {
+    public void sendOnNetwork(WireMessage wireMessage) {
         getNetwork().sendMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
     }
 }

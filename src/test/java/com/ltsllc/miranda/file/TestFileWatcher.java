@@ -18,6 +18,7 @@ package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -45,28 +46,9 @@ public class TestFileWatcher extends TestCase {
     public static final String TEST_DIRECTORY = "testdir";
     public static final String TEST_FILENAME = "testdir/whatever";
 
-    private FileWatcher fileWatcher;
-    private BlockingQueue<Message> watcher;
-    private File file;
 
-    public File getFile() {
-        return file;
-    }
 
-    public FileWatcher getFileWatcher() {
-        return fileWatcher;
-    }
 
-    public BlockingQueue<Message> getWatcher() {
-        return watcher;
-    }
-
-    public void reset () throws MirandaException {
-        super.reset();
-
-        fileWatcher = null;
-        watcher = null;
-    }
 
     @Before
     public void setup () {
@@ -76,18 +58,11 @@ public class TestFileWatcher extends TestCase {
             super.setup();
 
             setupMirandaProperties();
-
             createFileSystem(ROOT, FILE_SYSTEM_SPEC);
-
-            file = new File(TEST_FILENAME);
-
-            watcher = new LinkedBlockingQueue<Message>();
 
             createDirectory(TEST_DIRECTORY);
             createFile(TEST_FILENAME);
-
-            File file = new File(TEST_FILENAME);
-            fileWatcher = new SimpleFileWatcher(file, watcher);
+            setupFileWatcherService(100);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -95,19 +70,31 @@ public class TestFileWatcher extends TestCase {
 
     @After
     public void cleanup () {
+
         deleteDirectory(ROOT);
     }
 
     @Test
     public void testCheck () throws Exception {
-        getFileWatcher().check();
+        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+        File file = new File(TEST_FILENAME);
+        Miranda.fileWatcher.watchFile(file, queue);
 
-        assert (queueIsEmpty(getWatcher()));
+        assert (queueIsEmpty(queue));
 
-        touch(getFile());
+        pause(500);
 
-        getFileWatcher().check();
+        touch(file);
 
-        assert (contains(Message.Subjects.FileChanged, getWatcher()));
+        Miranda.fileWatcher.check();
+
+        pause(1000);
+
+        int x = 13;
+        long filetime = file.lastModified();
+        if (!contains(Message.Subjects.FileChanged, queue))
+            x++;
+
+        assert (contains(Message.Subjects.FileChanged, queue));
     }
 }

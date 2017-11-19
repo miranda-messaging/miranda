@@ -34,25 +34,24 @@ import static com.ltsllc.miranda.clientinterface.basicclasses.User.UserTypes.Sub
  * Created by Clark on 4/28/2017.
  */
 abstract public class SubscriptionServlet extends SessionServlet {
-    abstract ResultObject basicPerformService (HttpServletRequest request, HttpServletResponse response,
-                                               SubscriptionRequest requestObject)
-        throws IOException, ServletException, TimeoutException;
+    abstract ResultObject basicPerformService(HttpServletRequest request, HttpServletResponse response,
+                                              SubscriptionRequest requestObject)
+            throws IOException, ServletException, TimeoutException;
 
-    public ServletHolder getServletHolder () {
+    public ServletHolder getServletHolder() {
         return SubscriptionHolder.getInstance();
     }
 
-    public Class getRequestClass () {
+    public Class getRequestClass() {
         return SubscriptionRequest.class;
     }
 
-    public boolean allowAccess () {
+    public boolean allowAccess() {
         return getSession().getUser().getCategory() == Subscriber;
     }
 
-    public ResultObject performService (HttpServletRequest request, HttpServletResponse response, Request requestObject)
-        throws IOException, ServletException, TimeoutException
-    {
+    public ResultObject performService(HttpServletRequest request, HttpServletResponse response, Request requestObject)
+            throws IOException, ServletException, TimeoutException {
         SubscriptionRequest subscriptionRequestObject = (SubscriptionRequest) requestObject;
         ResultObject resultObject = basicPerformService(request, response, subscriptionRequestObject);
         return resultObject;

@@ -48,7 +48,7 @@ public class EventFileCreator implements FileCreator {
         return random;
     }
 
-    public EventFileCreator (ImprovedRandom random, int maxNumberOfEvents, int maxContentSize) {
+    public EventFileCreator(ImprovedRandom random, int maxNumberOfEvents, int maxContentSize) {
         this.random = random;
         this.maxNumberOfEvents = maxNumberOfEvents;
         this.maxContentSize = maxContentSize;
@@ -59,7 +59,7 @@ public class EventFileCreator implements FileCreator {
         List<Event> list = new ArrayList<Event>();
 
         for (int count = 0; count <= size; count++) {
-            Event event = Event.createRandom (random, maxContentSize);
+            Event event = Event.createRandom(random, maxContentSize);
             list.add(event);
         }
 

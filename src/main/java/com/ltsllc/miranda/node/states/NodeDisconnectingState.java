@@ -25,23 +25,23 @@ import org.apache.log4j.Logger;
 
 /**
  * Waiting for a response to a {@link com.ltsllc.miranda.node.networkMessages.StopWireMessage}
- *
  * <p>
- *     This state assumes that a {@link com.ltsllc.miranda.node.networkMessages.StopWireMessage}
- *     has already been sent.
+ * <p>
+ * This state assumes that a {@link com.ltsllc.miranda.node.networkMessages.StopWireMessage}
+ * has already been sent.
  * </p>
  * <p>
- *     NOTE THAT WHILE IN THIS STATE MOST MESSAGES WILL BE DISCARDED!
+ * NOTE THAT WHILE IN THIS STATE MOST MESSAGES WILL BE DISCARDED!
  * </p>
  */
 public class NodeDisconnectingState extends State {
     private static Logger logger = Logger.getLogger(NodeDisconnectingState.class);
 
-    public Node getNode () {
+    public Node getNode() {
         return (Node) getContainer();
     }
 
-    public NodeDisconnectingState (Node node) throws MirandaException {
+    public NodeDisconnectingState(Node node) throws MirandaException {
         super(node);
     }
 
@@ -90,29 +90,29 @@ public class NodeDisconnectingState extends State {
         return nextState;
     }
 
-    public State processStopResponseWireMessage (StopResponseWireMessage stopResponseWireMessage) throws MirandaException {
-        logger.info (getNode() + " got stop response.");
+    public State processStopResponseWireMessage(StopResponseWireMessage stopResponseWireMessage) throws MirandaException {
+        logger.info(getNode() + " got stop response.");
 
         getNode().getNetwork().sendCloseMessage(getNode().getQueue(), this, getNode().getHandle());
 
         return new NodeStoppingState(getNode());
     }
 
-    public State processStopWireMessage (StopWireMessage stopWireMessage) {
+    public State processStopWireMessage(StopWireMessage stopWireMessage) {
         StopResponseWireMessage response = new StopResponseWireMessage();
         getNode().getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), response);
 
         return this;
     }
 
-    public State discardMessage (Message message) {
-        logger.warn (getNode() + " is discarding " + message);
+    public State discardMessage(Message message) {
+        logger.warn(getNode() + " is discarding " + message);
 
         return this;
     }
 
-    public State discardWireMessage (WireMessage wireMessage) {
-        logger.warn (getNode() + " is discarding a network message " + wireMessage);
+    public State discardWireMessage(WireMessage wireMessage) {
+        logger.warn(getNode() + " is discarding a network message " + wireMessage);
 
         StoppingWireMessage stoppingWireMessage = new StoppingWireMessage();
         getNode().getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), stoppingWireMessage);

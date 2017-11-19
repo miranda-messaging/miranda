@@ -32,7 +32,7 @@ public class ImprovedRandom {
         return random;
     }
 
-    public boolean getWasNegative () {
+    public boolean getWasNegative() {
         return wasNegative;
     }
 
@@ -40,11 +40,11 @@ public class ImprovedRandom {
         this.wasNegative = wasNegative;
     }
 
-    public ImprovedRandom () {
+    public ImprovedRandom() {
         this.random = new SecureRandom();
     }
 
-    public ImprovedRandom (Random random) {
+    public ImprovedRandom(Random random) {
         this.random = random;
     }
 
@@ -67,8 +67,7 @@ public class ImprovedRandom {
         random.nextBytes(array);
     }
 
-    public int nextInt (int atLeastAndIncluding, int upToAndIncluding)
-    {
+    public int nextInt(int atLeastAndIncluding, int upToAndIncluding) {
         int interval = upToAndIncluding - atLeastAndIncluding + 1;
         if (interval < 0) {
             throw new IllegalArgumentException("negative interval");
@@ -77,7 +76,7 @@ public class ImprovedRandom {
         return atLeastAndIncluding + random.nextInt(interval);
     }
 
-    public int nextNonNegativeInteger () {
+    public int nextNonNegativeInteger() {
         int i = random.nextInt();
 
         if (i < 0)
@@ -86,17 +85,17 @@ public class ImprovedRandom {
         return i;
     }
 
-    public byte nextByte () {
+    public byte nextByte() {
         byte[] buffer = new byte[1];
         random.nextBytes(buffer);
         return buffer[0];
     }
 
-    public int nextInt (int lessThan) {
+    public int nextInt(int lessThan) {
         return random.nextInt(lessThan);
     }
 
-    public long nextNonNegativeLong () {
+    public long nextNonNegativeLong() {
         setWasNegative(false);
         long value = getRandom().nextLong();
 
@@ -110,7 +109,7 @@ public class ImprovedRandom {
 
     public static final String UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public String randomString (int length) {
+    public String randomString(int length) {
         char[] candidates = UPPER_CASE_LETTERS.toCharArray();
 
         StringWriter stringWriter = new StringWriter();
@@ -122,7 +121,7 @@ public class ImprovedRandom {
         return stringWriter.toString();
     }
 
-    public boolean nextBoolean () {
+    public boolean nextBoolean() {
         int i = random.nextInt();
 
         return (i % 2) == 0;

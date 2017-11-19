@@ -28,7 +28,7 @@ public class DeleteUserWireMessage extends WireMessage {
         return name;
     }
 
-    public DeleteUserWireMessage (String name) {
+    public DeleteUserWireMessage(String name) {
         super(WireSubjects.DeleteUser);
 
         this.name = name;

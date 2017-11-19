@@ -33,27 +33,27 @@ import com.ltsllc.miranda.reader.ReadResponseMessage;
 abstract public class SingleFileStartingState extends State {
     abstract public State getReadyState() throws MirandaException;
 
-    public SingleFile getFile () {
+    public SingleFile getFile() {
         return (SingleFile) getContainer();
     }
 
-    public SingleFileStartingState (SingleFile singleFile) throws MirandaException {
+    public SingleFileStartingState(SingleFile singleFile) throws MirandaException {
         super(singleFile);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getFile().getCurrentState();
 
         switch (message.getSubject()) {
             case Load: {
                 LoadMessage loadMessage = (LoadMessage) message;
-                nextState = processLoadMessage (loadMessage);
+                nextState = processLoadMessage(loadMessage);
                 break;
             }
 
             case ReadResponse: {
                 ReadResponseMessage readResponseMessage = (ReadResponseMessage) message;
-                nextState = processReadResponseMessage (readResponseMessage);
+                nextState = processReadResponseMessage(readResponseMessage);
                 break;
             }
 
@@ -106,13 +106,13 @@ abstract public class SingleFileStartingState extends State {
         }
     }
 
-    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         defer(garbageCollectionMessage);
 
         return getFile().getCurrentState();
     }
 
-    private State processLoadMessage (LoadMessage loadMessage) {
+    private State processLoadMessage(LoadMessage loadMessage) {
         getFile().load();
 
         return this;

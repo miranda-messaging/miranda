@@ -22,7 +22,7 @@ package com.ltsllc.miranda.node.networkMessages;
 public class GetFileWireMessage extends WireMessage {
     private String file;
 
-    public GetFileWireMessage (String file) {
+    public GetFileWireMessage(String file) {
         super(WireSubjects.GetFile);
 
         this.file = file;

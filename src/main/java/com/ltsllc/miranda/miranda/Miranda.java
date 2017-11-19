@@ -71,9 +71,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The Miranda system.
- *
+ * <p>
  * This is also the main class for the system.
- *
  */
 public class Miranda extends Consumer {
     public static final String NAME = "miranda";
@@ -191,11 +190,11 @@ public class Miranda extends Consumer {
         this.panicPolicy = panicPolicy;
     }
 
-    public static Logger getLogger () {
+    public static Logger getLogger() {
         return Miranda.logger;
     }
 
-    public static void setLogger (Logger logger) {
+    public static void setLogger(Logger logger) {
         Miranda.logger = logger;
     }
 
@@ -231,11 +230,11 @@ public class Miranda extends Consumer {
         this.topicManager = topicManager;
     }
 
-    public SubscriptionManager getSubscriptionManager () {
+    public SubscriptionManager getSubscriptionManager() {
         return subscriptionManager;
     }
 
-    public void setSubscriptionManager (SubscriptionManager subscriptionManager) {
+    public void setSubscriptionManager(SubscriptionManager subscriptionManager) {
         this.subscriptionManager = subscriptionManager;
     }
 
@@ -255,7 +254,7 @@ public class Miranda extends Consumer {
         this.deliveryManager = deliveryManager;
     }
 
-    public Miranda (String arguments) throws MirandaException {
+    public Miranda(String arguments) throws MirandaException {
         String[] argv = arguments.split(" |\t");
         basicConstructor(argv);
     }
@@ -264,7 +263,7 @@ public class Miranda extends Consumer {
         Miranda.ourInstance = ourInstance;
     }
 
-    public void basicConstructor (String[] argv) throws MirandaException {
+    public void basicConstructor(String[] argv) throws MirandaException {
         super.basicConstructor(NAME);
 
         ourInstance = this;
@@ -278,11 +277,11 @@ public class Miranda extends Consumer {
         inputStream = System.in;
     }
 
-    public Miranda (String[] argv) throws MirandaException {
+    public Miranda(String[] argv) throws MirandaException {
         basicConstructor(argv);
     }
 
-    public Miranda () throws MirandaException {
+    public Miranda() throws MirandaException {
         basicConstructor(new String[0]);
     }
 
@@ -290,7 +289,7 @@ public class Miranda extends Consumer {
         return ourInstance;
     }
 
-    public synchronized static void setInstance (Miranda miranda) {
+    public synchronized static void setInstance(Miranda miranda) {
         ourInstance = miranda;
     }
 
@@ -302,7 +301,7 @@ public class Miranda extends Consumer {
      * @param panic
      * @return
      */
-    public void panic (Panic panic) {
+    public void panic(Panic panic) {
         PanicPolicy panicPolicy = getPanicPolicy();
         if (null == panicPolicy) {
             throw new ShutdownException("null panic policy in panic", panic);
@@ -312,13 +311,13 @@ public class Miranda extends Consumer {
     }
 
     public static void main(String[] argv) throws Exception {
-        logger.info ("Starting");
+        logger.info("Starting");
         Miranda miranda = new Miranda(argv);
         Miranda.ourInstance = miranda;
         miranda.start();
     }
 
-    public void start (String argString, KeyStore keyStore, KeyStore trustStore) {
+    public void start(String argString, KeyStore keyStore, KeyStore trustStore) {
         String[] argv = argString.split(" |\t");
         MirandaCommandLine mirandaCommandLine = new MirandaCommandLine(argv);
         setCommandLine(mirandaCommandLine);
@@ -333,14 +332,14 @@ public class Miranda extends Consumer {
         start();
     }
 
-    public void start (Properties p) {
+    public void start(Properties p) {
         Startup startup = (Startup) getCurrentState();
         startup.setOverrideProperties(p);
 
         start();
     }
 
-    public void reset () {
+    public void reset() {
         fileWatcher = null;
         properties = null;
         timer = null;
@@ -361,7 +360,7 @@ public class Miranda extends Consumer {
         send(message, getQueue());
     }
 
-    public void stop () {
+    public void stop() {
         HttpServer httpServer = getHttpServer();
         if (null != httpServer)
             httpServer.sendStop(getQueue(), this);
@@ -398,12 +397,12 @@ public class Miranda extends Consumer {
         }
     }
 
-    public void getStatus (BlockingQueue<Message> respondTo) {
+    public void getStatus(BlockingQueue<Message> respondTo) {
         GetStatusMessage getStatusMessage = new GetStatusMessage(respondTo, this);
         send(getStatusMessage, getQueue());
     }
 
-    public NodeStatus getStatusImpl () {
+    public NodeStatus getStatusImpl() {
         MirandaProperties properties = Miranda.properties;
 
         String localDns = properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);
@@ -414,12 +413,12 @@ public class Miranda extends Consumer {
         return nodeStatus;
     }
 
-    public void sendNewProperties (BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
+    public void sendNewProperties(BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
         NewPropertiesMessage newPropertiesMessage = new NewPropertiesMessage(senderQueue, sender, mirandaProperties);
         sendToMe(newPropertiesMessage);
     }
 
-    public void shutdown () {
+    public void shutdown() {
         if (null != getCluster())
             getCluster().sendShutdown(getQueue(), this);
 
@@ -461,86 +460,86 @@ public class Miranda extends Consumer {
         sendToMe(addSessionMessage);
     }
 
-    public void sendSessionsExpiredMessage (BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
+    public void sendSessionsExpiredMessage(BlockingQueue<Message> senderQueue, Object sender, List<Session> expiredSessions) {
         SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(senderQueue, sender, expiredSessions);
         sendToMe(sessionsExpiredMessage);
     }
 
-    public void sendDeleteTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String topicName) {
+    public void sendDeleteTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, String topicName) {
         DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(senderQueue, sender, session, topicName);
         sendToMe(deleteTopicMessage);
     }
 
-    public void sendDeleteUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
+    public void sendDeleteUserMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, String name) {
         DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, session, name);
         sendToMe(deleteUserMessage);
     }
 
-    public void sendCreateUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
+    public void sendCreateUserMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
         CreateUserMessage createUserMessage = new CreateUserMessage(senderQueue, sender, session, user);
         sendToMe(createUserMessage);
     }
 
-    public void sendUpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
+    public void sendUpdateUserMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
         UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, session, user);
         sendToMe(updateUserMessage);
     }
 
-    public void sendUserAddedMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public void sendUserAddedMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         UserAddedMessage userAddedMessage = new UserAddedMessage(senderQueue, sender, user);
         sendToMe(userAddedMessage);
     }
 
-    public void sendUserUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public void sendUserUpdatedMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         UserUpdatedMessage userUpdatedMessage = new UserUpdatedMessage(senderQueue, sender, user);
         sendToMe(userUpdatedMessage);
     }
 
-    public void sendUserDeletedMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public void sendUserDeletedMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         UserDeletedMessage userDeletedMessage = new UserDeletedMessage(senderQueue, sender, name);
         sendToMe(userDeletedMessage);
     }
 
-    public void sendLoginMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public void sendLoginMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         LoginMessage loginMessage = new LoginMessage(senderQueue, sender, name);
         sendToMe(loginMessage);
     }
 
-    public void sendCreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
-                                               Subscription subscription) {
+    public void sendCreateSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                              Subscription subscription) {
         CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(senderQueue, sender, session,
                 subscription);
 
         sendToMe(createSubscriptionMessage);
     }
 
-    public void sendUpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
-                                               Subscription subscription) {
+    public void sendUpdateSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                              Subscription subscription) {
         UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(senderQueue, sender, session,
                 subscription);
 
         sendToMe(updateSubscriptionMessage);
     }
 
-    public void sendDeleteSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
-                                               String name) {
+    public void sendDeleteSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                              String name) {
         DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(senderQueue, sender, session,
                 name);
 
         sendToMe(deleteSubscriptionMessage);
     }
 
-    public void sendAuctionMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public void sendAuctionMessage(BlockingQueue<Message> senderQueue, Object sender) {
         AuctionMessage auctionMessage = new AuctionMessage(senderQueue, sender);
         sendToMe(auctionMessage);
     }
 
-    public void sendUpdateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
+    public void sendUpdateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
         UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, session, topic);
         sendToMe(updateTopicMessage);
     }
 
-    public void initializeWaitingOn () {
+    public void initializeWaitingOn() {
         waitingOn = new ArrayList<String>();
         waitingOn.add(Cluster.NAME);
         waitingOn.add(UserManager.NAME);
@@ -551,7 +550,7 @@ public class Miranda extends Consumer {
         waitingOn.add(ConnectionListener.NAME);
     }
 
-    public void subsystemShutDown (String subsystem) {
+    public void subsystemShutDown(String subsystem) {
         String match = null;
 
         for (String s : getWaitingOn())
@@ -559,18 +558,18 @@ public class Miranda extends Consumer {
                 match = s;
 
         if (match == null) {
-            logger.warn ("Got shutdown response from unrecognized system, " + subsystem);
+            logger.warn("Got shutdown response from unrecognized system, " + subsystem);
         } else {
             logger.info("Got shutdown response from " + subsystem);
             getWaitingOn().remove(match);
         }
     }
 
-    public boolean readyToShutDown () {
+    public boolean readyToShutDown() {
         return getWaitingOn().size() < 1;
     }
 
-    public static void panicMiranda (Panic panic) {
+    public static void panicMiranda(Panic panic) {
         Miranda instance = Miranda.getInstance();
         if (null == instance) {
             throw new ShutdownException("null instance in panicMiranda", panic);
@@ -580,7 +579,7 @@ public class Miranda extends Consumer {
     }
 
 
-    public void run () {
+    public void run() {
         super.run();
     }
 }

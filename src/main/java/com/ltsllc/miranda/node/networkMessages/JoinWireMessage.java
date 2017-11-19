@@ -26,7 +26,7 @@ public class JoinWireMessage extends WireMessage {
     private int port;
     private String description;
 
-    public JoinWireMessage (String dns, String ip, int port, String description) {
+    public JoinWireMessage(String dns, String ip, int port, String description) {
         super(WireSubjects.Join);
 
         this.dns = dns;
@@ -34,7 +34,7 @@ public class JoinWireMessage extends WireMessage {
         this.description = description;
     }
 
-    public JoinWireMessage (Node node) {
+    public JoinWireMessage(Node node) {
         super(WireSubjects.Join);
 
         this.dns = node.getDns();
@@ -54,7 +54,7 @@ public class JoinWireMessage extends WireMessage {
         return description;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (!super.equals(o) || !(o instanceof JoinWireMessage))
             return false;
 

@@ -30,7 +30,7 @@ public class GetSessionMessage extends Message {
         return name;
     }
 
-    public GetSessionMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public GetSessionMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.GetSession, senderQueue, sender);
 
         this.name = name;

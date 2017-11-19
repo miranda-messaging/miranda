@@ -29,9 +29,9 @@ import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 
 /**
  * A node enters this state when we get a new connection from the {@link ConnectionListener}.
- *
  * <p>
- *     We are waiting for a join message.
+ * <p>
+ * We are waiting for a join message.
  * </p>
  */
 public class NodeIncomingStartState extends NodeState {
@@ -41,13 +41,13 @@ public class NodeIncomingStartState extends NodeState {
         return cluster;
     }
 
-    public NodeIncomingStartState (Node node, Network network, Cluster cluster) throws MirandaException {
-        super (node, network);
+    public NodeIncomingStartState(Node node, Network network, Cluster cluster) throws MirandaException {
+        super(node, network);
 
         this.cluster = cluster;
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = this;
 
         switch (message.getSubject()) {
@@ -88,17 +88,17 @@ public class NodeIncomingStartState extends NodeState {
 
     /**
      * The remote node sent a join message.
-     *
      * <p>
-     *     Add ourselves to the cluster, send a response, and transition to the
-     *     ready state.
+     * <p>
+     * Add ourselves to the cluster, send a response, and transition to the
+     * ready state.
      * </p>
      *
      * @param joinWireMessage The join message
      * @return The next state.  In normal circumstances, this should be the ready
      * state.
      */
-    private State processJoinWireMessage (JoinWireMessage joinWireMessage) throws MirandaException {
+    private State processJoinWireMessage(JoinWireMessage joinWireMessage) throws MirandaException {
         getNode().setDns(joinWireMessage.getDns());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());

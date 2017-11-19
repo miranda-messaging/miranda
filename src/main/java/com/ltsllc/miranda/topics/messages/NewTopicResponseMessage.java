@@ -26,11 +26,11 @@ import java.util.concurrent.BlockingQueue;
 public class NewTopicResponseMessage extends Message {
     private boolean topicCreated;
 
-    public boolean getTopicCreated () {
+    public boolean getTopicCreated() {
         return this.topicCreated;
     }
 
-    public NewTopicResponseMessage (BlockingQueue<Message> senderQueue, Object sender, boolean topicCreated) {
+    public NewTopicResponseMessage(BlockingQueue<Message> senderQueue, Object sender, boolean topicCreated) {
         super(Subjects.NewTopicResponse, senderQueue, sender);
 
         this.topicCreated = topicCreated;

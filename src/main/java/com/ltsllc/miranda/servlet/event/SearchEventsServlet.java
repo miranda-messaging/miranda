@@ -22,8 +22,7 @@ public class SearchEventsServlet extends EventServlet {
 
     @Override
     public ResultObject performService(HttpServletRequest request, HttpServletResponse response, Request requestObject)
-            throws ServletException, IOException, TimeoutException
-    {
+            throws ServletException, IOException, TimeoutException {
         return null;
     }
 }

@@ -36,7 +36,7 @@ public class CloseResponseMessage extends Message {
         return result;
     }
 
-    public CloseResponseMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, Results result) {
+    public CloseResponseMessage(BlockingQueue<Message> senderQueue, Object sender, int handle, Results result) {
         super(Subjects.CloseResponse, senderQueue, sender);
 
         this.handle = handle;

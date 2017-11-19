@@ -32,20 +32,22 @@ import java.util.List;
  * Created by Clark on 2/19/2017.
  */
 public class EventsFile extends SingleFile<Event> {
-    public EventsFile (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
+    public EventsFile(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         setCurrentState(new EventsFileLoadingState(this));
     }
 
     public Type getListType() {
-        return new TypeToken<List<Event>>(){}.getType();
+        return new TypeToken<List<Event>>() {
+        }.getType();
     }
 
     public List buildEmptyList() {
         return new ArrayList<Event>();
     }
 
-    public void checkForDuplicates () {}
+    public void checkForDuplicates() {
+    }
 
 }

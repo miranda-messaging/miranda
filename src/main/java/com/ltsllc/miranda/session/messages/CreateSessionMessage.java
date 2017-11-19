@@ -31,7 +31,7 @@ public class CreateSessionMessage extends Message {
         return user;
     }
 
-    public CreateSessionMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public CreateSessionMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         super(Subjects.CreateSession, senderQueue, sender);
 
         this.user = user;

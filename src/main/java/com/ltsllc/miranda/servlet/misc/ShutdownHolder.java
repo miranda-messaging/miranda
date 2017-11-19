@@ -28,19 +28,19 @@ import java.util.concurrent.TimeoutException;
 public class ShutdownHolder extends ServletHolder {
     private static ShutdownHolder ourInstance;
 
-    public static synchronized void initialize (long timeout) throws MirandaException {
+    public static synchronized void initialize(long timeout) throws MirandaException {
         ourInstance = new ShutdownHolder(timeout);
     }
 
-    public static ShutdownHolder getInstance () {
+    public static ShutdownHolder getInstance() {
         return ourInstance;
     }
 
-    public ShutdownHolder (long timeout) throws MirandaException {
+    public ShutdownHolder(long timeout) throws MirandaException {
         super("shutdown holder", timeout);
     }
 
-    public void shutdownMirada () throws TimeoutException {
+    public void shutdownMirada() throws TimeoutException {
         Miranda.getInstance().sendShutdown(getQueue(), this);
 
         sleep();

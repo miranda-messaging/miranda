@@ -25,7 +25,7 @@ public class GetFileResponseWireMessage extends WireMessage {
     private String contents;
     private String requester;
 
-    public GetFileResponseWireMessage (String requester, String contents) {
+    public GetFileResponseWireMessage(String requester, String contents) {
         super(WireSubjects.GetFileResponse);
 
         this.contents = contents;

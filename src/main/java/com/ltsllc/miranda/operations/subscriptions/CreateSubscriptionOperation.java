@@ -55,7 +55,7 @@ public class CreateSubscriptionOperation extends Operation {
         return subscription;
     }
 
-    public CreateSubscriptionOperation (BlockingQueue<Message> requester, Session session, Subscription subscription) throws MirandaException {
+    public CreateSubscriptionOperation(BlockingQueue<Message> requester, Session session, Subscription subscription) throws MirandaException {
         super(NAME, requester, session);
 
         CreateSubscriptionOperationReadyState readyState = new CreateSubscriptionOperationReadyState(this);
@@ -64,7 +64,7 @@ public class CreateSubscriptionOperation extends Operation {
         this.subscription = subscription;
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda miranda = Miranda.getInstance();

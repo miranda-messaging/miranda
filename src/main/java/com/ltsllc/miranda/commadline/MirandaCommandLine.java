@@ -232,7 +232,7 @@ public class MirandaCommandLine extends CommandLine {
         return properties;
     }
 
-    public void processSwitch (Switches aSwitch) {
+    public void processSwitch(Switches aSwitch) {
         Options option = Options.toOption(aSwitch);
 
         switch (option) {

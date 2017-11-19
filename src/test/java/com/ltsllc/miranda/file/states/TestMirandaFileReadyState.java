@@ -73,7 +73,7 @@ public class TestMirandaFileReadyState extends TestCase {
         setupMirandaProperties();
 
         createFileSystem(ROOT, FILE_SYSTEM_SPEC);
-        setupFileWatcher(100);
+        setupFileWatcherService(100);
 
         this.mockEventsFile = mock(EventsFile.class);
         this.mirandaFileReadyState = new MirandaFileReadyState(getMockEventsFile());

@@ -92,7 +92,7 @@ public class TopicHolder extends ServletHolder {
         TopicHolder.ourInstance = instance;
     }
 
-    public static synchronized void initialize (long timeout) throws MirandaException {
+    public static synchronized void initialize(long timeout) throws MirandaException {
         if (null == ourInstance) {
             ourInstance = new TopicHolder(timeout);
         }
@@ -105,7 +105,7 @@ public class TopicHolder extends ServletHolder {
         setCurrentState(readyState);
     }
 
-    public List<Topic> getTopicList () throws TimeoutException {
+    public List<Topic> getTopicList() throws TimeoutException {
         setTopics(null);
         Miranda.getInstance().getTopicManager().sendGetTopicsMessage(getQueue(), this);
 
@@ -114,7 +114,7 @@ public class TopicHolder extends ServletHolder {
         return getTopics();
     }
 
-    public Results createTopic (Topic topic) throws TimeoutException {
+    public Results createTopic(Topic topic) throws TimeoutException {
         setCreateResult(Results.Unknown);
         Miranda.getInstance().getTopicManager().sendCreateTopicMessage(getQueue(), this, topic);
 
@@ -125,19 +125,19 @@ public class TopicHolder extends ServletHolder {
 
     public Topic getTopic(String name) throws TimeoutException {
         setTopic(null);
-        Miranda.getInstance().getTopicManager().sendGetTopicMessage (getQueue(), this, name);
+        Miranda.getInstance().getTopicManager().sendGetTopicMessage(getQueue(), this, name);
 
         sleep();
 
         return getTopic();
     }
 
-    public void setTopicAndAwaken (Topic topic) {
+    public void setTopicAndAwaken(Topic topic) {
         setTopic(topic);
         wake();
     }
 
-    public Results updateTopic (Topic topic) throws TimeoutException {
+    public Results updateTopic(Topic topic) throws TimeoutException {
         setUpdateResult(Results.Unknown);
         Miranda.getInstance().sendUpdateTopicMessage(getQueue(), this, getSession(), topic);
 
@@ -146,7 +146,7 @@ public class TopicHolder extends ServletHolder {
         return getUpdateResult();
     }
 
-    public Results deleteTopic (String topicName) throws TimeoutException {
+    public Results deleteTopic(String topicName) throws TimeoutException {
         setDeleteResult(Results.Unknown);
         Miranda.getInstance().sendDeleteTopicMessage(getQueue(), this, getSession(), topicName);
 
@@ -155,23 +155,23 @@ public class TopicHolder extends ServletHolder {
         return getDeleteResult();
     }
 
-    public void setUpdateResultAndAwaken (Results result) {
+    public void setUpdateResultAndAwaken(Results result) {
         setUpdateResult(result);
         wake();
     }
 
-    public void setTopicsAndAwaken (List<Topic> topics) {
+    public void setTopicsAndAwaken(List<Topic> topics) {
         List<Topic> newList = new ArrayList<Topic>(topics);
         setTopics(newList);
         wake();
     }
 
-    public void setCreateResultAndAwaken (Results result) {
+    public void setCreateResultAndAwaken(Results result) {
         setCreateResult(result);
         wake();
     }
 
-    public void setDeleteResultAndAwaken (Results result) {
+    public void setDeleteResultAndAwaken(Results result) {
         setDeleteResult(result);
         wake();
     }

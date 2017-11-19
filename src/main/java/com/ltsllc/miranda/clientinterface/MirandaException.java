@@ -20,17 +20,20 @@ package com.ltsllc.miranda.clientinterface;
  * This class distinguishes something we threw for something somebody else threw.
  */
 public class MirandaException extends Exception {
-    public MirandaException () {};
+    public MirandaException() {
+    }
 
-    public MirandaException (String message) {
+    ;
+
+    public MirandaException(String message) {
         super(message);
     }
 
-    public MirandaException (String message, Throwable cause) {
-        super (message, cause);
+    public MirandaException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public MirandaException (Throwable throwable) {
+    public MirandaException(Throwable throwable) {
         super(throwable);
     }
 }

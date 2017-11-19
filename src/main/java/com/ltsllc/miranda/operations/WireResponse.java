@@ -18,7 +18,7 @@ public class WireResponse extends WireMessage {
         return conversation;
     }
 
-    public WireResponse (WireSubjects subject, String conversation, Results result) {
+    public WireResponse(WireSubjects subject, String conversation, Results result) {
         super(subject);
 
         this.result = result;

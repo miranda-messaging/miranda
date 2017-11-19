@@ -28,82 +28,82 @@ import java.util.UUID;
 
 /**
  * An HTTP POST/PUT/DELETE that has been made to a topic.
- *
+ * <p>
  * <h3>Properties</h3>
  * <table border="1">
- *     <th>
- *         <td>Name</td>
- *         <td>Type</td>
- *         <td>Description</td>
- *     </th>
- *     <tr>
- *         <td>guid</td>
- *         <td>String</td>
- *         <td>A string that identifies an Event from all the other events in the system.</td>
- *     </tr>
- *     <tr>
- *         <td>method</td>
- *         <td>enum, Methods</td>
- *         <td>
- *             The HTTP verb used for this instance.
- *             Currently this is one of POST PUT or DELETE
- *         </td>
- *     </tr>
- *     <tr>
- *         <td>userName</td>
- *         <td>String</td>
- *         <td>The name of the User who created this Event.</td>
- *     </tr>
- *     <tr>
- *         <td>timeOfCreation</td>
- *         <td>long</td>
- *         <td>The time returned by System.currentTimeMillis() when the Event was created.</td>
- *     </tr>
- *     <tr>
- *         <td>topicName</td>
- *         <td>String</td>
- *         <td>The name of the Topic that this instance was published to.</td>
- *     </tr>
- *     <tr>
- *         <td>awaitingDelivery</td>
- *         <td>List of Objects</td>
- *         <td>
- *             <p>
- *             The objects that are trying to deliver the Event.
- *             </p>
- *             <p>
- *             Generally, clients do not interact with this property directly.
- *             Instead, clients use methods like {@link #addAwaitingDelivery(Object)}}
- *             or {@link #canBeEvicted()} to ascertain the state of this property.
- *             </p>
- *             <p>
- *                 If this is empty, then it is because the Event has just been created or when
- *                 everyone who was trying to deliver the Event has done so.
- *             </p>
- *         </td>
- *     </tr>
- *     <tr>
- *         <td>content</td>
- *         <td>byte[]</td>
- *         <td>
- *             <p>
- *                 The content of an Event.
- *             </p>
- *             <p>
- *                 The content of an Event is treated as a binary object even when the content is text ---
- *                 Miranda can't tell the difference.
- *             </p>
- *             <p>
- *                 This property can be null.
- *                 This is generally the case for HTTP DELETE operations.
- *             </p>
- *             <p>
- *                 In situations that an Event COULD have a content but does not,
- *                 for example an HTTP POST that has an empty body,
- *                 this property will generally be a zero length array.
- *             </p>
- *         </td>
- *     </tr>
+ * <th>
+ * <td>Name</td>
+ * <td>Type</td>
+ * <td>Description</td>
+ * </th>
+ * <tr>
+ * <td>guid</td>
+ * <td>String</td>
+ * <td>A string that identifies an Event from all the other events in the system.</td>
+ * </tr>
+ * <tr>
+ * <td>method</td>
+ * <td>enum, Methods</td>
+ * <td>
+ * The HTTP verb used for this instance.
+ * Currently this is one of POST PUT or DELETE
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>userName</td>
+ * <td>String</td>
+ * <td>The name of the User who created this Event.</td>
+ * </tr>
+ * <tr>
+ * <td>timeOfCreation</td>
+ * <td>long</td>
+ * <td>The time returned by System.currentTimeMillis() when the Event was created.</td>
+ * </tr>
+ * <tr>
+ * <td>topicName</td>
+ * <td>String</td>
+ * <td>The name of the Topic that this instance was published to.</td>
+ * </tr>
+ * <tr>
+ * <td>awaitingDelivery</td>
+ * <td>List of Objects</td>
+ * <td>
+ * <p>
+ * The objects that are trying to deliver the Event.
+ * </p>
+ * <p>
+ * Generally, clients do not interact with this property directly.
+ * Instead, clients use methods like {@link #addAwaitingDelivery(Object)}}
+ * or {@link #canBeEvicted()} to ascertain the state of this property.
+ * </p>
+ * <p>
+ * If this is empty, then it is because the Event has just been created or when
+ * everyone who was trying to deliver the Event has done so.
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>content</td>
+ * <td>byte[]</td>
+ * <td>
+ * <p>
+ * The content of an Event.
+ * </p>
+ * <p>
+ * The content of an Event is treated as a binary object even when the content is text ---
+ * Miranda can't tell the difference.
+ * </p>
+ * <p>
+ * This property can be null.
+ * This is generally the case for HTTP DELETE operations.
+ * </p>
+ * <p>
+ * In situations that an Event COULD have a content but does not,
+ * for example an HTTP POST that has an empty body,
+ * this property will generally be a zero length array.
+ * </p>
+ * </td>
+ * </tr>
  * </table>
  */
 public class Event extends MirandaObject implements DirectoryEntry, Evictable {
@@ -133,7 +133,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     private String topicName;
     private List awaitingDelivery;
 
-    public Event (Methods method, String hexString) throws IOException {
+    public Event(Methods method, String hexString) throws IOException {
         byte[] content = Utils.hexStringToBytes(hexString);
         String guid = UUID.randomUUID().toString();
 
@@ -141,23 +141,23 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
                 content);
     }
 
-    public Event (Methods method, byte[] buffer) {
+    public Event(Methods method, byte[] buffer) {
         String guid = UUID.randomUUID().toString();
         basicConstructor(null, guid, null, System.currentTimeMillis(), method, buffer);
     }
 
 
-    public Event (User user, Methods method, String topicName, byte[] content) {
+    public Event(User user, Methods method, String topicName, byte[] content) {
         String guid = UUID.randomUUID().toString();
         basicConstructor(user.getName(), guid, topicName, System.currentTimeMillis(), method, content);
     }
 
-    public Event (String userName, String guid, String topicName, long timeOfCreation, Methods method, byte[] content) {
+    public Event(String userName, String guid, String topicName, long timeOfCreation, Methods method, byte[] content) {
         basicConstructor(userName, guid, topicName, timeOfCreation, method, content);
     }
 
-    public void basicConstructor (String userName, String guid, String topicName, long timeOfCreation, Methods method,
-                                  byte[] content) {
+    public void basicConstructor(String userName, String guid, String topicName, long timeOfCreation, Methods method,
+                                 byte[] content) {
 
         this.userName = userName;
         this.guid = guid;
@@ -223,7 +223,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         this.content = content;
     }
 
-    public void addAwaitingDelivery (Object deliverer) {
+    public void addAwaitingDelivery(Object deliverer) {
         this.awaitingDelivery.add(deliverer);
     }
 
@@ -262,12 +262,12 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     /**
      * Create an Event with random attributes.
      *
-     * @param random The random source to use when choosing attributes.
+     * @param random           The random source to use when choosing attributes.
      * @param maxSizeOfContent The max size (in bytes) of the event's content.  The actual
      *                         size will be a random value equal to or less than this.
      * @return a random Event
      */
-    public static Event createRandom (ImprovedRandom random, int maxSizeOfContent) {
+    public static Event createRandom(ImprovedRandom random, int maxSizeOfContent) {
         int sizeOfContent = random.nextIndex(maxSizeOfContent);
         byte[] content = new byte[sizeOfContent];
         random.nextBytes(content);
@@ -276,12 +276,12 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         return event;
     }
 
-    public static Methods randomMethods (ImprovedRandom random) {
+    public static Methods randomMethods(ImprovedRandom random) {
         int index = random.nextIndex(methods.length);
         return methods[index];
     }
 
-    public static Event createRandom () {
+    public static Event createRandom() {
         SecureRandom secureRandom = new SecureRandom();
         ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
         return createRandom(improvedRandom, 1024);
@@ -291,7 +291,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         return content;
     }
 
-    public String getContentAsHexString () {
+    public String getContentAsHexString() {
         return Utils.bytesToString(getContent());
     }
 
@@ -303,24 +303,24 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         return method;
     }
 
-    public void setMethod (Methods method) {
+    public void setMethod(Methods method) {
         this.method = method;
     }
 
 
-    public String toJson () {
+    public String toJson() {
         return getGson().toJson(this);
     }
 
-    public void updateFrom (Event other) {
+    public void updateFrom(Event other) {
         throw new IllegalStateException("updateFrom is not applicable for Events");
     }
 
-    public boolean matches (Event other) {
+    public boolean matches(Event other) {
         return getGuid().equals(other.getGuid());
     }
 
-    public String getKey () {
+    public String getKey() {
         return getGuid();
     }
 
@@ -335,12 +335,12 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
 
     /**
      * Answer whether this instance is eligible for eviction.
-     *
      * <p>
-     *     An Event is eligible for eviction if no one is trying to deliver it.
+     * <p>
+     * An Event is eligible for eviction if no one is trying to deliver it.
      * </p>
      */
-    public boolean canBeEvicted () {
+    public boolean canBeEvicted() {
         return awaitingDelivery.size() <= 0;
     }
 }

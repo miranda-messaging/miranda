@@ -30,7 +30,7 @@ public class NewPropertiesMessage extends Message {
         return mirandaProperties;
     }
 
-    public NewPropertiesMessage (BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
+    public NewPropertiesMessage(BlockingQueue<Message> senderQueue, Object sender, MirandaProperties mirandaProperties) {
         super(Subjects.NewProperties, senderQueue, sender);
 
         this.mirandaProperties = mirandaProperties;

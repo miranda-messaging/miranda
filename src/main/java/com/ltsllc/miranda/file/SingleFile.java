@@ -52,7 +52,9 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
+
     abstract public Type getListType();
+
     abstract public void checkForDuplicates();
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
@@ -61,7 +63,8 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
             .setPrettyPrinting()
             .create();
 
-    protected SingleFile () {}
+    protected SingleFile() {
+    }
 
     public SingleFile(String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) throws IOException {
         super(filename, reader, writer);
@@ -79,7 +82,7 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         this.data = list;
     }
 
-    public void setData (byte[] data) {
+    public void setData(byte[] data) {
         if (null == data) {
             this.data = new ArrayList();
         } else {
@@ -356,7 +359,7 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         return null;
     }
 
-    public void fireFileChanged () {
+    public void fireFileChanged() {
         FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, null);
         fireMessage(fileChangedMessage);
     }

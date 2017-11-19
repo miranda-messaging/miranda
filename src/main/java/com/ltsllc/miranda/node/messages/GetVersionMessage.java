@@ -26,7 +26,7 @@ import java.util.concurrent.BlockingQueue;
 public class GetVersionMessage extends Message {
     private BlockingQueue<Message> requester;
 
-    public GetVersionMessage (BlockingQueue<Message> queue, Object sender, BlockingQueue<Message> requester) {
+    public GetVersionMessage(BlockingQueue<Message> queue, Object sender, BlockingQueue<Message> requester) {
         super(Subjects.GetVersion, queue, sender);
 
         this.requester = requester;

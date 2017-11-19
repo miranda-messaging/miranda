@@ -36,16 +36,16 @@ public class ScanTask implements Runnable {
         this.mirandaDirectory = mirandaDirectory;
     }
 
-    public ScanTask (MirandaDirectory mirandaDirectory) {
+    public ScanTask(MirandaDirectory mirandaDirectory) {
         this.mirandaDirectory = mirandaDirectory;
     }
 
-    public void start () {
+    public void start() {
         this.thread = new Thread(this);
         this.thread.start();
     }
 
-    public void run () {
+    public void run() {
         List<File> files = new ArrayList<File>();
         try {
             walk(getMirandaDirectory().getDirectory(), files);
@@ -55,16 +55,16 @@ public class ScanTask implements Runnable {
         }
     }
 
-    public void walk (File file, List<File> files) throws IOException {
+    public void walk(File file, List<File> files) throws IOException {
         String[] listing = file.list();
         for (String name : listing) {
-            File newFile = new File (file.getCanonicalFile(), name);
+            File newFile = new File(file.getCanonicalFile(), name);
             if (getMirandaDirectory().isInteresting(name)) {
                 files.add(newFile);
             }
 
             if (newFile.isDirectory()) {
-                walk (newFile, files);
+                walk(newFile, files);
             }
         }
     }

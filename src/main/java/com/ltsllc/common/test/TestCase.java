@@ -22,7 +22,7 @@ import com.ltsllc.common.util.Utils;
 import java.io.*;
 
 public class TestCase {
-    public String readTextFile (String filename) throws IOException {
+    public String readTextFile(String filename) throws IOException {
         FileReader fileReader = null;
 
         try {
@@ -40,7 +40,7 @@ public class TestCase {
         }
     }
 
-    public void writeTextFile (String filename, String content) throws IOException {
+    public void writeTextFile(String filename, String content) throws IOException {
         FileWriter fileWriter = null;
 
         try {
@@ -51,7 +51,7 @@ public class TestCase {
         }
     }
 
-    public String fileToString (String filename) throws IOException {
+    public String fileToString(String filename) throws IOException {
         FileInputStream fileInputStream = null;
 
         try {
@@ -70,7 +70,7 @@ public class TestCase {
         }
     }
 
-    public String differ (String s1, String s2) {
+    public String differ(String s1, String s2) {
         if (s1 == s2 || s1.equals(s2)) {
             return null;
         }
@@ -84,9 +84,9 @@ public class TestCase {
             String substring = s1.substring(0, i);
             if (s2.indexOf(substring) != 0) {
                 String s1String = s1.substring(i - 4, i + 4);
-                s1String = shorten (s1String);
+                s1String = shorten(s1String);
                 String s2String = s2.substring(i - 4, i + 4);
-                s2String = shorten (s2String);
+                s2String = shorten(s2String);
                 String message = "Strings differ at index " + i;
                 message = message + ", \"" + s1String + "\"";
                 message = message + " vs \"" + s2String + "\"";
@@ -98,7 +98,7 @@ public class TestCase {
         return null;
     }
 
-    public String shorten (String string) {
+    public String shorten(String string) {
         if (string.length() < 8)
             return string;
 
@@ -107,7 +107,7 @@ public class TestCase {
         return newString;
     }
 
-    public static void delete (String filename) {
+    public static void delete(String filename) {
         if (filename == null)
             return;
 

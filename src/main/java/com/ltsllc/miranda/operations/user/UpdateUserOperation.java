@@ -38,7 +38,7 @@ public class UpdateUserOperation extends
         return user;
     }
 
-    public UpdateUserOperation (BlockingQueue<Message> requester, Session session, User user) throws MirandaException {
+    public UpdateUserOperation(BlockingQueue<Message> requester, Session session, User user) throws MirandaException {
         super(NAME, requester, session);
 
         UpdateUserOperationReadyState readyState = new UpdateUserOperationReadyState(this);
@@ -47,7 +47,7 @@ public class UpdateUserOperation extends
         this.user = user;
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda.getInstance().getUserManager().sendGetUser(getQueue(), this, getUser().getName());

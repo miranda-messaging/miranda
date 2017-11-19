@@ -33,8 +33,9 @@ import java.util.concurrent.BlockingQueue;
  * This class takes care of mapping from integer handles to Handle objects.
  */
 abstract public class Network extends Consumer {
-    abstract public Handle basicConnectTo (String host, int port) throws MirandaException;
-    abstract public Handle createHandle (Object o);
+    abstract public Handle basicConnectTo(String host, int port) throws MirandaException;
+
+    abstract public Handle createHandle(Object o);
 
     private static Logger logger = Logger.getLogger(ConnectionListener.class);
     private static Network ourInstance;
@@ -52,11 +53,11 @@ abstract public class Network extends Consumer {
         return truststorePassword;
     }
 
-    public void setTruststorePassword (String truststorePassword) {
+    public void setTruststorePassword(String truststorePassword) {
         this.truststorePassword = truststorePassword;
     }
 
-    public Network () throws MirandaException {
+    public Network() throws MirandaException {
         super("network");
 
         NetworkReadyState networkReadyState = new NetworkReadyState(this);
@@ -67,25 +68,25 @@ abstract public class Network extends Consumer {
         return ourInstance;
     }
 
-    public static synchronized void setInstance (Network network) {
+    public static synchronized void setInstance(Network network) {
         if (null == ourInstance) {
             ourInstance = network;
         }
     }
 
-    public Handle getHandle (int handle) {
+    public Handle getHandle(int handle) {
         return integerToHandle.get(handle);
     }
 
-    public Map<Integer, Handle> getHandleMap () {
+    public Map<Integer, Handle> getHandleMap() {
         return integerToHandle;
     }
 
-    public int nextHandle () {
+    public int nextHandle() {
         return handleCount++;
     }
 
-    public void setHandle (int handle, Handle theHandle) {
+    public void setHandle(int handle, Handle theHandle) {
         integerToHandle.put(handle, theHandle);
     }
 
@@ -93,12 +94,11 @@ abstract public class Network extends Consumer {
         return handleCount;
     }
 
-    public void clearHandle (int handle)
-    {
+    public void clearHandle(int handle) {
         integerToHandle.put(handle, null);
     }
 
-    public void connect (ConnectToMessage connectToMessage) throws MirandaException {
+    public void connect(ConnectToMessage connectToMessage) throws MirandaException {
         try {
             Handle handle = basicConnectTo(connectToMessage.getHost(), connectToMessage.getPort());
 
@@ -119,7 +119,7 @@ abstract public class Network extends Consumer {
     }
 
 
-    public void disconnect (CloseMessage closeMessage) throws MirandaException {
+    public void disconnect(CloseMessage closeMessage) throws MirandaException {
         Handle handle = getHandle(closeMessage.getHandle());
 
         if (null == handle) {
@@ -137,26 +137,25 @@ abstract public class Network extends Consumer {
 
     /**
      * Something Very Bad happend.  Decide if we should shut down.
+     *
      * @param panic The problem that caused the panic
      * @return true if we should shut down, false otherwise
      */
-    public boolean panic (Panic panic) {
+    public boolean panic(Panic panic) {
         //
         // if one of our connections failed, and other connections are working,
         // then try to keep going
         //
         if (
                 panic.getReason() == Panic.Reasons.NetworkThreadCrashed
-                && integerToHandle.size() > 1)
-        {
+                        && integerToHandle.size() > 1) {
             return false;
         }
 
         //
         // if we can't talk to anyone, ask the system what to do
         //
-        else if (panic.getReason() == Panic.Reasons.NetworkThreadCrashed)
-        {
+        else if (panic.getReason() == Panic.Reasons.NetworkThreadCrashed) {
             Panic newPanic = new Panic(panic.getCause(), Panic.Reasons.Network);
             Miranda.getInstance().panic(newPanic);
         }
@@ -169,7 +168,7 @@ abstract public class Network extends Consumer {
      *
      * @param handleID The handle to disconnect from.
      */
-    public void forceDisconnect (int handleID) {
+    public void forceDisconnect(int handleID) {
         Handle handle = getHandle(handleID);
 
         if (null != handle) {
@@ -180,16 +179,16 @@ abstract public class Network extends Consumer {
 
     /**
      * This is called when the {@link ConnectionListener} gets a new connection.
-     *
-     * <P>
-     *     The handle rturned can be used in susequent {@link SendMessageMessage} and
-     *     {@link CloseMessage}s.
+     * <p>
+     * <p>
+     * The handle rturned can be used in susequent {@link SendMessageMessage} and
+     * {@link CloseMessage}s.
      * </P>
      *
      * @param handle The new connection.
      * @return The handle for the new connection.
      */
-    public int newConnection (Handle handle) {
+    public int newConnection(Handle handle) {
         int handleId = nextHandle();
 
         setHandle(handleId, handle);
@@ -197,7 +196,7 @@ abstract public class Network extends Consumer {
         return handleId;
     }
 
-    public void sendOnNetwork (SendNetworkMessage sendNetworkMessage) throws NetworkException {
+    public void sendOnNetwork(SendNetworkMessage sendNetworkMessage) throws NetworkException {
         Handle handle = integerToHandle.get(sendNetworkMessage.getHandle());
 
         if (handle == null) {
@@ -210,7 +209,7 @@ abstract public class Network extends Consumer {
     /**
      * Tell the network to close a connection.
      */
-    public void sendClose (BlockingQueue<Message> senderQueue, Object sender, int handle) {
+    public void sendClose(BlockingQueue<Message> senderQueue, Object sender, int handle) {
         CloseMessage closeMessage = new CloseMessage(senderQueue, sender, handle);
         sendToMe(closeMessage);
     }
@@ -218,7 +217,7 @@ abstract public class Network extends Consumer {
     /**
      * Ask the network to send a message.
      */
-    public void sendMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
+    public void sendMessage(BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, handle);
         sendToMe(sendNetworkMessage);
     }
@@ -235,18 +234,18 @@ abstract public class Network extends Consumer {
      * This is called when we have successfully made a connection.
      *
      * @param handleID The handle ID
-     * @param handle The handle that it maps to
+     * @param handle   The handle that it maps to
      */
-    public void mapHandle (int handleID, Handle handle) {
+    public void mapHandle(int handleID, Handle handle) {
         integerToHandle.put(handleID, handle);
     }
 
-    public void sendNetworkMessage (BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
+    public void sendNetworkMessage(BlockingQueue<Message> senderQueue, Object sender, int handle, WireMessage wireMessage) {
         SendNetworkMessage sendNetworkMessage = new SendNetworkMessage(senderQueue, sender, wireMessage, handle);
         sendToMe(sendNetworkMessage);
     }
 
-    public void sendCloseMessage (BlockingQueue<Message> senderQueue, Object sender, int handle) {
+    public void sendCloseMessage(BlockingQueue<Message> senderQueue, Object sender, int handle) {
         CloseMessage closeMessage = new CloseMessage(senderQueue, sender, handle);
         sendToMe(closeMessage);
     }

@@ -12,7 +12,7 @@ import java.util.concurrent.BlockingQueue;
 public class DirectoryWatcher extends FileWatcher {
     private Map<String, Long> filenameToModificationTime;
 
-    public DirectoryWatcher (File directory, BlockingQueue<Message> listener) throws IOException {
+    public DirectoryWatcher(File directory, BlockingQueue<Message> listener) throws IOException {
         super(directory, listener);
         filenameToModificationTime = new HashMap<String, Long>();
         performScan();
@@ -38,10 +38,10 @@ public class DirectoryWatcher extends FileWatcher {
 
         filenameToModificationTimes.put(name, file.lastModified());
 
-        return fileChanged (name, file.lastModified());
+        return fileChanged(name, file.lastModified());
     }
 
-    public boolean scanDirectory (File directory, Map<String, Long> filenameToModificationTimes) throws IOException {
+    public boolean scanDirectory(File directory, Map<String, Long> filenameToModificationTimes) throws IOException {
         String fullname = directory.getCanonicalPath();
         filenameToModificationTimes.put(fullname, new Long(directory.lastModified()));
 
@@ -56,7 +56,7 @@ public class DirectoryWatcher extends FileWatcher {
         return fileChanged(fullname, directory.lastModified());
     }
 
-    public boolean fileChanged (String fullname, long modificationTime) {
+    public boolean fileChanged(String fullname, long modificationTime) {
         Long oldModificationTime = getFilenameToModificationTime().get(fullname);
         return (oldModificationTime != null && oldModificationTime.longValue() != modificationTime);
     }

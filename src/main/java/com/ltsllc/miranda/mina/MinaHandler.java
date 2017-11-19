@@ -46,29 +46,29 @@ public class MinaHandler extends IoHandlerAdapter {
         return minaHandle;
     }
 
-    public void setMinaHandle (MinaHandle minaHandle) {
+    public void setMinaHandle(MinaHandle minaHandle) {
         this.minaHandle = minaHandle;
     }
 
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        logger.info ("Got connection from " + session.getRemoteAddress());
+        logger.info("Got connection from " + session.getRemoteAddress());
         this.session = session;
     }
 
     /**
      * Called when a new message is received from the network.
-     *
-     * <P>
-     *     The message is expected to be a JSON string for an object that subclasses
-     *     the WireMessage class.
+     * <p>
+     * <p>
+     * The message is expected to be a JSON string for an object that subclasses
+     * the WireMessage class.
      * </P>
-     * 
+     *
      * @param session The IoSession the message was received from
      * @param message The message received
      * @throws Exception The method rethrows ClassNotFoundException if a class
-     * that matches the className attribute of the message.
+     *                   that matches the className attribute of the message.
      */
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
@@ -83,16 +83,15 @@ public class MinaHandler extends IoHandlerAdapter {
         getMinaHandle().deliver(wireMessage);
     }
 
-    public void close () {
-        if (null != getSession())
-        {
+    public void close() {
+        if (null != getSession()) {
             getSession().closeNow();
         }
     }
 
-    public void sendOnWire (WireMessage wireMessage) {
+    public void sendOnWire(WireMessage wireMessage) {
         String json = ourGson.toJson(wireMessage);
-        logger.info ("Sending " + json);
+        logger.info("Sending " + json);
         getSession().write(json);
     }
 }

@@ -81,7 +81,8 @@ public class TopicsFileReadyState extends SingleFileReadyState {
 
     @Override
     public Type getListType() {
-        return new TypeToken<List<Topic>>(){}.getType();
+        return new TypeToken<List<Topic>>() {
+        }.getType();
     }
 
     @Override

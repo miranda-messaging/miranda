@@ -24,15 +24,15 @@ import com.ltsllc.miranda.file.states.SingleFileStartingState;
  * Created by Clark on 5/18/2017.
  */
 public class DeliveriesFileStartingState extends SingleFileStartingState {
-    public DeliveriesFile getDeliveriesFile () {
+    public DeliveriesFile getDeliveriesFile() {
         return (DeliveriesFile) getContainer();
     }
 
-    public DeliveriesFileStartingState (DeliveriesFile deliveriesFile) throws MirandaException {
+    public DeliveriesFileStartingState(DeliveriesFile deliveriesFile) throws MirandaException {
         super(deliveriesFile);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new DeliveriesFileReadyState(getDeliveriesFile());
     }
 }

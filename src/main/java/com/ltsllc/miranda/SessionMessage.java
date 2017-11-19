@@ -30,7 +30,7 @@ public class SessionMessage extends Message {
         return session;
     }
 
-    public SessionMessage (Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Session session) {
+    public SessionMessage(Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Session session) {
         super(subject, senderQueue, sender);
 
         this.session = session;

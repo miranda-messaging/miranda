@@ -30,7 +30,7 @@ public class NewConnectionMessage extends Message {
         return handleId;
     }
 
-    public NewConnectionMessage (BlockingQueue<Message> senderQueue, Object sender, int handleId) {
+    public NewConnectionMessage(BlockingQueue<Message> senderQueue, Object sender, int handleId) {
         super(Subjects.NewConnection, senderQueue, sender);
 
         this.handleId = handleId;

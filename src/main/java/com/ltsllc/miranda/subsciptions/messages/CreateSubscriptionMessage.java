@@ -33,8 +33,8 @@ public class CreateSubscriptionMessage extends SessionMessage {
         return subscription;
     }
 
-    public CreateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Subscription subscription) {
-        super (Message.Subjects.CreateSubscription, senderQueue, sender, session);
+    public CreateSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, Subscription subscription) {
+        super(Message.Subjects.CreateSubscription, senderQueue, sender, session);
 
         this.subscription = subscription;
     }

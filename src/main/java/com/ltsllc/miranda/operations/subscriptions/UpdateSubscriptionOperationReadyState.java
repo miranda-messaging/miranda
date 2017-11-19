@@ -31,15 +31,15 @@ import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
  * Created by Clark on 4/22/2017.
  */
 public class UpdateSubscriptionOperationReadyState extends State {
-    public UpdateSubscriptionOperation getUpdateSubscriptionOperation () {
+    public UpdateSubscriptionOperation getUpdateSubscriptionOperation() {
         return (UpdateSubscriptionOperation) getContainer();
     }
 
-    public UpdateSubscriptionOperationReadyState (UpdateSubscriptionOperation updateSubscriptionOperation) throws MirandaException {
+    public UpdateSubscriptionOperationReadyState(UpdateSubscriptionOperation updateSubscriptionOperation) throws MirandaException {
         super(updateSubscriptionOperation);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getUpdateSubscriptionOperation().getCurrentState();
 
         switch (message.getSubject()) {
@@ -47,7 +47,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
                 UpdateSubscriptionResponseMessage updateSubscriptionResponseMessage = (UpdateSubscriptionResponseMessage)
                         message;
 
-                nextState = processUpdateSubscriptionResponseMessage (updateSubscriptionResponseMessage);
+                nextState = processUpdateSubscriptionResponseMessage(updateSubscriptionResponseMessage);
                 break;
             }
 
@@ -59,7 +59,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
 
             case GetTopicResponse: {
                 GetTopicResponseMessage getTopicResponseMessage = (GetTopicResponseMessage) message;
-                nextState = processGetTopicResponseMessage (getTopicResponseMessage);
+                nextState = processGetTopicResponseMessage(getTopicResponseMessage);
                 break;
             }
 
@@ -74,7 +74,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
 
     public State processUpdateSubscriptionResponseMessage(UpdateSubscriptionResponseMessage updateSubscriptionResponseMessage) {
         if (updateSubscriptionResponseMessage.getResult() == Results.Success) {
-            Miranda.getInstance().getCluster().sendUpdateSubscriptionMessage (getUpdateSubscriptionOperation().getQueue(),
+            Miranda.getInstance().getCluster().sendUpdateSubscriptionMessage(getUpdateSubscriptionOperation().getQueue(),
                     this, getUpdateSubscriptionOperation().getSession(), getUpdateSubscriptionOperation().getSubscription());
         }
 
@@ -87,7 +87,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
         return StopState.getInstance();
     }
 
-    public State processGetUserResponseMessage (GetUserResponseMessage getUserResponseMessage) {
+    public State processGetUserResponseMessage(GetUserResponseMessage getUserResponseMessage) {
         if (getUserResponseMessage.getResult() != Results.Success) {
             UpdateSubscriptionResponseMessage response = new UpdateSubscriptionResponseMessage(getUpdateSubscriptionOperation().getQueue(),
                     this, Results.UserNotFound);
@@ -98,8 +98,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
         }
 
         if (!getUpdateSubscriptionOperation().getSubscription().getOwner().equals(getUpdateSubscriptionOperation().getSession().getUser().getName()) &&
-                getUpdateSubscriptionOperation().getSession().getUser().getCategory() != User.UserTypes.Admin)
-        {
+                getUpdateSubscriptionOperation().getSession().getUser().getCategory() != User.UserTypes.Admin) {
             UpdateSubscriptionResponseMessage response = new UpdateSubscriptionResponseMessage(getUpdateSubscriptionOperation().getQueue(),
                     this, Results.NotOwner);
 
@@ -119,7 +118,7 @@ public class UpdateSubscriptionOperationReadyState extends State {
         return getUpdateSubscriptionOperation().getCurrentState();
     }
 
-    public State processGetTopicResponseMessage (GetTopicResponseMessage getTopicResponseMessage) {
+    public State processGetTopicResponseMessage(GetTopicResponseMessage getTopicResponseMessage) {
         if (getTopicResponseMessage.getTopic() == null) {
             UpdateSubscriptionResponseMessage response = new UpdateSubscriptionResponseMessage(getUpdateSubscriptionOperation().getQueue(),
                     this, Results.TopicNotFound);

@@ -36,8 +36,7 @@ public class CreateSubscriptionServlet extends SubscriptionServlet {
 
 
     public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequest requestObject)
-            throws ServletException, IOException, TimeoutException
-    {
+            throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
         requestObject.getSubscription().setOwner(getSession().getUser().getName());
         Results result = SubscriptionHolder.getInstance().createSubscription(requestObject.getSubscription());

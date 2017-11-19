@@ -26,25 +26,25 @@ import java.util.concurrent.BlockingQueue;
 public class WriteMessage extends Message {
     private String filename;
 
-    public String getFilename () {
+    public String getFilename() {
         return filename;
     }
 
-    public void setFilename (String s) {
+    public void setFilename(String s) {
         filename = s;
     }
 
     private byte[] buffer;
 
-    public byte[] getBuffer () {
+    public byte[] getBuffer() {
         return buffer;
     }
 
-    public void setBuffer (byte[] b) {
+    public void setBuffer(byte[] b) {
         buffer = b;
     }
 
-    public WriteMessage (String filename, byte[] buffer, BlockingQueue<Message> sender, Object senderObject) {
+    public WriteMessage(String filename, byte[] buffer, BlockingQueue<Message> sender, Object senderObject) {
         super(Subjects.Write, sender, senderObject);
         setBuffer(buffer);
         setFilename(filename);

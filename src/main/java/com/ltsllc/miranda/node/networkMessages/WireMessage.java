@@ -70,20 +70,20 @@ public class WireMessage {
         return className;
     }
 
-    public WireMessage (WireSubjects subject) {
+    public WireMessage(WireSubjects subject) {
         this.subject = subject;
         this.className = getClass().getCanonicalName();
     }
 
-    public String getJson () {
+    public String getJson() {
         return ourGson.toJson(this);
     }
 
-    public String toJson () {
+    public String toJson() {
         return getJson();
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (o == null || !(o instanceof WireMessage))
             return false;
 

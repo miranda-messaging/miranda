@@ -31,7 +31,7 @@ public class UpdateObjectsMessage extends Message {
         return updatedObjects;
     }
 
-    public UpdateObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List updatedObjects) {
+    public UpdateObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List updatedObjects) {
         super(Subjects.UpdateObjects, senderQueue, sender);
 
         this.updatedObjects = updatedObjects;

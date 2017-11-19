@@ -39,7 +39,7 @@ public class ClusterFileMessage extends Message {
         return file;
     }
 
-    public ClusterFileMessage (BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> file, Version version) {
+    public ClusterFileMessage(BlockingQueue<Message> senderQueue, Object sender, List<NodeElement> file, Version version) {
         super(Subjects.ClusterFile, senderQueue, sender);
 
         this.file = file;

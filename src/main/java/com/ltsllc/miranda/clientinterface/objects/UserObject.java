@@ -79,7 +79,7 @@ public class UserObject {
         return user;
     }
 
-    public boolean isValid () {
+    public boolean isValid() {
         if (name != null)
             name = name.trim();
 

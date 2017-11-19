@@ -29,7 +29,7 @@ import java.util.concurrent.BlockingQueue;
 public class MirandaTimer extends Consumer {
     private Timer timer;
 
-    public MirandaTimer () throws MirandaException {
+    public MirandaTimer() throws MirandaException {
         super("timer");
         timer = new Timer("timer", true);
         MirandaTimerReadyState mirandaTimerReadyState = new MirandaTimerReadyState(this);

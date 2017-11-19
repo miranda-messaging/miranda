@@ -30,10 +30,10 @@ public class JSPublicKeySerializer implements JsonSerializer<PublicKey>, JsonDes
         return null;
     }
 
-    public PublicKey sunPublicKey (JsonObject jsonObject) throws GeneralSecurityException {
+    public PublicKey sunPublicKey(JsonObject jsonObject) throws GeneralSecurityException {
         BigInteger n = jsonObject.get("n").getAsBigInteger();
         BigInteger e = jsonObject.get("e").getAsBigInteger();
-        return new RSAPublicKeyImpl(n,e);
+        return new RSAPublicKeyImpl(n, e);
     }
 
     public JsonElement serialize(PublicKey publicKey, Type type, JsonSerializationContext jsonSerializationContext) {
@@ -54,7 +54,7 @@ public class JSPublicKeySerializer implements JsonSerializer<PublicKey>, JsonDes
         return jsonObject;
     }
 
-    public JsonObject serializeBounceyCastlePublicKey (BCRSAPublicKey publicKey) {
+    public JsonObject serializeBounceyCastlePublicKey(BCRSAPublicKey publicKey) {
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.add("e", new JsonPrimitive(publicKey.getPublicExponent()));
@@ -63,7 +63,7 @@ public class JSPublicKeySerializer implements JsonSerializer<PublicKey>, JsonDes
         return jsonObject;
     }
 
-    public JsonObject serializeSunPublicKey (RSAPublicKeyImpl publicKey) {
+    public JsonObject serializeSunPublicKey(RSAPublicKeyImpl publicKey) {
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.add("e", new JsonPrimitive(publicKey.getPublicExponent()));

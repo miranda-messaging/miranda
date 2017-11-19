@@ -42,7 +42,7 @@ public class Reader extends Consumer {
         public byte[] data;
         public Throwable exception;
 
-        public void setAdditionalInfo (Throwable t) {
+        public void setAdditionalInfo(Throwable t) {
             this.exception = t;
         }
     }
@@ -62,8 +62,8 @@ public class Reader extends Consumer {
         this.privateKey = privateKey;
     }
 
-    public Reader (PrivateKey privateKey) throws MirandaException {
-        super (NAME);
+    public Reader(PrivateKey privateKey) throws MirandaException {
+        super(NAME);
 
         this.privateKey = privateKey;
 
@@ -71,13 +71,13 @@ public class Reader extends Consumer {
         setCurrentState(readerReadyState);
     }
 
-    public ReadResult read (String filename) {
+    public ReadResult read(String filename) {
         ReadResult result = new ReadResult();
         FileReader fileReader = null;
         result.result = ReadResponseMessage.Results.Unknown;
         result.filename = filename;
 
-        File file = new File (filename);
+        File file = new File(filename);
         if (!file.exists()) {
             result.result = ReadResponseMessage.Results.FileDoesNotExist;
         } else {
@@ -104,20 +104,20 @@ public class Reader extends Consumer {
         return result;
     }
 
-    public EncryptedMessage readEncryptedMessage (java.io.Reader reader) {
+    public EncryptedMessage readEncryptedMessage(java.io.Reader reader) {
         return gson.fromJson(reader, EncryptedMessage.class);
     }
 
-    public byte[] decryptMessage (EncryptedMessage encryptedMessage) throws EncryptionException {
+    public byte[] decryptMessage(EncryptedMessage encryptedMessage) throws EncryptionException {
         return getPrivateKey().decrypt(encryptedMessage);
     }
 
-    public void sendReadMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
-        ReadMessage readMessage = new ReadMessage (senderQueue, sender, filename);
+    public void sendReadMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
+        ReadMessage readMessage = new ReadMessage(senderQueue, sender, filename);
         sendToMe(readMessage);
     }
 
-    public void sendReadMessage (BlockingQueue<Message> senderQueue, Object sender, File file) {
+    public void sendReadMessage(BlockingQueue<Message> senderQueue, Object sender, File file) {
         try {
             String canonicalPath = file.getCanonicalPath();
             ReadMessage readMessage = new ReadMessage(senderQueue, sender, canonicalPath);

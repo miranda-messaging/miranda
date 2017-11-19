@@ -35,14 +35,13 @@ public class NodesLoadedMessage extends Message {
     }
 
     public List<NodeElement> getNodes() {
-        if (nodes == null)
-        {
+        if (nodes == null) {
             nodes = new ArrayList<NodeElement>();
         }
         return nodes;
     }
 
-    public String toString () {
+    public String toString() {
         return "nodes loaded";
     }
 }

@@ -48,7 +48,7 @@ public class EventHolder extends ServletHolder {
     private Map<Long, Long> sessionIdToExpirationTime;
     private long msecCheckIsGoodFor;
     private Long wakeUpSessionId;
-    private Map <Thread, Long> threadToWakeupTime;
+    private Map<Thread, Long> threadToWakeupTime;
 
 
     public Map<Thread, Long> getThreadToWakeupTime() {
@@ -249,7 +249,7 @@ public class EventHolder extends ServletHolder {
         notifyAll();
     }
 
-    public boolean shouldWakeUp (long sessionId) {
+    public boolean shouldWakeUp(long sessionId) {
         if (null == getWakeUpSessionId()) {
             Panic panic = new Panic("null session ID", Panic.Reasons.InvalidWakeup);
             Miranda.panicMiranda(panic);
@@ -259,7 +259,7 @@ public class EventHolder extends ServletHolder {
         return sessionId == getWakeUpSessionId().longValue();
     }
 
-    public void goBackToSleep () throws TimeoutException {
+    public void goBackToSleep() throws TimeoutException {
         Thread thread = Thread.currentThread();
         if (getThreadToWakeupTime().get(thread) == null) {
             Panic panic = new Panic("null wakeup time for tread " + thread, Panic.Reasons.NullWakeupTime);
@@ -272,7 +272,7 @@ public class EventHolder extends ServletHolder {
         }
     }
 
-    public synchronized void removeSleeperForSession (long sessionIds) {
+    public synchronized void removeSleeperForSession(long sessionIds) {
         Thread thread = Thread.currentThread();
         getThreadToWakeupTime().remove(thread);
     }
@@ -284,7 +284,7 @@ public class EventHolder extends ServletHolder {
         if (expirationTime == null || expirationTime.longValue() > now) {
             Miranda.getInstance().getSessionManager().sendCheckSessionMessage(getQueue(), this, sessionId);
             sleepOn(sessionId);
-            removeSleeperForSession (sessionId);
+            removeSleeperForSession(sessionId);
         }
 
         expirationTime = getSessionIdToExpirationTime().get(sessionId);

@@ -39,17 +39,17 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         this.conversation = conversation;
     }
 
-    public NewEventOperation getNewEventOperation () {
+    public NewEventOperation getNewEventOperation() {
         return (NewEventOperation) getContainer();
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getNewEventOperation().getCurrentState();
 
         switch (message.getSubject()) {
             case GetTopicResponse: {
                 GetTopicResponseMessage getTopicResponseMessage = (GetTopicResponseMessage) message;
-                nextState = processGetTopicResponseMessage (getTopicResponseMessage);
+                nextState = processGetTopicResponseMessage(getTopicResponseMessage);
                 break;
             }
 
@@ -62,15 +62,15 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return nextState;
     }
 
-    public boolean userIsPublisher () {
+    public boolean userIsPublisher() {
         return getNewEventOperation().getSession().getUser().getCategory() == User.UserTypes.Publisher;
     }
 
-    public boolean userIsAdmin () {
+    public boolean userIsAdmin() {
         return getNewEventOperation().getSession().getUser().getCategory() == User.UserTypes.Admin;
     }
 
-    public State start () {
+    public State start() {
         State nextState = getNewEventOperation().getCurrentState();
 
         setConversationKey(createConversationKey());
@@ -93,7 +93,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return nextState;
     }
 
-    public State processGetTopicResponseMessage (GetTopicResponseMessage message) throws MirandaException {
+    public State processGetTopicResponseMessage(GetTopicResponseMessage message) throws MirandaException {
         State nextState = getOperation().getCurrentState();
 
         //
@@ -117,7 +117,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         // otherwise, the topic exists and the user either owns it or is an admin.
         // Tell the event manager about the new event.
         //
-        Miranda.getInstance().getEventManager().createEvent (getNewEventOperation().getEvent());
+        Miranda.getInstance().getEventManager().createEvent(getNewEventOperation().getEvent());
 
         //
         // Tell the other Miranda nodes about the new event
@@ -143,7 +143,7 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return nextState;
     }
 
-    public Quorum createQuorum (Topic topic) {
+    public Quorum createQuorum(Topic topic) {
         if (topic.getRemotePolicy() == Topic.RemotePolicies.Acknowledged)
             return getCluster().createAcknowledgeQuorum();
         else if (topic.getRemotePolicy() == Topic.RemotePolicies.Written)
@@ -164,16 +164,16 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         return getOperation().getSession().getUser().getCategory() == User.UserTypes.Admin;
     }
 
-    public void tellNewEvent (Event event) {
+    public void tellNewEvent(Event event) {
         setConversationKey(createConversationKey());
-        Miranda.getInstance().getCluster().sendStartConversationMessage (getOperation().getQueue(), this,
+        Miranda.getInstance().getCluster().sendStartConversationMessage(getOperation().getQueue(), this,
                 getConversation(), getOperation().getQueue());
 
         Miranda.getInstance().getCluster().sendBroadcastNewEventMessage(getNewEventOperation().getQueue(), this,
                 getConversation(), event);
     }
 
-    public Message createResponseMessage (Results result) {
+    public Message createResponseMessage(Results result) {
         return new NewEventResponseMessage(getNewEventOperation().getQueue(), this, result,
                 getNewEventOperation().getEvent());
     }

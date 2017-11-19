@@ -49,19 +49,19 @@ public class ReadResponseMessage extends Message {
         return data;
     }
 
-    public ReadResponseMessage (BlockingQueue<Message> senderQueue, Object sender) {
+    public ReadResponseMessage(BlockingQueue<Message> senderQueue, Object sender) {
         super(Subjects.ReadResponse, senderQueue, sender);
     }
 
-    public void setResult (Results result) {
+    public void setResult(Results result) {
         this.result = result;
     }
 
-    public void setData (byte[] data) {
+    public void setData(byte[] data) {
         this.data = data;
     }
 
-    public void setFilename (String filename) {
+    public void setFilename(String filename) {
         this.filename = filename;
     }
 

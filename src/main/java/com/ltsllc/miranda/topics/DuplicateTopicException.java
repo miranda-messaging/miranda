@@ -20,7 +20,7 @@ package com.ltsllc.miranda.topics;
  * Created by Clark on 4/9/2017.
  */
 public class DuplicateTopicException extends Exception {
-    public DuplicateTopicException (String message) {
+    public DuplicateTopicException(String message) {
         super(message);
     }
 }

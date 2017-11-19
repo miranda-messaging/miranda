@@ -33,8 +33,8 @@ public class UpdateSubscriptionMessage extends SessionMessage {
         return subscription;
     }
 
-    public UpdateSubscriptionMessage (BlockingQueue<Message> senderQueue, Object sender, Session session,
-                                      Subscription subscription) {
+    public UpdateSubscriptionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session,
+                                     Subscription subscription) {
         super(Message.Subjects.UpdateSubscription, senderQueue, sender, session);
 
         this.subscription = subscription;

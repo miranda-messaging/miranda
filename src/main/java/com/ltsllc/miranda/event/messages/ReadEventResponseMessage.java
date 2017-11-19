@@ -13,7 +13,7 @@ public class ReadEventResponseMessage extends Message {
     private Results result;
     private Event event;
 
-    public ReadEventResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, Event event) {
+    public ReadEventResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result, Event event) {
         super(Message.Subjects.ReadResponse, senderQueue, sender);
 
         this.event = event;

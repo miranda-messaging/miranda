@@ -11,7 +11,7 @@ import java.util.List;
 public class DeadLetterQueue extends MirandaObject {
     private List<String> events;
 
-    public DeadLetterQueue () {
+    public DeadLetterQueue() {
         this.events = new ArrayList<String>();
     }
 
@@ -38,11 +38,11 @@ public class DeadLetterQueue extends MirandaObject {
         this.events = events;
     }
 
-    public void addEvent (Event event) {
+    public void addEvent(Event event) {
         events.add(event.getGuid());
     }
 
-    public void addEventGuid (String guid) {
+    public void addEventGuid(String guid) {
         events.add(guid);
     }
 }

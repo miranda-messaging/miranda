@@ -8,7 +8,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 public class NewEventWireMessage extends ConversationWireMessage {
     private Event event;
 
-    public NewEventWireMessage (String key, Event event) {
+    public NewEventWireMessage(String key, Event event) {
         super(WireSubjects.NewEvent, key);
 
         this.event = event;

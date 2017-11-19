@@ -37,7 +37,7 @@ public class CheckSessionResponseMessage extends Message {
         return session;
     }
 
-    public CheckSessionResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, Session session) {
+    public CheckSessionResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result, Session session) {
         super(Subjects.CheckSessionResponse, senderQueue, sender);
 
         this.result = result;

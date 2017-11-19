@@ -74,7 +74,7 @@ public class ConnectionHandler extends IoHandlerAdapter {
         this.handle = handle;
     }
 
-    public void verifyConnection () throws SslException {
+    public void verifyConnection() throws SslException {
         if (!getVerified()) {
             setVerified(false);
 

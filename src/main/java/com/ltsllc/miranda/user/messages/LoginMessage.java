@@ -30,7 +30,7 @@ public class LoginMessage extends Message {
         return name;
     }
 
-    public LoginMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public LoginMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.Login, senderQueue, sender);
 
         this.name = name;

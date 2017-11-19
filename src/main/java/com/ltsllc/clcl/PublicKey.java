@@ -57,7 +57,7 @@ public class PublicKey extends Key {
         this.securityPublicKey = publicKey;
     }
 
-    public PublicKey (PublicKey other) {
+    public PublicKey(PublicKey other) {
         this.securityPublicKey = other.securityPublicKey;
     }
 
@@ -79,7 +79,7 @@ public class PublicKey extends Key {
             cipherOutputStream.close();
 
             return byteArrayOutputStream.toByteArray();
-        } catch (GeneralSecurityException|IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new EncryptionException("Exception trying to decrypt", e);
         }
     }
@@ -98,20 +98,20 @@ public class PublicKey extends Key {
             cipherOutputStream.close();
 
             return byteArrayOutputStream.toByteArray();
-        } catch (GeneralSecurityException|IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             throw new EncryptionException("Exception trying to decrypt", e);
         }
     }
 
-    public EncryptedMessage toEncryptedMessage (byte[] plainText) throws EncryptionException {
+    public EncryptedMessage toEncryptedMessage(byte[] plainText) throws EncryptionException {
         return encrypt(SESSION_ALGORITHM, plainText);
     }
 
-    public CertificateSigningRequest createCertificateSigningRequest (PrivateKey privateKey) throws EncryptionException  {
-        return new CertificateSigningRequest (this, privateKey);
+    public CertificateSigningRequest createCertificateSigningRequest(PrivateKey privateKey) throws EncryptionException {
+        return new CertificateSigningRequest(this, privateKey);
     }
 
-    public String toPem () throws EncryptionException {
+    public String toPem() throws EncryptionException {
         try {
             StringWriter stringWriter = new StringWriter();
             PEMWriter pemWriter = new PEMWriter(stringWriter);
@@ -140,7 +140,7 @@ public class PublicKey extends Key {
     }
 
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (o == null || !(o instanceof PublicKey))
             return false;
 

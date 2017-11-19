@@ -36,33 +36,34 @@ import java.util.Map;
  */
 public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
 
-    public DeliveriesFile (String filename, Reader reader, Writer writer) throws IOException, MirandaException {
+    public DeliveriesFile(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         super(filename, reader, writer);
 
         setCurrentState(new MirandaFileReadyState(this));
     }
 
     public Type getListType() {
-        return new TypeToken<List<Delivery>>() {}.getType();
+        return new TypeToken<List<Delivery>>() {
+        }.getType();
     }
 
     public List buildEmptyList() {
         return new ArrayList<Delivery>();
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (this == o)
             return true;
 
         if (null == o || !(o instanceof DeliveriesFile))
             return false;
 
-        Map<Object,Boolean> map = new HashMap<Object,Boolean>();
-        return compare (map, o);
+        Map<Object, Boolean> map = new HashMap<Object, Boolean>();
+        return compare(map, o);
     }
 
 
-    public boolean compare (Map<Object,Boolean> map, Object o) {
+    public boolean compare(Map<Object, Boolean> map, Object o) {
         if (map.containsKey(o))
             return map.get(o).booleanValue();
 
@@ -77,6 +78,7 @@ public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
         return super.compare(map, o);
     }
 
-    public void checkForDuplicates () {}
+    public void checkForDuplicates() {
+    }
 
 }

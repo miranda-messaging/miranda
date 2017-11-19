@@ -30,7 +30,7 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/22/2017.
  */
 public class DeleteSubscriptionServlet extends SubscriptionServlet {
-    public ResultObject createResultObject () {
+    public ResultObject createResultObject() {
         return new ResultObject();
     }
 

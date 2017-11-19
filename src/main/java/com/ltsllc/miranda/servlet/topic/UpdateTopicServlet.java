@@ -30,12 +30,12 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/9/2017.
  */
 public class UpdateTopicServlet extends TopicServlet {
-    public ResultObject createResultObject () {
+    public ResultObject createResultObject() {
         return new ResultObject();
     }
 
     public ResultObject basicPerformService(HttpServletRequest request, HttpServletResponse response,
-                                       TopicRequest requestObject) throws ServletException, IOException, TimeoutException {
+                                            TopicRequest requestObject) throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
 
         Results result = TopicHolder.getInstance().updateTopic(requestObject.getTopic());

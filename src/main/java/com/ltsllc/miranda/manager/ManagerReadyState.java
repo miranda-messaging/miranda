@@ -30,16 +30,16 @@ import java.util.List;
 /**
  * Created by Clark on 4/26/2017.
  */
-public class ManagerReadyState<E,F> extends State {
-    public Manager getManager () {
+public class ManagerReadyState<E, F> extends State {
+    public Manager getManager() {
         return (Manager) getContainer();
     }
 
-    public ManagerReadyState (Manager manager) throws MirandaException {
+    public ManagerReadyState(Manager manager) throws MirandaException {
         super(manager);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getManager().getCurrentState();
 
         switch (message.getSubject()) {
@@ -63,7 +63,7 @@ public class ManagerReadyState<E,F> extends State {
 
             case Shutdown: {
                 ShutdownMessage shutdownMessage = (ShutdownMessage) message;
-                nextState = processShutdownMessage (shutdownMessage);
+                nextState = processShutdownMessage(shutdownMessage);
                 break;
             }
 
@@ -82,14 +82,14 @@ public class ManagerReadyState<E,F> extends State {
         return nextState;
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
         ManagerShuttingDownState managerShuttingDownState = new ManagerShuttingDownState(getManager(),
                 shutdownMessage.getSender());
 
         return managerShuttingDownState;
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) throws MirandaException {
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {
         List<F> data = (List<F>) fileLoadedMessage.getData();
         List<E> newList = getManager().convertList(data);
         getManager().setData(newList);
@@ -97,19 +97,19 @@ public class ManagerReadyState<E,F> extends State {
         return getManager().getCurrentState();
     }
 
-    public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {
+    public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         getManager().performGarbageCollection();
 
         return getManager().getCurrentState();
     }
 
-    public State processFileDoesNotExistMessage (FileDoesNotExistMessage fileDoesNotExistMessage) {
+    public State processFileDoesNotExistMessage(FileDoesNotExistMessage fileDoesNotExistMessage) {
         getManager().getData().clear();
 
         return getManager().getCurrentState();
     }
 
-    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) throws MirandaException {
+    public State processFileChangedMessage(FileChangedMessage fileChangedMessage) throws MirandaException {
         getManager().fileChanged();
 
         return getManager().getCurrentState();

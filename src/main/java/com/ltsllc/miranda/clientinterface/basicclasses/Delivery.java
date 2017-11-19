@@ -36,14 +36,14 @@ public class Delivery extends MirandaObject {
     private long delivered;
     private String subscription;
 
-    public Delivery (Event event, long delivered, Subscription subscription) {
+    public Delivery(Event event, long delivered, Subscription subscription) {
         this.attemptId = UUID.randomUUID().toString();
         this.eventGuid = event.getGuid();
         this.delivered = delivered;
         this.subscription = subscription.getName();
     }
 
-    public Delivery (String deliveryId, String eventId, long time, String subscription) {
+    public Delivery(String deliveryId, String eventId, long time, String subscription) {
         this.eventGuid = deliveryId;
         this.attemptId = eventId;
         this.delivered = time;
@@ -111,7 +111,7 @@ public class Delivery extends MirandaObject {
         this.subscription = subscription;
     }
 
-    public static Delivery createRandomDelivery (ImprovedRandom random) {
+    public static Delivery createRandomDelivery(ImprovedRandom random) {
         String guid = UUID.randomUUID().toString();
         String eventId = UUID.randomUUID().toString();
         long deliveryTime = ourRandom.nextLong();

@@ -34,7 +34,7 @@ public class Session {
         return expires;
     }
 
-    public void setExpires (long expires) {
+    public void setExpires(long expires) {
         this.expires = expires;
     }
 
@@ -46,13 +46,13 @@ public class Session {
         this.id = id;
     }
 
-    public Session (User user, long expires, long id) {
+    public Session(User user, long expires, long id) {
         this.user = user;
         this.expires = expires;
         this.id = id;
     }
 
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         if (null == o || !(o instanceof Session))
             return false;
 
@@ -60,7 +60,7 @@ public class Session {
         return getUser().equals(other.getUser()) && getExpires() == other.getExpires() && getId() == other.getId();
     }
 
-    public void extendExpires (long time) {
+    public void extendExpires(long time) {
         expires += time;
     }
 }

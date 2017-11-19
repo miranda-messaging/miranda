@@ -39,11 +39,11 @@ abstract public class SingleFileLoadingState extends State {
         super(singleFile);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getSingleFile().getCurrentState();
 
         switch (message.getSubject()) {
-            case ReadResponse : {
+            case ReadResponse: {
                 ReadResponseMessage readResponseMessage = (ReadResponseMessage) message;
                 nextState = processReadResponseMessage(readResponseMessage);
                 break;
@@ -51,7 +51,7 @@ abstract public class SingleFileLoadingState extends State {
 
             case FileChanged: {
                 FileChangedMessage fileChangedMessage = (FileChangedMessage) message;
-                nextState = processFileChangedMessage (fileChangedMessage);
+                nextState = processFileChangedMessage(fileChangedMessage);
                 break;
             }
             default: {
@@ -63,14 +63,14 @@ abstract public class SingleFileLoadingState extends State {
         return nextState;
     }
 
-    public State processReadResponseMessage (ReadResponseMessage readResponseMessage) throws MirandaException {
+    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
         State nextState = getSingleFile().getCurrentState();
 
         if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
             getSingleFile().processData(readResponseMessage.getData());
             nextState = getReadyState();
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile){
-            Panic panic = new Panic ("Error trying to load file", readResponseMessage.getException(), Panic.Reasons.ErrorLoadingFile);
+        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile) {
+            Panic panic = new Panic("Error trying to load file", readResponseMessage.getException(), Panic.Reasons.ErrorLoadingFile);
             Miranda.getInstance().panic(panic);
         } else {
             Panic panic = new Panic("Unrecogized result from reading " + readResponseMessage.getFilename(), Panic.Reasons.UnrecognizedResult);
@@ -80,7 +80,7 @@ abstract public class SingleFileLoadingState extends State {
         return nextState;
     }
 
-    public State processFileChangedMessage (FileChangedMessage fileChangedMessage) {
+    public State processFileChangedMessage(FileChangedMessage fileChangedMessage) {
         getSingleFile().getReader().sendReadMessage(getSingleFile().getQueue(), this, getSingleFile().getFilename());
 
         return getSingleFile().getCurrentState();

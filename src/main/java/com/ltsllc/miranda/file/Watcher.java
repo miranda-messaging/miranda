@@ -8,11 +8,11 @@ import java.util.concurrent.BlockingQueue;
 
 /**
  * An object that watches a file or directory.
- *
  * <p>
- *     An instance of this class checks to see if the file or directory has changed.
- *     If it has, the object will send a message to the subscriber.
- *     The actual message sent depends on the subclass.
+ * <p>
+ * An instance of this class checks to see if the file or directory has changed.
+ * If it has, the object will send a message to the subscriber.
+ * The actual message sent depends on the subclass.
  * </p>
  */
 public interface Watcher {
@@ -25,10 +25,10 @@ public interface Watcher {
     /**
      * Is this instance watching a particular file and sending message to a particular listener?
      *
-     * @param file The file to check against.
+     * @param file     The file to check against.
      * @param listener The listener to check against.
      * @return true if the instance is watching the specified file and sending message to the specified
      * listener.
      */
-    public boolean matches (File file, BlockingQueue<Message> listener);
+    public boolean matches(File file, BlockingQueue<Message> listener);
 }

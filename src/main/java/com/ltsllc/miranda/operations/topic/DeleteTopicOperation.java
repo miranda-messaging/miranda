@@ -34,7 +34,7 @@ public class DeleteTopicOperation extends Operation {
         return topicName;
     }
 
-    public DeleteTopicOperation (BlockingQueue<Message> requester, Session session, String topicName) throws MirandaException {
+    public DeleteTopicOperation(BlockingQueue<Message> requester, Session session, String topicName) throws MirandaException {
         super("delete topic operations", requester, session);
 
         DeleteTopicOperationReadyState deleteTopicOperationReadyState = new DeleteTopicOperationReadyState(this);
@@ -43,7 +43,7 @@ public class DeleteTopicOperation extends Operation {
         this.topicName = topicName;
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda.getInstance().getTopicManager().sendDeleteTopicMessage(getQueue(), this, getTopicName());

@@ -38,24 +38,24 @@ public class NetworkException extends Exception {
         return error;
     }
 
-    public NetworkException (Errors error) {
+    public NetworkException(Errors error) {
         this.error = error;
     }
 
 
-    public NetworkException (String string, Throwable throwable, Errors error) {
+    public NetworkException(String string, Throwable throwable, Errors error) {
         super(string, throwable);
 
         this.error = error;
     }
 
-    public NetworkException (Throwable throwable, Errors error) {
+    public NetworkException(Throwable throwable, Errors error) {
         super(throwable);
 
         this.error = error;
     }
 
-    public NetworkException (String string, Errors error) {
+    public NetworkException(String string, Errors error) {
         super(string);
 
         this.error = error;

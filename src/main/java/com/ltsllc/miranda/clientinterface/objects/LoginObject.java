@@ -22,7 +22,7 @@ package com.ltsllc.miranda.clientinterface.objects;
 public class LoginObject {
     private String name;
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 

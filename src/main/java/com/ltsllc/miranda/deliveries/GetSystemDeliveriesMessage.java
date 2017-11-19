@@ -30,7 +30,7 @@ public class GetSystemDeliveriesMessage extends Message {
         return filename;
     }
 
-    public GetSystemDeliveriesMessage (BlockingQueue<Message> senderQueue, Object sender, String filename) {
+    public GetSystemDeliveriesMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
         super(Subjects.GetDeliveries, senderQueue, sender);
 
         this.filename = filename;

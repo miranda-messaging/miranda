@@ -37,7 +37,7 @@ public class UpdateUserMessage extends Message {
         return session;
     }
 
-    public UpdateUserMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
+    public UpdateUserMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, User user) {
         super(Subjects.UpdateUser, senderQueue, sender);
 
         this.session = session;

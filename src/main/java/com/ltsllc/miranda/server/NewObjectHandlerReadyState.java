@@ -36,7 +36,7 @@ abstract public class NewObjectHandlerReadyState<T extends SingleFile, W extends
     private W handler;
     private T file;
 
-    public NewObjectHandlerReadyState (Consumer consumer, T file, W handler) throws MirandaException {
+    public NewObjectHandlerReadyState(Consumer consumer, T file, W handler) throws MirandaException {
         super(consumer);
 
         this.file = file;

@@ -32,7 +32,7 @@ import java.io.*;
  * Created by Clark on 4/7/2017.
  */
 public class MirandaServlet extends HttpServlet {
-    public void doOptions (HttpServletRequest request, HttpServletResponse response) {
+    public void doOptions(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Allow", "*");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, Access-Control-Allow-Origin");
@@ -42,7 +42,7 @@ public class MirandaServlet extends HttpServlet {
     }
 
 
-    public boolean allowAccess () {
+    public boolean allowAccess() {
         return true;
     }
 
@@ -50,7 +50,7 @@ public class MirandaServlet extends HttpServlet {
 
     private static Gson gson = createGson();
 
-    public static Gson createGson () {
+    public static Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(java.security.PublicKey.class, new JSPublicKeySerializer());
 
@@ -71,7 +71,7 @@ public class MirandaServlet extends HttpServlet {
         return stringWriter.toString();
     }
 
-    public String inputStreamToString (InputStream inputStream) throws IOException {
+    public String inputStreamToString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         int b = inputStream.read();
         while (-1 != b) {

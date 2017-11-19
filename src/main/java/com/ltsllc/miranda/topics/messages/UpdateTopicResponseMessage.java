@@ -31,7 +31,7 @@ public class UpdateTopicResponseMessage extends Message {
         return result;
     }
 
-    public UpdateTopicResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result) {
+    public UpdateTopicResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result) {
         super(Subjects.UpdateTopicResponse, senderQueue, sender);
 
         this.result = result;

@@ -25,15 +25,15 @@ import com.ltsllc.miranda.user.UsersFile;
  * Created by Clark on 5/18/2017.
  */
 public class UsersFileStartingState extends SingleFileStartingState {
-    public UsersFile getUsersFile () {
+    public UsersFile getUsersFile() {
         return (UsersFile) getContainer();
     }
 
-    public UsersFileStartingState (UsersFile usersFile) throws MirandaException {
+    public UsersFileStartingState(UsersFile usersFile) throws MirandaException {
         super(usersFile);
     }
 
-    public State getReadyState () throws MirandaException {
+    public State getReadyState() throws MirandaException {
         return new UsersFileReadyState(getUsersFile());
     }
 }

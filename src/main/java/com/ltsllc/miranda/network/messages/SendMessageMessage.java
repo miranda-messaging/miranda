@@ -27,7 +27,7 @@ public class SendMessageMessage extends Message {
     private int handle;
     private byte[] content;
 
-    public int getHandle () {
+    public int getHandle() {
         return handle;
     }
 
@@ -35,7 +35,7 @@ public class SendMessageMessage extends Message {
         return content;
     }
 
-    public SendMessageMessage (BlockingQueue<Message> queue, Object sender, int handle, byte[] content) {
+    public SendMessageMessage(BlockingQueue<Message> queue, Object sender, int handle, byte[] content) {
         super(Subjects.SendMessage, queue, sender);
 
         this.handle = handle;
@@ -43,7 +43,7 @@ public class SendMessageMessage extends Message {
     }
 
 
-    public SendMessageMessage (BlockingQueue<Message> queue, Object sender, int handle, String content) {
+    public SendMessageMessage(BlockingQueue<Message> queue, Object sender, int handle, String content) {
         super(Subjects.SendMessage, queue, sender);
 
         this.handle = handle;

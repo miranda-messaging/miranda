@@ -31,7 +31,7 @@ public class DisconnectedMessage extends Message {
     }
 
     public DisconnectedMessage(BlockingQueue<Message> senderQueue, Object sender, int handle) {
-        super (Subjects.Disconnected, senderQueue, sender);
+        super(Subjects.Disconnected, senderQueue, sender);
 
         this.handle = handle;
     }

@@ -31,7 +31,7 @@ public class RemoveObjectsMessage extends Message {
         return objects;
     }
 
-    public RemoveObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List objects) {
+    public RemoveObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List objects) {
         super(Subjects.RemoveObjects, senderQueue, sender);
 
         this.objects = objects;

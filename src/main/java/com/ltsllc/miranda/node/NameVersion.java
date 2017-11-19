@@ -25,7 +25,7 @@ public class NameVersion {
     private String name;
     private Version version;
 
-    public NameVersion (String name, Version version) {
+    public NameVersion(String name, Version version) {
         this.name = name;
         this.version = version;
     }

@@ -27,8 +27,8 @@ public class ScheduleOnceMessage extends ScheduleMessage {
     private long delay;
 
 
-    public ScheduleOnceMessage (BlockingQueue<Message> senderQueue, Object sender, long delay,
-                                Message message, BlockingQueue<Message> receiver) {
+    public ScheduleOnceMessage(BlockingQueue<Message> senderQueue, Object sender, long delay,
+                               Message message, BlockingQueue<Message> receiver) {
         super(Subjects.ScheduleOnce, senderQueue, sender, receiver, message);
 
         this.delay = delay;

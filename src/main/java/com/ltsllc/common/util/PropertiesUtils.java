@@ -52,16 +52,16 @@ public class PropertiesUtils {
 
     /**
      * Log the names and values of a properties object to the system log.
-     *
      * <p>
-     *     This method lists the property names and values of the properties
-     *     object passed to this method to the system log.  The properties
-     *     are sorted by name before printing.
+     * <p>
+     * This method lists the property names and values of the properties
+     * object passed to this method to the system log.  The properties
+     * are sorted by name before printing.
      * </p>
      *
      * @param p The properties object to log.
      */
-    public static String toString (Properties p) {
+    public static String toString(Properties p) {
         Object[] names = p.stringPropertyNames().toArray();
         Arrays.sort(names);
 
@@ -117,15 +117,15 @@ public class PropertiesUtils {
 
     /**
      * Merge one set of properties with another set and return the merged set.
-     *
      * <p>
-     *     This method modifies the first set passed to it and returns it.
+     * <p>
+     * This method modifies the first set passed to it and returns it.
      * </p>
-     *
      * <p>
-     *     For each property in p2, there are two possibilities: it is not
-     *     defined in p1 or it is.  In the case where it is not defined, the
-     *     property is added. When it is defined, use the one defined by p1.
+     * <p>
+     * For each property in p2, there are two possibilities: it is not
+     * defined in p1 or it is.  In the case where it is not defined, the
+     * property is added. When it is defined, use the one defined by p1.
      * </p>
      *
      * @param p1 The first set of properties.
@@ -166,7 +166,7 @@ public class PropertiesUtils {
      * Return a copy of the {@link Properties} object passed to it --- changes
      * to it will <b>not</b> affect the original.
      */
-    public static Properties copy (Properties original) {
+    public static Properties copy(Properties original) {
         Properties copy = new Properties();
 
         if (null != original) {
@@ -183,7 +183,7 @@ public class PropertiesUtils {
      * Return a new {@link Properties} object that contains those properties
      * that are unique to p1 or p2.
      */
-    public static Properties difference (Properties p1, Properties p2) {
+    public static Properties difference(Properties p1, Properties p2) {
         Properties result = copy(p1);
         for (Object o : p2.keySet()) {
             if (result.keySet().contains(o))
@@ -202,10 +202,9 @@ public class PropertiesUtils {
      * @param properties The properties to convert.
      * @return See above.
      */
-    public static List<Property> toPropertyList (Properties properties) {
+    public static List<Property> toPropertyList(Properties properties) {
         List<Property> list = new ArrayList<Property>(properties.size());
-        for (String name : properties.stringPropertyNames())
-        {
+        for (String name : properties.stringPropertyNames()) {
             String value = properties.getProperty(name);
             Property property = new Property(name, value);
             list.add(property);
@@ -214,7 +213,7 @@ public class PropertiesUtils {
         return list;
     }
 
-    public static Properties mapToProperties (Map<String, String> map) {
+    public static Properties mapToProperties(Map<String, String> map) {
         Properties properties = new Properties();
 
         for (String key : map.keySet()) {

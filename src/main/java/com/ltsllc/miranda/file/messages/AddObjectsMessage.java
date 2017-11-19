@@ -31,7 +31,7 @@ public class AddObjectsMessage extends Message {
         return objects;
     }
 
-    public AddObjectsMessage (BlockingQueue<Message> senderQueue, Object sender, List objects) {
+    public AddObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List objects) {
         super(Subjects.AddObjects, senderQueue, sender);
 
         this.objects = objects;

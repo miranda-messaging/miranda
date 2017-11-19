@@ -30,7 +30,7 @@ public class GetUserMessage extends Message {
         return name;
     }
 
-    public GetUserMessage (BlockingQueue<Message> senderQueue, Object sender, String name) {
+    public GetUserMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         super(Subjects.GetUser, senderQueue, sender);
 
         this.name = name;

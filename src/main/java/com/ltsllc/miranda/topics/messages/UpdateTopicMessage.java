@@ -33,7 +33,7 @@ public class UpdateTopicMessage extends SessionMessage {
         return topic;
     }
 
-    public UpdateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
+    public UpdateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
         super(Subjects.UpdateTopic, senderQueue, sender, session);
 
         this.topic = topic;

@@ -30,7 +30,7 @@ public class NetworkErrorMessage extends Message {
         return cause;
     }
 
-    public NetworkErrorMessage (BlockingQueue<Message> senderQueue, Object sender, Throwable cause) {
+    public NetworkErrorMessage(BlockingQueue<Message> senderQueue, Object sender, Throwable cause) {
         super(Subjects.NetworkError, senderQueue, sender);
 
         this.cause = cause;

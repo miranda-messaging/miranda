@@ -13,7 +13,7 @@ public class NewEventMessage extends Message {
     private Session session;
     private Event event;
 
-    public NewEventMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Event event) {
+    public NewEventMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, Event event) {
         super(Subjects.NewEvent, senderQueue, sender);
 
         this.session = session;

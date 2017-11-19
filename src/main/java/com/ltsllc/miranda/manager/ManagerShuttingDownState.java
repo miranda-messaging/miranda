@@ -34,11 +34,11 @@ public class ManagerShuttingDownState extends State {
         return requester;
     }
 
-    public Manager getManager () {
+    public Manager getManager() {
         return (Manager) getContainer();
     }
 
-    public ManagerShuttingDownState (Manager manager, BlockingQueue<Message> requester) throws MirandaException {
+    public ManagerShuttingDownState(Manager manager, BlockingQueue<Message> requester) throws MirandaException {
         super(manager);
 
         this.requester = requester;
@@ -50,7 +50,7 @@ public class ManagerShuttingDownState extends State {
         switch (message.getSubject()) {
             case ShutdownResponse: {
                 ShutdownResponseMessage shutdownResponseMessage = (ShutdownResponseMessage) message;
-                nextState = processShutdownResponseMessage (shutdownResponseMessage);
+                nextState = processShutdownResponseMessage(shutdownResponseMessage);
                 break;
             }
 
@@ -64,7 +64,7 @@ public class ManagerShuttingDownState extends State {
     }
 
 
-    public State processShutdownResponseMessage (ShutdownResponseMessage shutdownResponseMessage) {
+    public State processShutdownResponseMessage(ShutdownResponseMessage shutdownResponseMessage) {
         ShutdownResponseMessage shutdownResponseMessage2 = new ShutdownResponseMessage(getManager().getQueue(), this,
                 getManager().getName());
 

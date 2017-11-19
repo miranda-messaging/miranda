@@ -34,21 +34,21 @@ public class Notification extends Message {
         this.data = data;
     }
 
-    public Notification (BlockingQueue<Message> senderQueue, Object sender, Object data) {
+    public Notification(BlockingQueue<Message> senderQueue, Object sender, Object data) {
         super(Subjects.Notification, senderQueue, sender);
 
         this.data = data;
     }
 
-    public Notification (BlockingQueue<Message> senderQueue, Object sender) {
+    public Notification(BlockingQueue<Message> senderQueue, Object sender) {
         super(Subjects.Notification, senderQueue, sender);
     }
 
-    public Notification (Subjects subject, BlockingQueue<Message> senderQueue, Object sender) {
+    public Notification(Subjects subject, BlockingQueue<Message> senderQueue, Object sender) {
         super(subject, senderQueue, sender);
     }
 
-    public Notification (Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Object data) {
+    public Notification(Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Object data) {
         super(subject, senderQueue, sender);
 
         this.data = data;

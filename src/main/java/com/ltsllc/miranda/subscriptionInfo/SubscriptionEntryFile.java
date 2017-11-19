@@ -18,11 +18,11 @@ public class SubscriptionEntryFile extends SingleFile<SubscriptionEntry> {
         return new ArrayList<SubscriptionEntry>();
     }
 
-    public List<SubscriptionEntry> getEntryList () {
+    public List<SubscriptionEntry> getEntryList() {
         return getData();
     }
 
-    public void checkForDuplicates () {
+    public void checkForDuplicates() {
         List<Integer> remove = new ArrayList<Integer>();
 
         for (int i = 0; i < getEntryList().size(); i++) {

@@ -32,7 +32,7 @@ public class NodeUpdatedMessage extends Message {
     private NodeElement oldNode;
     private NodeElement newNode;
 
-    public NodeUpdatedMessage (BlockingQueue<Message> senderQueue, Object sender, NodeElement oldNode, NodeElement newNode) {
+    public NodeUpdatedMessage(BlockingQueue<Message> senderQueue, Object sender, NodeElement oldNode, NodeElement newNode) {
         super(Subjects.NodeUpdated, senderQueue, sender);
 
         this.oldNode = oldNode;

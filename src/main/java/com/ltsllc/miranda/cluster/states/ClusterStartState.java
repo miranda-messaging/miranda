@@ -35,17 +35,17 @@ public class ClusterStartState extends State {
         return (Cluster) getContainer();
     }
 
-    public ClusterStartState (Cluster cluster) throws MirandaException {
+    public ClusterStartState(Cluster cluster) throws MirandaException {
         super(cluster);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getCluster().getCurrentState();
 
         switch (message.getSubject()) {
             case FileLoaded: {
                 FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
-                nextState = processFileLoadedMessage (fileLoadedMessage);
+                nextState = processFileLoadedMessage(fileLoadedMessage);
                 break;
             }
 
@@ -58,7 +58,7 @@ public class ClusterStartState extends State {
         return nextState;
     }
 
-    public State processFileLoadedMessage (FileLoadedMessage fileLoadedMessage) throws MirandaException {
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {
         List<NodeElement> nodeElements = (List<NodeElement>) fileLoadedMessage.getData();
         List<Node> nodes = new ArrayList<Node>();
 

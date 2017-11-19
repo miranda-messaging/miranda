@@ -31,13 +31,12 @@ import java.util.concurrent.TimeoutException;
  * Created by Clark on 4/10/2017.
  */
 public class ReadUserServlet extends UserServlet {
-    public ResultObject createResultObject () {
+    public ResultObject createResultObject() {
         return new ResultObject();
     }
 
     public ReadObject basicService(HttpServletRequest request, HttpServletResponse response,
-                                   UserRequest requestObject) throws ServletException, IOException, TimeoutException
-    {
+                                   UserRequest requestObject) throws ServletException, IOException, TimeoutException {
         UserHolder.getInstance().getUser(requestObject.getUser().getName());
         ReadObject<User> readObject = new ReadObject<User>();
         readObject.setResult(UserHolder.getInstance().getGetUserResults());

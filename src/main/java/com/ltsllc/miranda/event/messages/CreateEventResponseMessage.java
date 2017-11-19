@@ -20,13 +20,12 @@ public class CreateEventResponseMessage extends Message {
         return result;
     }
 
-    public CreateEventResponseMessage (BlockingQueue<Message> senderQueue, Object sender, Results result, String guid) {
+    public CreateEventResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result, String guid) {
         super(Subjects.CreateResponse, senderQueue, sender);
 
         this.guid = guid;
         this.result = result;
     }
-
 
 
 }

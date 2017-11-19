@@ -41,7 +41,7 @@ public class UpdateTopicOperation extends Operation {
         this.topic = topic;
     }
 
-    public UpdateTopicOperation (BlockingQueue<Message> requester, Session session, Topic topic) throws MirandaException {
+    public UpdateTopicOperation(BlockingQueue<Message> requester, Session session, Topic topic) throws MirandaException {
         super(NAME, requester, session);
 
         UpdateTopicOperationReadyState updateTopicOperationReadyState = new UpdateTopicOperationReadyState(this);
@@ -50,7 +50,7 @@ public class UpdateTopicOperation extends Operation {
         this.topic = topic;
     }
 
-    public void start () {
+    public void start() {
         super.start();
 
         Miranda.getInstance().getUserManager().sendGetUser(getQueue(), this, getTopic().getOwner());

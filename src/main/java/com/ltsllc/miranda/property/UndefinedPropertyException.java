@@ -28,7 +28,7 @@ public class UndefinedPropertyException extends MirandaException {
         return name;
     }
 
-    public UndefinedPropertyException (String name) {
+    public UndefinedPropertyException(String name) {
         this.name = name;
     }
 }

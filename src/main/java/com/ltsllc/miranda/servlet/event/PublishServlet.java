@@ -104,7 +104,7 @@ public class PublishServlet extends HttpServlet {
         if (index < 0) {
             sendCreateEventResult(response, Results.MissingTopic);
             logger.warn("Missing topic name in " + request.getRequestURL());
-            throw new MirandaException ("missing topic name");
+            throw new MirandaException("missing topic name");
         }
 
         index++;
@@ -146,9 +146,8 @@ public class PublishServlet extends HttpServlet {
         }
     }
 
-    public void doDelete (HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+    public void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
             checkSession(request, response);
             String topicName = getTopicName(request, response);

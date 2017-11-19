@@ -31,7 +31,7 @@ public class NewUserMessage extends Message {
         return user;
     }
 
-    public NewUserMessage (BlockingQueue<Message> senderQueue, Object sender, User user) {
+    public NewUserMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
         super(Subjects.NewUser, senderQueue, sender);
 
         this.user = user;

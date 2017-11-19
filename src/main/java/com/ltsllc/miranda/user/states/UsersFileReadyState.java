@@ -36,7 +36,7 @@ import java.util.List;
 public class UsersFileReadyState extends SingleFileReadyState {
     private static Logger logger = Logger.getLogger(UsersFileReadyState.class);
 
-    public UsersFileReadyState (UsersFile usersFile) throws MirandaException {
+    public UsersFileReadyState(UsersFile usersFile) throws MirandaException {
         super(usersFile);
     }
 
@@ -63,7 +63,7 @@ public class UsersFileReadyState extends SingleFileReadyState {
     }
 
 
-    private State processNewUserMessage (NewUserMessage newUserMessage) {
+    private State processNewUserMessage(NewUserMessage newUserMessage) {
         getUsersFile().addUser(newUserMessage.getUser());
 
         return this;
@@ -71,7 +71,8 @@ public class UsersFileReadyState extends SingleFileReadyState {
 
 
     public Type getListType() {
-        return new TypeToken<List<User>> () {}.getType();
+        return new TypeToken<List<User>>() {
+        }.getType();
     }
 
 

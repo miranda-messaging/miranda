@@ -33,7 +33,7 @@ public class CreateTopicMessage extends SessionMessage {
         return topic;
     }
 
-    public CreateTopicMessage (BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
+    public CreateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Session session, Topic topic) {
         super(Subjects.CreateTopic, senderQueue, sender, session);
 
         this.topic = topic;

@@ -12,17 +12,17 @@ import com.ltsllc.miranda.operations.Operation;
  * Created by Clark on 6/11/2017.
  */
 abstract public class OperationState extends State {
-    abstract public Message createResponseMessage (Results result);
+    abstract public Message createResponseMessage(Results result);
 
     private ImprovedRandom improvedRandom;
 
-    public OperationState (Operation operation) throws MirandaException {
+    public OperationState(Operation operation) throws MirandaException {
         super(operation);
 
         this.improvedRandom = new ImprovedRandom();
     }
 
-    public Operation getOperation () {
+    public Operation getOperation() {
         return (Operation) getContainer();
     }
 
@@ -30,12 +30,12 @@ abstract public class OperationState extends State {
         return improvedRandom;
     }
 
-    public void reply (Results result) {
+    public void reply(Results result) {
         Message response = createResponseMessage(result);
         Consumer.staticSend(response, getOperation().getRequester());
     }
 
-    public String createConversationKey () {
+    public String createConversationKey() {
         Long value = getImprovedRandom().nextNonNegativeLong();
         return value.toString();
     }

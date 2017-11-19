@@ -34,7 +34,7 @@ public class UpdateUserServlet extends UserServlet {
         return new ResultObject();
     }
 
-    public boolean allowAccess () {
+    public boolean allowAccess() {
         return true;
     }
 

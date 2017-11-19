@@ -24,21 +24,21 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
  * Created by Clark on 5/3/2017.
  */
 public class ReaderReadyState extends State {
-    public Reader getReader () {
+    public Reader getReader() {
         return (Reader) getContainer();
     }
 
-    public ReaderReadyState (Reader reader) throws MirandaException {
+    public ReaderReadyState(Reader reader) throws MirandaException {
         super(reader);
     }
 
-    public State processMessage (Message message) throws MirandaException {
+    public State processMessage(Message message) throws MirandaException {
         State nextState = getReader().getCurrentState();
 
         switch (message.getSubject()) {
-            case Read : {
+            case Read: {
                 ReadMessage readMessage = (ReadMessage) message;
-                nextState = processReadMessage (readMessage);
+                nextState = processReadMessage(readMessage);
                 break;
             }
 
@@ -51,7 +51,7 @@ public class ReaderReadyState extends State {
         return nextState;
     }
 
-    public State processReadMessage (ReadMessage readMessage) throws MirandaException {
+    public State processReadMessage(ReadMessage readMessage) throws MirandaException {
         ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this);
         response.setFilename(readMessage.getFilename());
 

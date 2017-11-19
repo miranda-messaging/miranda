@@ -31,9 +31,11 @@ import java.util.concurrent.BlockingQueue;
  * An abstract class to make switching between netty, mina and sockets easier
  */
 abstract public class Handle {
-    abstract public void send (WireMessage wireMessage) throws NetworkException;
-    abstract public void close ();
-    abstract public void panic ();
+    abstract public void send(WireMessage wireMessage) throws NetworkException;
+
+    abstract public void close();
+
+    abstract public void panic();
 
     private static Gson ourGson = new Gson();
 
@@ -47,48 +49,48 @@ abstract public class Handle {
         this.queue = queue;
     }
 
-    public Handle (BlockingQueue<Message> queue) {
+    public Handle(BlockingQueue<Message> queue) {
         this.queue = queue;
     }
 
-    public static WireMessage jsonToWireMessage (WireMessage wireMessage, String json) throws NetworkException {
+    public static WireMessage jsonToWireMessage(WireMessage wireMessage, String json) throws NetworkException {
         try {
             Type messageType = Handle.class.forName(wireMessage.getClassName());
             return ourGson.fromJson(json, messageType);
         } catch (ClassNotFoundException e) {
-            throw new NetworkException (wireMessage.getClassName(), NetworkException.Errors.ClassNotFound);
+            throw new NetworkException(wireMessage.getClassName(), NetworkException.Errors.ClassNotFound);
         }
     }
 
-    public static WireMessage jsonToWireMessage (String json) {
+    public static WireMessage jsonToWireMessage(String json) {
         return ourGson.fromJson(json, WireMessage.class);
     }
 
-    public static WireMessage jsonToWireMessageTwoPass (String json) throws NetworkException {
+    public static WireMessage jsonToWireMessageTwoPass(String json) throws NetworkException {
         WireMessage firstPass = jsonToWireMessage(json);
         return jsonToWireMessage(firstPass, json);
     }
 
     /**
      * This method is called when a new message is received from the network.
-     *
      * <p>
-     *     The base behavior is simply to put the message on the queue for the handle.
+     * <p>
+     * The base behavior is simply to put the message on the queue for the handle.
      * </p>
      *
      * @param wireMessage The new message.
      */
-    public void deliver (WireMessage wireMessage) {
-        NetworkMessage message = new NetworkMessage(null,this, wireMessage);
+    public void deliver(WireMessage wireMessage) {
+        NetworkMessage message = new NetworkMessage(null, this, wireMessage);
         try {
             getQueue().put(message);
         } catch (InterruptedException e) {
-            Panic panic = new Panic ("Exception trying to sendToMe mesage", e, Panic.Reasons.ExceptionSendingMessage);
+            Panic panic = new Panic("Exception trying to sendToMe mesage", e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.getInstance().panic(panic);
         }
     }
 
-    public void sendPanicMessage (BlockingQueue<Message> senderQueue, Object sender, boolean ignoreExceptions) {
+    public void sendPanicMessage(BlockingQueue<Message> senderQueue, Object sender, boolean ignoreExceptions) {
         PanicMessage panicMessage = new PanicMessage(senderQueue, sender);
         try {
             getQueue().put(panicMessage);

@@ -37,7 +37,7 @@ public class JettyHttpServer extends HttpServer {
     private static Logger logger = Logger.getLogger(JettyHttpServer.class);
     private Server jetty;
 
-    public JettyHttpServer (Server jetty, HandlerCollection handlerCollection) throws MirandaException {
+    public JettyHttpServer(Server jetty, HandlerCollection handlerCollection) throws MirandaException {
         super();
 
         this.jetty = jetty;
@@ -45,16 +45,15 @@ public class JettyHttpServer extends HttpServer {
     }
 
 
-
     public static ServletHandler getServletHandler() {
         return ourServletHandler;
     }
 
-    public static HandlerCollection getHandlerCollection () {
+    public static HandlerCollection getHandlerCollection() {
         return ourHandlerCollection;
     }
 
-    public Server getJetty () {
+    public Server getJetty() {
         return jetty;
     }
 

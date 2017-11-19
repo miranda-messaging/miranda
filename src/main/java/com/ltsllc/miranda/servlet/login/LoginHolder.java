@@ -33,22 +33,23 @@ public class LoginHolder extends ServletHolder {
         public Results result;
         public Session session;
 
-        public LoginResult (Results result, Session session) {
+        public LoginResult(Results result, Session session) {
             this.result = result;
             this.session = session;
         }
 
-        public LoginResult () {}
+        public LoginResult() {
+        }
     }
 
     private static LoginHolder ourInstance;
     private static Logger logger = Logger.getLogger(LoginHolder.class);
 
-    public static LoginHolder getInstance () {
+    public static LoginHolder getInstance() {
         return ourInstance;
     }
 
-    public static void initialize (long timeout) throws MirandaException {
+    public static void initialize(long timeout) throws MirandaException {
         ourInstance = new LoginHolder(timeout);
     }
 
@@ -71,7 +72,7 @@ public class LoginHolder extends ServletHolder {
         this.session = session;
     }
 
-    public LoginHolder (long timeout) throws MirandaException {
+    public LoginHolder(long timeout) throws MirandaException {
         super("login", timeout);
 
         LoginHolderReadyState readyState = new LoginHolderReadyState(this);
@@ -79,10 +80,10 @@ public class LoginHolder extends ServletHolder {
     }
 
     public LoginResult login(String name) throws TimeoutException {
-        setResult (Results.Unknown);
+        setResult(Results.Unknown);
         setSession(null);
 
-        Miranda.getInstance().sendLoginMessage (getQueue(), this, name);
+        Miranda.getInstance().sendLoginMessage(getQueue(), this, name);
 
         sleep();
 
@@ -90,7 +91,7 @@ public class LoginHolder extends ServletHolder {
         return loginResult;
     }
 
-    public void setResultAndWakeup (LoginResult loginResult) {
+    public void setResultAndWakeup(LoginResult loginResult) {
         setResult(loginResult.result);
         setSession(loginResult.session);
         wake();

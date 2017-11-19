@@ -30,15 +30,15 @@ import com.ltsllc.miranda.subsciptions.messages.GetSubscriptionResponseMessage;
  * Created by Clark on 4/22/2017.
  */
 public class DeleteSubscriptionOperationReadyState extends State {
-    public DeleteSubscriptionOperation getDeleteSubscriptionOperation () {
+    public DeleteSubscriptionOperation getDeleteSubscriptionOperation() {
         return (DeleteSubscriptionOperation) getContainer();
     }
 
-    public DeleteSubscriptionOperationReadyState (DeleteSubscriptionOperation deleteSubscriptionOperation) throws MirandaException {
+    public DeleteSubscriptionOperationReadyState(DeleteSubscriptionOperation deleteSubscriptionOperation) throws MirandaException {
         super(deleteSubscriptionOperation);
     }
 
-    public State processMessage (Message message) {
+    public State processMessage(Message message) {
         State nextState = getDeleteSubscriptionOperation().getCurrentState();
 
         switch (message.getSubject()) {
@@ -46,7 +46,7 @@ public class DeleteSubscriptionOperationReadyState extends State {
                 GetSubscriptionResponseMessage getSubscriptionResponseMessage = (GetSubscriptionResponseMessage)
                         message;
 
-                nextState = processGetSubscriptionResponseMessage (getSubscriptionResponseMessage);
+                nextState = processGetSubscriptionResponseMessage(getSubscriptionResponseMessage);
                 break;
             }
 
@@ -54,7 +54,7 @@ public class DeleteSubscriptionOperationReadyState extends State {
                 DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage = (DeleteSubscriptionResponseMessage)
                         message;
 
-                nextState = processDeleteSubscriptionResponseMessage (deleteSubscriptionResponseMessage);
+                nextState = processDeleteSubscriptionResponseMessage(deleteSubscriptionResponseMessage);
                 break;
             }
         }
@@ -62,12 +62,12 @@ public class DeleteSubscriptionOperationReadyState extends State {
         return nextState;
     }
 
-    public State processDeleteSubscriptionResponseMessage (DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage) {
+    public State processDeleteSubscriptionResponseMessage(DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage) {
         if (deleteSubscriptionResponseMessage.getResult() != Results.Success) {
             DeleteSubscriptionResponseMessage response = new DeleteSubscriptionResponseMessage(getDeleteSubscriptionOperation().getQueue(),
                     this, deleteSubscriptionResponseMessage.getResult());
 
-            send (getDeleteSubscriptionOperation().getRequester(), deleteSubscriptionResponseMessage);
+            send(getDeleteSubscriptionOperation().getRequester(), deleteSubscriptionResponseMessage);
 
             return StopState.getInstance();
         }
@@ -80,12 +80,12 @@ public class DeleteSubscriptionOperationReadyState extends State {
         return StopState.getInstance();
     }
 
-    public State processGetSubscriptionResponseMessage (GetSubscriptionResponseMessage response) {
+    public State processGetSubscriptionResponseMessage(GetSubscriptionResponseMessage response) {
         if (response.getResult() != Results.Success) {
             DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage = new DeleteSubscriptionResponseMessage(
                     getDeleteSubscriptionOperation().getQueue(), this, Results.SubscriptionNotFound);
 
-            send (getDeleteSubscriptionOperation().getRequester(), deleteSubscriptionResponseMessage);
+            send(getDeleteSubscriptionOperation().getRequester(), deleteSubscriptionResponseMessage);
 
             return StopState.getInstance();
         }
@@ -93,8 +93,7 @@ public class DeleteSubscriptionOperationReadyState extends State {
         getDeleteSubscriptionOperation().setSubscription(response.getSubscription());
 
         if (!getDeleteSubscriptionOperation().getSession().getUser().getName().equals(getDeleteSubscriptionOperation().getSubscription().getOwner()) &&
-                getDeleteSubscriptionOperation().getSession().getUser().getCategory() != User.UserTypes.Admin)
-        {
+                getDeleteSubscriptionOperation().getSession().getUser().getCategory() != User.UserTypes.Admin) {
             DeleteSubscriptionResponseMessage deleteSubscriptionResponseMessage = new DeleteSubscriptionResponseMessage(
                     getDeleteSubscriptionOperation().getQueue(), this, Results.NotOwner);
 

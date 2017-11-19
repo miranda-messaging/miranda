@@ -11,7 +11,7 @@ public class WatchDirectoryMessage extends Message {
     private File directory;
     private BlockingQueue<Message> listener;
 
-    public WatchDirectoryMessage (BlockingQueue<Message> senderQueue, Object sender, File directory, BlockingQueue<Message> listener) {
+    public WatchDirectoryMessage(BlockingQueue<Message> senderQueue, Object sender, File directory, BlockingQueue<Message> listener) {
         super(WatchDirectory, senderQueue, sender);
 
         this.directory = directory;

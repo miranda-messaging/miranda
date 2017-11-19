@@ -86,13 +86,13 @@ public class MirandaFactory {
         return properties;
     }
 
-    public MirandaFactory (MirandaProperties properties, String keystorePassword, String truststorePassword) {
+    public MirandaFactory(MirandaProperties properties, String keystorePassword, String truststorePassword) {
         this.properties = properties;
         this.keystorePassword = keystorePassword;
         this.truststorePassword = truststorePassword;
     }
 
-    public void getKeyStores () {
+    public void getKeyStores() {
         try {
             String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
             KeyStore keyStore = Utils.loadKeyStore(filename, getKeystorePassword());
@@ -108,18 +108,18 @@ public class MirandaFactory {
         }
     }
 
-    public ConnectionListener buildNetworkListener (KeyStore keyStore, KeyStore trustStore) throws MirandaException {
+    public ConnectionListener buildNetworkListener(KeyStore keyStore, KeyStore trustStore) throws MirandaException {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
 
 
         return new MinaNetworkListener(port, keyStore, getKeystorePassword(), trustStore);
     }
 
-    public Network buildNetwork (KeyStore keyStore, KeyStore trustStore) throws MirandaException {
+    public Network buildNetwork(KeyStore keyStore, KeyStore trustStore) throws MirandaException {
         return new MinaNetwork(keyStore, trustStore, getKeystorePassword());
     }
 
-    public void checkProperty (String name, String value) throws MirandaException {
+    public void checkProperty(String name, String value) throws MirandaException {
         if (null == value || value.equals("")) {
             String message = "No or empty value for property " + name;
             logger.error(message);
@@ -147,7 +147,7 @@ public class MirandaFactory {
         return sslContext;
     }
 
-    public SslContext buildLocalCaServerSslContext () throws MirandaException {
+    public SslContext buildLocalCaServerSslContext() throws MirandaException {
         /*
         MirandaProperties properties = Miranda.properties;
 
@@ -180,7 +180,7 @@ public class MirandaFactory {
     }
 
 
-    public SslContext buildRemoteCaServerContext () throws MirandaException {
+    public SslContext buildRemoteCaServerContext() throws MirandaException {
         /*
         try {
             MirandaProperties properties = Miranda.properties;
@@ -222,7 +222,7 @@ public class MirandaFactory {
     private static final String JETTY_TAG = "jetty.tag.version";
     private static final String DEFAULT_JETTY_TAG = "master";
 
-    public HttpServer buildServletContainer () throws MirandaException {
+    public HttpServer buildServletContainer() throws MirandaException {
         MirandaProperties.WebSevers whichServer = getProperties().getHttpServerProperty(MirandaProperties.PROPERTY_HTTP_SERVER);
         int sslPort = getProperties().getIntProperty(MirandaProperties.PROPERTY_HTTP_SSL_PORT);
         String httpBase = getProperties().getProperty(MirandaProperties.PROPERTY_HTTP_BASE);
@@ -240,7 +240,7 @@ public class MirandaFactory {
     }
 
 
-    public HttpServer buildJetty (int sslPort, String httpBase) throws MirandaException {
+    public HttpServer buildJetty(int sslPort, String httpBase) throws MirandaException {
         try {
             MirandaProperties properties = Miranda.properties;
 
@@ -262,7 +262,7 @@ public class MirandaFactory {
 
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(true);
-            resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
+            resourceHandler.setWelcomeFiles(new String[]{"index.html"});
             resourceHandler.setResourceBase(base);
 
             HandlerCollection handlerCollection = new HandlerCollection(true);
@@ -285,7 +285,7 @@ public class MirandaFactory {
                     new SslConnectionFactory(sslContextFactory, "http/1.1"),
                     new HttpConnectionFactory(https));
             sslConnector.setPort(sslPort);
-            jetty.setConnectors(new Connector[] { sslConnector });
+            jetty.setConnectors(new Connector[]{sslConnector});
 
             HttpServer httpServer = new JettyHttpServer(jetty, handlerCollection);
             httpServer.start(); // this starts the HttpServer instance not jetty
@@ -296,7 +296,7 @@ public class MirandaFactory {
         }
     }
 
-    public SSLContext buildServerSSLContext () {
+    public SSLContext buildServerSSLContext() {
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         SSLContext sslContext = null;
 
@@ -322,7 +322,7 @@ public class MirandaFactory {
         return sslContext;
     }
 
-    public SSLContext buildRemoteCaServerSSLContext () {
+    public SSLContext buildRemoteCaServerSSLContext() {
         SSLContext sslContext = null;
 
         try {
@@ -334,7 +334,7 @@ public class MirandaFactory {
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
         } catch (GeneralSecurityException | IOException e) {
-            Panic panic = new Panic ("Exception while trying to create SSL context", e,
+            Panic panic = new Panic("Exception while trying to create SSL context", e,
                     Panic.Reasons.ExceptionCreatingSslContext);
 
             Miranda.getInstance().panic(panic);
@@ -343,7 +343,7 @@ public class MirandaFactory {
         return sslContext;
     }
 
-    public SSLContext buildLocalCaServerSSLContext () {
+    public SSLContext buildLocalCaServerSSLContext() {
         SSLContext sslContext = null;
 
         try {
@@ -360,7 +360,7 @@ public class MirandaFactory {
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
         } catch (GeneralSecurityException | IOException e) {
-            Panic panic = new Panic ("Exception while trying to create SSL context", e,
+            Panic panic = new Panic("Exception while trying to create SSL context", e,
                     Panic.Reasons.ExceptionCreatingSslContext);
 
             Miranda.getInstance().panic(panic);
@@ -369,30 +369,30 @@ public class MirandaFactory {
         return sslContext;
     }
 
-    public PanicPolicy buildPanicPolicy () {
+    public PanicPolicy buildPanicPolicy() {
         int maxPanics = getProperties().getIntProperty(MirandaProperties.PROPERTY_PANIC_LIMIT);
         long timeout = getProperties().getLongProperty(MirandaProperties.PROPERTY_PANIC_TIMEOUT, MirandaProperties.DEFAULT_PANIC_TIMEOUT);
 
         return new MirandaPanicPolicy(maxPanics, timeout, Miranda.getInstance(), Miranda.timer);
     }
 
-    public Network buildNettyNetwork () {
+    public Network buildNettyNetwork() {
         throw new IllegalStateException("not impelmented");
     }
 
-    public Network buildSocketNetwork () {
+    public Network buildSocketNetwork() {
         throw new IllegalStateException("not impelmented");
     }
 
-    public ConnectionListener buildNettyNetworkListener () {
+    public ConnectionListener buildNettyNetworkListener() {
         throw new IllegalStateException("not impelmented");
     }
 
-    public ConnectionListener buildSocketNetworkListener () {
+    public ConnectionListener buildSocketNetworkListener() {
         throw new IllegalStateException("not impelmented");
     }
 
-    public ConnectionListener buildNewNetworkListener () throws MirandaException {
+    public ConnectionListener buildNewNetworkListener() throws MirandaException {
         int port = getProperties().getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
         return new MinaNetworkListener(port, getKeyStore(), getKeystorePassword(), getTrustStore());

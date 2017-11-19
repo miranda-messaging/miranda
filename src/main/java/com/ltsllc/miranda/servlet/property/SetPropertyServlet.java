@@ -47,10 +47,9 @@ public class SetPropertyServlet extends HttpServlet {
         }
 
         logger.info("new values:");
-        for (String name : newValues.keySet())
-        {
+        for (String name : newValues.keySet()) {
             String value = newValues.get(name);
-            logger.info (name + " = " + value);
+            logger.info(name + " = " + value);
         }
 
         if (newValues.size() > 0) {
