@@ -17,16 +17,12 @@
 package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.FileWatcher;
 import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.file.SimpleFileWatcher;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
-import com.ltsllc.miranda.miranda.Miranda;
 
 import java.io.IOException;
 

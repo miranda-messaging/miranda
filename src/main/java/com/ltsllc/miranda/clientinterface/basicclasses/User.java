@@ -20,12 +20,9 @@ import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.Utils;
 import com.ltsllc.miranda.MirandaUncheckedException;
-import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 
 /**
  * A user of the Miranda system.

@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
-import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.common.util.ImprovedRandom;

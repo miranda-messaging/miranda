@@ -1,6 +1,5 @@
 package com.ltsllc.miranda;
 
-import com.ltsllc.miranda.Quorum;
 import com.ltsllc.miranda.node.Node;
 
 import java.util.List;

@@ -25,7 +25,6 @@ import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.manager.ManagerReadyState;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
@@ -47,8 +46,6 @@ import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import org.apache.log4j.Logger;
-
-import java.io.IOException;
 
 /**
  * Created by Clark on 1/3/2017.

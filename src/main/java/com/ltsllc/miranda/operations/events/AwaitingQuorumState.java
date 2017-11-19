@@ -5,7 +5,6 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.operations.NetworkConversationMessage;
 import com.ltsllc.miranda.operations.Operation;
-import com.ltsllc.miranda.Quorum;
 import com.ltsllc.miranda.operations.WireResponse;
 import org.apache.log4j.Logger;
 

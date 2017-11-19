@@ -19,7 +19,6 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
-import com.ltsllc.miranda.file.Updateable;
 
 /**
  * Created by Clark on 5/18/2017.

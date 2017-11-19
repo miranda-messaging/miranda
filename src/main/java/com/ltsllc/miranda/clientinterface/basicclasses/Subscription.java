@@ -16,8 +16,6 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.google.gson.Gson;
-
 /**
  * A subscription to a topic.
  * <p>

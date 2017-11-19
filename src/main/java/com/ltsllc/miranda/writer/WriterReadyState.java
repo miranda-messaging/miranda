@@ -22,7 +22,6 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  * Created by Clark on 1/3/2017.

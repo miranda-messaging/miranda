@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.mina;
 
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.ConnectionListener;
+import com.ltsllc.miranda.network.Network;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;

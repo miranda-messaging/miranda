@@ -18,9 +18,6 @@ package com.ltsllc.miranda.clientinterface.results;
 
 import com.ltsllc.common.util.Utils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 /**
  * Created by Clark on 4/7/2017.
  */

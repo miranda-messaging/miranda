@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.test;
 
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkException;
-import com.ltsllc.miranda.network.ConnectionListener;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

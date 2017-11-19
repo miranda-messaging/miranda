@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.file.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
 
 import java.io.File;
 import java.util.concurrent.BlockingQueue;

@@ -9,7 +9,6 @@ import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.Quorum;
 import com.ltsllc.miranda.topics.messages.GetTopicResponseMessage;
 
 /**

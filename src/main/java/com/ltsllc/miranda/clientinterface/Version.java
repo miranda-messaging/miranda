@@ -22,9 +22,6 @@ package com.ltsllc.miranda.clientinterface;
 
 import com.ltsllc.common.util.Utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 /**
