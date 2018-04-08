@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
+import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
@@ -32,6 +33,7 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -172,7 +174,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         Miranda.fileWatcher.sendWatchFileMessage(getQueue(), this, file, getQueue());
     }
 
-    public void updateVersion() throws NoSuchAlgorithmException {
+    public void updateVersion() throws Exception {
         String json = asJson();
 
         Version version = new Version(json);
@@ -232,7 +234,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         try {
             byte[] data = getBytes();
             return new Version(data);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             Panic panic = new Panic("Exception trying to calculate sha1", e, Panic.Reasons.ExceptionCalculatingSha1);
             Miranda.panicMiranda(panic);
         }

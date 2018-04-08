@@ -6,7 +6,7 @@ import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.clcl.PublicKey;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 
 import java.io.File;
@@ -45,11 +45,11 @@ public class BootstrapUsersFile {
         this.privateKey = privateKey;
     }
 
-    public BootstrapUsersFile(String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
+    public BootstrapUsersFile(String usersFilename, String keyStoreFilename, String password) throws EncryptionException, GeneralSecurityException {
         initialize(usersFilename, keyStoreFilename, password);
     }
 
-    public void initialize(String usersFilename, String keyStoreFilename, String password) throws IOException, GeneralSecurityException {
+    public void initialize(String usersFilename, String keyStoreFilename, String password) throws GeneralSecurityException,EncryptionException {
         KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, password);
 
         java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey("private", password.toCharArray());
@@ -116,15 +116,15 @@ public class BootstrapUsersFile {
         }
     }
 
-    public void createUser(String name, String description) throws GeneralSecurityException, IOException {
+    public void createUser(String name, String description) throws GeneralSecurityException, IOException, EncryptionException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         PublicKey publicKey = new PublicKey(keyPair.getPublic());
         User user = new User(name, User.UserTypes.Admin, description, publicKey);
         String publicKeyFilename = name + ".public.pem.txt";
         String privateKeyFilename = name + ".private.pem.txt";
-        Utils.writeAsPem(publicKeyFilename, keyPair.getPublic());
-        Utils.writeAsPem(privateKeyFilename, keyPair.getPrivate());
+        PublicKey.writePemFile(publicKeyFilename, keyPair.getPublic());
+        PrivateKey.writePemFile(privateKeyFilename, keyPair.getPrivate());
         userList.add(user);
     }
 }

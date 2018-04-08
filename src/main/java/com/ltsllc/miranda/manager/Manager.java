@@ -24,6 +24,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 4/26/2017.
+ * A class that manages a file.
  */
 public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     abstract public SingleFile<F> createFile(String filename) throws IOException, MirandaException;
@@ -129,5 +130,13 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         List<F> fileData = getFile().getData();
         List<E> newData = convertList(fileData);
         setData(newData);
+    }
+
+    /**
+     * Send a {@link com.ltsllc.miranda.miranda.messages.GetVersionsMessage} to the manager.
+     */
+    public void sendGetVersion (Consumer consumer) {
+        GetVersionsMessage getVersionsMessage = new GetVersionsMessage(consumer.getQueue(), consumer);
+        sendToMe(getVersionsMessage);
     }
 }

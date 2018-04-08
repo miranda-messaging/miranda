@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.commons.util.ImprovedRandom;
 
 /**
  * An Object that can be merged with another object.

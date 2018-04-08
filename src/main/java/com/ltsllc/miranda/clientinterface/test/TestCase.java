@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.clientinterface.test;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -51,7 +52,7 @@ public class TestCase extends com.ltsllc.miranda.test.TestCase {
             fileInputStream.close();
             byteArrayOutputStream.close();
 
-            return Utils.bytesToString(byteArrayOutputStream.toByteArray());
+            return HexConverter.toHexString(byteArrayOutputStream.toByteArray());
         } finally {
             Utils.closeIgnoreExceptions(fileInputStream);
         }

@@ -61,7 +61,7 @@ public class NewNodeState extends NodeState {
         NewNodeState.logger = logger;
     }
 
-    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
+    public State processNetworkMessage(NetworkMessage networkMessage)  {
         State nextState = this;
 
         WireMessage wireMessage = networkMessage.getWireMessage();
@@ -174,7 +174,7 @@ public class NewNodeState extends NodeState {
         return this;
     }
 
-    private State processJoinWireMessage(JoinWireMessage joinWireMessage) throws MirandaException {
+    private State processJoinWireMessage(JoinWireMessage joinWireMessage) {
         getNode().setDns(joinWireMessage.getDns());
         getNode().setPort(joinWireMessage.getPort());
         getNode().setDescription(joinWireMessage.getDescription());

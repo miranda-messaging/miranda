@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
-import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 
 import java.io.File;

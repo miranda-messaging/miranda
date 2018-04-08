@@ -19,7 +19,8 @@ package com.ltsllc.miranda;
 import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.clcl.PublicKey;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class TestPublicKey extends TestCase {
         java.security.PublicKey securityPublicKey = null;
 
         try {
-            byte[] data = Utils.hexStringToBytes(hexString);
+            byte[] data = HexConverter.toByteArray(hexString);
             byteArrayInputStream = new ByteArrayInputStream(data);
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             securityPublicKey = (java.security.PublicKey) objectInputStream.readObject();
@@ -71,7 +72,7 @@ public class TestPublicKey extends TestCase {
         java.security.PrivateKey securityPrivateKey = null;
 
         try {
-            byte[] data = Utils.hexStringToBytes(hexstring);
+            byte[] data = HexConverter.toByteArray(hexstring);
             byteArrayInputStream = new ByteArrayInputStream(data);
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             securityPrivateKey = (java.security.PrivateKey) objectInputStream.readObject();

@@ -66,6 +66,7 @@ public class Panic extends Exception {
         Test,
         UncaughtException, // A misc checked exception was caught
         UnrecognizedPublicKeyClass,
+        UnrecognizedNetworkMessage, // the object received an unexpected network message
         UnrecognizedNode, // a node shut down that we don't have a record of
         UnrecognizedRemotePolicy,
         UnrecognizedResult

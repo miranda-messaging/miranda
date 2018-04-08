@@ -16,7 +16,9 @@
 
 package com.ltsllc.miranda;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.JavaKeyStore;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.JettyHttpServer;
@@ -55,22 +57,22 @@ public class MirandaFactory {
     private MirandaProperties properties;
     private String keystorePassword;
     private String truststorePassword;
-    private KeyStore keyStore;
-    private KeyStore trustStore;
+    private JavaKeyStore keyStore;
+    private JavaKeyStore trustStore;
 
-    public KeyStore getTrustStore() {
+    public JavaKeyStore getTrustStore() {
         return trustStore;
     }
 
-    public void setTrustStore(KeyStore trustStore) {
+    public void setTrustStore(JavaKeyStore trustStore) {
         this.trustStore = trustStore;
     }
 
-    public KeyStore getKeyStore() {
+    public JavaKeyStore getKeyStore() {
         return keyStore;
     }
 
-    public void setKeyStore(KeyStore keyStore) {
+    public void setKeyStore(JavaKeyStore keyStore) {
         this.keyStore = keyStore;
     }
 
@@ -92,26 +94,9 @@ public class MirandaFactory {
         this.truststorePassword = truststorePassword;
     }
 
-    public void getKeyStores() {
-        try {
-            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            KeyStore keyStore = Utils.loadKeyStore(filename, getKeystorePassword());
-            setKeyStore(keyStore);
 
-            filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-            keyStore = Utils.loadKeyStore(filename, getTruststorePassword());
-            setTrustStore(keyStore);
-        } catch (GeneralSecurityException | IOException e) {
-            StartupPanic startupPanic = new StartupPanic("Exception trying to get keystores", e,
-                    StartupPanic.StartupReasons.ExceptionLoadingKeystore);
-            Miranda.panicMiranda(startupPanic);
-        }
-    }
-
-    public ConnectionListener buildNetworkListener(KeyStore keyStore, KeyStore trustStore) throws MirandaException {
+    public ConnectionListener buildNetworkListener(JavaKeyStore keyStore, JavaKeyStore trustStore) throws MirandaException {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-
-
         return new MinaNetworkListener(port, keyStore, getKeystorePassword(), trustStore);
     }
 
@@ -148,72 +133,11 @@ public class MirandaFactory {
     }
 
     public SslContext buildLocalCaServerSslContext() throws MirandaException {
-        /*
-        MirandaProperties properties = Miranda.properties;
-
-        String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-        checkProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, serverKeyStoreFilename);
-
-        String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-        checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
-
-        String serverKeyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
-        checkProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS, serverKeyStoreAlias);
-
-        String trustStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-        checkProperty(MirandaProperties.PROPERTY_TRUST_STORE, trustStoreFilename);
-
-        String trustStorePassword = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD);
-        checkProperty(MirandaProperties.PROPERTY_TRUST_STORE_PASSWORD, trustStorePassword);
-
-        String trustStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS);
-        checkProperty(MirandaProperties.PROPERTY_TRUST_STORE_ALIAS, trustStoreAlias);
-
-        try {
-            return Utils.createServerSslContext(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias,
-                    trustStoreFilename, trustStorePassword, trustStoreAlias);
-        } catch (IOException | GeneralSecurityException e) {
-            throw new MirandaException("Exception trying to create server SSL context", e);
-        }
-        */
         return null;
     }
 
 
     public SslContext buildRemoteCaServerContext() throws MirandaException {
-        /*
-        try {
-            MirandaProperties properties = Miranda.properties;
-
-            String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE, serverKeyStoreFilename);
-
-            String serverKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_PASSWORD, serverKeyStorePassword);
-
-            String serverKeyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS);
-            checkProperty(MirandaProperties.PROPERTY_KEYSTORE_ALIAS, serverKeyStoreAlias);
-
-            String certificateKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE);
-            checkProperty(MirandaProperties.PROPERTY_TRUST_STORE, certificateKeyStoreFilename);
-
-            String certificateKeyStorePassword = properties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_PASSWORD);
-            checkProperty(MirandaProperties.PROPERTY_CERTIFICATE_PASSWORD, certificateKeyStorePassword);
-
-            String certificateKeyStoreAlias = properties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
-            checkProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS, certificateKeyStoreAlias);
-
-            java.security.PrivateKey key = Utils.loadKey(serverKeyStoreFilename, serverKeyStorePassword, serverKeyStoreAlias);
-            X509Certificate certificate = Utils.loadCertificate(certificateKeyStoreFilename, certificateKeyStorePassword, certificateKeyStoreAlias);
-
-            return SslContextBuilder
-                    .forServer(key, certificate)
-                    .build();
-        } catch (GeneralSecurityException | IOException e) {
-            throw new MirandaException("Exception trying to create SSL context", e);
-        }
-
-*/
         return null;
     }
 
@@ -327,13 +251,13 @@ public class MirandaFactory {
 
         try {
             String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, getKeystorePassword());
+            JavaKeyStore javaKeyStore = new JavaKeyStore(keyStoreFilename, getKeystorePassword());
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, getKeystorePassword().toCharArray());
+            keyManagerFactory.init(keyStore.getJsKeyStore(), getKeystorePassword().toCharArray());
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (GeneralSecurityException | EncryptionException | IOException e) {
             Panic panic = new Panic("Exception while trying to create SSL context", e,
                     Panic.Reasons.ExceptionCreatingSslContext);
 
@@ -348,18 +272,18 @@ public class MirandaFactory {
 
         try {
             String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-            KeyStore trustKeyStore = Utils.loadKeyStore(trustStoreFilename, getTruststorePassword());
+            KeyStore keyStore = JavaKeyStore.loadJsKeyStore(trustStoreFilename, getTruststorePassword());
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(trustKeyStore);
+            trustManagerFactory.init(keyStore);
 
             String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, getKeystorePassword());
+            KeyStore keyStore2 = JavaKeyStore.loadJsKeyStore(keyStoreFilename, getKeystorePassword());
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, getKeystorePassword().toCharArray());
+            keyManagerFactory.init(keyStore2, getKeystorePassword().toCharArray());
 
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (GeneralSecurityException | EncryptionException e) {
             Panic panic = new Panic("Exception while trying to create SSL context", e,
                     Panic.Reasons.ExceptionCreatingSslContext);
 

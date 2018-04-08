@@ -16,7 +16,7 @@
 
 package last;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
 import com.ltsllc.miranda.test.TestCase;

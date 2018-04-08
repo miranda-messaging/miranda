@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.util;
 
-import com.ltsllc.common.util.PropertiesUtils;
-import com.ltsllc.common.util.Property;
+import com.ltsllc.commons.util.PropertiesUtils;
+import com.ltsllc.commons.util.Property;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;

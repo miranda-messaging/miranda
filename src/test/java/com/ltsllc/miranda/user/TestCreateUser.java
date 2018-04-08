@@ -2,7 +2,7 @@ package com.ltsllc.miranda.user;
 
 
 import com.google.gson.Gson;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.test.TestCase;
 import org.bouncycastle.asn1.x500.X500NameBuilder;

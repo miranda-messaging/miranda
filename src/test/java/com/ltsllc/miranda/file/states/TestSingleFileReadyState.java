@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
-import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;

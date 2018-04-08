@@ -20,7 +20,8 @@ import com.google.gson.Gson;
 import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
@@ -87,7 +88,7 @@ public class TestReader extends TestCase {
         encryptedMessage.setKey(TEST_STRING);
         Gson gson = new Gson();
         String json = gson.toJson(encryptedMessage);
-        String hexString = Utils.bytesToString(json.getBytes());
+        String hexString = HexConverter.toHexString(json.getBytes());
         createFile(filename, hexString);
     }
 

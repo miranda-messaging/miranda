@@ -17,8 +17,7 @@
 
 package com.ltsllc.clcl;
 
-import com.ltsllc.common.test.TestCase;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TestCertificate extends TestCase {
+public class TestCertificate {
     public static final String TEST_CERTIFICATE_PEM =
             "-----BEGIN CERTIFICATE-----\n" +
             "MIICfTCCAeagAwIBAgIkYTc5ZWMyOWEtYmE4NS00NGEyLWFkODYtYzllNTJkNDEw\n" +
@@ -75,7 +74,7 @@ public class TestCertificate extends TestCase {
         "S3Ok/XIAwYLMJ4Rk3Ztt/BOUrs+i\n" +
         "-----END CERTIFICATE-----\n";
 
-    @Test
+
     public void testEquals () throws Exception {
         Certificate temp = Certificate.fromPEM(TEST_OTHER_CERTIFICATE_PEM);
 
@@ -84,7 +83,7 @@ public class TestCertificate extends TestCase {
     }
 
     // this also test getIssuer and getSubject
-    @Test
+
     public void testFromPem () throws Exception {
         DistinguishedName dn = getCertificate().getSubject();
 
@@ -118,7 +117,7 @@ public class TestCertificate extends TestCase {
         assert (x509Certificate.getNotAfter().getTime() < expired.getTime());
     }
 
-    @Test
+
     public void testGetCertificate () throws Exception {
         X509Certificate x509Certificate = getCertificate().getCertificate();
 
@@ -154,15 +153,15 @@ public class TestCertificate extends TestCase {
 
     public static String TEST_SERIAL_NUMBER_HEX = "61373965633239612D626138352D343461322D616438362D633965353264343130393835";
 
-    @Test
+
     public void testGetSerialNumber () throws Exception {
         BigInteger bigInteger = getCertificate().getSerialnumber();
-        String hex = Utils.bytesToString(bigInteger.toByteArray());
+        String hex = HexConverter.toHexString(bigInteger.toByteArray());
 
         assert (hex.equals(TEST_SERIAL_NUMBER_HEX));
     }
 
-    @Test
+
     public void testToPem () throws Exception {
         Certificate certificate = Certificate.fromPEM(TEST_CERTIFICATE_PEM);
         assert (certificate.equals(getCertificate()));

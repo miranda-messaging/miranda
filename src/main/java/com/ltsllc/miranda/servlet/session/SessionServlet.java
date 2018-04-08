@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet.session;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;

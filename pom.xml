@@ -147,6 +147,5 @@
             <artifactId>tomcat-embed-logging-log4j</artifactId>
             <version>8.5.2</version>
         </dependency>
-
     </dependencies>
 </project>

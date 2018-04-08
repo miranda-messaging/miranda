@@ -17,15 +17,14 @@
 
 package com.ltsllc.clcl;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 
@@ -35,7 +34,7 @@ import java.util.*;
  * <p>
  * This class makes bridging the gap from clcl to java.security a little easier.
  * </p>
- * <p>
+ *
  * <h3>Attributes</h3>
  * <table border="1">
  * <tr>
@@ -77,6 +76,22 @@ public class JavaKeyStore {
     private Map<String, Certificate> certificates;
     private String passwordString;
 
+
+    public static KeyStore loadKeyStore(String filename, String passwordString) throws IOException, GeneralSecurityException {
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        FileInputStream fileInputStream = new FileInputStream(filename);
+        keyStore.load(fileInputStream, passwordString.toCharArray());
+        return keyStore;
+    }
+
+    public KeyStore getJsKeyStore() throws EncryptionException, GeneralSecurityException, IOException {
+        store();
+        return loadKeyStore(filename, passwordString);
+    }
+
+    public void setJsKeyStore(KeyStore jsKeyStore) {
+    }
+
     public String getFilename() {
         return filename;
     }
@@ -112,6 +127,8 @@ public class JavaKeyStore {
         initialize(filename, password);
     }
 
+    public JavaKeyStore (KeyStore keyStore) {
+    }
     /**
      * Initialize the instance from a JKS file.
      * <p>
@@ -329,6 +346,26 @@ public class JavaKeyStore {
         }
     }
 
+    public static KeyStore loadJsKeyStore(String filename, String password) throws EncryptionException {
+        File file = new File(filename);
+        if (!file.exists()) {
+            throw new EncryptionException("The file, " + filename + ", does not exist");
+        }
+
+        FileInputStream fileInputStream = null;
+
+        try {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            fileInputStream = new FileInputStream(file);
+            keyStore.load(fileInputStream, password.toCharArray());
+            return keyStore;
+        } catch (GeneralSecurityException | IOException e) {
+            throw new EncryptionException("Exception trying to load keystore, " + filename, e);
+        } finally {
+            Utils.closeIgnoreExceptions(fileInputStream);
+        }
+    }
+
     public void extract(KeyStore keyStore) throws EncryptionException {
         extractKeys(keyStore);
         extractCertificates(keyStore);
@@ -433,4 +470,11 @@ public class JavaKeyStore {
 
         return newChain;
     }
+
+    public boolean exists() {
+        File file = new File(filename);
+        return file.exists();
+    }
+
+
 }

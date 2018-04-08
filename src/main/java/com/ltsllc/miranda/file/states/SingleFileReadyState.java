@@ -17,7 +17,8 @@
 package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
@@ -127,17 +128,11 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     public State processGetFileResponseMessage(GetFileResponseMessage getFileResponseMessage) {
         String hexString = getFileResponseMessage.getContents();
 
-        try {
-            byte[] buffer = Utils.hexStringToBytes(hexString);
-            String json = new String(buffer);
-            List list = ourGson.fromJson(json, getListType());
-            merge(list);
-            write();
-        } catch (IOException e) {
-            Panic panic = new Panic("Excepion loading file", e, Panic.Reasons.ExceptionLoadingFile);
-            Miranda.getInstance().panic(panic);
-        }
-
+        byte[] buffer = HexConverter.toByteArray(hexString);
+        String json = new String(buffer);
+        List list = ourGson.fromJson(json, getListType());
+        merge(list);
+        write();
         return getFile().getCurrentState();
     }
 

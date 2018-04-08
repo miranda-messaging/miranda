@@ -17,24 +17,18 @@
 
 package com.ltsllc.clcl;
 
-import com.ltsllc.common.test.TestCase;
-import com.ltsllc.common.util.Utils;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import com.ltsllc.commons.util.HexConverter;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.crypto.KeyGenerator;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Calendar;
-import java.util.Date;
 
 public class TestPrivateKey extends TestCase {
     private PrivateKey privateKey;
@@ -57,14 +51,14 @@ public class TestPrivateKey extends TestCase {
     public static final String TEST_ENCODED_PUBLIC_KEY_HEX_STRING = "30819F300D06092A864886F70D010101050003818D0030818902818100B5C95901E3AC22E84197E7779750A3D15E7848564081B314F34C0D898647935D00D91C47194FD25E51E2DDF54372793BD8053BE340EED9195A6F4345A3354D9B87A6BBB6779AFCE440974E72A21B2FCBC1CAA4BFDAFD0BE4BC1D6F6AB6EB4AFD83B7B5B68D4B129EA4AAC5C1BF65F71BCD81413443912AA5D30E3C18C991A16F0203010001";
 
     public void initalizeKeys () throws IOException, GeneralSecurityException {
-        byte[] encoded = Utils.hexStringToBytes(TEST_ENCODED_PUBLIC_KEY_HEX_STRING);
+        byte[] encoded = HexConverter.toByteArray(TEST_ENCODED_PUBLIC_KEY_HEX_STRING);
         EncodedKeySpec encodedKeySpec = new X509EncodedKeySpec(encoded);
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         java.security.PublicKey jsPublicKey = keyFactory.generatePublic(encodedKeySpec);
         this.publicKey = new PublicKey(jsPublicKey);
 
-        encoded = Utils.hexStringToBytes(TEST_ENCODED_PRIVATE_KEY_HEX_STRING);
+        encoded = HexConverter.toByteArray(TEST_ENCODED_PRIVATE_KEY_HEX_STRING);
         encodedKeySpec = new PKCS8EncodedKeySpec(encoded);
         java.security.PrivateKey jsPrivateKey = keyFactory.generatePrivate(encodedKeySpec);
         this.privateKey = new PrivateKey(jsPrivateKey);
@@ -81,7 +75,7 @@ public class TestPrivateKey extends TestCase {
     public static final String TEST_MESSAGE = "The Magic Words are Squeamish Ossifrage";
     public static final String TEST_ALGORITHM = "AES";
 
-    @Test
+
     public void testEncrypt () throws Exception {
         byte[] plainText = TEST_MESSAGE.getBytes();
         byte[] cipherText = getPrivateKey().encrypt(plainText);
@@ -90,7 +84,7 @@ public class TestPrivateKey extends TestCase {
         assert (plainTextString.equals(TEST_MESSAGE));
     }
 
-    @Test
+
     public void testEncryptMessage () throws EncryptionException {
         EncryptedMessage encryptedMessage = getPrivateKey().encrypt(TEST_ALGORITHM, TEST_MESSAGE.getBytes());
         byte[] plainText = getPublicKey().decrypt(encryptedMessage);
@@ -98,7 +92,7 @@ public class TestPrivateKey extends TestCase {
         assert (string.equals(TEST_MESSAGE));
     }
 
-    @Test
+
     public void testDecrypt () throws Exception {
         byte[] cipherText = getPublicKey().encrypt(TEST_MESSAGE.getBytes());
         byte[] plainText = getPrivateKey().decrypt(cipherText);
@@ -107,7 +101,7 @@ public class TestPrivateKey extends TestCase {
     }
 
 
-    @Test
+
     public void testDecryptMessage () throws Exception {
         EncryptedMessage encryptedMessage = getPublicKey().toEncryptedMessage(TEST_MESSAGE.getBytes());
         byte[] plainText = getPrivateKey().decrypt(encryptedMessage);
@@ -133,7 +127,6 @@ public class TestPrivateKey extends TestCase {
             "-----END RSA PRIVATE KEY-----\r\n";
 
     // also tests fromPem
-    @Test
     public void testToPem () throws EncryptionException {
         String pem = getPrivateKey().toPem();
         PrivateKey privateKey = PrivateKey.fromPEM(pem);
@@ -161,14 +154,14 @@ public class TestPrivateKey extends TestCase {
             "9IXB4izIRiG59mVRFk6d0fqI\r\n" +
             "-----END ENCRYPTED PRIVATE KEY-----\r\n";
 
-    @Test
+
     public void testToPasswordProtectedPem () throws Exception {
         String pem = getPrivateKey().toPem(TEST_PASSWORD);
         PrivateKey temp = PrivateKey.fromPEM(pem, TEST_PASSWORD);
         assert(getPrivateKey().equals(temp));
     }
 
-    @Test
+
     public void testFromPemWithPassword () throws Exception {
         PrivateKey temp = PrivateKey.fromPEM(TEST_ENCRYPTED_PEM, TEST_PASSWORD);
         assert (getPrivateKey().equals(temp));
@@ -241,14 +234,13 @@ public class TestPrivateKey extends TestCase {
             "WuhYe/VaDam4cI+qqw8/UrAO\n" +
             "-----END ENCRYPTED PRIVATE KEY-----\n";
 
-    @Test
     public void testToPemWithPassword () throws EncryptionException {
         String pem = getPrivateKey().toPem(TEST_PASSWORD);
         PrivateKey temp = PrivateKey.fromPEM(pem, TEST_PASSWORD);
         assert (temp.equals(getPrivateKey()));
     }
 
-    @Test
+
     public void testCreateSerialNumber () throws EncryptionException {
         BigInteger bigInteger = getPrivateKey().createSerialNumber();
         BigInteger different = getPrivateKey().createSerialNumber();

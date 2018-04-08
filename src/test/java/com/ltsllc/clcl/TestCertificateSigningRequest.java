@@ -17,16 +17,14 @@
 
 package com.ltsllc.clcl;
 
-import com.ltsllc.common.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import sun.security.pkcs10.PKCS10;
 
-import javax.crypto.KeyGenerator;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 
-public class TestCertificateSigningRequest extends TestCase {
+public class TestCertificateSigningRequest {
     public static String TEST_CSR_PEM
             = "-----BEGIN CERTIFICATE REQUEST-----\n" +
             "MIIBtjCCAR8CAQAwdjEQMA4GA1UEAxMHZm9vLmNvbTEUMBIGA1UECxMLRGV2ZWxv\n" +
@@ -69,7 +67,7 @@ public class TestCertificateSigningRequest extends TestCase {
     }
 
 
-    @Test
+
     public void testConstructor () throws Exception {
         DistinguishedName dn = new DistinguishedName();
 
@@ -88,7 +86,7 @@ public class TestCertificateSigningRequest extends TestCase {
     }
 
 
-    @Test
+
     public void testEquals () throws Exception {
         assert(getCertificateSigningRequest().equals(getCertificateSigningRequest()));
 
@@ -115,14 +113,14 @@ public class TestCertificateSigningRequest extends TestCase {
 
     public static final String TEST_DN_STRING = "c=US,st=Colorado,l=Denver,o=Long Term Software,ou=Development,cn=foo.com";
 
-    @Test
+
     public void testFromPem () throws Exception {
         CertificateSigningRequest csr = CertificateSigningRequest.fromPem(TEST_CSR_PEM);
 
         assert (csr.equals(csr));
     }
 
-    @Test
+
     public void testGetSubjectDn () {
         DistinguishedName dn = new DistinguishedName();
 

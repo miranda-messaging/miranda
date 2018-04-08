@@ -16,7 +16,9 @@
 
 package com.ltsllc.miranda.servlet.login;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.PublicKey;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.LoginObject;
 import com.ltsllc.miranda.clientinterface.objects.LoginResultObject;
@@ -55,12 +57,11 @@ public class LoginServlet extends MirandaServlet {
             if (loginResult.session != null) {
                 String sessionIdString = Long.toString(loginResult.session.getId());
                 byte[] plainText = sessionIdString.getBytes();
-                byte[] cipherText = Utils.rsaEncrypt(loginResult.session.getUser().getPublicKey().getSecurityPublicKey(),
-                        plainText);
+                byte[] cipherText = loginResult.session.getUser().getPublicKey().encrypt(plainText);
                 Base64.Encoder encoder = Base64.getEncoder();
                 result.setSession(encoder.encodeToString(cipherText));
             }
-        } catch (MirandaException | GeneralSecurityException e) {
+        } catch (EncryptionException|MirandaException e) {
             result.setResult(Results.Exception);
             result.setException(e);
         } catch (TimeoutException e) {

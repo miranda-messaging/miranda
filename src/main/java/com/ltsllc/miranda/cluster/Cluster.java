@@ -57,7 +57,6 @@ import java.util.concurrent.BlockingQueue;
 /**
  * A logical grouping of {@Link Node}.
  * <p>
- * <p>
  * This class allows the rest of the system to treat a cluster like a single unit.
  * For example the system can "tell" the cluster about a new message and
  * let the class worry about distributing it.
@@ -65,6 +64,12 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 12/31/2016.
  */
 public class Cluster extends Manager<Node, NodeElement> {
+    private static Cluster ourInstance;
+
+    public static Cluster getInstance() {
+        return ourInstance;
+    }
+
     public static final String NAME = "cluster";
 
     private Logger logger = Logger.getLogger(Cluster.class);
@@ -85,6 +90,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         super(NAME, filename);
 
         this.network = network;
+        ourInstance = this;
     }
 
     public Cluster(Network network, boolean testMode) throws MirandaException {

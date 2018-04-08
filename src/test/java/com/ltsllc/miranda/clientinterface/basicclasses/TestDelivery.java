@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;

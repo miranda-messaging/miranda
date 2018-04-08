@@ -17,8 +17,9 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.clcl.*;
-import com.ltsllc.common.util.PropertiesUtils;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.commadline.CommandLineException;
+import com.ltsllc.commons.util.PropertiesUtils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
@@ -108,23 +109,22 @@ public class Startup extends State {
     private String keystorePasswordString;
     private String trustorePasswordString;
     private Properties overrideProperties;
-    private KeyStore keyStore;
-    private KeyStore trustStore;
+    private JavaKeyStore keyStore;
+    private JavaKeyStore trustStore;
 
-    public KeyStore getTrustStore() {
+    public JavaKeyStore getTrustStore() {
         return trustStore;
     }
 
-    public void setTrustStore(KeyStore trustStore) {
+    public void setTrustStore(JavaKeyStore trustStore) {
         this.trustStore = trustStore;
     }
 
-    public KeyStore getKeyStore() {
-
+    public JavaKeyStore getKeyStore() {
         return keyStore;
     }
 
-    public void setKeyStore(KeyStore keyStore) {
+    public void setKeyStore(JavaKeyStore keyStore) {
         this.keyStore = keyStore;
     }
 
@@ -250,14 +250,20 @@ public class Startup extends State {
         this.factory = factory;
     }
 
-    public State start() {
+    public State start(String[] argv) {
         super.start();
 
         try {
             performMiscellaneousOperations();
-            processCommandLine();
+            processCommandLine(argv);
             processPasswords();
             setupProperties();
+            if (systemNeedsSetup())
+            {
+                State setupState = new SetupState(getContainer());
+                return setupState;
+            }
+
             setupKeyStores();
             getKeys(getKeystorePasswordString());
             startLogger();
@@ -284,6 +290,25 @@ public class Startup extends State {
         }
 
         return StopState.getInstance();
+    }
+
+    /**
+     * Does the system need to be setup?
+     *
+     * <p>
+     *     The system needs setup when
+     *     <ul>
+     *         <li>No keystore exists</li>
+     *         <li>No truststore exists</li>
+     *     </ul>
+     * </p>
+     * @return
+     */
+    public boolean systemNeedsSetup() {
+        JavaKeyStore keyStore = Miranda.getInstance().getKeyStore();
+        JavaKeyStore trustStore = Miranda.getInstance().getTrustStore();
+
+        return (!keyStore.exists() && !trustStore.exists());
     }
 
     private void performMiscellaneousOperations() throws MirandaException {
@@ -548,7 +573,7 @@ public class Startup extends State {
         Miranda.setLogger(logger);
     }
 
-    public void processCommandLine() {
+    public void processCommandLine(String[] argv) throws CommandLineException {
         MirandaCommandLine commandLine = null;
         if (getMiranda().getCommandLine() != null) {
             commandLine = getMiranda().getCommandLine();
@@ -558,7 +583,7 @@ public class Startup extends State {
         }
 
         getMiranda().setCommandLine(commandLine);
-        commandLine.parse();
+        commandLine.parse(argv);
 
         if (commandLine.getError())
             System.exit(-1);
@@ -607,14 +632,14 @@ public class Startup extends State {
         MirandaFactory factory = new MirandaFactory(properties, getKeystorePasswordString(), getCommandLine().getTrustorePassword());
         Miranda miranda = Miranda.getInstance();
 
-        Network network = factory.buildNetwork(getKeyStore(), getTrustStore());
-        network.start();
 
         try {
+            Network network = factory.buildNetwork(getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore());
+            network.start();
             String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
             Cluster cluster = new Cluster(miranda.getNetwork(), filename);
             miranda.setCluster(cluster);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MirandaException(e);
         }
 
@@ -804,7 +829,7 @@ public class Startup extends State {
     public KeyStore loadKeyStore(String filename, String password) {
         try {
             return Utils.loadKeyStore(filename, password);
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception loading keystore from " + filename, e,
                     StartupPanic.StartupReasons.ExceptionLoadingKeystore);
             Miranda.panicMiranda(startupPanic);
@@ -814,14 +839,18 @@ public class Startup extends State {
     }
 
     public void setupKeyStores() throws Panic {
-        if (null == getKeyStore()) {
-            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            this.keyStore = loadKeyStore(filename, getKeystorePasswordString());
-        }
+        try {
+            if (null == getKeyStore()) {
+                String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+                this.keyStore = new JavaKeyStore(filename, getKeystorePasswordString());
+            }
 
-        if (null == getTrustStore()) {
-            String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-            this.trustStore = loadKeyStore(filename, getTrustorePasswordString());
+            if (null == getTrustStore()) {
+                String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
+                this.trustStore = new JavaKeyStore(filename, getTrustorePasswordString());
+            }
+        } catch (EncryptionException e) {
+            throw new Panic(e, Panic.Reasons.Startup);
         }
     }
 
@@ -830,9 +859,9 @@ public class Startup extends State {
         Miranda.properties.log();
     }
 
-    public void exportCertificate() throws GeneralSecurityException, IOException {
-        KeyStore keyStore = getKeyStore();
+    public void exportCertificate() throws Exception {
+        KeyStore keyStore = getKeyStore().getJsKeyStore();
         Certificate certificate = keyStore.getCertificate("private");
-        Utils.writeAsPem("tempfile", certificate);
+        com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
     }
 }

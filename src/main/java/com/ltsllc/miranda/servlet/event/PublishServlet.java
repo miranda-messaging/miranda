@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.servlet.event;
 
 import com.google.gson.Gson;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
@@ -122,7 +122,7 @@ public class PublishServlet extends HttpServlet {
         try {
             checkSession(request, response);
             String topicName = getTopicName(request, response);
-            byte[] content = Utils.readBytes(request.getInputStream());
+            byte[] content = com.ltsllc.commons.io.Util.readCompletely(request.getInputStream());
             Event event = new Event(getUser(), Event.Methods.POST, topicName, content);
             EventHolder.CreateResult createResult = EventHolder.getInstance().create(event);
             sendCreateEventResult(response, createResult);
@@ -136,7 +136,7 @@ public class PublishServlet extends HttpServlet {
         try {
             checkSession(request, response);
             String topicName = getTopicName(request, response);
-            byte[] content = Utils.readBytes(request.getInputStream());
+            byte[] content = com.ltsllc.commons.io.Util.readCompletely(request.getInputStream());
             Event event = new Event(getUser(), Event.Methods.PUT, topicName, content);
             EventHolder.CreateResult createResult = EventHolder.getInstance().create(event);
             sendCreateEventResult(response, createResult);

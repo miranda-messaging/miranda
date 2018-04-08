@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.property;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.common.util.PropertiesUtils;
-import com.ltsllc.common.util.Property;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.PropertiesUtils;
+import com.ltsllc.commons.util.Property;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;

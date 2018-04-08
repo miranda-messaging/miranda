@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.clientinterface.results;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 
 /**
  * Created by Clark on 4/7/2017.

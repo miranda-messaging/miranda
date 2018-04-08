@@ -16,7 +16,8 @@
 
 package com.ltsllc.miranda.file.messages;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 
 import java.io.IOException;
@@ -31,8 +32,7 @@ public class GetFileResponseMessage extends Message {
 
     public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester, byte[] contents) {
         super(Subjects.GetFileResponse, senderQueue, sender);
-
-        String hexString = Utils.bytesToString(contents);
+        String hexString = HexConverter.toHexString(contents);
 
         this.requester = requester;
         this.contents = hexString;
@@ -57,7 +57,7 @@ public class GetFileResponseMessage extends Message {
     }
 
     public byte[] getContentAsBytes() throws IOException {
-        return Utils.hexStringToBytes(contents);
+        return HexConverter.toByteArray(contents);
     }
 
     public String getRequester() {

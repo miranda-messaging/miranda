@@ -65,7 +65,7 @@ public class NodeDisconnectingState extends State {
         return nextState;
     }
 
-    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
+    public State processNetworkMessage(NetworkMessage networkMessage) {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
@@ -90,7 +90,7 @@ public class NodeDisconnectingState extends State {
         return nextState;
     }
 
-    public State processStopResponseWireMessage(StopResponseWireMessage stopResponseWireMessage) throws MirandaException {
+    public State processStopResponseWireMessage(StopResponseWireMessage stopResponseWireMessage) {
         logger.info(getNode() + " got stop response.");
 
         getNode().getNetwork().sendCloseMessage(getNode().getQueue(), this, getNode().getHandle());

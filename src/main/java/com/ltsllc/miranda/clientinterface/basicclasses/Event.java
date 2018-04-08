@@ -16,14 +16,13 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.commons.util.Utils;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * An HTTP POST/PUT/DELETE that has been made to a topic.
@@ -108,11 +107,19 @@ import java.util.UUID;
 public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     private static SecureRandom random = new SecureRandom();
 
+    public static String randomString (ImprovedRandom random,  int length) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            stringBuilder.append(random.nextByte());
+        }
+        return stringBuilder.toString();
+    }
+
     public Event(ImprovedRandom random, byte[] content) {
         initialize(random);
 
         this.guid = UUID.randomUUID().toString();
-        this.userName = random.randomString(8);
+        this.userName = randomString(random, 8);
         this.method = randomMethods(random);
     }
 
@@ -133,7 +140,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     private List awaitingDelivery;
 
     public Event(Methods method, String hexString) throws IOException {
-        byte[] content = Utils.hexStringToBytes(hexString);
+        byte[] content = HexConverter.toByteArray(hexString);
         String guid = UUID.randomUUID().toString();
 
         basicConstructor(null, guid, null, System.currentTimeMillis(), method,
@@ -182,7 +189,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         Event other = (Event) mergeable;
         guid = other.guid;
         topicName = other.topicName;
-        content = Utils.copy(other.content);
+        content = Arrays.copyOf(other.content, other.content.length);
         userName = other.userName;
         timeOfCreation = other.timeOfCreation;
         method = other.method;
@@ -291,7 +298,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     }
 
     public String getContentAsHexString() {
-        return Utils.bytesToString(getContent());
+        return HexConverter.toHexString(getContent());
     }
 
     public String getGuid() {

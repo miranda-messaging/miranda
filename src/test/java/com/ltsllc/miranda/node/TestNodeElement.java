@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.node;
 
-import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.test.TestCase;

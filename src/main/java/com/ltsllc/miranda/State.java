@@ -19,6 +19,7 @@ package com.ltsllc.miranda;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
@@ -49,17 +50,13 @@ public abstract class State {
         this.deferredQueue = new LinkedList<Message>();
     }
 
-    public State(Consumer container) throws MirandaException {
+    public State(Consumer container) {
         setContainer(container);
         this.deferredQueue = new LinkedList<Message>();
     }
 
-    public void setContainer(Consumer container) throws MirandaException {
+    public void setContainer(Consumer container) {
         this.container = container;
-
-        if (null == container) {
-            throw new MirandaException("null container");
-        }
     }
 
     public State start() {
@@ -162,5 +159,11 @@ public abstract class State {
         }
 
         getDeferredQueue().clear();
+    }
+
+    public State processNetworkMessage(NetworkMessage networkMessage) {
+        Panic panic = new Panic("Unrecognized network message", Panic.Reasons.UnrecognizedNetworkMessage);
+        Miranda.panicMiranda(panic);
+        return this;
     }
 }

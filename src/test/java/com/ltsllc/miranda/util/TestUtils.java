@@ -16,7 +16,8 @@
 
 package com.ltsllc.miranda.util;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
@@ -26,10 +27,7 @@ import org.mockito.Matchers;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.*;
 import java.security.cert.X509Certificate;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -105,7 +103,7 @@ public class TestUtils extends TestCase {
             Utils.closeIgnoreExceptions(fileInputStream);
         }
 
-        return Utils.bytesToString(data);
+        return HexConverter.toHexString(data);
     }
 
     public static final String FILE_NAME = "serverkeystore";
@@ -121,111 +119,10 @@ public class TestUtils extends TestCase {
     public static final String TEST_ALIAS = "server";
     public static final String TEST_PASSWORD = "whatever";
 
-    @Test
-    public void testLoadKeySuccess () {
-        createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
-
-        PrivateKey key = null;
-
-        try {
-            key = Utils.loadKey(TEST_FILE_NAME, TEST_PASSWORD, TEST_ALIAS);
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        assert (null != key);
-    }
-
-    @Test
-    public void testLoadKeyWrongPassword () {
-        createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
-
-        PrivateKey key = null;
-
-        try {
-            key = Utils.loadKey(TEST_FILE_NAME, "wrong", TEST_ALIAS);
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-
-        assert (null == key);
-    }
-
-    @Test
-    public void testLoadKeyNoFile () {
-        PrivateKey key = null;
-
-        try {
-            key = Utils.loadKey(TEST_FILE_NAME, TEST_PASSWORD, TEST_ALIAS);
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-
-        assert (null == key);
-    }
-
-    @Test
-    public void testLoadKeyWrongAlias () {
-        createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
-        PrivateKey key = null;
-
-        try {
-            key = Utils.loadKey(TEST_FILE_NAME, TEST_PASSWORD, "wrong");
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-
-        assert (null == key);
-    }
-
     public static final String TEST_TRUSTSTORE = "truststore";
     public static final String TEST_TRUSTSTORE_PASSWORD = "whatever";
     public static final String TEST_TRUSTSTORE_ALIAS = "ca";
     public static final String TEST_TRUSTSTORE_CONTENTS = "FEEDFEED000000020000000100000002000263610000015A82C644EF0005582E353039000003643082036030820248A003020102020900DAD88CCBA0E7DEF3300D06092A864886F70D01010B05003045310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C7464301E170D3137303232383033333134305A170D3138303232383033333134305A3045310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C746430820122300D06092A864886F70D01010105000382010F003082010A0282010100BCB5081EB8EA94F33414C155C0FB5E7C68C705F42338FAB4A31B3D7F4DD90F13799A30E03AED0E1F89E6CC85A2D1A48CC3F2CD1216E29A2AD73216C84B4EBD782FCC052041E0E80B69EFCB501BB92E6B349AEDA835AF708BF7DE537565F122C1DCC3604F40FD7BE3E9906B3512F384A2C33180A0DE3C00E6EEBF9E4EF0A5C71ABAC085818D0409D4E8671B15959E1E10D29EF4080C5DFD937223FD3427EF42118E90A3B43FB7F24BFE06AEBF6A01DCE45606ED47433E8EAA267D0DD5197B2CE7B53CB18D97F0BEDD9991A61C9D90417FEB9BF0B10B741E574889BE108AE49CE84C19837671A453DB9F4D0A85E460C1C052C4403617B758F64C68DAE884A105390203010001A3533051301D0603551D0E04160414E5C1EF1606B42BC0EF79B408A7E970FE200DB722301F0603551D23041830168014E5C1EF1606B42BC0EF79B408A7E970FE200DB722300F0603551D130101FF040530030101FF300D06092A864886F70D01010B05000382010100AEC817DD1E9603DF8D851D462924BB219E9626C3C3528593168DDD65A4A4B6B47291466CAB18049D0F25276B3724B4103CED0BE1190C73E7CA51E4E2BAF38A1E410000B908D748C3AE549FC52D5FECEBD8116832B0D193E7F6264874800A2D12AF32202D33D752DB2F3522C2077DFCC58DAD3DE58974F1B95EA17AF0BFF9B6E049E10AEE48B8128D953E7F56F3F51448F319C611774F1CC003F6438766744EFC6DDBBE5EF9C6F6EA8E07BD523BC1EC1458CC49E5BB43AE9B86816F0AE720DC6C81AB26345E45356C5E6F161E938494E056E5B7267DA5624E8D4B6748C645522B88A1059C485C5B277A8B76C0DB880302FE45DCC7AA933676A07E2D79C2A4F7B4F881F8C4724EA128CDAAFA8E0FA90ED94E457073";
-
-    @Test
-    public void testLoadCertificateSuccess () {
-        createFile(TEST_TRUSTSTORE, TEST_TRUSTSTORE_CONTENTS);
-
-        X509Certificate certificate = null;
-
-        try {
-            certificate = Utils.loadCertificate(TEST_TRUSTSTORE, TEST_TRUSTSTORE_PASSWORD, TEST_TRUSTSTORE_ALIAS);
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-
-        assert (null != certificate);
-    }
-
-    @Test
-    public void testLoadCertificateWrongPassword () {
-        createFile(TEST_TRUSTSTORE, TEST_TRUSTSTORE_CONTENTS);
-
-        X509Certificate certificate = null;
-
-        try {
-            certificate = Utils.loadCertificate(TEST_TRUSTSTORE, "wrong", TEST_TRUSTSTORE_ALIAS);
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-
-        assert (null == certificate);
-    }
-
-    @Test
-    public void testLoadCertificateNoFile () {
-        X509Certificate certificate = null;
-
-        try {
-            certificate = Utils.loadCertificate(TEST_TRUSTSTORE, TEST_TRUSTSTORE_PASSWORD, TEST_TRUSTSTORE_ALIAS);
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-        }
-
-        assert (null == certificate);
-    }
 
     @Test
     public void testLoadKeyStoreSuccess () {
@@ -337,83 +234,6 @@ public class TestUtils extends TestCase {
         }
     }
 
-    public static final String TEST_SHA1 = "BA612E2B074B53812E7C621BC76ADFBA3718C0F9";
-
-    @Test
-    public void testCalculateSHA1String () {
-        String sha1 = null;
-
-        try {
-            sha1 = Utils.calculateSha1(TEST_FILE_CONTENTS);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        assert(sha1.equals(TEST_SHA1));
-    }
-
-    public static final String BINARY_SHA1 = "FA0FA492DB5AB78E51DB9B0D6480662F648056B66AB5E39B29693AEC04D73328";
-
-    @Test
-    public void testCalculateSHA1FileInputStream () {
-        createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
-        FileInputStream fileInputStream = null;
-        String sha1 = null;
-
-        try {
-            fileInputStream = new FileInputStream(TEST_FILE_NAME);
-            byte[] bytes = Utils.calculateSha1(fileInputStream);
-            sha1 = Utils.bytesToString(bytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Utils.closeIgnoreExceptions(fileInputStream);
-        }
-
-        assert (sha1.equals(BINARY_SHA1));
-    }
-
-    @Test
-    public void testByteToHexString () {
-        byte b = 1;
-        String s = Utils.byteToHexString(b);
-        assert (s.equals("01"));
-
-        int i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("02"));
-
-        i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("04"));
-
-        i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("08"));
-
-        i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("10"));
-
-        i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("20"));
-
-        i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("40"));
-
-        i = b << 1;
-        b = (byte) i;
-        s = Utils.byteToHexString(b);
-        assert (s.equals("80"));
-    }
 
     public static final byte[] TEST_DATA = { 1, 2, 3, 4};
     public static final String TEST_HEX_STRING = "01020304";
@@ -432,70 +252,4 @@ public class TestUtils extends TestCase {
         return true;
     }
 
-    @Test
-    public void testHexStringToBytes () throws IOException {
-        byte[] buffer = Utils.hexStringToBytes(TEST_HEX_STRING);
-        assert (equivalent(buffer, TEST_DATA));
-    }
-
-    @Test
-    public void testToNibble () {
-        int value = Utils.toNibble('0');
-        assert (0 == value);
-
-        value = Utils.toNibble('1');
-        assert (1 == value);
-
-        value = Utils.toNibble('A');
-        assert (10 == value);
-
-        value = Utils.toNibble('F');
-        assert (15 == value);
-
-        value = Utils.toNibble('B');
-        assert (11 == value);
-    }
-
-    public static final String TEST_SHA1_2 = "9571A3EEEA934F95E451BB012EE5FCD3539CDD5B";
-
-    @Test
-    public void testCalculateSha1 () {
-        try {
-            String sha1 = Utils.calculateSha1(TEST_HEX_STRING);
-            assert (TEST_SHA1_2.equals(sha1));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCreateTrustManagerFactorySuccess () {
-        createFile(TEST_FILE_NAME, TEST_FILE_CONTENTS);
-
-        TrustManagerFactory trustManagerFactory = null;
-        try {
-            trustManagerFactory = Utils.createTrustManagerFactory(TEST_FILE_NAME, TEST_PASSWORD);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testHexStringToString () throws IOException {
-        String hexString = "01020304";
-        byte[] data = hexString.getBytes();
-
-        String hexStringBytes = Utils.bytesToString(data);
-        String s = Utils.hexStringToString(hexStringBytes);
-
-        assert (hexString.equals(s));
-    }
-
-    public static final String TEST_SHA1_3 = "D869DB7FE62FB07C25A0403ECAEA55031744B5FB";
-
-    @Test
-    public void testSha1LogExceptions () throws GeneralSecurityException {
-        String s = Utils.calculateSha1("whatever");
-        assert (s.equals(TEST_SHA1_3));
-    }
 }

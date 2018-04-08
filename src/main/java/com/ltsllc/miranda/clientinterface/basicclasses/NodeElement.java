@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.commons.util.ImprovedRandom;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

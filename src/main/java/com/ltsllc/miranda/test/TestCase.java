@@ -17,10 +17,13 @@
 package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.clcl.PublicKey;
-import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
@@ -66,14 +69,14 @@ import static org.mockito.Mockito.mock;
 /**
  * Created by Clark on 2/20/2017.
  */
-public class TestCase extends com.ltsllc.common.test.TestCase {
+public class TestCase {
     private static Gson ourGson = new Gson();
     private static Logger logger = Logger.getLogger(TestCase.class);
 
     private BlockingQueue<Message> network = new LinkedBlockingQueue<Message>();
     private BlockingQueue<Message> writerQueue = new LinkedBlockingQueue<Message>();
-    private KeyStore keyStore;
-    private KeyStore trustStore;
+    private JavaKeyStore keyStore;
+    private JavaKeyStore trustStore;
 
     @Mock
     private HttpServer mockHttpServer;
@@ -153,20 +156,20 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
     @Mock
     private SubscriptionManager mockSubscriptionManager;
 
-    public KeyStore getTrustStore() {
+    public JavaKeyStore getTrustStore() {
         return trustStore;
     }
 
-    public void setTrustStore(KeyStore trustStore) {
+    public void setTrustStore(JavaKeyStore trustStore) {
         this.trustStore = trustStore;
     }
 
-    public KeyStore getKeyStore() {
+    public JavaKeyStore getKeyStore() {
 
         return keyStore;
     }
 
-    public void setKeyStore(KeyStore keyStore) {
+    public void setKeyStore(JavaKeyStore keyStore) {
         this.keyStore = keyStore;
     }
 
@@ -519,7 +522,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         FileOutputStream fileOutputStream = null;
 
         try {
-            byte[] buffer = Utils.hexStringToBytes(contents);
+            byte[] buffer = HexConverter.toByteArray(contents);
 
             fileOutputStream = new FileOutputStream(filename);
             fileOutputStream.write(buffer);
@@ -577,9 +580,9 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         try {
             deleteFile(TEMP_TRUSTSTORE);
             createFile(TEMP_TRUSTSTORE, TEMP_TRUST_STORE_CONTENTS);
-            this.trustStore = Utils.loadKeyStore(TEMP_TRUSTSTORE, TEMP_TRUSTSTORE_PASSWORD);
+            this.trustStore = new JavaKeyStore(TEMP_TRUSTSTORE, TEMP_TRUSTSTORE_PASSWORD);
             Miranda.properties.setProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME, TEMP_TRUSTSTORE);
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (EncryptionException e) {
             StartupPanic startupPanic = new StartupPanic("Eception loading truststore from " + TEMP_TRUSTSTORE,
                     e, StartupPanic.StartupReasons.ExceptionLoadingKeystore);
             Miranda.panicMiranda(startupPanic);
@@ -600,9 +603,9 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
         try {
             deleteFile(TEMP_KEYSTORE);
             createFile(TEMP_KEYSTORE, TEMP_KEY_STORE_CONTENTS);
-            this.keyStore = Utils.loadKeyStore(TEMP_KEYSTORE, TEMP_KEYSTORE_PASSWORD);
+            this.keyStore = new JavaKeyStore(TEMP_KEYSTORE, TEMP_KEYSTORE_PASSWORD);
             Miranda.properties.setProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, TEMP_KEYSTORE);
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (EncryptionException e) {
             e.printStackTrace();
         }
     }
@@ -623,7 +626,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
             byte[] buffer = new byte[size];
             fileInputStream.read(buffer);
 
-            contents = Utils.bytesToString(buffer);
+            contents = HexConverter.toHexString(buffer);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -719,7 +722,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
     }
 
 
-    public static Version createVersion(Object o) throws NoSuchAlgorithmException {
+    public static Version createVersion(Object o) throws Exception {
         String json = toJson(o);
         return new Version(json);
     }
@@ -889,7 +892,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
             Utils.closeIgnoreExceptions(fileInputStream);
         }
 
-        return Utils.bytesToString(byteArrayOutputStream.toByteArray());
+        return HexConverter.toHexString(byteArrayOutputStream.toByteArray());
     }
 
     public String loadPrivateKey(String filename, String password, String alias) {
@@ -903,7 +906,8 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
             objectOutputStream.close();
             byteArrayOutputStream.close();
             byte[] data = byteArrayOutputStream.toByteArray();
-            return Utils.bytesToString(data);
+
+            return HexConverter.toHexString(data);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -974,7 +978,7 @@ public class TestCase extends com.ltsllc.common.test.TestCase {
             Utils.closeIgnoreExceptions(fileInputStream);
         }
 
-        return Utils.bytesToString(buffer);
+        return HexConverter.toHexString(buffer);
     }
 
     public void setupInputStream(String input) {

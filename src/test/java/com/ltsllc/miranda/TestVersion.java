@@ -66,7 +66,7 @@ public class TestVersion extends TestCase {
 
         deleteFile(TEST_FILENAME);
         version = new Version(TEST_STRING);
-        assert (version.getSha1().equals(TEST_SHA1));
+        assert (version.getSha256().equals(TEST_SHA1));
     }
 
     public static String TEST_FILENAME = "testfile";
@@ -76,7 +76,7 @@ public class TestVersion extends TestCase {
     public void testEquals() {
         logger.info("equals");
 
-        getVersion().setSha1(TEST_BINARY_SHA1);
+        getVersion().setSha256(TEST_BINARY_SHA1);
         assert (getVersion().equals(getVersion()));
         assert (!getVersion().equals(null));
     }

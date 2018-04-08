@@ -8,7 +8,7 @@ import com.ltsllc.miranda.network.Network;
 /**
  * A class that "knows" how to join a cluster.
  */
-public class JoinClusterAction extends Consumer {
+public class JoinClusterAction extends Action {
     private Network network;
     private Cluster cluster;
 
@@ -29,11 +29,9 @@ public class JoinClusterAction extends Consumer {
     }
 
     JoinClusterAction(Network network, Cluster cluster) throws MirandaException {
-        super("join cluster");
+        super("joinCluster");
         setCluster(cluster);
         setNetwork(network);
-        JoinClusterState joinClusterState = new JoinClusterState(this);
-        setCurrentState(joinClusterState);
     }
 
 

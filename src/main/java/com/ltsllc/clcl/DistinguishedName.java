@@ -23,54 +23,54 @@ import java.util.List;
 
 /**
  * An LDAP Distinguished Name.
+ *
  * <p>
- * <p>
- * The class sets the Country Code, State, City, Company,
- * and Division to {@link #UNKNOWN}, but the client must set the Name
- * to some value.
+ *     The class sets the Country Code, State, City, Company,
+ *     and Division to {@link #UNKNOWN}, but the client must set the Name
+ *     to some value.
  * </p>
- * <p>
+ *
  * <h3>Attributes</h3>
  * <table width="1">
- * <tr>
- * <th>Name</th>
- * <th>Type</th>
- * <th>Description</th>
- * </tr>
- * <tr>
- * <td>countryCode</td>
- * <td>String</td>
- * <td>The 2-letter LDAP counrty code</td>
- * </tr>
- * <tr>
- * <td>state</td>
- * <td>String</td>
- * <td>The state or province for the object</td>
- * </tr>
- * <tr>
- * <td>city</td>
- * <td>String</td>
- * <td>The city ("locality" in LDAP speak) of the object</td>
- * </tr>
- * <tr>
- * <td>company</td>
- * <td>String</td>
- * <td>The company or organization for the object</td>
- * </tr>
- * <tr>
- * <td>division</td>
- * <td>String</td>
- * <td>The division within the company or organization of the object.  For example, "development".</td>
- * </tr>
- * <tr>
- * <td>name</td>
- * <td>String</td>
- * <td>
- * The "common name" of the person (if this object is for a person) or the
- * fully qualified domain name (if this object is associated with a system)
- * of the thing the object is associated with.
- * </td>
- * </tr>
+ *     <tr>
+ *         <th>Name</th>
+ *         <th>Type</th>
+ *         <th>Description</th>
+ *     </tr>
+ *     <tr>
+ *         <td>countryCode</td>
+ *         <td>String</td>
+ *         <td>The 2-letter LDAP counrty code</td>
+ *     </tr>
+ *     <tr>
+ *         <td>state</td>
+ *         <td>String</td>
+ *         <td>The state or province for the object</td>
+ *     </tr>
+ *     <tr>
+ *         <td>city</td>
+ *         <td>String</td>
+ *         <td>The city ("locality" in LDAP speak) of the object</td>
+ *     </tr>
+ *     <tr>
+ *         <td>company</td>
+ *         <td>String</td>
+ *         <td>The company or organization for the object</td>
+ *     </tr>
+ *     <tr>
+ *         <td>division</td>
+ *         <td>String</td>
+ *         <td>The division within the company or organization of the object.  For example, "development".</td>
+ *     </tr>
+ *     <tr>
+ *         <td>name</td>
+ *         <td>String</td>
+ *         <td>
+ *             The "common name" of the person (if this object is for a person) or the
+ *             fully qualified domain name (if this object is associated with a system)
+ *             of the thing the object is associated with.
+ *         </td>
+ *     </tr>
  * </table>
  */
 public class DistinguishedName {
@@ -87,7 +87,7 @@ public class DistinguishedName {
     public DistinguishedName() {
     }
 
-    public DistinguishedName(DistinguishedName dn) {
+    public DistinguishedName (DistinguishedName dn) {
         this.countryCode = dn.getCountryCode();
         this.state = dn.getState();
         this.city = dn.getCity();
@@ -96,15 +96,15 @@ public class DistinguishedName {
         this.name = dn.getName();
     }
 
-    public DistinguishedName(Principal principal) {
+    public DistinguishedName (Principal principal) {
         initialize(principal.toString());
     }
 
-    public DistinguishedName(String dn) {
+    public DistinguishedName (String dn) {
         initialize(dn);
     }
 
-    public void initialize(String dn) {
+    public void initialize (String dn) {
         String fields[] = dn.split(",");
         List<LDAPName> names = toLDAPNames(fields);
 
@@ -116,7 +116,7 @@ public class DistinguishedName {
         setName(findName(names));
     }
 
-    public static List<LDAPName> toLDAPNames(String[] names) {
+    public static List<LDAPName> toLDAPNames (String[] names) {
         List<LDAPName> ldapNames = new ArrayList<LDAPName>();
         for (String name : names) {
             LDAPName aLdapName = new LDAPName(name);
@@ -127,30 +127,30 @@ public class DistinguishedName {
     }
 
     public String findCountryCode(List<LDAPName> names) {
-        return find("c", names);
+        return find ("c", names);
     }
 
-    public String findState(List<LDAPName> names) {
-        return find("st", names);
+    public String findState (List<LDAPName> names) {
+        return find ("st", names);
     }
 
-    public String findCity(List<LDAPName> names) {
-        return find("l", names);
+    public String findCity (List<LDAPName> names) {
+        return find ("l", names);
     }
 
-    public String findCompany(List<LDAPName> names) {
-        return find("o", names);
+    public String findCompany (List<LDAPName> names) {
+        return find ("o", names);
     }
 
-    public String findDivision(List<LDAPName> names) {
-        return find("ou", names);
+    public String findDivision (List<LDAPName> names) {
+        return find ("ou", names);
     }
 
-    public String findName(List<LDAPName> names) {
-        return find("cn", names);
+    public String findName (List<LDAPName> names) {
+        return find ("cn", names);
     }
 
-    public String find(String key, List<LDAPName> names) {
+    public String find (String key, List<LDAPName> names) {
         for (LDAPName ldapName : names) {
             if (ldapName.getKey().equalsIgnoreCase(key))
                 return ldapName.getValue();
@@ -217,7 +217,7 @@ public class DistinguishedName {
      *
      * @return The string described above.
      */
-    public String toString() {
+    public String toString () {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("c=");
         stringBuilder.append(getCountryCode());
@@ -235,7 +235,7 @@ public class DistinguishedName {
         return stringBuilder.toString();
     }
 
-    public boolean equals(Object o) {
+    public boolean equals (Object o) {
         if (null == o || !(o instanceof DistinguishedName))
             return false;
 

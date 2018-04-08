@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet.holder;
 
-import com.ltsllc.common.util.ImprovedRandom;
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.results.Results;

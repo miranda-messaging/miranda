@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.mina;
 
+import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Network;
@@ -40,8 +41,8 @@ public class MinaNetworkListener extends ConnectionListener {
     private static NioSocketAcceptor nioSocketAcceptor;
 
     private Network network;
-    private KeyStore keystore;
-    private KeyStore truststore;
+    private JavaKeyStore keystore;
+    private JavaKeyStore truststore;
     private String keyStorePassword;
 
     public static NioSocketAcceptor getNioSocketAcceptor() {
@@ -60,15 +61,15 @@ public class MinaNetworkListener extends ConnectionListener {
         return network;
     }
 
-    public KeyStore getKeystore() {
+    public JavaKeyStore getKeystore() {
         return keystore;
     }
 
-    public KeyStore getTruststore() {
+    public JavaKeyStore getTruststore() {
         return truststore;
     }
 
-    public MinaNetworkListener(int port, KeyStore keyStore, String getKeyStorePassword, KeyStore truststore) throws MirandaException {
+    public MinaNetworkListener(int port, JavaKeyStore keyStore, String getKeyStorePassword, JavaKeyStore truststore) throws MirandaException {
         super(port);
         this.keystore = keyStore;
         this.keyStorePassword = getKeyStorePassword;
@@ -96,17 +97,17 @@ public class MinaNetworkListener extends ConnectionListener {
 
         SSLContext sslContext = SSLContext.getInstance("TLS");
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(getKeystore(), getKeyStorePassword().toCharArray());
+        keyManagerFactory.init(getKeystore().getJsKeyStore(), getKeyStorePassword().toCharArray());
 
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(getTruststore());
+        trustManagerFactory.init(getTruststore().getJsKeyStore());
 
         sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
         SslFilter sslFilter = new SslFilter(sslContext);
         sslFilter.setNeedClientAuth(true);
         nioSocketAcceptor.getFilterChain().addLast("ssl", sslFilter);
 
-        Certificate certificate = getTruststore().getCertificate("ca");
+        Certificate certificate = getTruststore().getCertificate("ca").getCertificate();
         ConnectionHandler connectionHandler = new ConnectionHandler(getNetwork(), certificate);
         nioSocketAcceptor.setHandler(connectionHandler);
 

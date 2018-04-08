@@ -363,7 +363,7 @@ public class TestMinaNetwork extends TestCase {
             setupMirandaProperties();
             setupTrustStore();
             setupKeyStore();
-            minaNetwork = new MinaNetwork(getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
+            minaNetwork = new MinaNetwork(getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore(), TEMP_KEYSTORE_PASSWORD);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -394,7 +394,7 @@ public class TestMinaNetwork extends TestCase {
 
         pause(500);
 
-        setupMinaListener(6789, getKeyStore(), getTrustStore(), TEMP_KEYSTORE_PASSWORD);
+        setupMinaListener(6789, getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore(), TEMP_KEYSTORE_PASSWORD);
 
         pause(500);
 

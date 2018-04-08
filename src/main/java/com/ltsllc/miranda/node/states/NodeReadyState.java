@@ -56,7 +56,7 @@ public class NodeReadyState extends NodeState {
     private Map<String, Version> versions = new HashMap<String, Version>();
     private Map<String, Conversation> conversations;
 
-    public NodeReadyState(Node node, Network network) throws MirandaException {
+    public NodeReadyState(Node node, Network network) {
         super(node, network);
 
         this.conversations = new HashMap<String, Conversation>();
@@ -71,7 +71,7 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
+    public State processNetworkMessage(NetworkMessage networkMessage) {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {

@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,25 @@ public class DeadLetterQueue extends MirandaObject {
         this.events = new ArrayList<String>();
     }
 
+    public boolean stringListsAreEquivalent (List<String> us, List<String> other) {
+        if (us.size() != other.size())
+        {
+            return false;
+        }
+
+        for (int i = 0; i < us.size(); i++)
+        {
+            String s1 = us.get(i);
+            String s2 = other.get(i);
+
+            if (!s1.equals(s2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean isEquivalentTo(Object o) {
         if (o == null || !(o instanceof DeadLetterQueue))
@@ -22,7 +41,7 @@ public class DeadLetterQueue extends MirandaObject {
 
         DeadLetterQueue other = (DeadLetterQueue) o;
 
-        return Utils.StringListsAreEquivalent(events, other.events);
+        return stringListsAreEquivalent(events, other.events);
     }
 
     @Override

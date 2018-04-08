@@ -20,8 +20,10 @@ package com.ltsllc.miranda.clientinterface;
  * Created by Clark on 2/6/2017.
  */
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.clcl.MessageDigest;
+import com.ltsllc.commons.util.Utils;
 
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -34,44 +36,47 @@ import java.security.NoSuchAlgorithmException;
  * </P>
  */
 public class Version {
-    private String sha1;
+    private String sha256;
 
     public Version() {
     }
 
-    public Version(String content) throws NoSuchAlgorithmException {
-        this.sha1 = Utils.calculateSha1(content);
+    public Version(String content) throws GeneralSecurityException {
+        this.sha256 = MessageDigest.calculate(content.getBytes());
     }
 
-    public Version(byte[] data) throws NoSuchAlgorithmException {
-        this.sha1 = Utils.calculateSha1(data);
+    public Version(byte[] data) throws GeneralSecurityException {
+        this.sha256 = MessageDigest.calculate(data);
     }
 
-    public static Version createWithSha1(String sha1) {
+    public static Version createWithSha256(String sha256) {
         Version version = new Version();
-        version.sha1 = sha1;
+        version.sha256 = sha256;
 
         return version;
     }
 
-    public String getSha1() {
-        return sha1;
+    public String getSha256() {
+        return sha256;
     }
 
-    public void setSha1(String sha1) {
-        this.sha1 = sha1;
+    public void setSha256(String sha256) {
+        this.sha256 = sha256;
     }
 
     public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
         if (null == o || !(o instanceof Version))
             return false;
 
         Version other = (Version) o;
 
-        if ((other.sha1 == null && sha1 != null) || (null != other.getSha1() && null == sha1))
+        if ((other.sha256 == null && sha256 != null) || (null != other.getSha256() && null == sha256))
             return false;
 
-        return sha1.equals(other.getSha1());
+        return sha256.equals(other.getSha256());
     }
 
 }

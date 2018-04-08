@@ -17,8 +17,9 @@
 package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
-import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
@@ -148,7 +149,7 @@ public class TestSingleFile extends TestCase {
 
         getSingleFile().load();
 
-        byte[] data = Utils.hexStringToBytes(TEST_FILE_CONTENTS);
+        byte[] data = HexConverter.toByteArray(TEST_FILE_CONTENTS);
         setupDirectory();
         makeFile(TEST_FILENAME2, data);
 
@@ -166,7 +167,7 @@ public class TestSingleFile extends TestCase {
         getSingleFile().setData(nodeElementList);
 
         byte[] data = getSingleFile().getBytes();
-        String s = Utils.bytesToString(data);
+        String s = HexConverter.toHexString(data);
 
         assert (s.equals(TEST_FILE_CONTENTS));
     }

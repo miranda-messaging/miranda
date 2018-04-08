@@ -21,7 +21,7 @@ public class LDAPName {
     private String key;
     private String value;
 
-    public LDAPName(String name) {
+    public LDAPName (String name) {
         initialize(name);
     }
 
@@ -33,13 +33,13 @@ public class LDAPName {
         return key;
     }
 
-    public void initialize(String name) {
+    public void initialize (String name) {
         String fields[] = name.split("=");
         this.key = fields[0].trim();
         this.value = fields[1].trim();
     }
 
-    public String toString() {
+    public String toString () {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getKey());
         stringBuilder.append('=');
@@ -48,7 +48,7 @@ public class LDAPName {
         return stringBuilder.toString();
     }
 
-    public boolean equals(Object o) {
+    public boolean equals (Object o) {
         if (o == null || !(o instanceof LDAPName))
             return false;
 

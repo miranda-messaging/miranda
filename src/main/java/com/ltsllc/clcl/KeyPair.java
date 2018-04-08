@@ -58,7 +58,7 @@ public class KeyPair {
         return publicKey;
     }
 
-    public static KeyPair newKeys() throws EncryptionException {
+    public static KeyPair newKeys () throws EncryptionException {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM);
             java.security.KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -70,7 +70,7 @@ public class KeyPair {
         }
     }
 
-    public String toPem() throws EncryptionException {
+    public String toPem () throws EncryptionException {
         try {
             StringWriter stringWriter = new StringWriter();
             PEMWriter pemWriter = new PEMWriter(stringWriter);
@@ -86,7 +86,7 @@ public class KeyPair {
         }
     }
 
-    public static KeyPair fromPem(String pem) throws EncryptionException {
+    public static KeyPair fromPem (String pem) throws EncryptionException {
         try {
             StringReader stringReader = new StringReader(pem);
             PEMParser pemParser = new PEMParser(stringReader);
@@ -119,7 +119,7 @@ public class KeyPair {
     }
 */
 
-    public String toPem(String password) throws EncryptionException {
+    public String toPem (String password) throws EncryptionException {
         try {
             java.security.KeyPair keyPair = new java.security.KeyPair(getPublicKey().getSecurityPublicKey(), getPrivateKey().getSecurityPrivateKey());
             DESedeEngine desEdeEngine = new DESedeEngine();
@@ -136,7 +136,7 @@ public class KeyPair {
         }
     }
 
-    public static KeyPair fromPem(String pem, String password) throws EncryptionException {
+    public static KeyPair fromPem (String pem, String password) throws EncryptionException {
         try {
             StringReader stringReader = new StringReader(pem);
             PEMParser pemParser = new PEMParser(stringReader);
@@ -152,11 +152,11 @@ public class KeyPair {
         }
     }
 
-    public CertificateSigningRequest createCertificateSigningRequest() throws EncryptionException {
+    public CertificateSigningRequest createCertificateSigningRequest () throws EncryptionException {
         return getPublicKey().createCertificateSigningRequest(getPrivateKey());
     }
 
-    public boolean equals(Object o) {
+    public boolean equals (Object o) {
         if (o == null || !(o instanceof KeyPair))
             return false;
 

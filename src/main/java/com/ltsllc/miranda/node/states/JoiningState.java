@@ -75,7 +75,7 @@ public class JoiningState extends NodeState {
         return nextState;
     }
 
-    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
+    public State processNetworkMessage(NetworkMessage networkMessage) {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
@@ -124,7 +124,7 @@ public class JoiningState extends NodeState {
         return this;
     }
 
-    private State processJoinResponse(JoinResponseWireMessage joinResponse) throws MirandaException {
+    private State processJoinResponse(JoinResponseWireMessage joinResponse) {
         State nextState = this;
         if (joinResponse.getResult() == JoinResponseWireMessage.Responses.Success) {
             logger.info("Successfully joined cluster");

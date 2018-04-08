@@ -20,7 +20,8 @@ import com.google.gson.Gson;
 import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
@@ -121,7 +122,7 @@ public class TestWriter extends TestCase {
 
     public boolean fileIsEquivalentTo(String filename, String hexString) {
         try {
-            byte[] data = Utils.hexStringToBytes(hexString);
+            byte[] data = HexConverter.toByteArray(hexString);
             return fileIsEquivalentTo(filename, data);
         } catch (Exception e) {
             System.err.println("Exception");

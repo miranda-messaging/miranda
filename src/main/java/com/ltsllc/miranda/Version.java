@@ -20,13 +20,15 @@ package com.ltsllc.miranda;
  * Created by Clark on 2/6/2017.
  */
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.clcl.MessageDigest;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.file.SingleFile;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -41,22 +43,22 @@ import java.security.NoSuchAlgorithmException;
 public class Version {
     private static Logger logger = Logger.getLogger(Version.class);
 
-    private String sha1;
+    private String sha256;
 
     public Version() {
     }
 
-    public Version(String content) throws NoSuchAlgorithmException {
-        this.sha1 = Utils.calculateSha1(content);
+    public Version(String content) throws GeneralSecurityException {
+        this.sha256 = MessageDigest.calculate(content.getBytes());
     }
 
-    public Version(byte[] data) throws NoSuchAlgorithmException {
-        this.sha1 = Utils.calculateSha1(data);
+    public Version(byte[] data) throws GeneralSecurityException {
+        this.sha256 = MessageDigest.calculate(data);
     }
 
-    public static Version createWithSha1(String sha1) {
+    public static Version createWithSha256(String sha256) {
         Version version = new Version();
-        version.sha1 = sha1;
+        version.sha256 = sha256;
 
         return version;
     }
@@ -66,38 +68,42 @@ public class Version {
      *
      * @param singleFile
      */
-    public Version(SingleFile singleFile) throws NoSuchAlgorithmException, IOException {
+    public Version(SingleFile singleFile) throws GeneralSecurityException, IOException {
         FileInputStream fileInputStream = null;
 
         try {
             File file = new File(singleFile.getFilename());
             fileInputStream = new FileInputStream(file);
-            byte[] sha1Bytes = Utils.calculateSha1(fileInputStream);
-
-            this.sha1 = Utils.bytesToString(sha1Bytes);
+            sha256 = MessageDigest.calculate(fileInputStream);
         } finally {
             Utils.closeIgnoreExceptions(fileInputStream);
         }
     }
 
-    public String getSha1() {
-        return sha1;
+    public String getSha256() {
+        return sha256;
     }
 
-    public void setSha1(String sha1) {
-        this.sha1 = sha1;
+    public void setSha256(String sha256) {
+        this.sha256 = sha256;
     }
 
     public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
         if (null == o || !(o instanceof Version))
             return false;
 
         Version other = (Version) o;
 
-        if ((other.sha1 == null && sha1 != null) || (null != other.getSha1() && null == sha1))
+        if (sha256 == other.sha256)
+            return true;
+
+        if (sha256 == null || other.sha256 == null)
             return false;
 
-        return sha1.equals(other.getSha1());
+        return sha256.equals(other.getSha256());
     }
 
 }

@@ -18,7 +18,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.MirandaUncheckedException;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
 
@@ -119,7 +119,7 @@ public class User extends MirandaObject {
         this.name = other.name;
         this.category = other.category;
         this.description = other.description;
-        this.publicKey = new PublicKey(other.publicKey);
+        this.publicKey = other.publicKey;
     }
 
     @Override
@@ -159,7 +159,7 @@ public class User extends MirandaObject {
         this.category = category;
     }
 
-    public PublicKey getPublicKey() throws IOException {
+    public PublicKey getPublicKey() throws EncryptionException {
         if (null == publicKey && null != publicKeyPem)
             createPublicKey();
 
@@ -225,9 +225,9 @@ public class User extends MirandaObject {
         this.publicKey = publicKey;
     }
 
-    public void createPublicKey() throws IOException {
-        java.security.PublicKey jaPublicKey = Utils.pemStringToPublicKey(publicKeyPem);
-        publicKey = new PublicKey(jaPublicKey);
+    public void createPublicKey() throws EncryptionException {
+        java.security.PublicKey jsPublicKey = PublicKey.readPublicKeyFromPEM(publicKeyPem);
+        publicKey = new PublicKey(jsPublicKey);
     }
 
     public User() {
@@ -281,7 +281,7 @@ public class User extends MirandaObject {
             stringBuilder.append("}");
 
             return stringBuilder.toString();
-        } catch (IOException e) {
+        } catch (EncryptionException e) {
             throw new MirandaUncheckedException("Exception in toString", e);
         }
     }

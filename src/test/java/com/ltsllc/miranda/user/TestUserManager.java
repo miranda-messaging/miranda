@@ -16,7 +16,8 @@
 
 package com.ltsllc.miranda.user;
 
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
@@ -104,19 +105,6 @@ public class TestUserManager extends TestCase {
         deleteFile(TEST_FILENAME);
     }
 
-    public void testConstructor_original() {
-        try {
-            Key key = Utils.loadKey("root.keystore", "whatever", "root");
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(key);
-            objectOutputStream.close();
-            byte[] bytes = byteArrayOutputStream.toByteArray();
-            String hexString = Utils.bytesToString(bytes);
-        } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void testConstructor() {

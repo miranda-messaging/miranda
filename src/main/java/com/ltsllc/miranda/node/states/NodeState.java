@@ -42,7 +42,7 @@ public class NodeState extends State {
         return network;
     }
 
-    public NodeState(Node node, Network network) throws MirandaException {
+    public NodeState(Node node, Network network) {
         super(node);
 
         this.network = network;
@@ -52,7 +52,7 @@ public class NodeState extends State {
         getNetwork().sendNetworkMessage(getNode().getQueue(), this, getNode().getHandle(), wireMessage);
     }
 
-    public State processNetworkMessage(NetworkMessage networkMessage) throws MirandaException {
+    public State processNetworkMessage(NetworkMessage networkMessage)  {
         String message = this + " does but understand network message " + networkMessage.getWireMessage().getWireSubject();
         logger.error(message);
         logger.error("message created at", networkMessage.getWhere());

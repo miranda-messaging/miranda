@@ -18,7 +18,7 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Version;

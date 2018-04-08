@@ -135,7 +135,7 @@ public class TestClusterFileReadyState extends TestCase {
     @Test
     public void testProcessGetVersionMessage () throws MirandaException {
         Version version = new Version();
-        version.setSha1("foo");
+        version.setSha256("foo");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetVersionMessage message = new GetVersionMessage(queue, null, queue);
 

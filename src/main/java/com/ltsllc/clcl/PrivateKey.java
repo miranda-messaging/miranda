@@ -17,6 +17,7 @@
 
 package com.ltsllc.clcl;
 
+import com.ltsllc.commons.util.Utils;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -58,23 +59,23 @@ import java.util.UUID;
 
 /**
  * A class to simplify working with private keys.
- * <p>
+ *
  * <p>
  * This class was created because of the state of interoperability between openSSL
  * and Java public key.
  * </p>
- * <p>
+ *
  * <p>
  * The class provides a number of "convenience method" for doing common tasks, specifically:
  * </p>
- * <p>
+ *
  * <ul>
  * <li>{@link #encrypt(byte[])} for easy encryption</li>
  * <li>{@link #decrypt(byte[])} for easy decryption</li>
  * <li>{@link #encrypt(String, byte[])} for "fast" encryption of large amounts of data</li>
  * <li>{@link #decrypt(EncryptedMessage)} for "fast" decryption of large amounts of data</li>
  * </ul>
- * <p>
+ *
  * <h3>Properties</h3>
  * <table border="1">
  * <tr>
@@ -82,7 +83,7 @@ import java.util.UUID;
  * <th>Type</th>
  * <th>Description</th>
  * </tr>
- * <p>
+ *
  * <tr>
  * <td>securityPrivateKey</td>
  * <td>java.security.PrivateKey</td>
@@ -99,6 +100,15 @@ public class PrivateKey extends Key {
 
     private java.security.PrivateKey securityPrivateKey;
 
+    public static void writePemFile(String filename, java.security.PrivateKey privateKey) throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        PEMWriter pemWriter = new PEMWriter(stringWriter);
+        pemWriter.writeObject(privateKey);
+        pemWriter.close();
+
+        Utils.writeTextFile(filename, stringWriter.toString());
+    }
+
     public java.security.PrivateKey getSecurityPrivateKey() {
         return securityPrivateKey;
     }
@@ -114,7 +124,7 @@ public class PrivateKey extends Key {
 
     /**
      * Convenience method to encrypt some data.
-     * <p>
+     *
      * <p>
      * This method hides all the dirty work associated with encrypting some data with public key.
      * </p>

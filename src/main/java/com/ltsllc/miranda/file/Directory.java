@@ -109,7 +109,7 @@ abstract public class Directory extends MirandaFile {
         return new byte[0];
     }
 
-    public void updateVersion() throws NoSuchAlgorithmException {
+    public void updateVersion() throws Exception {
         List<Version> list = new ArrayList<Version>();
 
         for (MirandaFile file : getFiles()) {

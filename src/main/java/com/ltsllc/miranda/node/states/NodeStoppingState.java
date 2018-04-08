@@ -47,7 +47,7 @@ public class NodeStoppingState extends State {
         return (Node) getContainer();
     }
 
-    public NodeStoppingState(Node node) throws MirandaException {
+    public NodeStoppingState(Node node) {
         super(node);
     }
 

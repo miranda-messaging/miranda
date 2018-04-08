@@ -89,7 +89,7 @@ public class TestNewNodeState extends TesterNodeState {
 
         List<NameVersion> nameVersions = new ArrayList<NameVersion>();
         Version version = new Version();
-        version.setSha1("whatever");
+        version.setSha256("whatever");
         nameVersions.add (new NameVersion(Cluster.NAME, version));
         VersionsWireMessage versionsWireMessage = new VersionsWireMessage(nameVersions);
         NetworkMessage networkMessage = new NetworkMessage(null, this, versionsWireMessage);

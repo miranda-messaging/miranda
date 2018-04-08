@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.clientinterface.objects;
 
-import com.ltsllc.common.util.Property;
+import com.ltsllc.commons.util.Property;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 
 import java.util.ArrayList;

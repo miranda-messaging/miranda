@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.miranda;
 
+import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
@@ -62,7 +63,6 @@ import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -102,24 +102,24 @@ public class Miranda extends Consumer {
     private List<String> waitingOn;
     private Network network;
     public MirandaCommandLine commandLine;
-    private KeyStore keyStore;
-    private KeyStore trustStore;
+    private JavaKeyStore keyStore;
+    private JavaKeyStore trustStore;
 
-    public KeyStore getTrustStore() {
+    public JavaKeyStore getTrustStore() {
         return trustStore;
     }
 
-    public void setTrustStore(KeyStore trustStore) {
+    public void setTrustStore(JavaKeyStore trustStore) {
         this.trustStore = trustStore;
     }
 
-    public KeyStore getKeyStore() {
+    public JavaKeyStore getKeyStore() {
 
         return keyStore;
     }
 
-    public void setKeyStore(KeyStore keyStore) {
-        this.keyStore = keyStore;
+    public void setKeyStore(JavaKeyStore JavaKeyStore) {
+        this.keyStore = JavaKeyStore;
     }
 
     public MirandaCommandLine getCommandLine() {
@@ -317,18 +317,10 @@ public class Miranda extends Consumer {
         miranda.start();
     }
 
-    public void start(String argString, KeyStore keyStore, KeyStore trustStore) {
+    public void start(String argString, JavaKeyStore JavaKeyStore, JavaKeyStore trustStore) {
         String[] argv = argString.split(" |\t");
         MirandaCommandLine mirandaCommandLine = new MirandaCommandLine(argv);
         setCommandLine(mirandaCommandLine);
-
-        Startup startup = (Startup) getCurrentState();
-        if (null != startup) {
-            startup.setCommandLine(mirandaCommandLine);
-            startup.setKeyStore(getKeyStore());
-            startup.setTrustStore(getTrustStore());
-        }
-
         start();
     }
 

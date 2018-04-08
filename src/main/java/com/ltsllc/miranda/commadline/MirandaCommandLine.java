@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.commadline;
 
-import com.ltsllc.common.commadline.CommandLine;
+import com.ltsllc.commons.commadline.CommandLine;
 import com.ltsllc.miranda.property.MirandaProperties;
 import org.apache.log4j.Logger;
 
@@ -32,7 +32,7 @@ import java.util.Properties;
  */
 public class MirandaCommandLine extends CommandLine {
     public enum Options {
-        Unknown(1 + Switches.LAST.getIndex()),
+        Unknown(1 + CommandLine.Switches.LAST.getIndex()),
 
         Debug(2 + Switches.LAST.getIndex()),
         LoggingLevel(3 + Switches.LAST.getIndex()),

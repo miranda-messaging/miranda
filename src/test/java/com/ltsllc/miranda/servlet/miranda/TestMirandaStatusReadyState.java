@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet.miranda;
 
-import com.ltsllc.common.util.Property;
+import com.ltsllc.commons.util.Property;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;

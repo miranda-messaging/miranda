@@ -16,8 +16,9 @@
 
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.common.util.ImprovedRandom;
-import com.ltsllc.common.util.Utils;
+import com.ltsllc.commons.util.HexConverter;
+import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class TestEvent extends TestCase {
 
         assert (event.getMethod() == Event.Methods.PUT);
 
-        byte[] whatever = Utils.hexStringToBytes(junk);
+        byte[] whatever = HexConverter.toByteArray(junk);
         assert (arraysAreEquivalent(event.getContent(), whatever));
     }
 
