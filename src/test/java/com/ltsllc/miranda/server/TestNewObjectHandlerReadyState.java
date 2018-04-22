@@ -51,7 +51,7 @@ public class TestNewObjectHandlerReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockNewUserHandler = null;
@@ -60,7 +60,7 @@ public class TestNewObjectHandlerReadyState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

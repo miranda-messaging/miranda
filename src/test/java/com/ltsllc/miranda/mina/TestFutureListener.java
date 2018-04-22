@@ -71,7 +71,7 @@ public class TestFutureListener extends TestCase {
         return mockSession;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockSession = null;
@@ -81,7 +81,7 @@ public class TestFutureListener extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();
@@ -96,7 +96,7 @@ public class TestFutureListener extends TestCase {
     }
 
     @Test
-    public void testOperationComplete () throws MirandaException {
+    public void testOperationComplete () throws Exception {
         InetSocketAddress inetSocketAddress = new InetSocketAddress("foo.com", 6789);
         when (getMockConnectFuture().isConnected()).thenReturn(true);
         when (getMockConnectFuture().getSession()).thenReturn(getMockIoSession());

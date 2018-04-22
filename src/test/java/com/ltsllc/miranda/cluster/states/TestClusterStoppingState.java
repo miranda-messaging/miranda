@@ -42,14 +42,14 @@ public class TestClusterStoppingState extends TestCase {
         return clusterStoppingState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         clusterStoppingState = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

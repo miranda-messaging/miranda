@@ -88,7 +88,7 @@ public class TestCluster extends TestCase {
     };
 
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.cluster = null;
@@ -98,7 +98,7 @@ public class TestCluster extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

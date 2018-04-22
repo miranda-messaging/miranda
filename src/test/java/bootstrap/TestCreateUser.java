@@ -1,5 +1,6 @@
 package bootstrap;
 
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.BootstrapUsersFile;
 import org.bouncycastle.openssl.PEMEncryptor;
@@ -12,9 +13,9 @@ public class TestCreateUser extends TestCase {
     @Test
     public void testBootstrap () throws Exception {
         String usersFilename = "data/users.json";
-        String keyStoreFileName = "keystore";
-        String password = "whatever";
-        BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(usersFilename, keyStoreFileName, password);
+        setupMiranda();
+        createKeyStore(TEMP_KEYSTORE, TEMP_KEYSTORE_PASSWORD, TEMP_ALIAS);
+        BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(usersFilename, TEMP_KEYSTORE, TEMP_KEYSTORE_PASSWORD, TEMP_ALIAS);
         bootstrapUsersFile.createUser("admin", "the admin user");
         bootstrapUsersFile.write();
     }

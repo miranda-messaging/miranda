@@ -52,7 +52,7 @@ public class TestMiranda extends TestCase {
         return mockSession;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.mockSession = null;
@@ -60,7 +60,7 @@ public class TestMiranda extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         super.setup();
 
         String[] empty = new String[0];

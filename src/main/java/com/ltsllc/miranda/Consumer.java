@@ -125,15 +125,17 @@ public class Consumer extends Subsystem implements Comparer {
      * </p>
      */
     public void run() {
+        State nextState = null;
+
         try {
-            State nextState = startCurrentState();
+            nextState = startCurrentState();
             logger.info(this + " starting");
+            setCurrentState(nextState);
         } catch (Exception e) {
             ExceptionPanic panic = new ExceptionPanic(e, Panic.Reasons.ExceptionInStart);
             Miranda.panicMiranda(panic);
         }
 
-        State nextState = null;
         State stop = StopState.getInstance();
 
         while (nextState != stop && !Miranda.panicking && !getStopped()) {

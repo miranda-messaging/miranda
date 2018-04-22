@@ -38,14 +38,14 @@ public class TestServletHolderReadyState extends TestCase {
         return readyState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         readyState = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

@@ -38,14 +38,14 @@ public class TestManagerLoadingState extends TestCase {
         return loadingState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         loadingState = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

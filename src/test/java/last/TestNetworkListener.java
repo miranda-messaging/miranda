@@ -82,7 +82,7 @@ public class TestNetworkListener extends TestCase {
         this.thread = thread;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockHandle = null;
@@ -90,7 +90,7 @@ public class TestNetworkListener extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

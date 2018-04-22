@@ -65,7 +65,7 @@ public class TestReadyState extends TestCase {
 
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

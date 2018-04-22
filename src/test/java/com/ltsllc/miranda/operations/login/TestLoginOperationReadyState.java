@@ -51,7 +51,7 @@ public class TestLoginOperationReadyState extends TestCase {
         return mockLoginOperation;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockLoginOperation = null;
@@ -59,7 +59,7 @@ public class TestLoginOperationReadyState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

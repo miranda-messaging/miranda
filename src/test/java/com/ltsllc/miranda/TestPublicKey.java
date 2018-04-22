@@ -39,7 +39,7 @@ public class TestPublicKey extends TestCase {
         return publicKey;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         publicKey = null;
@@ -85,7 +85,7 @@ public class TestPublicKey extends TestCase {
 
 
     @Before
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         reset();
 
         super.setup();

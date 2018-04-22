@@ -58,14 +58,14 @@ public class TestJettyHttpServer extends TestCase {
         return mockServer;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         jettyHttpServer = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

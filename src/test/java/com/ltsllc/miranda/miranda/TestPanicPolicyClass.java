@@ -38,14 +38,14 @@ public class TestPanicPolicyClass extends TestCase {
         return panicPolicyClass;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         panicPolicyClass = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

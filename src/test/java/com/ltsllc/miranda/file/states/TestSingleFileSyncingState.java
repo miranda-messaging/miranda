@@ -50,7 +50,7 @@ public class TestSingleFileSyncingState extends TestCase {
         return usersFileSyncingState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.mockUsesFile = null;
@@ -59,7 +59,7 @@ public class TestSingleFileSyncingState extends TestCase {
 
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

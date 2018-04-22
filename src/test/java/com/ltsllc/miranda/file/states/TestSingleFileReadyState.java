@@ -53,7 +53,7 @@ public class TestSingleFileReadyState extends TestCase {
 
     private ClusterFileReadyState clusterFileReadyState;
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.mockClusterFile = null;
@@ -70,7 +70,7 @@ public class TestSingleFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         super.setup();
 
         setuplog4j();

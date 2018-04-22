@@ -35,14 +35,14 @@ public class TestNodeStartState extends TesterNodeState {
         return nodeStartState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         nodeStartState = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

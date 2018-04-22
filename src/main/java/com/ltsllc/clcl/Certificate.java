@@ -30,6 +30,8 @@ import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Certificate {
     private X509Certificate certificate;

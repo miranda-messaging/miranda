@@ -156,7 +156,6 @@ public class MirandaProperties {
     public static final String PROPERTY_SERVLET_THREAD_POOL_SIZE = SERVLET_PACKAGE + "ThreadPoolSize";
 
     public static final String PROPERTY_KEYSTORE_FILE = KEYSTORE_PACKAGE + "File";
-    public static final String PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS = KEYSTORE_PACKAGE + "PrivateKey";
     public static final String PROPERTY_KEYSTORE_CERTIFICATE_ALIAS = KEYSTORE_PACKAGE + "Certificate";
     public static final String PROPERTY_KEYSTORE_CA_ALIAS = KEYSTORE_PACKAGE + "CA";
 
@@ -258,7 +257,6 @@ public class MirandaProperties {
             {PROPERTY_SERVLET_THREAD_POOL_SIZE, DEFAULT_SERVLET_THREAD_POOL_SIZE},
 
             {PROPERTY_KEYSTORE_FILE, DEFAULT_KEYSTORE_FILE},
-            {PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS, DEFAULT_KEYSTORE_PRIVATE_KEY_ALIAS},
             {PROPERTY_KEYSTORE_CERTIFICATE_ALIAS, DEFAULT_KEYSTORE_CERTIFICATE_ALIAS},
             {PROPERTY_KEYSTORE_CA_ALIAS, DEFAULT_KEYSTORE_CA_ALIAS},
 
@@ -451,7 +449,7 @@ public class MirandaProperties {
 
     public void load() {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
 
         try {
             load(commandLine);

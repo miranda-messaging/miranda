@@ -31,13 +31,13 @@ public class TesterNodeState extends TestCase {
         return mockNode;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockNode = null;
     }
 
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         super.setup();
 
         setuplog4j();

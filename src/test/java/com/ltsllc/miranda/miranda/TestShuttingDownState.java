@@ -44,14 +44,14 @@ public class TestShuttingDownState extends TestCase {
         this.shuttingDownState = shuttingDownState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         shuttingDownState = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         super.setup();
 
         shuttingDownState = new ShuttingDownState(getMockMiranda());

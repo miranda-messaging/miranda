@@ -54,7 +54,7 @@ public class TestReader extends TestCase {
         return mockPrivateKey;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         mockPrivateKey = null;
@@ -62,7 +62,7 @@ public class TestReader extends TestCase {
     }
 
     @Before
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         reset();
 
         super.setup();
@@ -74,8 +74,12 @@ public class TestReader extends TestCase {
 
     @After
     public void cleanup() {
-        System.gc();
-        deleteFile(TEST_FILENAME);
+        try {
+            System.gc();
+            deleteFile(TEST_FILENAME);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public static final String TEST_FILENAME = "testfile";

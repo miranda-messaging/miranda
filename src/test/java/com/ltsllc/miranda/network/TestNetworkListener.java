@@ -29,7 +29,7 @@ public class TestNetworkListener extends TestCase {
         return networkListener;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
     }

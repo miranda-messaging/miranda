@@ -66,7 +66,7 @@ public class TestSingleFile extends TestCase {
         return queue;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.queue = null;
@@ -74,7 +74,7 @@ public class TestSingleFile extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         super.setup();
 
         setuplog4j();

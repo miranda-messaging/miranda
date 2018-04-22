@@ -37,14 +37,14 @@ public class TestVersion extends TestCase {
         return version;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         version = null;
     }
 
     @Before
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         reset();
 
         super.setup();
@@ -58,7 +58,7 @@ public class TestVersion extends TestCase {
     }
 
     public static final String TEST_STRING = "whatever";
-    public static final String TEST_SHA1 = "D869DB7FE62FB07C25A0403ECAEA55031744B5FB";
+    public static final String TEST_SHA1 = "85738F8F9A7F1B04B5329C590EBCB9E425925C6D0984089C43A022DE4F19C281";
 
     @Test
     public void testConsrutctor() throws GeneralSecurityException {

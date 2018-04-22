@@ -81,7 +81,7 @@ public class TestClusterFileReadyState extends TestCase {
         return mockClusterfile;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         ClusterFile.reset();
@@ -101,7 +101,7 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         reset();
 
         super.setup();
@@ -116,7 +116,7 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     @After
-    public void cleanup() throws MirandaException {
+    public void cleanup() throws Exception {
         deleteFile(CLUSTER_FILENAME);
         reset();
     }

@@ -45,7 +45,7 @@ public class TestClusterStartState extends TestCase {
         return clusterStartState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         clusterStartState = null;
@@ -57,7 +57,7 @@ public class TestClusterStartState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

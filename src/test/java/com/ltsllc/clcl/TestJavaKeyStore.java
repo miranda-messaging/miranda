@@ -37,19 +37,19 @@ public class TestJavaKeyStore extends TestCase {
     }
 
     @Before
-    public void setup () {
+    public void setup() {
         this.javaKeyStore = new JavaKeyStore();
         this.javaKeyStore.setFilename(TEST_FILENAME);
     }
 
     @After
-    public void cleanup () {
+    public void cleanup() {
         delete(TEST_FILENAME);
     }
 
     // also tests load, store, initialize and extract
-
-    public void testAddKeyPair () throws Exception {
+    @Test
+    public void testAddKeyPair() throws Exception {
         DistinguishedName dn = createDn();
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -70,7 +70,7 @@ public class TestJavaKeyStore extends TestCase {
         CertificateSigningRequest csr = publicKey.createCertificateSigningRequest(privateKey);
         Certificate certificate = privateKey.sign(csr, now, aYearFromNow);
 
-        Certificate[] chain = { certificate };
+        Certificate[] chain = {certificate};
 
         getJavaKeyStore().add(TEST_ALIAS, keyPair2, chain);
 
@@ -85,7 +85,8 @@ public class TestJavaKeyStore extends TestCase {
     }
 
 
-    public void testAddCertificate () throws Exception {
+    @Test
+    public void testAddCertificate() throws Exception {
         Certificate certificate = createCertificate();
         getJavaKeyStore().add(TEST_ALIAS, certificate);
 
@@ -94,8 +95,8 @@ public class TestJavaKeyStore extends TestCase {
     }
 
 
-    // This also tests load, store, initialize, extract, extractCertificates and getCertificate
-    public void testAddCertificates () throws Exception{
+    @Test
+    public void testAddCertificates() throws Exception {
         Certificate certificate = createCertificate();
         getJavaKeyStore().setPasswordString(TEST_PASSWORD);
         getJavaKeyStore().add(TEST_ALIAS, certificate);

@@ -101,7 +101,7 @@ public class TestClusterFile extends TestCase {
         this.clusterFile.setData(nodeElementList);
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         Miranda.properties = null;
@@ -110,7 +110,7 @@ public class TestClusterFile extends TestCase {
 
 
     @Before
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         reset();
 
         super.setup();

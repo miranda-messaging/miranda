@@ -42,14 +42,14 @@ public class TestSubscriber extends TestCase {
         return subscriber;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         subscriber = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.reset();

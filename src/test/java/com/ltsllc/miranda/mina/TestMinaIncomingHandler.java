@@ -62,7 +62,7 @@ public class TestMinaIncomingHandler extends TestCase {
         return mockHandle;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockSession = null;
@@ -72,7 +72,7 @@ public class TestMinaIncomingHandler extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

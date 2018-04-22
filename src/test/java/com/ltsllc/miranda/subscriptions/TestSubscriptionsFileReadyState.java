@@ -53,7 +53,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
         return mockSubscriptionsFile;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockSubscriptionsFile = null;
@@ -61,7 +61,7 @@ public class TestSubscriptionsFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

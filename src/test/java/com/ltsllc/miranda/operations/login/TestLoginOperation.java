@@ -38,14 +38,14 @@ public class TestLoginOperation extends TestCase {
         return loginOperation;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         loginOperation = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

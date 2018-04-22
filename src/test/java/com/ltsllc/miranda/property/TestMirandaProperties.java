@@ -49,7 +49,7 @@ public class TestMirandaProperties extends TestCase {
         return properties;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
     }
 
@@ -107,7 +107,7 @@ public class TestMirandaProperties extends TestCase {
         //
         touch(TEST_FILENAME);
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
 
         getProperties().load(commandLine);
 
@@ -117,7 +117,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testLoadWithSystemProperties () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
 
         Properties system = System.getProperties();
         system.setProperty(MirandaProperties.PROPERTY_USERS_FILE, TEST_VALUE);
@@ -130,7 +130,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testLoadWithPropertiesFile () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
         createFile(TEST_FILENAME, TEST_CONTENTS);
 
         getProperties().load(commandLine);
@@ -142,7 +142,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testLoadWithSomethingInThePropertiesFile () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
 
         Properties system = System.getProperties();
         system.setProperty(MirandaProperties.PROPERTY_USERS_FILE, OTHER_VALUE);
@@ -163,7 +163,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testGetIntProperty () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
         getProperties().load(commandLine);
 
         int panicLimit = getProperties().getIntProperty(MirandaProperties.PROPERTY_PANIC_LIMIT);
@@ -179,7 +179,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testGetEncryptionMode () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
         getProperties().load(commandLine);
 
         MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
@@ -194,7 +194,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testGetNetworkProperty () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
         getProperties().load(commandLine);
 
         MirandaProperties.Networks network = getProperties().getNetworkProperty();
@@ -250,7 +250,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testAsPropertyList () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
         getProperties().load(commandLine);
 
         List<Property> list = getProperties().asPropertyList();
@@ -265,7 +265,7 @@ public class TestMirandaProperties extends TestCase {
     @Test
     public void testWrite () throws IOException {
         String[] argv = new String[0];
-        MirandaCommandLine commandLine = new MirandaCommandLine(argv);
+        MirandaCommandLine commandLine = new MirandaCommandLine();
         getProperties().load(commandLine);
     }
 

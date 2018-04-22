@@ -65,7 +65,7 @@ public class TestDirectoryReadyState extends TestCase {
         return mockMirandaFile;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.mockMirandaFile = null;
@@ -74,7 +74,7 @@ public class TestDirectoryReadyState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

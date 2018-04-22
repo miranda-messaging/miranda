@@ -30,6 +30,7 @@ public class TestCreateUser extends TestCase {
     public static final String KEY_STORE_FILE = "keystore";
     public static final String KEY_STORE_PASSWORD = "whatever";
 
+
     public void createTextFile(String filename, String text) throws IOException {
         FileWriter fileWriter = null;
         try {
@@ -105,7 +106,7 @@ public class TestCreateUser extends TestCase {
 
         com.ltsllc.clcl.PublicKey publicKey = new com.ltsllc.clcl.PublicKey(keyPair.getPublic());
         User user = new User("admin", User.UserTypes.Admin, "the admin user", publicKey);
-        BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(USERS_FILE, KEY_STORE_FILE, KEY_STORE_PASSWORD);
+        BootstrapUsersFile bootstrapUsersFile = new BootstrapUsersFile(USERS_FILE, KEY_STORE_FILE, KEY_STORE_PASSWORD,TEMP_ALIAS);
         bootstrapUsersFile.create(user);
         bootstrapUsersFile.write();
 

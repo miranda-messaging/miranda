@@ -39,14 +39,14 @@ public class TestNodeDisconnectingState extends TesterNodeState {
         return disconnecting;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         disconnecting = null;
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

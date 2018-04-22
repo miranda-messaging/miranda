@@ -53,7 +53,7 @@ public class TestUsersFile extends TestCase {
         return usersFile;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         usersFile = null;
@@ -74,7 +74,7 @@ public class TestUsersFile extends TestCase {
     };
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

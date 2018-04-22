@@ -33,14 +33,14 @@ public class TestDeliveriesManager extends TestCase {
         return deliveryManager;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         this.deliveryManager = null;
     }
 
     @Before
-    public void setup () {
+    public void setup () throws Exception {
         try {
             reset();
 

@@ -98,7 +98,7 @@ public class TestMinaNetworkListener extends TestCase {
         return minaNetworkListener;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         mockSslServerSocketFactory = null;

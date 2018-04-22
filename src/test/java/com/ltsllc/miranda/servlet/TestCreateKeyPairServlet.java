@@ -41,7 +41,7 @@ public class TestCreateKeyPairServlet extends TestServlet {
         return createKeyPairServlet;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockHttpServletResponse = null;
@@ -50,7 +50,7 @@ public class TestCreateKeyPairServlet extends TestServlet {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

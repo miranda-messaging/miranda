@@ -42,6 +42,14 @@ public class KeyPair {
     public static final String OPEN_SSL_ALGORITHM = "DESede/CBC/PKCS5Padding";
 
 
+    public static KeyPair createInstance() throws GeneralSecurityException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM);
+        java.security.KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        PublicKey publicKey = new PublicKey(keyPair.getPublic());
+        PrivateKey privateKey = new PrivateKey(keyPair.getPrivate());
+        return new KeyPair(publicKey, privateKey);
+    }
+
     private PublicKey publicKey;
     private PrivateKey privateKey;
 

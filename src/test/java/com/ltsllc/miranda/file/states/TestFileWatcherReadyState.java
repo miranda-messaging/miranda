@@ -58,14 +58,14 @@ public class TestFileWatcherReadyState extends TestCase {
     }
 
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         super.setup();
     }
 
     @Before
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         reset();
 
         setuplog4j();

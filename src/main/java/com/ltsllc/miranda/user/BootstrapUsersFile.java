@@ -33,6 +33,16 @@ public class BootstrapUsersFile {
     private String filename;
     private List<User> userList;
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    private String alias;
+
     public void setUserList(List<User> userList) {
         this.userList = userList;
     }
@@ -45,22 +55,23 @@ public class BootstrapUsersFile {
         this.privateKey = privateKey;
     }
 
-    public BootstrapUsersFile(String usersFilename, String keyStoreFilename, String password) throws EncryptionException, GeneralSecurityException {
-        initialize(usersFilename, keyStoreFilename, password);
+    public BootstrapUsersFile(String usersFilename, String keyStoreFilename, String password, String alias) throws EncryptionException, GeneralSecurityException {
+        initialize(usersFilename, keyStoreFilename, password, alias);
     }
 
-    public void initialize(String usersFilename, String keyStoreFilename, String password) throws GeneralSecurityException,EncryptionException {
+    public void initialize(String usersFilename, String keyStoreFilename, String password, String alias) throws GeneralSecurityException,EncryptionException {
         KeyStore keyStore = Utils.loadKeyStore(keyStoreFilename, password);
 
         java.security.PrivateKey jsPrivateKey = (java.security.PrivateKey) keyStore.getKey("private", password.toCharArray());
         PrivateKey privateKey = new PrivateKey(jsPrivateKey);
         setPrivateKey(privateKey);
 
-        Certificate certificate = keyStore.getCertificate("private");
+        Certificate certificate = keyStore.getCertificate(alias);
         java.security.PublicKey jsPublicKey = certificate.getPublicKey();
         PublicKey publicKey = new PublicKey(jsPublicKey);
         setPublicKey(publicKey);
 
+        this.alias = alias;
         this.filename = usersFilename;
         this.userList = new ArrayList<User>();
     }

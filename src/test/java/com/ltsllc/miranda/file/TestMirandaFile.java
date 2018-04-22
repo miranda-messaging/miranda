@@ -58,14 +58,14 @@ public class TestMirandaFile extends TestCase {
     }
 
     @Override
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         eventsFile = null;
     }
 
     @Before
-    public void setup() {
+    public void setup() throws Exception{
         try {
             reset();
 

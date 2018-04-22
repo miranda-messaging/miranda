@@ -61,6 +61,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -100,7 +101,6 @@ public class Startup extends State {
     private int index;
     private LogLevel logLevel = LogLevel.NORMAL;
     private HttpServer httpServer;
-    private MirandaCommandLine commandLine;
     private MirandaFactory factory;
     private MirandaProperties properties;
     private PublicKey publicKey;
@@ -213,11 +213,7 @@ public class Startup extends State {
     }
 
     public MirandaCommandLine getCommandLine() {
-        return commandLine;
-    }
-
-    public void setCommandLine(MirandaCommandLine commandLine) {
-        this.commandLine = commandLine;
+        return Miranda.getInstance().getCommandLine();
     }
 
     public Miranda getMiranda() {
@@ -250,12 +246,11 @@ public class Startup extends State {
         this.factory = factory;
     }
 
-    public State start(String[] argv) {
+    public State start() {
         super.start();
 
         try {
             performMiscellaneousOperations();
-            processCommandLine(argv);
             processPasswords();
             setupProperties();
             if (systemNeedsSetup())
@@ -271,7 +266,6 @@ public class Startup extends State {
             startWriter();
             startReader();
             defineFactory();
-            // startNetwork();
             definePanicPolicy();
             startServices();
             startSubsystems();
@@ -340,16 +334,22 @@ public class Startup extends State {
         checkProperties(properties);
     }
 
-    public void getKeys(String password) throws EncryptionException {
-        checkProperties(MirandaProperties.PROPERTY_KEYSTORE_FILE, MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
-        String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+    public void getKeys(String password) throws ShutdownException {
+        if (password == null)
+            password = "";
 
-        JavaKeyStore javaKeyStore = new JavaKeyStore(keyStoreFilename, password);
+        try {
+            String keyStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
 
-        String alias = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_PRIVATE_KEY_ALIAS);
-        KeyPair keyPair = javaKeyStore.getKeyPair(alias);
-        setPublicKey(keyPair.getPublicKey());
-        setPrivateKey(keyPair.getPrivateKey());
+            JavaKeyStore javaKeyStore = new JavaKeyStore(keyStoreFilename, password);
+
+            String alias = getProperties().getProperty(MirandaProperties.PROPERTY_CERTIFICATE_ALIAS);
+            KeyPair keyPair = javaKeyStore.getKeyPair(alias);
+            setPublicKey(keyPair.getPublicKey());
+            setPrivateKey(keyPair.getPrivateKey());
+        } catch (Throwable t) {
+            throw new ShutdownException("Exception trying to get keys", t);
+        }
     }
 
     public ServletMapping[] convertToArray(List<ServletMapping> mappings) {
@@ -573,21 +573,6 @@ public class Startup extends State {
         Miranda.setLogger(logger);
     }
 
-    public void processCommandLine(String[] argv) throws CommandLineException {
-        MirandaCommandLine commandLine = null;
-        if (getMiranda().getCommandLine() != null) {
-            commandLine = getMiranda().getCommandLine();
-        } else {
-            commandLine = new MirandaCommandLine(getArguments());
-            setCommandLine(commandLine);
-        }
-
-        getMiranda().setCommandLine(commandLine);
-        commandLine.parse(argv);
-
-        if (commandLine.getError())
-            System.exit(-1);
-    }
 
 
     /**
@@ -809,9 +794,10 @@ public class Startup extends State {
 
 
     public void processPasswords() {
-        if (null != getCommandLine().getPassword()) {
-            setKeystorePasswordString(getCommandLine().getPassword());
+        if (null != getCommandLine().getKeystorePassword()) {
+            setKeystorePasswordString(getCommandLine().getKeystorePassword());
         } else {
+            System.out.println("Enter keystore password> ");
             Scanner scanner = new Scanner(Miranda.inputStream);
             String temp = scanner.nextLine();
             setKeystorePasswordString(temp);
@@ -820,6 +806,7 @@ public class Startup extends State {
         if (null != getCommandLine().getTrustorePassword())
             setTrustorePasswordString(getCommandLine().getTrustorePassword());
         else {
+            System.out.print("Enter truststore password> ");
             Scanner scanner = new Scanner(Miranda.inputStream);
             String temp = scanner.nextLine();
             setTrustorePasswordString(temp);
@@ -850,7 +837,7 @@ public class Startup extends State {
                 this.trustStore = new JavaKeyStore(filename, getTrustorePasswordString());
             }
         } catch (EncryptionException e) {
-            throw new Panic(e, Panic.Reasons.Startup);
+            throw new StartupPanic("Exception trying to load keys", e, StartupPanic.StartupReasons.ExceptionLoadingKeystore);
         }
     }
 
@@ -862,6 +849,7 @@ public class Startup extends State {
     public void exportCertificate() throws Exception {
         KeyStore keyStore = getKeyStore().getJsKeyStore();
         Certificate certificate = keyStore.getCertificate("private");
-        com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
+        if (null != certificate)
+            com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
     }
 }

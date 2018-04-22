@@ -77,7 +77,7 @@ public class TestGetUsersServlet extends TestServlet {
         return mockUserHolder;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockUserHolder = null;
@@ -85,7 +85,7 @@ public class TestGetUsersServlet extends TestServlet {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

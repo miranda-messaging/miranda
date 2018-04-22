@@ -35,7 +35,7 @@ public class TestEventsFile extends TestCase {
         return eventsFile;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         eventsFile = null;
@@ -44,7 +44,7 @@ public class TestEventsFile extends TestCase {
     public static final String TEST_FILE = "testFile";
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

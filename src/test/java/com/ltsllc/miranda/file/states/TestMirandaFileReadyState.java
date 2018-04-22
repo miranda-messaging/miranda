@@ -58,12 +58,12 @@ public class TestMirandaFileReadyState extends TestCase {
         return mirandaFileReadyState;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

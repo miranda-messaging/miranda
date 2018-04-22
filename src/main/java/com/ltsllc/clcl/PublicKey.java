@@ -61,7 +61,7 @@ public class PublicKey extends Key {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, getSecurityPublicKey());
-
+            // cipher.init(Cipher.ENCRYPT_MODE,(java.security.KeyPairGenerator.getInstance("RSA").generateKeyPair().getPublic()));
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             CipherOutputStream cipherOutputStream = new CipherOutputStream(byteArrayOutputStream, cipher);
 
@@ -70,7 +70,7 @@ public class PublicKey extends Key {
 
             return byteArrayOutputStream.toByteArray();
         } catch (GeneralSecurityException | IOException e) {
-            throw new EncryptionException("Exception trying to decrypt", e);
+            throw new EncryptionException("Exception trying to encrypt", e);
         }
     }
 

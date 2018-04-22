@@ -41,14 +41,14 @@ public class TestServlet extends TestCase {
         return mockHttpServletResponse;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         mockHttpServletRequest = null;
         mockHttpServletResponse = null;
     }
 
-    public void setup() throws MirandaException {
+    public void setup() throws Exception {
         super.setup();
 
         mockHttpServletRequest = mock(HttpServletRequest.class);

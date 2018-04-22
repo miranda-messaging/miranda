@@ -18,6 +18,7 @@
 package com.ltsllc.clcl;
 
 import com.ltsllc.commons.util.Utils;
+import org.junit.Before;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -198,21 +199,28 @@ public class JavaKeyStore {
     public void add(String alias, KeyPair keyPair, Certificate[] certificateChain) throws EncryptionException {
         getKeys().put(alias, keyPair);
 
-        if (certificateChain == null) {
-            CertificateSigningRequest csr = keyPair.createCertificateSigningRequest();
-
-            Date now = new Date();
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
-            calendar.add(Calendar.YEAR, 1);
-            Date aYearFromNow = calendar.getTime();
-
-            Certificate certificate = keyPair.getPrivateKey().sign(csr, now, aYearFromNow);
-            certificateChain = new Certificate[]{certificate};
-        }
-
-        getCertificateChains().put(alias, certificateChain);
+//        if (certificateChain == null) {
+//            CertificateSigningRequest csr = keyPair.createCertificateSigningRequest();
+//            DistinguishedName distinguishedName = new DistinguishedName();
+//            distinguishedName.setState("Unknown");
+//            distinguishedName.setName("Unknown");
+//            distinguishedName.setState("Unknown");
+//            distinguishedName.setDivision("Unknown");
+//            distinguishedName.setCountryCode("Unknown");
+//            distinguishedName.setCompany("Unknown");
+//            distinguishedName.setCity("Unknown");
+//            Date now = new Date();
+//
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(now);
+//            calendar.add(Calendar.YEAR, 1);
+//            Date aYearFromNow = calendar.getTime();
+//
+//            Certificate certificate = keyPair.getPrivateKey().sign(csr, now, aYearFromNow);
+//            certificateChain = new Certificate[]{certificate};
+//        }
+//
+       getCertificateChains().put(alias, certificateChain);
     }
 
 
@@ -293,7 +301,8 @@ public class JavaKeyStore {
             throws KeyStoreException {
         for (String alias : certificates.keySet()) {
             Certificate certificate = certificates.get(alias);
-            keyStore.setCertificateEntry(alias, certificate.getCertificate());
+            if (!(keyStore.containsAlias(alias)))
+                keyStore.setCertificateEntry(alias, certificate.getCertificate());
         }
     }
 

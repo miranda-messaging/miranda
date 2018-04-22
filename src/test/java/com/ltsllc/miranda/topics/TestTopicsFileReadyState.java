@@ -50,7 +50,7 @@ public class TestTopicsFileReadyState extends TestCase {
         return mockTopicsFile;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockTopicsFile = null;
@@ -58,7 +58,7 @@ public class TestTopicsFileReadyState extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

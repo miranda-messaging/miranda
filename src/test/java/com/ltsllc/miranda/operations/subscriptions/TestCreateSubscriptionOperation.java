@@ -52,7 +52,7 @@ public class TestCreateSubscriptionOperation extends TestCase {
         return mockSubscription;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockSubscription = null;
@@ -61,7 +61,7 @@ public class TestCreateSubscriptionOperation extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

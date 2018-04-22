@@ -56,7 +56,7 @@ public class TestMinaHandler extends TestCase {
         return mockMinaHandle;
     }
 
-    public void reset () throws MirandaException {
+    public void reset () throws Exception {
         super.reset();
 
         mockMinaHandle = null;
@@ -65,7 +65,7 @@ public class TestMinaHandler extends TestCase {
     }
 
     @Before
-    public void setup () throws MirandaException {
+    public void setup () throws Exception {
         reset();
 
         super.setup();

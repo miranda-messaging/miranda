@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.clcl.JavaKeyStore;
+import com.ltsllc.commons.commadline.CommandLineException;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
@@ -318,10 +319,17 @@ public class Miranda extends Consumer {
     }
 
     public void start(String argString, JavaKeyStore JavaKeyStore, JavaKeyStore trustStore) {
-        String[] argv = argString.split(" |\t");
-        MirandaCommandLine mirandaCommandLine = new MirandaCommandLine(argv);
-        setCommandLine(mirandaCommandLine);
-        start();
+        try {
+            String[] argv = argString.split(" |\t");
+            MirandaCommandLine mirandaCommandLine = new MirandaCommandLine();
+            mirandaCommandLine.parse(argv);
+            setCommandLine(mirandaCommandLine);
+
+            start();
+        } catch (CommandLineException e) {
+            Panic panic = new StartupPanic("Exception processing command line",e,StartupPanic.StartupReasons.StartupFailed);
+            Miranda.panicMiranda(panic);
+        }
     }
 
     public void start(Properties p) {

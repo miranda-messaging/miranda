@@ -80,7 +80,7 @@ public class TestClusterReadyState extends TestCase {
         return mockNode;
     }
 
-    public void reset() throws MirandaException {
+    public void reset() throws Exception {
         super.reset();
 
         this.mockClusterFile = null;
