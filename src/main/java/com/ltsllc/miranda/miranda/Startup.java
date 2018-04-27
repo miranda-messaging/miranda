@@ -250,9 +250,12 @@ public class Startup extends State {
         super.start();
 
         try {
+            processCommandLine();
+            defineFactory();
+            setupProperties();
+            definePanicPolicy();
             performMiscellaneousOperations();
             processPasswords();
-            setupProperties();
             if (systemNeedsSetup())
             {
                 State setupState = new SetupState(getContainer());
@@ -265,8 +268,6 @@ public class Startup extends State {
             logProperties();
             startWriter();
             startReader();
-            defineFactory();
-            definePanicPolicy();
             startServices();
             startSubsystems();
             loadFiles();
@@ -284,6 +285,12 @@ public class Startup extends State {
         }
 
         return StopState.getInstance();
+    }
+
+    public void processCommandLine() throws CommandLineException {
+        MirandaCommandLine mirandaCommandLine = new MirandaCommandLine();
+        mirandaCommandLine.parse(getArguments());
+        Miranda.getInstance().setCommandLine(mirandaCommandLine);
     }
 
     /**
@@ -610,6 +617,7 @@ public class Startup extends State {
         }
 
         System.setProperty("javax.net.ssl.trustStore", trustStoreFilename);
+        Miranda.factory.setProperties(getProperties());
     }
 
     public void startSubsystems() throws MirandaException {

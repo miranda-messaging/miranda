@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.user.messages;
 
+import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.results.Results;
@@ -28,7 +29,16 @@ import java.util.concurrent.BlockingQueue;
 public class GetUserResponseMessage extends Message {
     private String name;
     private User user;
+    private PublicKey publicKey;
     private Results result;
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public User getUser() {
         return user;
@@ -42,7 +52,8 @@ public class GetUserResponseMessage extends Message {
         return result;
     }
 
-    public GetUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String name, Results result, User user) {
+    public GetUserResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String name, Results result,
+                                  User user) {
         super(Subjects.GetUserResponse, senderQueue, sender);
 
         this.result = result;

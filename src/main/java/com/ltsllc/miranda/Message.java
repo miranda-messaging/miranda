@@ -168,6 +168,7 @@ public class Message {
         Synchronize,
         Timeout,
         UnknownHandle,
+        UnrecognizedUser,
         UnwatchFile,
         UpdateObjects,
         UpdateTopic,

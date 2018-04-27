@@ -60,6 +60,10 @@ public class MirandaFactory {
     private JavaKeyStore keyStore;
     private JavaKeyStore trustStore;
 
+    public void setProperties(MirandaProperties properties) {
+        this.properties = properties;
+    }
+
     public JavaKeyStore getTrustStore() {
         return trustStore;
     }
