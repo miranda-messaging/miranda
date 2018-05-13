@@ -20,6 +20,8 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.mina.states.ConnectionListenerReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 
@@ -36,16 +38,39 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 abstract public class ConnectionListener extends Consumer {
     abstract public void stopListening();
+    abstract public void startListening();
 
     public static final String NAME = "network listener";
 
+    private Network network;
+    private Cluster cluster;
     private int port;
     private boolean keepGoing = true;
     private int connectionCount;
-    private BlockingQueue<Handle> handleQueue;
+    private Thread connectionThread;
 
-    public BlockingQueue<Handle> getHandleQueue() {
-        return handleQueue;
+    public Network getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
+
+    public Cluster getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
+    }
+
+    public Thread getConnectionThread() {
+        return connectionThread;
+    }
+
+    public void setConnectionThread(Thread connectionThread) {
+        this.connectionThread = connectionThread;
     }
 
     public int getPort() {
@@ -68,43 +93,17 @@ abstract public class ConnectionListener extends Consumer {
         connectionCount++;
     }
 
-    public ConnectionListener(int port) throws MirandaException {
+    public ConnectionListener(int port, Network network, Cluster cluster) throws MirandaException {
         super("network listener");
 
         this.port = port;
         this.connectionCount = 0;
-        this.handleQueue = new LinkedBlockingQueue<Handle>();
+        setNetwork(network);
+        setCluster(cluster);
 
-        ConnectionListenerReadyState readyState = new ConnectionListenerReadyState(this);
-        setCurrentState(readyState);
+
+        // ConnectionListenerReadyState readyState = new ConnectionListenerReadyState(this);
+        // setCurrentState(readyState);
     }
 
-    public void newConnectionLoop(BlockingQueue<Handle> handleQueue) throws MirandaException {
-        while (keepGoing()) {
-            Handle newConnection = null;
-
-            try {
-                newConnection = handleQueue.take();
-            } catch (InterruptedException e) {
-                Panic panic = new Panic("Exception getting new connection", e, Panic.Reasons.ExceptionWaitingForNextConnection);
-                Miranda.getInstance().panic(panic);
-            }
-
-            if (null != newConnection) {
-                int handleID = Network.getInstance().newConnection(newConnection);
-
-                Node node = new Node(handleID, Network.getInstance(), Miranda.getInstance().getCluster());
-                newConnection.setQueue(node.getQueue());
-                node.start();
-
-                incrementConnectionCount();
-            }
-        }
-    }
-
-    public void shutdown() {
-        setKeepGoing(false);
-        getThread().interrupt();
-        setCurrentState(StopState.getInstance());
-    }
 }

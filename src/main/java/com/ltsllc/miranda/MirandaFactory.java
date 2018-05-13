@@ -20,15 +20,18 @@ import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.JettyHttpServer;
 import com.ltsllc.miranda.mina.MinaNetwork;
 import com.ltsllc.miranda.mina.MinaNetworkListener;
+import com.ltsllc.miranda.mina.MinaUnencryptedConnectionListener;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.UnencryptedConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import io.netty.handler.ssl.SslContext;
 import org.apache.log4j.Logger;
@@ -99,13 +102,23 @@ public class MirandaFactory {
     }
 
 
-    public ConnectionListener buildNetworkListener(JavaKeyStore keyStore, JavaKeyStore trustStore) throws MirandaException {
+    public ConnectionListener buildClusterListener(JavaKeyStore keyStore, JavaKeyStore trustStore, Network network) throws MirandaException {
         int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-        return new MinaNetworkListener(port, keyStore, getKeystorePassword(), trustStore);
+       //return new MinaClusterListener(port, keyStore, getKeystorePassword(), trustStore, network);
+        return null;
+    }
+
+    public ConnectionListener buildClusterListener (Network network) throws MirandaException {
+        int port = getProperties().getIntProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        return new MinaUnencryptedConnectionListener(network, Miranda.getInstance().getCluster(), port);
     }
 
     public Network buildNetwork(KeyStore keyStore, KeyStore trustStore) throws MirandaException {
         return new MinaNetwork(keyStore, trustStore, getKeystorePassword());
+    }
+
+    public Network buildNetwork () throws MirandaException {
+        return new MinaNetwork();
     }
 
     public void checkProperty(String name, String value) throws MirandaException {
@@ -158,6 +171,10 @@ public class MirandaFactory {
         HttpServer httpServer = null;
 
         switch (whichServer) {
+            case JettyHttp:
+                httpServer = buildJettyHttp(httpBase);
+                break;
+
             default: {
                 httpServer = buildJetty(sslPort, httpBase);
                 break;
@@ -167,6 +184,56 @@ public class MirandaFactory {
         return httpServer;
     }
 
+
+    public HttpServer buildJettyHttp (String httpBase) throws MirandaException {
+        File file = new File(httpBase);
+        String base = null;
+        try {
+            base = file.getCanonicalPath();
+        } catch (IOException e) {
+            throw new MirandaException(e);
+        }
+
+        MirandaProperties mirandaProperties = Miranda.properties;
+
+        mirandaProperties.setProperty(JETTY_BASE, base);
+        mirandaProperties.setProperty(JETTY_HOME, base);
+        mirandaProperties.setProperty(JETTY_TAG, DEFAULT_JETTY_TAG);
+        mirandaProperties.updateSystemProperties();
+        int threadPoolSize = getProperties().getIntProperty(MirandaProperties.PROPERTY_SERVLET_THREAD_POOL_SIZE);
+        QueuedThreadPool threadPool = new QueuedThreadPool(threadPoolSize);
+
+        Server jetty = new Server(threadPool);
+
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
+        resourceHandler.setWelcomeFiles(new String[]{"index.html"});
+        resourceHandler.setResourceBase(base);
+
+        HandlerCollection handlerCollection = new HandlerCollection(true);
+        handlerCollection.addHandler(resourceHandler);
+
+        jetty.setHandler(handlerCollection);
+
+        String serverKeyStoreFilename = properties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+        checkProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE, serverKeyStoreFilename);
+
+        HttpConfiguration https = new HttpConfiguration();
+        https.addCustomizer(new SecureRequestCustomizer());
+
+        ServerConnector serverConnector = new ServerConnector(jetty);
+
+        String portString = getProperties().getProperty(MirandaProperties.PROPERTY_HTTP_PORT);
+        int port = Integer.parseInt(portString);
+        serverConnector.setPort(port);
+
+        jetty.setConnectors(new Connector[]{serverConnector});
+
+        HttpServer httpServer = new JettyHttpServer(jetty, handlerCollection);
+        httpServer.start(); // this starts the HttpServer instance not jetty
+
+        return httpServer;
+    }
 
     public HttpServer buildJetty(int sslPort, String httpBase) throws MirandaException {
         try {
@@ -320,9 +387,9 @@ public class MirandaFactory {
         throw new IllegalStateException("not impelmented");
     }
 
-    public ConnectionListener buildNewNetworkListener() throws MirandaException {
-        int port = getProperties().getIntegerProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
-        MirandaProperties.EncryptionModes mode = getProperties().getEncryptionModeProperty(MirandaProperties.PROPERTY_ENCRYPTION_MODE);
-        return new MinaNetworkListener(port, getKeyStore(), getKeystorePassword(), getTrustStore());
+
+    public UnencryptedConnectionListener buildUnencryptedConnectionListener(Network network, Cluster cluster, int port) throws MirandaException {
+        MinaUnencryptedConnectionListener unencryptedConnectionListener = new MinaUnencryptedConnectionListener(network, cluster, port);
+        return unencryptedConnectionListener;
     }
 }

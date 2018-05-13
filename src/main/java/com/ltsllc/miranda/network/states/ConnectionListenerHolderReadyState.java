@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.network;
+package com.ltsllc.miranda.network.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.ConnectionListenerHolder;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 
 /**
  * Created by Clark on 5/23/2017.
@@ -50,15 +54,21 @@ public class ConnectionListenerHolderReadyState extends State {
         return nextState;
     }
 
-    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
-        getNetworkListnerHolder().stop();
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
+        try {
+            getNetworkListnerHolder().stop();
 
-        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getNetworkListnerHolder().getQueue(),
-                this, ConnectionListenerHolder.NAME);
+            ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getNetworkListnerHolder().getQueue(),
+                    this, ConnectionListenerHolder.NAME);
 
-        shutdownMessage.reply(shutdownResponseMessage);
+            shutdownMessage.reply(shutdownResponseMessage);
 
-        return StopState.getInstance();
+            return StopState.getInstance();
+        } catch (MirandaException e) {
+            ShutdownPanic shutdownPanic = new ShutdownPanic(ShutdownPanic.ShutdownReasons.Exception, e);
+            Miranda.panicMiranda(shutdownPanic);
+            return this;
+        }
     }
 
 }

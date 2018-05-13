@@ -33,6 +33,7 @@ import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.UnencryptedConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
@@ -52,6 +53,7 @@ import com.ltsllc.miranda.servlet.subscription.*;
 import com.ltsllc.miranda.servlet.topic.*;
 import com.ltsllc.miranda.servlet.user.*;
 import com.ltsllc.miranda.session.SessionManager;
+import com.ltsllc.miranda.shutdown.ShutdownException;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
@@ -61,9 +63,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
@@ -111,6 +110,15 @@ public class Startup extends State {
     private Properties overrideProperties;
     private JavaKeyStore keyStore;
     private JavaKeyStore trustStore;
+    private boolean debugMode;
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
 
     public JavaKeyStore getTrustStore() {
         return trustStore;
@@ -250,19 +258,20 @@ public class Startup extends State {
         super.start();
 
         try {
+            setupLogging();
             processCommandLine();
+            processPasswords();
             defineFactory();
             setupProperties();
             definePanicPolicy();
             performMiscellaneousOperations();
-            processPasswords();
+            setupKeyStores();
             if (systemNeedsSetup())
             {
                 State setupState = new SetupState(getContainer());
                 return setupState;
             }
 
-            setupKeyStores();
             getKeys(getKeystorePasswordString());
             startLogger();
             logProperties();
@@ -287,10 +296,15 @@ public class Startup extends State {
         return StopState.getInstance();
     }
 
+    public void setupLogging() {
+        DOMConfigurator.configure("log4j.xml");
+    }
+
     public void processCommandLine() throws CommandLineException {
         MirandaCommandLine mirandaCommandLine = new MirandaCommandLine();
         mirandaCommandLine.parse(getArguments());
         Miranda.getInstance().setCommandLine(mirandaCommandLine);
+        setDebugMode(mirandaCommandLine.isDebugMode());
     }
 
     /**
@@ -306,6 +320,10 @@ public class Startup extends State {
      * @return
      */
     public boolean systemNeedsSetup() {
+        if (isDebugMode()) {
+            return false;
+        }
+
         JavaKeyStore keyStore = Miranda.getInstance().getKeyStore();
         JavaKeyStore trustStore = Miranda.getInstance().getTrustStore();
 
@@ -342,7 +360,9 @@ public class Startup extends State {
     }
 
     public void getKeys(String password) throws ShutdownException {
-        if (password == null)
+        if (isDebugMode())
+            return;
+        else if (password == null)
             password = "";
 
         try {
@@ -627,11 +647,19 @@ public class Startup extends State {
 
 
         try {
-            Network network = factory.buildNetwork(getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore());
+            Network network = null;
+
+            if (isDebugMode())
+                network = factory.buildNetwork();
+            else
+                network = factory.buildNetwork(getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore());
+
             network.start();
+            miranda.setNetwork(network);
             String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
             Cluster cluster = new Cluster(miranda.getNetwork(), filename);
             miranda.setCluster(cluster);
+            cluster.start();
         } catch (Exception e) {
             throw new MirandaException(e);
         }
@@ -642,7 +670,7 @@ public class Startup extends State {
     }
 
     public void startWriter() throws MirandaException {
-        Writer writer = new Writer(getPublicKey());
+        Writer writer = new Writer(isDebugMode(), getPublicKey());
         writer.start();
 
         logger.info(getMiranda());
@@ -651,7 +679,7 @@ public class Startup extends State {
     }
 
     public void startReader() throws MirandaException {
-        Reader reader = new Reader(getPrivateKey());
+        Reader reader = new Reader(isDebugMode(), getPrivateKey());
         reader.start();
 
         getMiranda().setReader(reader);
@@ -795,14 +823,27 @@ public class Startup extends State {
     }
 
     public void startListening() throws MirandaException {
-        ConnectionListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
-        getMiranda().setNetworkListener(networkListener);
-        networkListener.start();
+        String portString = Miranda.properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        int port = Integer.parseInt(portString);
+        if (isDebugMode()) {
+            UnencryptedConnectionListener unencryptedConnectionListener = getFactory().
+                    buildUnencryptedConnectionListener(getMiranda().getNetwork(), getMiranda().getCluster(), port);
+
+            getMiranda().setNetworkListener(unencryptedConnectionListener);
+            unencryptedConnectionListener.start();
+        } else {
+            //ConnectionListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore(),
+            //        Miranda.getInstance().getNetwork());
+            //getMiranda().setNetworkListener(networkListener);
+            //networkListener.start();
+        }
     }
 
 
     public void processPasswords() {
-        if (null != getCommandLine().getKeystorePassword()) {
+        if (isDebugMode())
+            ;
+        else if (null != getCommandLine().getKeystorePassword()) {
             setKeystorePasswordString(getCommandLine().getKeystorePassword());
         } else {
             System.out.println("Enter keystore password> ");
@@ -811,7 +852,9 @@ public class Startup extends State {
             setKeystorePasswordString(temp);
         }
 
-        if (null != getCommandLine().getTrustorePassword())
+        if (isDebugMode())
+            ;
+        else if (null != getCommandLine().getTrustorePassword())
             setTrustorePasswordString(getCommandLine().getTrustorePassword());
         else {
             System.out.print("Enter truststore password> ");
@@ -835,14 +878,20 @@ public class Startup extends State {
 
     public void setupKeyStores() throws Panic {
         try {
-            if (null == getKeyStore()) {
+            if (isDebugMode())
+                ;
+            else if (null == getKeyStore()) {
                 String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
                 this.keyStore = new JavaKeyStore(filename, getKeystorePasswordString());
+                Miranda.getInstance().setKeyStore(keyStore);
             }
 
-            if (null == getTrustStore()) {
+            if (isDebugMode())
+                ;
+            else if (null == getTrustStore()) {
                 String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
                 this.trustStore = new JavaKeyStore(filename, getTrustorePasswordString());
+                Miranda.getInstance().setTrustStore(trustStore);
             }
         } catch (EncryptionException e) {
             throw new StartupPanic("Exception trying to load keys", e, StartupPanic.StartupReasons.ExceptionLoadingKeystore);
@@ -855,9 +904,14 @@ public class Startup extends State {
     }
 
     public void exportCertificate() throws Exception {
-        KeyStore keyStore = getKeyStore().getJsKeyStore();
-        Certificate certificate = keyStore.getCertificate("private");
-        if (null != certificate)
-            com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
+        if (isDebugMode()) {
+
+        } else {
+
+            KeyStore keyStore = getKeyStore().getJsKeyStore();
+            Certificate certificate = keyStore.getCertificate("private");
+            if (null != certificate)
+                com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
+        }
     }
 }

@@ -17,7 +17,9 @@
 package com.ltsllc.miranda.misc;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownMessage;
+import com.ltsllc.miranda.ShutdownPanic;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -53,9 +55,15 @@ public class ThreadHolderReadyState extends State {
         return nextState;
     }
 
-    public State processShutdownMessage (ShutdownMessage shutdownMessage) throws MirandaException {
-        getThreadHolder().shutdown();
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+        try {
+            getThreadHolder().shutdown();
 
-        return StopState.getInstance();
+            return StopState.getInstance();
+        } catch (MirandaException e) {
+            ShutdownPanic shutdownPanic = new ShutdownPanic(ShutdownPanic.ShutdownReasons.Exception, e);
+            Miranda.panicMiranda(shutdownPanic);
+            return this;
+        }
     }
 }

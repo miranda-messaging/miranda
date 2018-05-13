@@ -25,13 +25,12 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
+import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.deliveries.Comparer;
-import com.ltsllc.miranda.file.messages.AddObjectsMessage;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
-import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
-import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +44,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/10/2017.
+ * What the rest of the JVM would call a file
  */
 abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
@@ -290,6 +289,16 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         sendRemoveObjectsMessage(senderQueue, sender, objects);
     }
 
+    /**
+     * Ask a file to write is data
+     *
+     * @param senderQueue The object that sent the message
+     */
+    public void sendWriteMessage (BlockingQueue<Message> senderQueue, Object sender) {
+        WriteFileMessage writeFileMessage = new WriteFileMessage(senderQueue, sender);
+        sendToMe(writeFileMessage);
+    }
+
     public void addObjects(List list) {
         List<E> newObjects = (List<E>) list;
         for (E object : newObjects) {
@@ -359,5 +368,10 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
     public void fireFileChanged() {
         FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, null);
         fireMessage(fileChangedMessage);
+    }
+
+    public void sendCreateMessage(BlockingQueue<Message> senderQueue, Object sender) {
+        CreateMessage createMessage = new CreateMessage(senderQueue, sender);
+        sendToMe(createMessage);
     }
 }

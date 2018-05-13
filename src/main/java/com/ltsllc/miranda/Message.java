@@ -79,6 +79,7 @@ public class Message {
         FileChanged,
         FileDoesNotExist,
         FileLoaded,
+        FileWritten,
         GarbageCollection,
         GetDeliveries,
         GetFile,
@@ -186,9 +187,11 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        WriteSucceeded,
         WriteFailed,
-        Error
+        WriteFile,
+        WriteFileResponse,
+        WriteSucceeded,
+        Error, ReadFile, ConnectionCreated;
     }
 
     private static Gson ourGson = new Gson();

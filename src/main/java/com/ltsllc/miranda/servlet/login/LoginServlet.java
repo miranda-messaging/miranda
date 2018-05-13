@@ -46,7 +46,7 @@ public class LoginServlet extends MirandaServlet {
         response.setHeader("Access-Control-Max-Age", "1209600");
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         LoginResultObject result = new LoginResultObject();
 
         try {

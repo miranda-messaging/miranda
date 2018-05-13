@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.shutdown;
+
+import com.ltsllc.miranda.Message;
 
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 3/21/2017.
  */
-public class ShutdownMessage extends Message {
-    public ShutdownMessage(BlockingQueue<Message> senderQueue, Object sender) {
-        super(Subjects.Shutdown, senderQueue, sender);
+public class ShutdownResponseMessage extends Message {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public ShutdownResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
+        super(Subjects.ShutdownResponse, senderQueue, sender);
+
+        this.name = name;
     }
 }

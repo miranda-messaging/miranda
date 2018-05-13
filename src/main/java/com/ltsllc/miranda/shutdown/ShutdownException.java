@@ -1,4 +1,4 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.shutdown;
 
 /**
  * Created by Clark on 6/1/2017.

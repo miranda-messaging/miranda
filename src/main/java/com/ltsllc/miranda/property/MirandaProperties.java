@@ -84,7 +84,8 @@ public class MirandaProperties {
 
     public enum WebSevers {
         Netty,
-        Jetty
+        JettyHttp,
+        JettySSL
     }
 
     public static final String PACKAGE_NAME = "com.ltsllc.miranda.";
@@ -409,10 +410,12 @@ public class MirandaProperties {
     public WebSevers getHttpServerProperty(String name) {
         String value = getProperty(name);
         value.trim();
-        WebSevers webServer = WebSevers.Jetty;
+        WebSevers webServer = WebSevers.JettySSL;
 
         if (value.equalsIgnoreCase("netty"))
             webServer = WebSevers.Netty;
+        else if (value.equalsIgnoreCase("JettyHttp"))
+            webServer = WebSevers.JettyHttp;
 
         return webServer;
     }

@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.network;
+package com.ltsllc.miranda.network.states;
 
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
+import com.ltsllc.miranda.network.ConnectionListener;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 
 /**
  * Created by Clark on 3/10/2017.
@@ -32,6 +38,30 @@ public class ConnectionListenerReadyState extends State {
         return (ConnectionListener) getContainer();
     }
 
+    public State processMessage (Message message) {
+        State nextState = this;
+
+        switch (message.getSubject()) {
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage(shutdownMessage);
+                break;
+            }
+
+            default: {
+                try {
+                    nextState = super.processMessage(message);
+                } catch (MirandaException e) {
+                    Panic panic = new Panic(e, Panic.Reasons.ExceptionInProcessMessage);
+                    Miranda.panicMiranda(panic);
+                }
+            }
+        }
+
+        return nextState;
+    }
+
+
     public State start() {
         // getNetworkListener().getConnections();
 
@@ -41,5 +71,10 @@ public class ConnectionListenerReadyState extends State {
     public State processStopMessage(StopMessage stopMessage) {
         getNetworkListener().stopListening();
         return getNetworkListener().getCurrentState();
+    }
+
+    public State processShutdownMessage (ShutdownMessage shutdownMessage) {
+        getNetworkListener().stopListening();
+        return super.processShutdownMessage(shutdownMessage);
     }
 }

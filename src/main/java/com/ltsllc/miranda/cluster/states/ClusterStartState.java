@@ -21,7 +21,9 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 
 import java.util.ArrayList;
@@ -31,6 +33,12 @@ import java.util.List;
  * Created by Clark on 4/24/2017.
  */
 public class ClusterStartState extends State {
+    @Override
+    public State start() {
+        getCluster().getClusterFile().sendLoad(getCluster().getQueue(), this);
+        return this;
+    }
+
     public Cluster getCluster() {
         return (Cluster) getContainer();
     }
@@ -46,6 +54,12 @@ public class ClusterStartState extends State {
             case FileLoaded: {
                 FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
                 nextState = processFileLoadedMessage(fileLoadedMessage);
+                break;
+            }
+
+            case FileDoesNotExist: {
+                FileDoesNotExistMessage fileDoesNotExistMessage = (FileDoesNotExistMessage) message;
+                nextState = processFileDoesNotExistMessage (fileDoesNotExistMessage);
                 break;
             }
 
@@ -73,5 +87,10 @@ public class ClusterStartState extends State {
 
         ClusterReadyState clusterReadyState = new ClusterReadyState(getCluster());
         return clusterReadyState;
+    }
+
+    public State processFileDoesNotExistMessage (FileDoesNotExistMessage fileDoesNotExistMessage) {
+        getCluster().getClusterFile().sendCreateMessage(getCluster().getQueue(), this);
+        return this;
     }
 }

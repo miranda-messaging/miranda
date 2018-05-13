@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownResponseMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -25,7 +25,11 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 4/26/2017.
+ * Tell the associated file to shut down and wait for a reply.
+ *
+ * <p>
+ *     Once the class gets a reply it sends a reply of is own and goes into the {@link StopState}.
+ * </p>
  */
 public class ManagerShuttingDownState extends State {
     private BlockingQueue<Message> requester;
@@ -42,6 +46,11 @@ public class ManagerShuttingDownState extends State {
         super(manager);
 
         this.requester = requester;
+    }
+
+    public State start () {
+        getManager().getFile().sendShutdown(getManager().getQueue(), this);
+        return this;
     }
 
     public State processMessage(Message message) throws MirandaException {

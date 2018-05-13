@@ -47,6 +47,7 @@ import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.shutdown.ShutdownException;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
@@ -418,6 +419,13 @@ public class Miranda extends Consumer {
         sendToMe(newPropertiesMessage);
     }
 
+    /**
+     * Shutdown the system.
+     *
+     * <p>
+     *     Tell all the components to shutdown and await a reply.
+     * </p>
+     */
     public void shutdown() {
         if (null != getCluster())
             getCluster().sendShutdown(getQueue(), this);
@@ -446,8 +454,9 @@ public class Miranda extends Consumer {
         if (null != getNetworkListener())
             getNetworkListener().sendShutdown(getQueue(), this);
 
+
         try {
-            setCurrentState(new ShuttingDownState(this));
+            getCurrentState().setOverideState(new ShuttingDownState(this));
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Exception while trying to shut down");
@@ -566,7 +575,31 @@ public class Miranda extends Consumer {
     }
 
     public boolean readyToShutDown() {
-        return getWaitingOn().size() < 1;
+        if (getCluster().getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (getUserManager().getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (getTopicManager().getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (getSubscriptionManager().getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (getEventManager().getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (Miranda.fileWatcher.getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (Miranda.timer.getCurrentState().getClass() != StopState.class)
+            return false;
+
+        if (getNetworkListener().getCurrentState().getClass() != StopState.class)
+            return false;
+
+        return true;
     }
 
     public static void panicMiranda(Panic panic) {

@@ -26,6 +26,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
 import com.ltsllc.miranda.manager.ManagerReadyState;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -36,6 +37,7 @@ import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
@@ -358,13 +360,9 @@ public class ClusterReadyState extends ManagerReadyState<Node, NodeElement> {
         return getCluster().getCurrentState();
     }
 
-    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
-        getCluster().shutdown();
-        getCluster().setClusterFileResponded(false);
-        getCluster().getClusterFile().sendShutdown(getCluster().getQueue(), this);
-
-        ClusterStoppingState clusterStoppingState = new ClusterStoppingState(getCluster());
-        return clusterStoppingState;
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
+        ClusterShutdownState clusterShutdownState = new ClusterShutdownState(shutdownMessage.getSender());
+        return clusterShutdownState;
     }
 
     public State processCreateSubscriptionMessage(CreateSubscriptionMessage createSubscriptionMessage) {

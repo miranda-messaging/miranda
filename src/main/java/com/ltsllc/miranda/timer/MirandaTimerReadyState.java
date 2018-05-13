@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import org.apache.log4j.Logger;
 
 import java.util.Timer;
@@ -80,6 +81,12 @@ public class MirandaTimerReadyState extends State {
             case SchedulePeriodic: {
                 SchedulePeriodicMessage schedulePeriodicMessage = (SchedulePeriodicMessage) message;
                 nextState = processSchedulePeriodicMessage(schedulePeriodicMessage);
+                break;
+            }
+
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage(shutdownMessage);
                 break;
             }
 

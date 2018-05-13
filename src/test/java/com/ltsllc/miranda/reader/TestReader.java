@@ -69,7 +69,7 @@ public class TestReader extends TestCase {
 
         setuplog4j();
         mockPrivateKey = mock(PrivateKey.class);
-        reader = new Reader(mockPrivateKey);
+        reader = new Reader(false, mockPrivateKey);
     }
 
     @After

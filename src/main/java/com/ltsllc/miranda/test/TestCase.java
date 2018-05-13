@@ -850,7 +850,7 @@ public class TestCase {
     }
 
     public void setupWriter() throws MirandaException {
-        com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer(getMockPublicKey());
+        com.ltsllc.miranda.writer.Writer writer = new com.ltsllc.miranda.writer.Writer(false, getMockPublicKey());
 
         this.writerQueue = new LinkedBlockingQueue<Message>();
         writer.setQueue(this.writerQueue);

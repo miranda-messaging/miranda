@@ -36,6 +36,7 @@ import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.UsersFile;
@@ -357,7 +358,7 @@ public class NodeReadyState extends NodeState {
         return getNode().getCurrentState();
     }
 
-    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
         ShuttingDownWireMessage shuttingDownWireMessage = new ShuttingDownWireMessage();
         sendOnWire(shuttingDownWireMessage);
 

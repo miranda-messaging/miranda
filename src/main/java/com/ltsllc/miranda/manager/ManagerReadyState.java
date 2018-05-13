@@ -17,7 +17,9 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownMessage;
+import com.ltsllc.miranda.ShutdownPanic;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
@@ -82,11 +84,17 @@ public class ManagerReadyState<E, F> extends State {
         return nextState;
     }
 
-    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
-        ManagerShuttingDownState managerShuttingDownState = new ManagerShuttingDownState(getManager(),
-                shutdownMessage.getSender());
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
+        try {
+            ManagerShuttingDownState managerShuttingDownState = new ManagerShuttingDownState(getManager(),
+                    shutdownMessage.getSender());
 
-        return managerShuttingDownState;
+            return managerShuttingDownState;
+        } catch (MirandaException e) {
+            ShutdownPanic shutdownPanic = new ShutdownPanic(ShutdownPanic.ShutdownReasons.Exception, e);
+            Miranda.panicMiranda(shutdownPanic);
+            return this;
+        }
     }
 
     public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {

@@ -63,13 +63,14 @@ public class Panic extends Exception {
         OutOfMemory,
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
+        Shutdown,
         Test,
         UncaughtException, // A misc checked exception was caught
         UnrecognizedPublicKeyClass,
         UnrecognizedNetworkMessage, // the object received an unexpected network message
         UnrecognizedNode, // a node shut down that we don't have a record of
         UnrecognizedRemotePolicy,
-        UnrecognizedResult
+        UnrecognizedResult, ExceptionCreatingNode;
     }
 
     private Reasons reason;

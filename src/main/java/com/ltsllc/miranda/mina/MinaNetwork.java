@@ -40,9 +40,18 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 3/6/2017.
  */
 public class MinaNetwork extends Network {
+    private boolean useEncryption;
     private KeyStore keyStore;
     private KeyStore truststore;
     private String keyStorePassword;
+
+    public boolean isUseEncryption() {
+        return useEncryption;
+    }
+
+    public void setUseEncryption(boolean useEncryption) {
+        this.useEncryption = useEncryption;
+    }
 
     public String getKeyStorePassword() {
         return keyStorePassword;
@@ -68,6 +77,11 @@ public class MinaNetwork extends Network {
         this.keyStore = keyStore;
         this.truststore = truststore;
         this.keyStorePassword = keyStorePassword;
+        setUseEncryption(true);
+    }
+
+    public MinaNetwork () throws MirandaException {
+        setUseEncryption(false);
     }
 
     public Handle createHandle(Object o) {
@@ -80,23 +94,31 @@ public class MinaNetwork extends Network {
     public Handle basicConnectTo(String host, int port) throws MirandaException {
         try {
             NioSocketConnector nioSocketConnector = new NioSocketConnector();
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(getKeyStore(), getKeyStorePassword().toCharArray());
 
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(getTruststore());
+            if (isUseEncryption()) {
+                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                keyManagerFactory.init(getKeyStore(), getKeyStorePassword().toCharArray());
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
-            SslFilter sslFilter = new SslFilter(sslContext);
-            sslFilter.setUseClientMode(true);
-            nioSocketConnector.getFilterChain().addLast("tls", sslFilter);
+                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init(getTruststore());
+
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+                SslFilter sslFilter = new SslFilter(sslContext);
+                sslFilter.setUseClientMode(true);
+                nioSocketConnector.getFilterChain().addLast("tls", sslFilter);
+            }
 
             InetSocketAddress inetSocketAddress = new InetSocketAddress(host, port);
 
-            Certificate certificate = getTruststore().getCertificate("ca");
+            if (isUseEncryption()) {
+                Certificate certificate = getTruststore().getCertificate("ca");
 
-            nioSocketConnector.setHandler(new ConnectionHandler(this, certificate));
+                nioSocketConnector.setHandler(new ConnectionHandler(this, certificate));
+            } else {
+                nioSocketConnector.setHandler(new UnencryptedConnectionHandler());
+            }
+
             ConnectFuture connectFuture = nioSocketConnector.connect(inetSocketAddress);
             connectFuture.awaitUninterruptibly();
 

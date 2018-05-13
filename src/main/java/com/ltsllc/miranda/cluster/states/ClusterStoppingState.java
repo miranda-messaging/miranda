@@ -23,6 +23,7 @@ import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.NodeStoppedMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 import org.apache.log4j.Logger;
 
 import java.util.List;

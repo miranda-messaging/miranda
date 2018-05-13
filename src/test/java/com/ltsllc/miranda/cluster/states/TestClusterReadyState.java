@@ -36,6 +36,7 @@ import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;

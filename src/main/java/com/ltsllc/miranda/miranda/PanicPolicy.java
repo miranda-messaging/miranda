@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.ShutdownException;
+import com.ltsllc.miranda.shutdown.ShutdownException;
 
 /**
  * Created by Clark on 3/7/2017.

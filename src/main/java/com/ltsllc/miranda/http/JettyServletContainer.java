@@ -8,7 +8,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
 
 /**
- * A ServletContainer for Jetty
+ * A ServletContainer for JettySSL
  */
 public class JettyServletContainer extends ServletContainer {
     private static Logger logger = Logger.getLogger(JettyServletContainer.class);
@@ -36,7 +36,7 @@ public class JettyServletContainer extends ServletContainer {
 
             getJetty().setHandler(servletHandler);
             getJetty().start();
-            logger.info("Jetty started");
+            logger.info("JettySSL started");
         } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception starting servlet container", e,
                     StartupPanic.StartupReasons.ExceptionStartingServletContainer);

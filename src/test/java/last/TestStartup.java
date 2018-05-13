@@ -16,16 +16,14 @@
 
 package last;
 
-import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.ShutdownException;
+import com.ltsllc.miranda.shutdown.ShutdownException;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.PanicPolicy;
 import com.ltsllc.miranda.miranda.Startup;
-import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.test.TestCase;
@@ -36,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
@@ -323,12 +320,12 @@ public class TestStartup extends TestCase {
 
         setupInputStream(TEST_KEYSTORE_PASSWORD);
 
-        com.ltsllc.miranda.ShutdownException shutdownException = null;
+        ShutdownException shutdownException = null;
 
         getStartup().setProperties(mirandaProperties);
         try {
             getStartup().getKeys(getStartup().getKeystorePasswordString());
-        } catch (com.ltsllc.miranda.ShutdownException e) {
+        } catch (ShutdownException e) {
             shutdownException = e;
         }
 

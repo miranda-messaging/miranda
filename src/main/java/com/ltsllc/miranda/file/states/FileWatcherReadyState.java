@@ -18,11 +18,16 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchDirectoryMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -30,6 +35,8 @@ import java.io.IOException;
  * Created by Clark on 2/25/2017.
  */
 public class FileWatcherReadyState extends State {
+    private static Logger LOGGER = LoggerFactory.getLogger(FileWatcherReadyState.class);
+
     public FileWatcherService getFileWatcherService() {
         return (FileWatcherService) container;
     }
@@ -95,4 +102,5 @@ public class FileWatcherReadyState extends State {
 
         return getFileWatcherService().getCurrentState();
     }
+
 }

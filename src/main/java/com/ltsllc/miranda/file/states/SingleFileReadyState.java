@@ -32,6 +32,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
@@ -113,6 +114,12 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
             case RemoveObjects: {
                 RemoveObjectsMessage removeObjectsMessage = (RemoveObjectsMessage) message;
                 nextState = processRemoveObjectsMessage(removeObjectsMessage);
+                break;
+            }
+
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage(shutdownMessage);
                 break;
             }
 

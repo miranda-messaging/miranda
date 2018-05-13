@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
+import com.ltsllc.miranda.network.states.NetworkReadyState;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
