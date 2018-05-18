@@ -36,6 +36,7 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.UnencryptedConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.servlet.basicstatus.BasicStatusServlet;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusServlet;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
@@ -395,6 +396,9 @@ public class Startup extends State {
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/status", StatusServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/basicStatus", BasicStatusServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/properties", ListPropertiesServlet.class);

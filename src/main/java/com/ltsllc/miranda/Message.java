@@ -242,6 +242,7 @@ public class Message {
 
     public void reply(Message message) throws MirandaException {
         try {
+            logger.info (message.getSenderObject() + " sent " + message);
             getSender().put(message);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Interrupted trying to send reply.", e, Panic.Reasons.ExceptionSendingMessage);
@@ -266,5 +267,9 @@ public class Message {
 
     public void setSenderObject(Object object) {
         this.senderObject = object;
+    }
+
+    public String toString () {
+        return getClass().getSimpleName();
     }
 }

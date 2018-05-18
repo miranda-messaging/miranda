@@ -253,11 +253,6 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         }
     }
 
-    public void start() {
-        super.start();
-
-        load();
-    }
 
     public void sendRemoveObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
         RemoveObjectsMessage removeObjectsMessage = new RemoveObjectsMessage(senderQueue, sender, objects);

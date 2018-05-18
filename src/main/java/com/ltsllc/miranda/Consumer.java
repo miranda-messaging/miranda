@@ -24,6 +24,7 @@ import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -157,7 +158,7 @@ public class Consumer extends Subsystem implements Comparer {
                     {
                         logger.info ("In shutting down state");
                     }
-                    logger.info(this + " in state " + getCurrentState() + " received " + m);
+                    logger.info(this + " in state " + getCurrentState() + " received " + m + " from " + m.getSenderObject());
                     nextState = processMessageInCurrentState(m);
                     if (currentState.getClass() == ShuttingDownState.class && nextState.getClass() != ShuttingDownState.class )
                     {

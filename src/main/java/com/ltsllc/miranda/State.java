@@ -219,10 +219,15 @@ public abstract class State {
      */
     public void send (Message message, BlockingQueue<Message> recipient) {
         try {
+            logger.info (message.getSenderObject() + " sent " + message);
             recipient.put(message);
         } catch (InterruptedException e) {
             Panic panic = new Panic(e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.panicMiranda(panic);
         }
+    }
+
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

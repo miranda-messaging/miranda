@@ -152,4 +152,9 @@ abstract public class SingleFileStartingState extends State {
         Miranda.panicMiranda(startupPanic);
         return this;
     }
+
+    public State start () {
+        getFile().getReader().sendReadMessage(getFile().getQueue(), this, getFile().getFilename());
+        return new SingleFileReadingState();
+    }
 }
