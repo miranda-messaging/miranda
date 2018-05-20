@@ -2,11 +2,13 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.CreateMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
 import com.ltsllc.miranda.writer.WriteFailedMessage;
@@ -21,11 +23,11 @@ public class SingleFileReadingState extends State {
     private List<BlockingQueue<Message>> loaderListeners = new ArrayList<>();
 
     public void addLoaderListener (BlockingQueue<Message> listener) {
-        isteners.add(listener);
+        loaderListeners.add(listener);
     }
 
-    public List<BlockingQueue<Message>> getListeners() {
-        return listeners;
+    public List<BlockingQueue<Message>> getLoaderListeners() {
+        return loaderListeners;
     }
 
     public SingleFile getFile() {
@@ -54,8 +56,7 @@ public class SingleFileReadingState extends State {
             }
 
             case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                defer(message);
                 break;
             }
 
@@ -76,8 +77,25 @@ public class SingleFileReadingState extends State {
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) {
         if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
             getFile().setData(readResponseMessage.getData());
+            tellLoaderListeners(LoadResponseMessage.Results.Success);
+        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
+            tellLoaderListeners(LoadResponseMessage.Results.FileDoesNotExist);
+        } else {
+            tellLoaderListeners(LoadResponseMessage.Results.Unknown);
+        }
 
-            tellLoader
+        return this;
+    }
+
+    public void tellLoaderListeners (LoadResponseMessage.Results result) {
+        try {
+            LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getFile().getQueue(), this, result);
+            for (BlockingQueue<Message> listener : loaderListeners) {
+                listener.put(loadResponseMessage);
+            }
+        } catch (InterruptedException e) {
+            Panic panic = new Panic("Exception trying to send message", e);
+            Miranda.panicMiranda(panic);
         }
     }
 }

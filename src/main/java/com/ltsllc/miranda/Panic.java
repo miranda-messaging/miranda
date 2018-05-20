@@ -29,7 +29,13 @@ import java.io.StringWriter;
  * </P>
  */
 public class Panic extends Exception {
+    public Panic(String message, Throwable e) {
+        super(message, e);
+        reason = Reasons.Unknown;
+    }
+
     public enum Reasons {
+        Unknown,
         BadURL,
         CouldNotWrite, // A subsystem received a WriteFailed message
         DoesNotUnderstand, // A state received a message it does not know how to process
@@ -70,7 +76,7 @@ public class Panic extends Exception {
         UnrecognizedNetworkMessage, // the object received an unexpected network message
         UnrecognizedNode, // a node shut down that we don't have a record of
         UnrecognizedRemotePolicy,
-        UnrecognizedResult, ExceptionCreatingNode;
+        UnrecognizedResult, ExceptionCreatingNode, ExceptionTryingToStart;
     }
 
     private Reasons reason;

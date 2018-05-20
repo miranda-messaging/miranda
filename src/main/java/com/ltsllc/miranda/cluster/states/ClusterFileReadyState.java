@@ -61,16 +61,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         State nextState = this;
 
         switch (message.getSubject()) {
-            case WriteSucceeded: {
-                break;
-            }
-
-            case WriteFailed: {
-                WriteFailedMessage writeFailedMessage = (WriteFailedMessage) message;
-                nextState = processWriteFailedMessage(writeFailedMessage);
-                break;
-            }
-
             case GetClusterFile: {
                 GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) message;
                 nextState = processGetClusterFileMessage(getClusterFileMessage);
@@ -86,12 +76,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
             case HealthCheckUpdate: {
                 HealthCheckUpdateMessage healthCheckUpdateMessage = (HealthCheckUpdateMessage) message;
                 nextState = processHealthCheckUpdateMessage(healthCheckUpdateMessage);
-                break;
-            }
-
-            case Load: {
-                LoadMessage loadMessage = (LoadMessage) message;
-                nextState = processLoadMessage(loadMessage);
                 break;
             }
 
@@ -118,9 +102,9 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
     /**
      * This message means that we should update all the matching nodes time
-     * of last conection, and possibly drop the nodes that don't match.  A
+     * of last connection, and possibly drop the nodes that don't match.  A
      * node that has not connected in an amount of time (in milliseconds)
-     * specifiede by {@link MirandaProperties#PROPERTY_CLUSTER_TIMEOUT}
+     * specified by {@link MirandaProperties#PROPERTY_CLUSTER_TIMEOUT}
      * should be dropped.
      *
      * @param healthCheckUpdateMessage
@@ -247,14 +231,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return nextState;
     }
 
-    private State processLoadMessage(LoadMessage loadMessage) throws MirandaException {
-        getClusterFile().load();
-
-        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getClusterFile().getCluster(), this, getClusterFile().getData());
-        loadMessage.reply(loadResponseMessage);
-
-        return this;
-    }
 
     private State processNodesUpdatedMessage(NodesUpdatedMessage nodesUpdatedMessage) {
         List<NodeElement> copy = new ArrayList<NodeElement>(nodesUpdatedMessage.getNodeList());

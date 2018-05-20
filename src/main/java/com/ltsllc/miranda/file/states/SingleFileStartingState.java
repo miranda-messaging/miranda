@@ -154,7 +154,13 @@ abstract public class SingleFileStartingState extends State {
     }
 
     public State start () {
-        getFile().getReader().sendReadMessage(getFile().getQueue(), this, getFile().getFilename());
-        return new SingleFileReadingState();
+        try {
+            getFile().getReader().sendReadMessage(getFile().getQueue(), this, getFile().getFilename());
+            return new SingleFileReadingState(getFile());
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception trying to star", e, Panic.Reasons.ExceptionTryingToStart);
+            Miranda.panicMiranda(panic);
+            return this;
+        }
     }
 }

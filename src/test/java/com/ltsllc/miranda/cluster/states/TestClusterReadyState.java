@@ -184,17 +184,6 @@ public class TestClusterReadyState extends TestCase {
         verify(getMockCluster(), atLeastOnce()).connect();
     }
 
-    @Test
-    public void testProcessLoadResponseMessage () throws MirandaException {
-        List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
-        NodeElement nodeElement = new NodeElement("bar.com", 6790, "another node");
-        nodeElementList.add(nodeElement);
-        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(null, this, nodeElementList);
-
-        getClusterReadyState().processMessage(loadResponseMessage);
-
-        verify(getMockCluster(), atLeastOnce()).merge(Matchers.anyList());
-    }
 
     @Test
     public void testProcessGetVersionMessage () throws MirandaException {

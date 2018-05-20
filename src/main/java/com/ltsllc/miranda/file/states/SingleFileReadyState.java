@@ -18,7 +18,6 @@ package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
 import com.ltsllc.commons.util.HexConverter;
-import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
@@ -36,7 +35,6 @@ import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -85,6 +83,12 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
             case GetFile: {
                 GetFileMessage getFileMessage = (GetFileMessage) message;
                 nextState = processGetFileMessage(getFileMessage);
+                break;
+            }
+
+            case Write: {
+                WriteMessage writeMessage = (WriteMessage) message;
+                nextState = processWriteMessage(writeMessage);
                 break;
             }
 
@@ -167,11 +171,11 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
 
 
     private State processLoadMessage(LoadMessage loadMessage) throws MirandaException {
-        getFile().load();
-        LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getFile().getQueue(), this, getFile().getData());
-        loadMessage.reply(loadResponseMessage);
+        getFile().getReader().read(getFile().getFilename());
+        SingleFileReadingState singleFileReadingState = new SingleFileReadingState(getFile());
+        singleFileReadingState.addLoaderListener(loadMessage.getSender());
 
-        return this;
+        return singleFileReadingState;
     }
 
     public State processStopMessage(StopMessage stopMessage) throws MirandaException {
@@ -269,5 +273,12 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
         byte[] data = null;
         getFile().setData(data);
         fireFileLoaded();
+    }
+
+    public State processWriteMessage (WriteMessage writeMessage) {
+        SingleFileWritingState writingState = new SingleFileWritingState();
+        writingState.addWriteListener(writeMessage.getSender());
+
+        return writingState;
     }
 }

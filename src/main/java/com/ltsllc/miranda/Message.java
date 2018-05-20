@@ -190,6 +190,7 @@ public class Message {
         WriteFailed,
         WriteFile,
         WriteFileResponse,
+        WriteResponse,
         WriteSucceeded,
         Error, ReadFile, ConnectionCreated;
     }
