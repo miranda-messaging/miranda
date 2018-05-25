@@ -259,6 +259,7 @@ public class Startup extends State {
         super.start();
 
         try {
+            setupPanicPolicy();
             setupLogging();
             processCommandLine();
             processPasswords();
@@ -917,5 +918,13 @@ public class Startup extends State {
             if (null != certificate)
                 com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
         }
+    }
+
+    public void setupPanicPolicy () {
+        int maxPanics = Integer.parseInt(MirandaProperties.DEFAULT_PANIC_LIMIT);
+        long panicTimeout = Long.parseLong(MirandaProperties.DEFAULT_PANIC_TIMEOUT);
+        MirandaPanicPolicy mirandaPanicPolicy = new MirandaPanicPolicy (maxPanics, panicTimeout, Miranda.getInstance(), Miranda.timer);
+        Miranda.getInstance().setPanicPolicy(mirandaPanicPolicy);
+                
     }
 }
