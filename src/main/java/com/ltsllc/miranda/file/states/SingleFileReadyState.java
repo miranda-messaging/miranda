@@ -35,16 +35,14 @@ import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
 /**
  * Created by Clark on 2/10/2017.
  */
-abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
-    abstract public Type getListType();
-
-    abstract public String getName();
+public class SingleFileReadyState extends MirandaFileReadyState {
 
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
     private static Gson ourGson = new Gson();
@@ -137,22 +135,17 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
 
 
     public State processGetFileResponseMessage(GetFileResponseMessage getFileResponseMessage) {
-        String hexString = getFileResponseMessage.getContents();
-
-        byte[] buffer = HexConverter.toByteArray(hexString);
-        String json = new String(buffer);
-        List list = ourGson.fromJson(json, getListType());
-        merge(list);
-        write();
-        return getFile().getCurrentState();
-    }
-
-    public void merge(List list) {
-        List<E> newList = (List<E>) list;
-        for (E e : newList) {
-            if (!contains(e))
-                add(e);
+        try {
+            getFile().setData(getFileResponseMessage.getContentAsBytes());
+            getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(),
+                    getFile().getBytes());
+            return new SingleFileWritingState(getFile());
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception trying to set data", e, Panic.Reasons.ExceptionSettingData);
+            Miranda.panicMiranda(panic);
         }
+
+        return this;
     }
 
     private State processGetFileMessage(GetFileMessage getFileMessage) {
@@ -222,15 +215,6 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
         return getFile().getVersion();
     }
 
-    public boolean contains(Object o) {
-        E e = (E) o;
-        return getFile().contains(e);
-    }
-
-    public void add(E element) {
-        getFile().getData().add(element);
-    }
-
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) {
         switch (readResponseMessage.getResult()) {
             case Success: {
@@ -276,7 +260,7 @@ abstract public class SingleFileReadyState<E> extends MirandaFileReadyState {
     }
 
     public State processWriteMessage (WriteMessage writeMessage) {
-        SingleFileWritingState writingState = new SingleFileWritingState();
+        SingleFileWritingState writingState = new SingleFileWritingState(getFile());
         writingState.addWriteListener(writeMessage.getSender());
 
         return writingState;

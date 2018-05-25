@@ -28,8 +28,7 @@ import com.ltsllc.miranda.reader.ReadResponseMessage;
 /**
  * Created by Clark on 5/14/2017.
  */
-abstract public class SingleFileLoadingState extends State {
-    abstract public State getReadyState() throws MirandaException;
+public class SingleFileLoadingState extends State {
 
     public SingleFile getSingleFile() {
         return (SingleFile) getContainer();
@@ -68,7 +67,7 @@ abstract public class SingleFileLoadingState extends State {
 
         if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
             getSingleFile().processData(readResponseMessage.getData());
-            nextState = getReadyState();
+            nextState = new SingleFileReadyState(getSingleFile());
         } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile) {
             Panic panic = new Panic("Error trying to load file", readResponseMessage.getException(), Panic.Reasons.ErrorLoadingFile);
             Miranda.getInstance().panic(panic);

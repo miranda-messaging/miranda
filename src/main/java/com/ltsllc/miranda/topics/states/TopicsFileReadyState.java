@@ -48,7 +48,7 @@ public class TopicsFileReadyState extends SingleFileReadyState {
         return topicsFile;
     }
 
-    @Override
+
     public void add(Object o) {
         Topic topic = (Topic) o;
         getTopicsFile().getData().add(topic);
@@ -61,7 +61,7 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public boolean contains(Object o) {
         Topic topic = (Topic) o;
         for (Topic t : getTopicsFile().getData()) {
@@ -79,13 +79,12 @@ public class TopicsFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public Type getListType() {
         return new TypeToken<List<Topic>>() {
         }.getType();
     }
 
-    @Override
     public String getName() {
         return "topics";
     }

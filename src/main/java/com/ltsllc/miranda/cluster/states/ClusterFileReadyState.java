@@ -163,7 +163,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
     }
 
-    @Override
     public Type getListType() {
         return new TypeToken<List<NodeElement>>() {
         }.getType();
@@ -176,7 +175,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public boolean contains(Object o) {
         NodeElement nodeElement = (NodeElement) o;
         return getClusterFile().contains(nodeElement);
@@ -189,7 +188,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public void add(Object o) {
         NodeElement nodeElement = (NodeElement) o;
         getClusterFile().getData().add(nodeElement);
@@ -202,7 +201,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public String getName() {
         return "clusters";
     }

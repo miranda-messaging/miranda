@@ -55,6 +55,12 @@ public class SingleFileReadingState extends State {
                 break;
             }
 
+            case Create: {
+                CreateMessage createMessage = (CreateMessage) message;
+                nextState = processCreateMessage(createMessage);
+                break;
+            }
+
             case GarbageCollection: {
                 defer(message);
                 break;
@@ -97,5 +103,10 @@ public class SingleFileReadingState extends State {
             Panic panic = new Panic("Exception trying to send message", e);
             Miranda.panicMiranda(panic);
         }
+    }
+
+    public State processCreateMessage (CreateMessage createMessage) {
+        getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(), getFile().getBytes());
+        return new SingleFileWritingState(getFile());
     }
 }

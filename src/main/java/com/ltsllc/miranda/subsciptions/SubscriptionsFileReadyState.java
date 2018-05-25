@@ -56,14 +56,14 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public void add(Object o) {
         Subscription subscription = (Subscription) o;
         getSubscriptionsFile().getData().add(subscription);
     }
 
 
-    @Override
+
     public boolean contains(Object o) {
         Subscription subscription = (Subscription) o;
         for (Subscription sub : getSubscriptionsFile().getData()) {
@@ -75,13 +75,13 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
+
     public Type getListType() {
         return new TypeToken<List<User>>() {
         }.getType();
     }
 
-    @Override
+
     public String getName() {
         return NAME;
     }

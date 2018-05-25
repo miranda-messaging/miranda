@@ -48,9 +48,7 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
-
     abstract public Type getListType();
-
     abstract public void checkForDuplicates();
 
     private static Logger logger = Logger.getLogger(SingleFile.class);

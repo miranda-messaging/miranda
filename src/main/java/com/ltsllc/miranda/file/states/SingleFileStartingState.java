@@ -31,9 +31,7 @@ import com.ltsllc.miranda.writer.WriteSucceededMessage;
 /**
  * A state for when the object is first created.  It waits for the read to complete
  */
-abstract public class SingleFileStartingState extends State {
-    abstract public State getReadyState() throws MirandaException;
-
+public class SingleFileStartingState extends State {
     public SingleFile getFile() {
         return (SingleFile) getContainer();
     }
@@ -96,7 +94,7 @@ abstract public class SingleFileStartingState extends State {
             getFile().setData(readResponseMessage.getData());
             getFile().fireFileLoaded();
             restoreDeferredMessages();
-            return getReadyState();
+            return new SingleFileReadyState(getFile());
         } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
             getFile().getData().clear();
             getFile().fireFileDoesNotExist();
@@ -143,7 +141,7 @@ abstract public class SingleFileStartingState extends State {
     }
 
     public State processWriteSucceededMessage (WriteSucceededMessage writeSucceededMessage) throws MirandaException {
-        return getReadyState();
+        return new SingleFileReadyState(getFile());
     }
 
     public State processWriteFailedMessage (WriteFailedMessage writeFailedMessage) {
