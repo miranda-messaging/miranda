@@ -25,7 +25,6 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
-import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;

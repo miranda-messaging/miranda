@@ -80,24 +80,27 @@ public class SingleFileReadingState extends State {
         addLoaderListener(message.getSender());
     }
 
-    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) {
+    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
         if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
             getFile().setData(readResponseMessage.getData());
-            tellLoaderListeners(LoadResponseMessage.Results.Success);
+            tellLoaderListeners(ReadResponseMessage.Results.Success);
+            getFile().fireFileLoaded();
+            return new SingleFileReadyState(getFile());
         } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
-            tellLoaderListeners(LoadResponseMessage.Results.FileDoesNotExist);
+            tellLoaderListeners(ReadResponseMessage.Results.FileDoesNotExist);
+            return this;
         } else {
-            tellLoaderListeners(LoadResponseMessage.Results.Unknown);
+            tellLoaderListeners(ReadResponseMessage.Results.Unknown);
+            return this;
         }
-
-        return this;
     }
 
-    public void tellLoaderListeners (LoadResponseMessage.Results result) {
+    public void tellLoaderListeners (ReadResponseMessage.Results result) {
         try {
-            LoadResponseMessage loadResponseMessage = new LoadResponseMessage(getFile().getQueue(), this, result);
+            ReadResponseMessage readResponseMessage = new ReadResponseMessage(getFile().getQueue(), this);
+            readResponseMessage.setResult(result);
             for (BlockingQueue<Message> listener : loaderListeners) {
-                listener.put(loadResponseMessage);
+                listener.put(readResponseMessage);
             }
         } catch (InterruptedException e) {
             Panic panic = new Panic("Exception trying to send message", e);

@@ -22,10 +22,11 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
+import com.ltsllc.miranda.manager.states.ManagerStartState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
-import com.ltsllc.miranda.topics.states.TopicManagerStartState;
+import com.ltsllc.miranda.topics.states.TopicManagerReadyState;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -52,16 +53,12 @@ public class TopicManager extends StandardManager<Topic> {
     public TopicManager(String filename) throws IOException, MirandaException {
         super("topics manager", filename);
 
-        TopicManagerStartState topicManagerStartState = new TopicManagerStartState(this);
+        ManagerStartState topicManagerStartState = new ManagerStartState(this);
         setCurrentState(topicManagerStartState);
     }
 
     public SingleFile<Topic> createFile(String filename) throws IOException, MirandaException {
         return new TopicsFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter());
-    }
-
-    public State createStartState() throws MirandaException {
-        return new TopicManagerStartState(this);
     }
 
     public void sendGetTopicsMessage(BlockingQueue<Message> senderQueue, Object sender) {
@@ -176,5 +173,9 @@ public class TopicManager extends StandardManager<Topic> {
 
     public Topic convert(Topic topic) {
         return topic;
+    }
+
+    public State getReadyState() throws MirandaException {
+        return new TopicManagerReadyState(this);
     }
 }

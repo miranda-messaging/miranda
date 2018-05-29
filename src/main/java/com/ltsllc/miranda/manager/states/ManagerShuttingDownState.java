@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.manager;
+package com.ltsllc.miranda.manager.states;
+
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
@@ -31,15 +33,11 @@ import java.util.concurrent.BlockingQueue;
  *     Once the class gets a reply it sends a reply of is own and goes into the {@link StopState}.
  * </p>
  */
-public class ManagerShuttingDownState extends State {
+public class ManagerShuttingDownState extends ManagerState {
     private BlockingQueue<Message> requester;
 
     public BlockingQueue<Message> getRequester() {
         return requester;
-    }
-
-    public Manager getManager() {
-        return (Manager) getContainer();
     }
 
     public ManagerShuttingDownState(Manager manager, BlockingQueue<Message> requester) throws MirandaException {

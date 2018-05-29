@@ -19,8 +19,9 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
-import com.ltsllc.miranda.cluster.states.ClusterLoadingState;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.manager.states.ManagerLoadingState;
+import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class TestManagerLoadingState extends TestCase {
 
         setuplog4j();
 
-        loadingState = new ClusterLoadingState(getMockCluster());
+        loadingState = new ManagerLoadingState(getMockCluster());
     }
 
     @Test

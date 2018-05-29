@@ -23,6 +23,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.manager.states.ManagerStartState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 
@@ -36,10 +37,8 @@ import java.util.concurrent.BlockingQueue;
  */
 public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     abstract public SingleFile<F> createFile(String filename) throws IOException, MirandaException;
-
-    abstract public State createStartState() throws MirandaException;
-
     abstract public E convert(F f) throws MirandaException;
+    abstract public State getReadyState() throws MirandaException;
 
     private SingleFile<F> file;
     private List<E> data;
@@ -96,7 +95,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         setFile(file);
         file.start();
 
-        State startState = createStartState();
+        State startState = new ManagerStartState(this);
         setCurrentState(startState);
 
         List<E> newList = new ArrayList<E>();
@@ -106,7 +105,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     public Manager(String name, boolean testMode) throws MirandaException {
         super(name);
 
-        State startState = createStartState();
+        State startState = new ManagerStartState(this);
         setCurrentState(startState);
 
         List<E> newList = new ArrayList<E>();

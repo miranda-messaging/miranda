@@ -24,6 +24,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
+import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
@@ -40,7 +41,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/1/2017.
  */
-public class UserManagerReadyState extends StandardManagerReadyState<User> {
+public class UserManagerReadyState extends ManagerReadyState {
     private Logger logger = Logger.getLogger(UserManagerReadyState.class);
 
     public UserManager getUserManager() {

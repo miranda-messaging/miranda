@@ -400,7 +400,7 @@ public class Miranda extends Consumer {
 
     public void getStatus(BlockingQueue<Message> respondTo) {
         GetStatusMessage getStatusMessage = new GetStatusMessage(respondTo, this);
-        send(getStatusMessage, getQueue());
+        sendToMe(getStatusMessage);
     }
 
     public NodeStatus getStatusImpl() {

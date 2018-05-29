@@ -29,7 +29,7 @@ import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
 import com.ltsllc.miranda.user.messages.*;
-import com.ltsllc.miranda.user.states.UserManagerStartState;
+import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -54,10 +54,6 @@ public class UserManager extends StandardManager<User> {
 
     public UserManager(String filename) throws IOException, MirandaException {
         super(NAME, filename);
-    }
-
-    public State createStartState() throws MirandaException {
-        return new UserManagerStartState(this);
     }
 
     public SingleFile<User> createFile(String filename) throws IOException, MirandaException {
@@ -170,5 +166,9 @@ public class UserManager extends StandardManager<User> {
 
     public User convert(User user) {
         return user;
+    }
+
+    public State getReadyState () throws MirandaException {
+        return new UserManagerReadyState(this);
     }
 }

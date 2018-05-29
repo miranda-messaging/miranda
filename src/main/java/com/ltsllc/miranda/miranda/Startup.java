@@ -925,6 +925,5 @@ public class Startup extends State {
         long panicTimeout = Long.parseLong(MirandaProperties.DEFAULT_PANIC_TIMEOUT);
         MirandaPanicPolicy mirandaPanicPolicy = new MirandaPanicPolicy (maxPanics, panicTimeout, Miranda.getInstance(), Miranda.timer);
         Miranda.getInstance().setPanicPolicy(mirandaPanicPolicy);
-                
     }
 }

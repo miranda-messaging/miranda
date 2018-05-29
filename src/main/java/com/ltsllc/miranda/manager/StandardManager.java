@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.manager;
 
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 
@@ -32,4 +33,6 @@ abstract public class StandardManager<E extends MirandaObject> extends Manager<E
     public E convert(E e) {
         return e;
     }
+
+    abstract public State getReadyState () throws MirandaException;
 }

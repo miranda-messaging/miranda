@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.manager;
+package com.ltsllc.miranda.manager.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
+import com.ltsllc.miranda.manager.Manager;
+import com.ltsllc.miranda.manager.states.ManagerReadyState;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.reader.ReadResponseMessage;
 
 import java.util.List;
 
 /**
  * Created by Clark on 5/14/2017.
  */
-abstract public class ManagerStartState extends State {
-    abstract public State getReadyState() throws MirandaException;
-
-    public Manager getManager() {
-        return (Manager) getContainer();
-    }
-
-    public ManagerStartState(Manager manager) throws MirandaException {
+public class ManagerLoadingState extends ManagerState {
+    public ManagerLoadingState(Manager manager) throws MirandaException {
         super(manager);
     }
 
@@ -43,21 +42,28 @@ abstract public class ManagerStartState extends State {
         State nextState = getManager().getCurrentState();
 
         switch (message.getSubject()) {
+            case ReadResponse: {
+                ReadResponseMessage readResponseMessage = (ReadResponseMessage) message;
+                nextState = processReadResponseMessage(readResponseMessage);
+                break;
+            }
+
             case FileLoaded: {
                 FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
                 nextState = processFileLoadedMessage(fileLoadedMessage);
                 break;
             }
 
-            case GarbageCollection: {
-                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
-                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
-                break;
-            }
-
             case FileDoesNotExist: {
                 FileDoesNotExistMessage fileDoesNotExistMessage = (FileDoesNotExistMessage) message;
                 nextState = processFileDoesNotExistMessage(fileDoesNotExistMessage);
+                break;
+            }
+
+
+            case GarbageCollection: {
+                GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
+                nextState = processGarbageCollectionMessage(garbageCollectionMessage);
                 break;
             }
 
@@ -74,9 +80,13 @@ abstract public class ManagerStartState extends State {
         List list = (List) fileLoadedMessage.getData();
         getManager().setData(list);
 
-        restoreDeferredMessages();
+        return getManager().getReadyState();
+    }
 
-        return getReadyState();
+    public State processFileDoesNotExistMessage(FileDoesNotExistMessage fileDoesNotExistMessage) throws MirandaException {
+        getManager().getData().clear();
+
+        return getManager().getReadyState();
     }
 
     public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
@@ -85,11 +95,14 @@ abstract public class ManagerStartState extends State {
         return getManager().getCurrentState();
     }
 
-    public State processFileDoesNotExistMessage(FileDoesNotExistMessage fileDoesNotExistMessage) throws MirandaException {
-        getManager().getData().clear();
+    public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
+        if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
+            return getManager().getReadyState();
+        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
+            getManager().getFile().sendCreateMessage(getManager().getQueue(), this);
+            return new ManagerWritingState(getManager());
+        }
 
-        restoreDeferredMessages();
-
-        return getReadyState();
+        return this;
     }
 }

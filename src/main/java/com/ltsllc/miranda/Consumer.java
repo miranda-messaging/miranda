@@ -52,10 +52,6 @@ public class Consumer extends Subsystem implements Comparer {
     }
 
     public void setCurrentState(State s) {
-        if (s.getClass() == ReadyState.class)
-        {
-            logger.info ("transitioning to ready state",new Exception());
-        }
         if (null == currentState)
             logger.info(this + " transitioning from null to " + s);
         else if (null == s)

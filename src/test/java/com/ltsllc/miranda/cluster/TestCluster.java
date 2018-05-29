@@ -23,7 +23,6 @@ import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
-import com.ltsllc.miranda.cluster.states.ClusterStartState;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.networkMessages.NewSessionWireMessage;
 import com.ltsllc.miranda.session.Session;
@@ -130,7 +129,6 @@ public class TestCluster extends TestCase {
     @Test
     public void testConstructor () {
         assert (null != getCluster().getClusterFile());
-        assert (getCluster().getCurrentState() instanceof ClusterStartState);
         verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class));
     }
 

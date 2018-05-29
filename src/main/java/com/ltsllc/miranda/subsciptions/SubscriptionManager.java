@@ -26,6 +26,8 @@ import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.*;
+import com.ltsllc.miranda.subsciptions.states.SubscriptionManagerReadyState;
+import com.ltsllc.miranda.subsciptions.states.SubscriptionManagerStartState;
 
 import java.io.IOException;
 import java.util.List;
@@ -157,5 +159,9 @@ public class SubscriptionManager extends StandardManager<Subscription> {
 
     public Subscription convert(Subscription subscription) {
         return subscription;
+    }
+
+    public State getReadyState () throws MirandaException {
+        return new SubscriptionManagerReadyState(this);
     }
 }

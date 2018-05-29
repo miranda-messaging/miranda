@@ -68,6 +68,13 @@ public class LoginOperationReadyState extends State {
                     break;
                 }
 
+                case CreateSessionResponse: {
+                    CreateSessionResponseMessage createSessionResponseMessage = (CreateSessionResponseMessage) message;
+                    nextState = processCreateSessionResponseMessage(createSessionResponseMessage);
+                    break;
+                }
+
+
                 default: {
                     nextState = super.processMessage(message);
                 }
@@ -112,5 +119,15 @@ public class LoginOperationReadyState extends State {
         return StopState.getInstance();
     }
 
+    public State processCreateSessionResponseMessage (CreateSessionResponseMessage createSessionResponseMessage) {
+        if (createSessionResponseMessage.getResult() == Results.SessionCreated) {
+            Miranda.getInstance().getCluster().sendNewSession(getLoginOperation().getQueue(), this,
+                    createSessionResponseMessage.getSession());
+        }
 
+        LoginResponseMessage loginResponseMessage = new LoginResponseMessage(getLoginOperation().getQueue(),
+                this, createSessionResponseMessage.getResult(), createSessionResponseMessage.getSession());
+        send (getLoginOperation().getRequester(), loginResponseMessage);
+        return StopState.getInstance();
+    }
 }

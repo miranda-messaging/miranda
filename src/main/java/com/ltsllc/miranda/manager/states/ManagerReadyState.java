@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.manager;
+package com.ltsllc.miranda.manager.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.ShutdownPanic;
+import com.ltsllc.miranda.manager.Manager;
+import com.ltsllc.miranda.manager.states.ManagerShuttingDownState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;
@@ -32,11 +34,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/26/2017.
  */
-public class ManagerReadyState<E, F> extends State {
-    public Manager getManager() {
-        return (Manager) getContainer();
-    }
-
+public class ManagerReadyState extends ManagerState {
     public ManagerReadyState(Manager manager) throws MirandaException {
         super(manager);
     }
@@ -98,11 +96,7 @@ public class ManagerReadyState<E, F> extends State {
     }
 
     public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {
-        List<F> data = (List<F>) fileLoadedMessage.getData();
-        List<E> newList = getManager().convertList(data);
-        getManager().setData(newList);
-
-        return getManager().getCurrentState();
+        return new ManagerReadyState(getManager());
     }
 
     public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {

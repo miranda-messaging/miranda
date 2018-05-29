@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.subsciptions;
+package com.ltsllc.miranda.subsciptions.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
@@ -23,7 +23,9 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
+import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.subsciptions.messages.*;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ import java.util.List;
 /**
  * Created by Clark on 4/12/2017.
  */
-public class SubscriptionManagerReadyState extends StandardManagerReadyState<Subscription> {
+public class SubscriptionManagerReadyState extends ManagerReadyState {
     public SubscriptionManager getSubscriptionManager() {
         return (SubscriptionManager) getContainer();
     }

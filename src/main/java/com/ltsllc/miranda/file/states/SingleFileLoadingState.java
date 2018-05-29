@@ -68,6 +68,7 @@ public class SingleFileLoadingState extends State {
         if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
             getSingleFile().processData(readResponseMessage.getData());
             nextState = new SingleFileReadyState(getSingleFile());
+            getSingleFile().fireFileLoaded();
         } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile) {
             Panic panic = new Panic("Error trying to load file", readResponseMessage.getException(), Panic.Reasons.ErrorLoadingFile);
             Miranda.getInstance().panic(panic);

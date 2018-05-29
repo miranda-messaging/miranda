@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.user.states;
+package com.ltsllc.miranda.subsciptions.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.manager.ManagerLoadingState;
-import com.ltsllc.miranda.user.UserManager;
+import com.ltsllc.miranda.manager.states.ManagerStartState;
+import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 
 /**
  * Created by Clark on 5/14/2017.
  */
-public class UserManagerStartState extends ManagerLoadingState {
-    public UserManager getUserManager() {
-        return (UserManager) getContainer();
+public class SubscriptionManagerStartState extends ManagerStartState {
+    public SubscriptionManager getSubscriptionManager() {
+        return (SubscriptionManager) getContainer();
     }
 
-    public UserManagerStartState(UserManager userManager) throws MirandaException {
-        super(userManager);
+    public SubscriptionManagerStartState(SubscriptionManager subscriptionManager) throws MirandaException {
+        super(subscriptionManager);
     }
 
     public State getReadyState() throws MirandaException {
-        return new UserManagerReadyState(getUserManager());
+        return new SubscriptionManagerReadyState(getSubscriptionManager());
     }
 }

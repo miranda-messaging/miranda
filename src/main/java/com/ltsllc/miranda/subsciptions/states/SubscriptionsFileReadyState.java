@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.subsciptions;
+package com.ltsllc.miranda.subsciptions.states;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
+import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 

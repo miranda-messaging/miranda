@@ -45,6 +45,6 @@ public enum Results {
     UserOwnsProperty,
     UserOwnsSubscriptions,
     UserOwnsTopics,
-    Written
+    UnrecognizedUser, Written
 }
 

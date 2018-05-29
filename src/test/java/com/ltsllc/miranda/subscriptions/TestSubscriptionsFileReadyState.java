@@ -23,7 +23,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
-import com.ltsllc.miranda.subsciptions.SubscriptionsFileReadyState;
+import com.ltsllc.miranda.subsciptions.states.SubscriptionsFileReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
