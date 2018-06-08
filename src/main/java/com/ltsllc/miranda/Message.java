@@ -192,7 +192,7 @@ public class Message {
         WriteFileResponse,
         WriteResponse,
         WriteSucceeded,
-        Error, ReadFile, ConnectionCreated;
+        Error, ReadFile, ConnectionCreated, Bootstrap, BootstrapResponse;
     }
 
     private static Gson ourGson = new Gson();

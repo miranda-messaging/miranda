@@ -16,11 +16,11 @@
 
 package com.ltsllc.miranda.servlet.holder;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.LoginObject;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.test.TestCase;

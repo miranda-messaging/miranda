@@ -2,11 +2,11 @@ package com.ltsllc.miranda.servlet.event;
 
 import com.google.gson.Gson;
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.CreateEventResultObject;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.session.Session;
 import org.apache.log4j.Logger;
 

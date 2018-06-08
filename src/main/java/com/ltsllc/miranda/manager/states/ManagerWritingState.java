@@ -2,9 +2,9 @@ package com.ltsllc.miranda.manager.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.file.messages.WriteFileResponseMessage;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;

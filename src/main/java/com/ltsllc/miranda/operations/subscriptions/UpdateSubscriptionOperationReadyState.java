@@ -17,11 +17,11 @@
 package com.ltsllc.miranda.operations.subscriptions;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionResponseMessage;
 import com.ltsllc.miranda.topics.messages.GetTopicResponseMessage;

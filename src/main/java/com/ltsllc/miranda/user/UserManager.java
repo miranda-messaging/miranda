@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.user;
 
+import com.ltsllc.clcl.DistinguishedName;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -28,6 +29,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
+import com.ltsllc.miranda.servlet.bootstrap.BootstrapMessage;
 import com.ltsllc.miranda.user.messages.*;
 import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import org.apache.log4j.Logger;
@@ -117,6 +119,13 @@ public class UserManager extends StandardManager<User> {
     public void sendDeleteUserMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, null, name);
         sendToMe(deleteUserMessage);
+    }
+
+    public void sendBootstrap (BlockingQueue<Message> senderQueue, Object senderObject,
+                               DistinguishedName adminDistinguishedName, String adminPassword) {
+        BootstrapMessage bootstrapMessage = new BootstrapMessage(senderQueue, senderObject, adminDistinguishedName,
+                adminPassword);
+        sendToMe(bootstrapMessage);
     }
 
     public void updateUser(UserObject userObject) throws MirandaException {

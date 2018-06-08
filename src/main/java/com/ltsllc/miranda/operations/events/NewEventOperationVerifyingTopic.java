@@ -5,7 +5,6 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.event.messages.NewEventResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;

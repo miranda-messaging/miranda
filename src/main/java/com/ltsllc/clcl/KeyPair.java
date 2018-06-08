@@ -58,6 +58,11 @@ public class KeyPair {
         this.privateKey = privateKey;
     }
 
+    public KeyPair(java.security.KeyPair keyPair) {
+        this.publicKey = new PublicKey(keyPair.getPublic());
+        this.privateKey = new PrivateKey(keyPair.getPrivate());
+    }
+
     public PrivateKey getPrivateKey() {
         return privateKey;
     }
@@ -109,23 +114,6 @@ public class KeyPair {
             throw new EncryptionException("Exception trying to create PEM", e);
         }
     }
-/*
-    public String toPem (String password) throws EncryptionException {
-        try {
-            StringWriter stringWriter = new StringWriter();
-            PEMWriter pemWriter = new PEMWriter(stringWriter);
-
-            BcPKCS12PBEOutputEncryptorBuilder bcPKCS12PBEOutputEncryptorBuilder = new BcPKCS12PBEOutputEncryptorBuilder()
-            java.security.KeyPair keyPair = new java.security.KeyPair(getPublicKey().getSecurityPublicKey(), getPrivateKey().getSecurityPrivateKey());
-            PKCS8Generator pkcs8Generator = new PKCS8Generator(getPrivateKey().getSecurityPrivateKey())
-            pemWriter.writeObject(keyPair, pemEncryptor);
-            pemWriter.close();
-            return stringWriter.toString();
-        } catch (IOException e) {
-            throw new EncryptionException("Exception trying to create PEM", e);
-        }
-    }
-*/
 
     public String toPem (String password) throws EncryptionException {
         try {

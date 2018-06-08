@@ -19,10 +19,10 @@ package com.ltsllc.miranda.servlet.login;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.LoginObject;
 import com.ltsllc.miranda.clientinterface.objects.LoginResultObject;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 
 import javax.servlet.ServletException;

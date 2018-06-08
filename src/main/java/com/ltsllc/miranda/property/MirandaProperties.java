@@ -125,6 +125,8 @@ public class MirandaProperties {
     public static final String PROPERTY_TOPICS_FILE = "com.ltsllc.miranda.TopicsFile";
     public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
 
+    public static final String PROPERTY_CERTIFICATE_FILE = PACKAGE_NAME + "CertificateFile";
+
     public static final String PROPERTY_CLUSTER_FILE = CLUSTER_PACKAGE + "File";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = CLUSTER_PACKAGE + "HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = CLUSTER_PACKAGE + "Timeout";
@@ -180,6 +182,8 @@ public class MirandaProperties {
     public static final String DEFAULT_NETWORK = Networks.Mina.toString();
     public static final String DEFAULT_MAX_WRITE_FAILURES = "5";
 
+    public static final String DEFAULT_CERTIFICATE_FILE = "ca.pem";
+
     public static final String DEFAULT_CLUSTER_FILE = "data/cluster.json";
     public static final String DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD = "86400000"; // one day
     public static final String DEFAULT_CLUSTER_TIMEOUT = "604800000"; // one week
@@ -228,6 +232,8 @@ public class MirandaProperties {
             {PROPERTY_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILENAME},
             {PROPERTY_NETWORK, DEFAULT_NETWORK},
             {PROPERTY_MAX_WRITE_FAILURES, DEFAULT_MAX_WRITE_FAILURES},
+
+            {PROPERTY_CERTIFICATE_FILE, DEFAULT_CERTIFICATE_FILE},
 
             {PROPERTY_ENCRYPTION_MODE, DEFAULT_ENCRYPTION_MODE},
             {PROPERTY_TRUST_STORE_FILENAME, DEFAULT_TRUST_STORE},

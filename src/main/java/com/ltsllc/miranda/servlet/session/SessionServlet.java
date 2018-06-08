@@ -17,10 +17,10 @@
 package com.ltsllc.miranda.servlet.session;
 
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.session.Session;

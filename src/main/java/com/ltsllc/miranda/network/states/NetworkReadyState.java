@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.network.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.network.messages.*;

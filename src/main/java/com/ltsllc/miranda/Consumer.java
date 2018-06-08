@@ -167,6 +167,11 @@ public class Consumer extends Subsystem implements Comparer {
                         currentState.setOverideState(null);
                     }
 
+                    if (current != nextState) {
+                        if (nextState != null) {
+                            nextState.start();
+                        }
+                    }
                     setCurrentState(nextState);
                 }
             } catch (Exception e) {
