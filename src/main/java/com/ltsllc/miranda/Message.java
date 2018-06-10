@@ -33,6 +33,8 @@ public class Message {
         AddServlets,
         AddSession,
         Ballot,
+        Bootstrap,
+        BootstrapResponse,
         Broadcast,
         CheckSession,
         CheckSessionResponse,
@@ -48,6 +50,7 @@ public class Message {
         ConnectionError,
         ConnectTo,
         ConnectionClosed,
+        ConnectinCreated,
         Create,
         CreateResponse,
         CreateEvent,
@@ -73,12 +76,14 @@ public class Message {
         DuplicateUser,
         Election,
         EndConversation,
+        Error,
         Evict,
         ExceptionDuringScanMessage,
         Expired,
         FileChanged,
         FileDoesNotExist,
         FileLoaded,
+        FileWritten,
         GarbageCollection,
         GetDeliveries,
         GetFile,
@@ -121,7 +126,6 @@ public class Message {
         NewEvent,
         NewEventResponse,
         NewNode,
-        NewUser,
         NewTopic,
         NewTopicResponse,
         NewClusterFile,
@@ -133,6 +137,8 @@ public class Message {
         NewNodeElement,
         NewProperties,
         NewSubscription,
+        NewUser,
+        NewUserResponse,
         NoConnection,
         NodeAdded,
         NodesLoaded,
@@ -168,6 +174,7 @@ public class Message {
         Synchronize,
         Timeout,
         UnknownHandle,
+        UnrecognizedUser,
         UnwatchFile,
         UpdateObjects,
         UpdateTopic,
@@ -185,9 +192,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        WriteSucceeded,
-        WriteFailed,
-        Error
+        ConnectionCreated, Cancel, WriteResponse
     }
 
     private static Gson ourGson = new Gson();
@@ -238,6 +243,7 @@ public class Message {
 
     public void reply(Message message) throws MirandaException {
         try {
+            logger.info (message.getSenderObject() + " sent " + message);
             getSender().put(message);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Interrupted trying to send reply.", e, Panic.Reasons.ExceptionSendingMessage);
@@ -262,5 +268,9 @@ public class Message {
 
     public void setSenderObject(Object object) {
         this.senderObject = object;
+    }
+
+    public String toString () {
+        return getClass().getSimpleName();
     }
 }

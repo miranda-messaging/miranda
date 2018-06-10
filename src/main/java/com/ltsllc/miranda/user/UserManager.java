@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.user;
 
+import com.ltsllc.clcl.DistinguishedName;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -28,8 +29,9 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
+import com.ltsllc.miranda.servlet.bootstrap.BootstrapMessage;
 import com.ltsllc.miranda.user.messages.*;
-import com.ltsllc.miranda.user.states.UserManagerStartState;
+import com.ltsllc.miranda.user.states.UserManagerReadyState;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -56,10 +58,6 @@ public class UserManager extends StandardManager<User> {
         super(NAME, filename);
     }
 
-    public State createStartState() throws MirandaException {
-        return new UserManagerStartState(this);
-    }
-
     public SingleFile<User> createFile(String filename) throws IOException, MirandaException {
         return new UsersFile(Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), filename);
     }
@@ -75,7 +73,7 @@ public class UserManager extends StandardManager<User> {
 
     public void addUser(User user) throws DuplicateUserException {
         if (contains(user)) {
-            throw new DuplicateUserException("The system already contain this user");
+            throw new DuplicateUserException("The system already contains this user");
         } else {
             getUsers().add(user);
             getUsersFile().sendNewUserMessage(getQueue(), this, user);
@@ -121,6 +119,13 @@ public class UserManager extends StandardManager<User> {
     public void sendDeleteUserMessage(BlockingQueue<Message> senderQueue, Object sender, String name) {
         DeleteUserMessage deleteUserMessage = new DeleteUserMessage(senderQueue, sender, null, name);
         sendToMe(deleteUserMessage);
+    }
+
+    public void sendBootstrap (BlockingQueue<Message> senderQueue, Object senderObject,
+                               DistinguishedName adminDistinguishedName, String adminPassword) {
+        BootstrapMessage bootstrapMessage = new BootstrapMessage(senderQueue, senderObject, adminDistinguishedName,
+                adminPassword);
+        sendToMe(bootstrapMessage);
     }
 
     public void updateUser(UserObject userObject) throws MirandaException {
@@ -170,5 +175,9 @@ public class UserManager extends StandardManager<User> {
 
     public User convert(User user) {
         return user;
+    }
+
+    public State getReadyState () throws MirandaException {
+        return new UserManagerReadyState(this);
     }
 }

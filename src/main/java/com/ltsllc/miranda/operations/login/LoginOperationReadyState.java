@@ -16,20 +16,29 @@
 
 package com.ltsllc.miranda.operations.login;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.StopState;
+import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
+import com.ltsllc.miranda.clientinterface.results.GetUserResponseObject;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.LoginResponseMessage;
 import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
+import com.ltsllc.miranda.user.UnknownUserException;
+import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
+import org.apache.log4j.Logger;
 
 /**
  * Created by Clark on 4/16/2017.
  */
 public class LoginOperationReadyState extends State {
+    private static Logger LOGGER = Logger.getLogger(LoginOperationReadyState.class);
+
+    public State start() {
+        Miranda.getInstance().getUserManager().sendGetUser(getLoginOperation().getQueue(), this, getLoginOperation().getUser());
+        return this;
+    }
+
     public LoginOperation getLoginOperation() {
         return (LoginOperation) getContainer();
     }
@@ -41,25 +50,54 @@ public class LoginOperationReadyState extends State {
     public State processMessage(Message message) throws MirandaException {
         State nextState = getLoginOperation().getCurrentState();
 
-        switch (message.getSubject()) {
-            case GetSessionResponse: {
-                GetSessionResponseMessage getSessionResponseMessage = (GetSessionResponseMessage) message;
-                nextState = processGetSessionResponseMessage(getSessionResponseMessage);
-                break;
-            }
+        try {
+            switch (message.getSubject()) {
+                case GetUserResponse: {
+                    GetUserResponseMessage getUserResponseMessage = (GetUserResponseMessage) message;
+                    nextState = processGetUserResponseMessge(getUserResponseMessage);
+                    break;
+                }
 
-            case CreateSessionResponse: {
-                CreateSessionResponseMessage createSessionResponseMessage = (CreateSessionResponseMessage) message;
-                nextState = processCreateSessionResponseMessage(createSessionResponseMessage);
-                break;
-            }
+                case GetSessionResponse: {
+                    GetSessionResponseMessage getSessionResponseMessage = (GetSessionResponseMessage) message;
+                    nextState = processGetSessionResponseMessage(getSessionResponseMessage);
+                    break;
+                }
 
-            default: {
-                nextState = super.processMessage(message);
+                case CreateSessionResponse: {
+                    CreateSessionResponseMessage createSessionResponseMessage = (CreateSessionResponseMessage) message;
+                    nextState = processCreateSessionResponseMessage(createSessionResponseMessage);
+                    break;
+                }
+
+
+                default: {
+                    nextState = super.processMessage(message);
+                }
             }
+        } catch (EncryptionException e) {
+            LOGGER.warn("Encountered an EncryptionException, will attempt to continue", e);
         }
 
         return nextState;
+    }
+
+    public State processGetUserResponseMessge(GetUserResponseMessage getUserResponseMessage) throws EncryptionException {
+        if (getUserResponseMessage.getResult() == Results.UserNotFound) {
+            UnrecognizedUserMessage unrecognizedUserMessage = new UnrecognizedUserMessage(
+                    getLoginOperation().getUser(),
+                    getLoginOperation().getQueue(),
+                    this);
+            Consumer.staticSend(unrecognizedUserMessage, getLoginOperation().getRequester());
+        } else {
+            getLoginOperation().setPublicKey(getUserResponseMessage.getUser().getPublicKey());
+
+            Miranda.getInstance().getSessionManager().sendGetSessionMessage(getLoginOperation().getQueue(),
+                    this, getLoginOperation().getUser());
+
+        }
+
+        return this;
     }
 
     public State processGetSessionResponseMessage(GetSessionResponseMessage getSessionResponseMessage) {
@@ -77,20 +115,15 @@ public class LoginOperationReadyState extends State {
         return StopState.getInstance();
     }
 
-    public State processCreateSessionResponseMessage(CreateSessionResponseMessage createSessionResponseMessage) {
-        Results loginResult;
+    public State processCreateSessionResponseMessage (CreateSessionResponseMessage createSessionResponseMessage) {
+        if (createSessionResponseMessage.getResult() == Results.SessionCreated) {
+            Miranda.getInstance().getCluster().sendNewSession(getLoginOperation().getQueue(), this,
+                    createSessionResponseMessage.getSession());
+        }
 
-        if (createSessionResponseMessage.getResult() == Results.Success)
-            loginResult = Results.SessionCreated;
-        else
-            loginResult = createSessionResponseMessage.getResult();
-
-        LoginResponseMessage resultMessage = new LoginResponseMessage(getLoginOperation().getQueue(),
-                this, loginResult, createSessionResponseMessage.getSession());
-
-        send(getLoginOperation().getRequester(), resultMessage);
-
+        LoginResponseMessage loginResponseMessage = new LoginResponseMessage(getLoginOperation().getQueue(),
+                this, createSessionResponseMessage.getResult(), createSessionResponseMessage.getSession());
+        send (getLoginOperation().getRequester(), loginResponseMessage);
         return StopState.getInstance();
     }
-
 }

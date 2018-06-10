@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.timer.messages.ScheduleMessage;
 
 import java.util.TimerTask;
 

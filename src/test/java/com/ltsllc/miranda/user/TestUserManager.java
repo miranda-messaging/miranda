@@ -24,7 +24,6 @@ import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.user.states.UserManagerStartState;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,7 +107,6 @@ public class TestUserManager extends TestCase {
 
     @Test
     public void testConstructor() {
-        assert (getUserManager().getCurrentState() instanceof UserManagerStartState);
         assert (getUserManager().getUsers() != null);
         assert (getUserManager().getUsersFile() != null);
     }

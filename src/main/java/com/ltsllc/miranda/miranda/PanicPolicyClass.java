@@ -130,6 +130,6 @@ abstract public class PanicPolicyClass extends Consumer implements PanicPolicy {
 
     public void start() {
         DecrementPanicCountMessage decrementPanicCountMessage = new DecrementPanicCountMessage(getQueue(), this);
-        getTimer().sendSchedulePeriodic(getTimeout(), getQueue(), decrementPanicCountMessage);
+        getTimer().sendSchedulePeriodic(0, getTimeout(), getQueue(), decrementPanicCountMessage);
     }
 }

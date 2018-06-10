@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.timer;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class TestMirandaTimer extends TestCase {
     public void testSendSchedulePeriodic () {
         TimeoutMessage timeoutMessage = new TimeoutMessage(null, this);
 
-        getTimer().sendSchedulePeriodic(1500, null, timeoutMessage);
+        getTimer().sendSchedulePeriodic(0, 1500, null, timeoutMessage);
 
         assert (contains(Message.Subjects.SchedulePeriodic, getTimer().getQueue()));
     }

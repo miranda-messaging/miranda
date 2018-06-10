@@ -20,6 +20,9 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.timer.messages.ScheduleOnceMessage;
+import com.ltsllc.miranda.timer.messages.SchedulePeriodicMessage;
+import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,7 +78,7 @@ public class TestMirandaTimerReadyState extends TestCase {
     public void testProcessSchedulePeriodic () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         TimeoutMessage timeoutMessage = new TimeoutMessage(null, this);
-        SchedulePeriodicMessage schedulePeriodicMessage = new SchedulePeriodicMessage(null, this, 250, timeoutMessage, queue);
+        SchedulePeriodicMessage schedulePeriodicMessage = new SchedulePeriodicMessage(null, this, 0,250, timeoutMessage, queue);
 
         State nextState = getReadyState().processMessage(schedulePeriodicMessage);
 

@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.session;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -43,7 +43,7 @@ public class SessionManagerReadyState extends State {
         long period = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_SESSION_GC_PERIOD, MirandaProperties.DEFAULT_SESSION_GC_PERIOD);
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(null, this);
-        Miranda.timer.sendSchedulePeriodic(period, getSessionManager().getQueue(), garbageCollectionMessage);
+        Miranda.timer.sendSchedulePeriodic(0, period, getSessionManager().getQueue(), garbageCollectionMessage);
 
         return getSessionManager().getCurrentState();
     }

@@ -26,7 +26,7 @@ import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
-import com.ltsllc.miranda.cluster.states.ClusterStartState;
+import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -115,9 +115,6 @@ public class Cluster extends Manager<Node, NodeElement> {
         return new ClusterFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), getQueue());
     }
 
-    public State createStartState() throws MirandaException {
-        return new ClusterStartState(this);
-    }
 
     public boolean contains(NodeElement nodeElement) {
         for (Node node : getNodes()) {
@@ -394,5 +391,9 @@ public class Cluster extends Manager<Node, NodeElement> {
      */
     public void join() {
 
+    }
+
+    public State getReadyState() throws MirandaException {
+        return new ClusterReadyState(this);
     }
 }

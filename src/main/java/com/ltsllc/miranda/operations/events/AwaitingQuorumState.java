@@ -2,7 +2,6 @@ package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.operations.NetworkConversationMessage;
 import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.operations.WireResponse;

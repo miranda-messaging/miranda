@@ -38,6 +38,11 @@ import java.security.cert.Certificate;
 public class MinaNetworkListener extends ConnectionListener {
     public static final String NAME = "listener";
 
+    @Override
+    public void startListening() {
+
+    }
+
     private static NioSocketAcceptor nioSocketAcceptor;
 
     private Network network;
@@ -69,8 +74,10 @@ public class MinaNetworkListener extends ConnectionListener {
         return truststore;
     }
 
-    public MinaNetworkListener(int port, JavaKeyStore keyStore, String getKeyStorePassword, JavaKeyStore truststore) throws MirandaException {
-        super(port);
+    public MinaNetworkListener(int port, JavaKeyStore keyStore, String getKeyStorePassword, JavaKeyStore truststore,
+                               Network network) throws MirandaException {
+        super(port, null,null);
+        this.network = network;
         this.keystore = keyStore;
         this.keyStorePassword = getKeyStorePassword;
         this.truststore = truststore;

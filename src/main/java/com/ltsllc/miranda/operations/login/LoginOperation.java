@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.operations.login;
 
+import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -31,6 +32,15 @@ public class LoginOperation extends Consumer {
 
     private BlockingQueue<Message> requester;
     private String user;
+    private PublicKey publicKey;
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public String getUser() {
         return user;
@@ -52,7 +62,6 @@ public class LoginOperation extends Consumer {
 
     public void start() {
         super.start();
-
         Miranda.getInstance().getSessionManager().sendGetSessionMessage(getQueue(), this, getUser());
     }
 }

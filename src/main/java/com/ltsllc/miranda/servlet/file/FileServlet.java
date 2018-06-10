@@ -16,9 +16,8 @@
 
 package com.ltsllc.miranda.servlet.file;
 
-import com.ltsllc.miranda.clientinterface.results.Results;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
-import org.eclipse.jetty.server.Request;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -75,18 +74,5 @@ public class FileServlet extends MirandaServlet {
         }
 
         return allMethods != null ? allMethods : new Method[0];
-    }
-
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
-        FileResult fileResult = new FileResult();
-        Part part = req.getPart("content");
-        fileResult.setContent(readInputStream(part.getInputStream()));
-
-        fileResult.setResult(Results.Success);
-
-        respond(resp.getOutputStream(), fileResult);
-        resp.setHeader("Access-Control-Allow-Origin", "*");
-        resp.setStatus(200);
     }
 }

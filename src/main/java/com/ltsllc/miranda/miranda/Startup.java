@@ -33,8 +33,11 @@ import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.network.UnencryptedConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.servlet.basicstatus.BasicStatusServlet;
+import com.ltsllc.miranda.servlet.bootstrap.BootstrapServlet;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusServlet;
 import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
@@ -52,6 +55,7 @@ import com.ltsllc.miranda.servlet.subscription.*;
 import com.ltsllc.miranda.servlet.topic.*;
 import com.ltsllc.miranda.servlet.user.*;
 import com.ltsllc.miranda.session.SessionManager;
+import com.ltsllc.miranda.shutdown.ShutdownException;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import com.ltsllc.miranda.topics.TopicManager;
@@ -61,9 +65,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class Startup extends State {
         INFO
     }
 
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger(Startup.class);
 
     private String[] arguments = {};
     private int index;
@@ -111,6 +112,15 @@ public class Startup extends State {
     private Properties overrideProperties;
     private JavaKeyStore keyStore;
     private JavaKeyStore trustStore;
+    private boolean debugMode;
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
 
     public JavaKeyStore getTrustStore() {
         return trustStore;
@@ -250,30 +260,27 @@ public class Startup extends State {
         super.start();
 
         try {
-            performMiscellaneousOperations();
+            setupPanicPolicy();
+            setupLogging();
+            processCommandLine();
             processPasswords();
+            defineFactory();
             setupProperties();
-            if (systemNeedsSetup())
-            {
-                State setupState = new SetupState(getContainer());
-                return setupState;
-            }
-
+            definePanicPolicy();
+            performMiscellaneousOperations();
             setupKeyStores();
+            setupHttpServer();
+            startHttpServer();
+            setupServlets();
             getKeys(getKeystorePasswordString());
             startLogger();
             logProperties();
             startWriter();
             startReader();
-            defineFactory();
-            definePanicPolicy();
             startServices();
             startSubsystems();
             loadFiles();
             setupSchedule();
-            setupHttpServer();
-            setupServlets();
-            startHttpServer();
             startListening();
             Miranda.getInstance().performGarbageCollection();
             exportCertificate();
@@ -284,6 +291,17 @@ public class Startup extends State {
         }
 
         return StopState.getInstance();
+    }
+
+    public void setupLogging() {
+        DOMConfigurator.configure("log4j.xml");
+    }
+
+    public void processCommandLine() throws CommandLineException {
+        MirandaCommandLine mirandaCommandLine = new MirandaCommandLine();
+        mirandaCommandLine.parse(getArguments());
+        Miranda.getInstance().setCommandLine(mirandaCommandLine);
+        setDebugMode(mirandaCommandLine.isDebugMode());
     }
 
     /**
@@ -302,7 +320,7 @@ public class Startup extends State {
         JavaKeyStore keyStore = Miranda.getInstance().getKeyStore();
         JavaKeyStore trustStore = Miranda.getInstance().getTrustStore();
 
-        return (!keyStore.exists() && !trustStore.exists());
+        return keyStore == null || trustStore == null || !keyStore.exists() || !trustStore.exists();
     }
 
     private void performMiscellaneousOperations() throws MirandaException {
@@ -335,7 +353,9 @@ public class Startup extends State {
     }
 
     public void getKeys(String password) throws ShutdownException {
-        if (password == null)
+        if (isDebugMode())
+            return;
+        else if (password == null)
             password = "";
 
         try {
@@ -368,6 +388,9 @@ public class Startup extends State {
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/status", StatusServlet.class);
+        mappings.add(servletMapping);
+
+        servletMapping = new ServletMapping("/basicStatus", BasicStatusServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/servlets/properties", ListPropertiesServlet.class);
@@ -499,6 +522,9 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/shutdown", ShutdownServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/bootstrap", BootstrapServlet.class);
+        mappings.add(servletMapping);
+
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
 
@@ -604,12 +630,11 @@ public class Startup extends State {
         String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
         File file = new File(trustStoreFilename);
         if (!file.exists()) {
-            StartupPanic startupPanic = new StartupPanic("trustore, " + trustStoreFilename + ", does not exist",
-                    StartupPanic.StartupReasons.TrustStoreMissing);
-            Miranda.panicMiranda(startupPanic);
+            logger.info("The tuststore does not exist, the system will be unable to join a cluster");
         }
 
         System.setProperty("javax.net.ssl.trustStore", trustStoreFilename);
+        Miranda.factory.setProperties(getProperties());
     }
 
     public void startSubsystems() throws MirandaException {
@@ -619,11 +644,19 @@ public class Startup extends State {
 
 
         try {
-            Network network = factory.buildNetwork(getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore());
+            Network network = null;
+
+            if (isDebugMode())
+                network = factory.buildNetwork();
+            else
+                network = factory.buildNetwork(getKeyStore().getJsKeyStore(), getTrustStore().getJsKeyStore());
+
             network.start();
+            miranda.setNetwork(network);
             String filename = properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_FILE);
             Cluster cluster = new Cluster(miranda.getNetwork(), filename);
             miranda.setCluster(cluster);
+            cluster.start();
         } catch (Exception e) {
             throw new MirandaException(e);
         }
@@ -634,7 +667,7 @@ public class Startup extends State {
     }
 
     public void startWriter() throws MirandaException {
-        Writer writer = new Writer(getPublicKey());
+        Writer writer = new Writer(isDebugMode(), getPublicKey());
         writer.start();
 
         logger.info(getMiranda());
@@ -643,7 +676,7 @@ public class Startup extends State {
     }
 
     public void startReader() throws MirandaException {
-        Reader reader = new Reader(getPrivateKey());
+        Reader reader = new Reader(isDebugMode(), getPrivateKey());
         reader.start();
 
         getMiranda().setReader(reader);
@@ -710,7 +743,7 @@ public class Startup extends State {
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);
-        Miranda.timer.sendSchedulePeriodic(garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
+        Miranda.timer.sendSchedulePeriodic(0, garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
     }
 
     /**
@@ -787,14 +820,27 @@ public class Startup extends State {
     }
 
     public void startListening() throws MirandaException {
-        ConnectionListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore());
-        getMiranda().setNetworkListener(networkListener);
-        networkListener.start();
+        String portString = Miranda.properties.getProperty(MirandaProperties.PROPERTY_CLUSTER_PORT);
+        int port = Integer.parseInt(portString);
+        if (isDebugMode()) {
+            UnencryptedConnectionListener unencryptedConnectionListener = getFactory().
+                    buildUnencryptedConnectionListener(getMiranda().getNetwork(), getMiranda().getCluster(), port);
+
+            getMiranda().setNetworkListener(unencryptedConnectionListener);
+            unencryptedConnectionListener.start();
+        } else {
+            //ConnectionListener networkListener = getFactory().buildNetworkListener(getKeyStore(), getTrustStore(),
+            //        Miranda.getInstance().getNetwork());
+            //getMiranda().setNetworkListener(networkListener);
+            //networkListener.start();
+        }
     }
 
 
     public void processPasswords() {
-        if (null != getCommandLine().getKeystorePassword()) {
+        if (isDebugMode())
+            ;
+        else if (null != getCommandLine().getKeystorePassword()) {
             setKeystorePasswordString(getCommandLine().getKeystorePassword());
         } else {
             System.out.println("Enter keystore password> ");
@@ -803,7 +849,9 @@ public class Startup extends State {
             setKeystorePasswordString(temp);
         }
 
-        if (null != getCommandLine().getTrustorePassword())
+        if (isDebugMode())
+            ;
+        else if (null != getCommandLine().getTrustorePassword())
             setTrustorePasswordString(getCommandLine().getTrustorePassword());
         else {
             System.out.print("Enter truststore password> ");
@@ -827,14 +875,20 @@ public class Startup extends State {
 
     public void setupKeyStores() throws Panic {
         try {
-            if (null == getKeyStore()) {
+            if (isDebugMode())
+                ;
+            else if (null == getKeyStore()) {
                 String filename = getProperties().getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
                 this.keyStore = new JavaKeyStore(filename, getKeystorePasswordString());
+                Miranda.getInstance().setKeyStore(keyStore);
             }
 
-            if (null == getTrustStore()) {
+            if (isDebugMode())
+                ;
+            else if (null == getTrustStore()) {
                 String filename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
                 this.trustStore = new JavaKeyStore(filename, getTrustorePasswordString());
+                Miranda.getInstance().setTrustStore(trustStore);
             }
         } catch (EncryptionException e) {
             throw new StartupPanic("Exception trying to load keys", e, StartupPanic.StartupReasons.ExceptionLoadingKeystore);
@@ -847,9 +901,21 @@ public class Startup extends State {
     }
 
     public void exportCertificate() throws Exception {
-        KeyStore keyStore = getKeyStore().getJsKeyStore();
-        Certificate certificate = keyStore.getCertificate("private");
-        if (null != certificate)
-            com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
+        if (isDebugMode()) {
+
+        } else {
+
+            KeyStore keyStore = getKeyStore().getJsKeyStore();
+            Certificate certificate = keyStore.getCertificate("private");
+            if (null != certificate)
+                com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
+        }
+    }
+
+    public void setupPanicPolicy () {
+        int maxPanics = Integer.parseInt(MirandaProperties.DEFAULT_PANIC_LIMIT);
+        long panicTimeout = Long.parseLong(MirandaProperties.DEFAULT_PANIC_TIMEOUT);
+        MirandaPanicPolicy mirandaPanicPolicy = new MirandaPanicPolicy (maxPanics, panicTimeout, Miranda.getInstance(), Miranda.timer);
+        Miranda.getInstance().setPanicPolicy(mirandaPanicPolicy);
     }
 }

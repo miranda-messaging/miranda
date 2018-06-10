@@ -17,12 +17,19 @@
 package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.MirandaFile;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
+import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.reader.ReadMessage;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/19/2017.
@@ -30,17 +37,27 @@ import org.apache.log4j.Logger;
 public class FileReadyState extends State {
     private static Logger logger = Logger.getLogger(FileReadyState.class);
 
-    private MirandaFile file;
+    private SingleFile file;
+
+    public BlockingQueue<Message> getInitiator() {
+        return initiator;
+    }
+
+    public void setInitiator(BlockingQueue<Message> initiator) {
+        this.initiator = initiator;
+    }
+
+    private BlockingQueue<Message> initiator;
 
 
-    public FileReadyState(MirandaFile file) throws MirandaException {
+    public FileReadyState(SingleFile file) throws MirandaException {
         super(file);
 
         this.file = file;
     }
 
 
-    public MirandaFile getFile() {
+    public SingleFile getFile() {
         return file;
     }
 
@@ -61,6 +78,17 @@ public class FileReadyState extends State {
                 break;
             }
 
+            case Read: {
+                ReadMessage readMessage = (ReadMessage) message;
+                nextState = processReadMessage(readMessage);
+                break;
+            }
+
+            case Write: {
+                WriteMessage writeMessage = (WriteMessage) message;
+                nextState = processWriteMessage(writeMessage);
+                break;
+            }
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -68,6 +96,10 @@ public class FileReadyState extends State {
         return nextState;
     }
 
+    public State processWriteMessage (WriteMessage writeMessage) {
+        getFile().getWriter().sendWrite(getFile().getQueue(), getFile(), getFile().getFilename(), getFile().getBytes());
+        return new SingleFileWritingState(getFile(), this);
+    }
 
     private State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
         return getFile().getCurrentState();
@@ -78,5 +110,9 @@ public class FileReadyState extends State {
         getFile().load();
 
         return getFile().getCurrentState();
+    }
+
+    public State processReadMessage (ReadMessage readMessage) throws MirandaException {
+        return new SingleFileReadingState(getFile(), this);
     }
 }

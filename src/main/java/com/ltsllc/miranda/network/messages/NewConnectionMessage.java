@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.network.messages;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.network.Handle;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -24,15 +25,19 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/8/2017.
  */
 public class NewConnectionMessage extends Message {
-    private int handleId;
+    private int handle;
 
-    public int getHandleId() {
-        return handleId;
+    public int getHandle () {
+        return handle;
     }
 
-    public NewConnectionMessage(BlockingQueue<Message> senderQueue, Object sender, int handleId) {
+    public void setHandle(int handle) {
+        this.handle = handle;
+    }
+
+    public NewConnectionMessage(BlockingQueue<Message> senderQueue, Object sender, int handle) {
         super(Subjects.NewConnection, senderQueue, sender);
 
-        this.handleId = handleId;
+        setHandle(handle);
     }
 }

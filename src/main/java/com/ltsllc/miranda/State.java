@@ -20,6 +20,9 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
+import com.ltsllc.miranda.shutdown.ShutdownState;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
@@ -37,6 +40,7 @@ public abstract class State {
 
     public Consumer container;
     private List<Message> deferredQueue;
+    private State overideState = null;
 
     public List<Message> getDeferredQueue() {
         return deferredQueue;
@@ -44,6 +48,14 @@ public abstract class State {
 
     public Consumer getContainer() {
         return container;
+    }
+
+    public State getOverideState() {
+        return overideState;
+    }
+
+    public void setOverideState(State overideState) {
+        this.overideState = overideState;
     }
 
     protected State() {
@@ -91,6 +103,12 @@ public abstract class State {
                 break;
             }
 
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) m;
+                nextState = processShutdownMessage(shutdownMessage);
+                break;
+            }
+
             default: {
                 String message = getContainer() + " in state " + getContainer().getCurrentState() + " does not understand " + m;
                 logger.error(message);
@@ -101,6 +119,26 @@ public abstract class State {
         }
 
         return nextState;
+    }
+
+    /**
+     * Write any information and send a rely
+     *
+     * @param shutdownMessage
+     * @return
+     */
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
+        try {
+            ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getContainer().getQueue(),
+                    this, getContainer().getName());
+            shutdownMessage.reply(shutdownResponseMessage);
+            return StopState.getInstance();
+        } catch (MirandaException e) {
+            logger.error("Exception during shutdown", e);
+            ShutdownPanic shutdownPanic = new ShutdownPanic(ShutdownPanic.ShutdownReasons.Exception, e);
+            Miranda.panicMiranda(shutdownPanic);
+            return this;
+        }
     }
 
 
@@ -165,5 +203,40 @@ public abstract class State {
         Panic panic = new Panic("Unrecognized network message", Panic.Reasons.UnrecognizedNetworkMessage);
         Miranda.panicMiranda(panic);
         return this;
+    }
+
+    /**
+     * Send a message.
+     *
+     * <p>
+     *     If an exception occurs when trying to send the message,
+     *     the method raises a panic.
+     * </p>
+     *
+     * @param message The message to send
+     * @param recipient Who to send the message to.
+     */
+    public void send (Message message, BlockingQueue<Message> recipient) {
+        try {
+            logger.info (message.getSenderObject() + " sent " + message);
+            recipient.put(message);
+        } catch (InterruptedException e) {
+            Panic panic = new Panic(e, Panic.Reasons.ExceptionSendingMessage);
+            Miranda.panicMiranda(panic);
+        }
+    }
+
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * Allow a state to define an optional exit action.
+     *
+     * <p>
+     *     The base class does nothing on exit.
+     * </p>
+     */
+    public void exit () {
     }
 }

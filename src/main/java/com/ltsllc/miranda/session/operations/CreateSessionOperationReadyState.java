@@ -17,10 +17,10 @@
 package com.ltsllc.miranda.session.operations;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;

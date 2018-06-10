@@ -20,6 +20,10 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.timer.messages.CancelMessage;
+import com.ltsllc.miranda.timer.messages.ScheduleOnceMessage;
+import com.ltsllc.miranda.timer.messages.SchedulePeriodicMessage;
 import org.apache.log4j.Logger;
 
 import java.util.Timer;
@@ -30,31 +34,6 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/12/2017.
  */
 public class MirandaTimerReadyState extends State {
-    private static class LocalTimerTask extends TimerTask {
-        private static Logger logger = Logger.getLogger(LocalTimerTask.class);
-
-        private Message message;
-        private BlockingQueue<Message> queue;
-        private BlockingQueue<Message> timer;
-
-        public Message getMessage() {
-            return message;
-        }
-
-        public LocalTimerTask(BlockingQueue<Message> queue, BlockingQueue<Message> timer, Message message) {
-            this.queue = queue;
-            this.timer = timer;
-            this.message = message;
-        }
-
-        public void run() {
-            try {
-                queue.put(getMessage());
-            } catch (InterruptedException e) {
-                logger.error("Interrupted while sending message", e);
-            }
-        }
-    }
 
     private Logger logger = Logger.getLogger(MirandaTimerReadyState.class);
 
@@ -71,6 +50,11 @@ public class MirandaTimerReadyState extends State {
         State nextState = this;
 
         switch (message.getSubject()) {
+            case Cancel: {
+                CancelMessage cancelMessage = (CancelMessage) message;
+                nextState = processCancelMesssage(cancelMessage);
+                break;
+            }
             case ScheduleOnce: {
                 ScheduleOnceMessage scheduleOnceMessage = (ScheduleOnceMessage) message;
                 nextState = processScheduleOnceMessage(scheduleOnceMessage);
@@ -80,6 +64,12 @@ public class MirandaTimerReadyState extends State {
             case SchedulePeriodic: {
                 SchedulePeriodicMessage schedulePeriodicMessage = (SchedulePeriodicMessage) message;
                 nextState = processSchedulePeriodicMessage(schedulePeriodicMessage);
+                break;
+            }
+
+            case Shutdown: {
+                ShutdownMessage shutdownMessage = (ShutdownMessage) message;
+                nextState = processShutdownMessage(shutdownMessage);
                 break;
             }
 
@@ -93,19 +83,20 @@ public class MirandaTimerReadyState extends State {
 
 
     private State processScheduleOnceMessage(ScheduleOnceMessage scheduleOnceMessage) {
-        Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(scheduleOnceMessage.getReceiver(), getTimer().getQueue(),
-                scheduleOnceMessage.getMessage());
-        timer.schedule(localTimerTask, scheduleOnceMessage.getDelay());
+        getTimer().scheduleOnce(scheduleOnceMessage.getDelay(), scheduleOnceMessage.getReceiver(), scheduleOnceMessage.getMessage());
 
         return this;
     }
 
 
     private State processSchedulePeriodicMessage(SchedulePeriodicMessage message) {
-        Timer timer = Miranda.timer.getTimer();
-        LocalTimerTask localTimerTask = new LocalTimerTask(message.getReceiver(), getTimer().getQueue(), message.getMessage());
-        timer.scheduleAtFixedRate(localTimerTask, message.getPeriod(), message.getPeriod());
+        getTimer().schedulePeriodic(message.getDelay(), message.getPeriod(), message.getReceiver(), message.getMessage());
+
+        return this;
+    }
+
+    public State processCancelMesssage(CancelMessage cancelMessage) {
+        getTimer().cancel (cancelMessage.getReceiver());
 
         return this;
     }

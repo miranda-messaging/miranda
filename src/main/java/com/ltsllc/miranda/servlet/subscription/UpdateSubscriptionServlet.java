@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.servlet.subscription;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.requests.SubscriptionRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
-import com.ltsllc.miranda.clientinterface.results.Results;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

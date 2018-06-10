@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.servlet.login;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.session.Session;

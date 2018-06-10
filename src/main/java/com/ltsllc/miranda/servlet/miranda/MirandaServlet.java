@@ -19,7 +19,10 @@ package com.ltsllc.miranda.servlet.miranda;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.user.JSPublicKeySerializer;
 
 import javax.servlet.ServletOutputStream;
@@ -27,6 +30,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Clark on 4/7/2017.
@@ -41,6 +46,11 @@ public class MirandaServlet extends HttpServlet {
         response.setHeader("Access-Control-Max-Age", "1209600");
     }
 
+    private BlockingQueue<Message> queue = new LinkedBlockingQueue<>();
+
+    public BlockingQueue<Message> getQueue() {
+        return queue;
+    }
 
     public boolean allowAccess() {
         return true;
@@ -95,5 +105,14 @@ public class MirandaServlet extends HttpServlet {
     public void respond(ServletOutputStream output, Object o) throws IOException {
         String json = gson.toJson(o);
         output.println(json);
+    }
+
+    public void send (BlockingQueue<Message> queue, Message message) {
+        try {
+            queue.put(message);
+        } catch (InterruptedException e) {
+            Panic panic = new Panic("Interrupted while sending message", e, Panic.Reasons.ExceptionSendingMessage);
+            Miranda.panicMiranda(panic);
+        }
     }
 }

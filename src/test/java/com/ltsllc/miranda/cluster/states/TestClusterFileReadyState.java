@@ -27,8 +27,6 @@ import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.writer.WriteFailedMessage;
-import com.ltsllc.miranda.writer.WriteSucceededMessage;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -147,30 +145,6 @@ public class TestClusterFileReadyState extends TestCase {
     }
 
     /**
-     * This message is ignored.
-     */
-    @Test
-    public void testProcessWriteSucceededMesssage () throws MirandaException {
-        WriteSucceededMessage message = new WriteSucceededMessage(null, "whatever", this);
-
-        getClusterFileReadyState().processMessage(message);
-
-        assert(getWriterQueue().size() == 0);
-    }
-
-    /**
-     * This message cause a error log event.
-     */
-    @Test
-    public void testProcessWriteFailedMessage () throws MirandaException {
-        setupMockLogger();
-        WriteFailedMessage message = new WriteFailedMessage(null, "whatever", null, this);
-
-        getClusterFileReadyState().processMessage(message);
-
-        verify(getMockLogger(), atLeastOnce()).error(Matchers.anyString(), Matchers.any(Throwable.class));
-    }
-
     /**
      * The cluster tells the cluster file it has updated the nodes
      */

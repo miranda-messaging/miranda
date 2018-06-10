@@ -20,6 +20,11 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
+import com.ltsllc.miranda.miranda.states.ReadyState;
+import com.ltsllc.miranda.miranda.states.ShuttingDownState;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
+import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -80,7 +85,7 @@ public class Consumer extends Subsystem implements Comparer {
     }
 
 
-    public State startCurrentState() throws MirandaException {
+    public State startCurrentState() {
         State current = getCurrentState();
 
         if (null == current) {
@@ -97,6 +102,21 @@ public class Consumer extends Subsystem implements Comparer {
         }
 
         return current;
+    }
+
+    public void exitCurrentState() {
+        State current = getCurrentState();
+
+        if (null == current) {
+            // do nothing
+        } else {
+            try {
+                current.exit();
+            } catch (Throwable t) {
+                Panic panic = new Panic("Exception in exit", t, Panic.Reasons.ExceptionInExit);
+                Miranda.getInstance().panic(panic);
+            }
+        }
     }
 
     public State processMessageInCurrentState(Message message) throws MirandaException {
@@ -125,16 +145,16 @@ public class Consumer extends Subsystem implements Comparer {
      * </p>
      */
     public void run() {
-        State nextState = null;
+        State nextState = startCurrentState();
 
-        try {
-            nextState = startCurrentState();
-            logger.info(this + " starting");
+        while (nextState != getCurrentState()) {
+            exitCurrentState();
             setCurrentState(nextState);
-        } catch (Exception e) {
-            ExceptionPanic panic = new ExceptionPanic(e, Panic.Reasons.ExceptionInStart);
-            Miranda.panicMiranda(panic);
+            nextState = startCurrentState();
         }
+
+        logger.info(this + " starting");
+        setCurrentState(nextState);
 
         State stop = StopState.getInstance();
 
@@ -143,15 +163,38 @@ public class Consumer extends Subsystem implements Comparer {
 
             try {
                 if (null != m) {
-                    logger.info(this + " in state " + getCurrentState() + " received " + m);
+                    State current = currentState;
+                    Message message = m;
+                    if (currentState.getClass() == ShuttingDownState.class && m.getClass() == ShutdownResponseMessage.class) {
+                        logger.info("In shutting down state");
+                    }
+
+                    logger.info(this + " in state " + getCurrentState() + " received " + m + " from " + m.getSenderObject());
                     nextState = processMessageInCurrentState(m);
+                    if (currentState.getClass() == ShuttingDownState.class && nextState.getClass() != ShuttingDownState.class) {
+                        logger.info("transitioning out of ShuttingDownState", new Exception());
+                        logger.info(m);
+                    }
+
+                    if (currentState.getOverideState() != null) {
+                        nextState = currentState.getOverideState();
+                        currentState.setOverideState(null);
+                    }
+
+                    if (current != nextState) {
+                        exitCurrentState();
+
+                        if (nextState != null) {
+                            nextState.start();
+                        }
+                    }
+                    setCurrentState(nextState);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 ExceptionPanic panic = new ExceptionPanic(e, Panic.Reasons.ExceptionInProcessMessage);
                 Miranda.panicMiranda(panic);
             }
 
-            setCurrentState(nextState);
         }
 
         if (Miranda.panicking) {
@@ -321,5 +364,9 @@ public class Consumer extends Subsystem implements Comparer {
     public void shutdown() throws MirandaException {
         logger.info(this + " shutting down.");
         setCurrentState(StopState.getInstance());
+    }
+
+    public String toString() {
+        return getName() + "@" + getCurrentState();
     }
 }

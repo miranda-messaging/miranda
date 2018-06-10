@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.ShutdownException;
+import com.ltsllc.miranda.shutdown.ShutdownException;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.timer.MirandaTimer;
 import org.apache.log4j.Logger;
@@ -30,6 +30,7 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
     }
 
     public void panic(Panic panic) throws ShutdownException {
+        logger.error("A panic occurred", panic);
         String fatalMessage = "The system is terminating due to a panic";
         boolean continuePanic = false;
 
@@ -51,8 +52,8 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
         }
 
         if (continuePanic) {
-            logger.fatal(fatalMessage, panic);
-            throw new ShutdownException("panic");
+            logger.error(fatalMessage, panic);
+            System.exit(-1);
         }
     }
 

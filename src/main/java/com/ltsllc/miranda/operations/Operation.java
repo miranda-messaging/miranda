@@ -42,6 +42,11 @@ public class Operation extends Consumer {
         this.session = session;
     }
 
+    public Operation(String name, BlockingQueue<Message> requester) {
+        super(name);
+        this.requester = requester;
+    }
+
     public Session getSession() {
         return session;
     }

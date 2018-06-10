@@ -32,7 +32,7 @@ public class StatusServlet extends MirandaServlet {
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
         MirandaStatus mirandaStatus = MirandaStatus.getInstance();
-        StatusObject statusObject = mirandaStatus.getStatus();
+        Object statusObject = mirandaStatus.getStatus();
 
         String json = getGson().toJson(statusObject);
         response.getOutputStream().print(json);

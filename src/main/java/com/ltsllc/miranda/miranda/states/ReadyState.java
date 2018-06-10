@@ -17,7 +17,8 @@
 package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownMessage;
+import com.ltsllc.miranda.ShutdownPanic;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
@@ -440,11 +441,17 @@ public class ReadyState extends State {
         return getMiranda().getCurrentState();
     }
 
-    public State processShutdownMessage(ShutdownMessage shutdownMessage) throws MirandaException {
-        getMiranda().shutdown();
+    public State processShutdownMessage(ShutdownMessage shutdownMessage) {
+        try {
+            getMiranda().shutdown();
 
-        ShuttingDownState shuttingDownState = new ShuttingDownState(getMiranda());
+            ShuttingDownState shuttingDownState = new ShuttingDownState(getMiranda());
 
-        return shuttingDownState;
+            return shuttingDownState;
+        } catch (MirandaException e) {
+            ShutdownPanic shutdownPanic = new ShutdownPanic(ShutdownPanic.ShutdownReasons.Exception, e);
+            Miranda.panicMiranda(shutdownPanic);
+            return this;
+        }
     }
 }

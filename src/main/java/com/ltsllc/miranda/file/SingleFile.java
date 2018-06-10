@@ -26,12 +26,10 @@ import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
-import com.ltsllc.miranda.file.messages.AddObjectsMessage;
-import com.ltsllc.miranda.file.messages.FileChangedMessage;
-import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
-import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
@@ -45,13 +43,11 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/10/2017.
+ * What the rest of the JVM would call a file
  */
 abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
-
     abstract public Type getListType();
-
     abstract public void checkForDuplicates();
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
@@ -254,11 +250,6 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         }
     }
 
-    public void start() {
-        super.start();
-
-        load();
-    }
 
     public void sendRemoveObjectsMessage(BlockingQueue<Message> senderQueue, Object sender, List<E> objects) {
         RemoveObjectsMessage removeObjectsMessage = new RemoveObjectsMessage(senderQueue, sender, objects);
@@ -288,6 +279,11 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         List<E> objects = new ArrayList<E>();
         objects.add(object);
         sendRemoveObjectsMessage(senderQueue, sender, objects);
+    }
+
+    public void sendWriteMessage (BlockingQueue<Message> senderQueue, Object senderOject) {
+        WriteMessage writeMessage = new WriteMessage(senderQueue, senderOject);
+        sendToMe(writeMessage);
     }
 
     public void addObjects(List list) {
@@ -359,5 +355,10 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
     public void fireFileChanged() {
         FileChangedMessage fileChangedMessage = new FileChangedMessage(getQueue(), this, null);
         fireMessage(fileChangedMessage);
+    }
+
+    public void sendCreateMessage(BlockingQueue<Message> senderQueue, Object sender) {
+        CreateMessage createMessage = new CreateMessage(senderQueue, sender);
+        sendToMe(createMessage);
     }
 }

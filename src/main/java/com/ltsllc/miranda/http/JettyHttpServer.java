@@ -74,11 +74,9 @@ public class JettyHttpServer extends HttpServer {
         try {
             ServletHandler servletHandler = new ServletHandler();
             servletHandler.addServletWithMapping(CatchallServlet.class, "/");
-            // getHandlerCollection().addHandler(servletHandler);
             getJetty().setHandler(getHandlerCollection());
             getJetty().start();
-            logger.info("Jetty started");
-            org.bouncycastle.asn1.x509.AlgorithmIdentifier algorithmIdentifier;
+            logger.info("JettySSL started");
         } catch (Exception e) {
             Panic panic = new StartupPanic("Excepion trying to start HttpServer", e, StartupPanic.StartupReasons.ExceptionStartingServletContainer);
             Miranda.getInstance().panic(panic);

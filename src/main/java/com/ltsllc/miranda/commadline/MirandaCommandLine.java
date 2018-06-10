@@ -122,6 +122,15 @@ public class MirandaCommandLine extends CommandLine {
     private String trustorePassword;
     private String keystoreFilename;
     private String keystorePassword;
+    private boolean debugMode = false;
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
 
     public String getKeystoreFilename() {
         return keystoreFilename;
@@ -309,6 +318,7 @@ public class MirandaCommandLine extends CommandLine {
     }
 
     public void processDebug() {
+        setDebugMode(true);
         setMirandaMode(MirandaProperties.MirandaModes.Debugging.toString());
         setLoggingLevel(MirandaProperties.LoggingLevel.Debug.toString());
     }

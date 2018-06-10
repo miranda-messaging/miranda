@@ -17,9 +17,10 @@
 package com.ltsllc.miranda.servlet.login;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
+import com.ltsllc.miranda.operations.login.UnrecognizedUserMessage;
 import com.ltsllc.miranda.session.LoginResponseMessage;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
 
@@ -45,6 +46,12 @@ public class LoginHolderReadyState extends State {
                 break;
             }
 
+            case UnrecognizedUser: {
+                UnrecognizedUserMessage unrecognizedUserMessage = (UnrecognizedUserMessage) message;
+                nextState = processUnrecognizedUserMessage (unrecognizedUserMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -66,6 +73,11 @@ public class LoginHolderReadyState extends State {
         return getLoginHolder().getCurrentState();
     }
 
+    public State processUnrecognizedUserMessage (UnrecognizedUserMessage unrecognizedUserMessage) {
+        getLoginHolder().setResult (Results.UnrecognizedUser);
+
+        return getLoginHolder().getCurrentState();
+    }
     public State processLoginResponseMessage(LoginResponseMessage loginResponseMessage) {
         LoginHolder.LoginResult loginResult = new LoginHolder.LoginResult(loginResponseMessage.getResult(),
                 loginResponseMessage.getSession());

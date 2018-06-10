@@ -148,4 +148,6 @@ public abstract class Subsystem implements Runnable, Comparer {
 
         return getThread().equals(other.getThread());
     }
+
+
 }

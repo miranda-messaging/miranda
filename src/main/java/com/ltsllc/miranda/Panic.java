@@ -29,7 +29,13 @@ import java.io.StringWriter;
  * </P>
  */
 public class Panic extends Exception {
+    public Panic(String message, Throwable e) {
+        super(message, e);
+        reason = Reasons.Unknown;
+    }
+
     public enum Reasons {
+        Unknown,
         BadURL,
         CouldNotWrite, // A subsystem received a WriteFailed message
         DoesNotUnderstand, // A state received a message it does not know how to process
@@ -63,13 +69,14 @@ public class Panic extends Exception {
         OutOfMemory,
         Startup, // something happend during startup this usually means we are an instance of StartupPanic
         ServletTimeout, // A servlet timed out waiting for a response from the system
+        Shutdown,
         Test,
         UncaughtException, // A misc checked exception was caught
         UnrecognizedPublicKeyClass,
         UnrecognizedNetworkMessage, // the object received an unexpected network message
         UnrecognizedNode, // a node shut down that we don't have a record of
         UnrecognizedRemotePolicy,
-        UnrecognizedResult
+        UnrecognizedResult, ExceptionCreatingNode, ExceptionTryingToStart, ExceptionSettingData, Exception, FailedWritigFile, Inerrupted, ExceptionInExit;
     }
 
     private Reasons reason;

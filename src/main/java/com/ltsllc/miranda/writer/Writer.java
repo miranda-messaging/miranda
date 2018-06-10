@@ -37,12 +37,24 @@ public class Writer extends Consumer {
 
     private PublicKey publicKey;
 
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    private boolean debugMode;
+
     public PublicKey getPublicKey() {
         return publicKey;
     }
 
 
-    public Writer(PublicKey publicKey) throws MirandaException {
+
+
+    public Writer(boolean isDebugMode, PublicKey publicKey) throws MirandaException {
         super("writer");
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setQueue(queue);
@@ -50,6 +62,7 @@ public class Writer extends Consumer {
         WriterReadyState writerReadyState = new WriterReadyState(this);
         setCurrentState(writerReadyState);
 
+        setDebugMode(isDebugMode);
         this.publicKey = publicKey;
     }
 
@@ -59,6 +72,25 @@ public class Writer extends Consumer {
         if (file.exists())
             backup(file);
 
+        if (isDebugMode())
+            writeUnencrypted(filename, clearText);
+        else
+            writeEncrypted(filename, clearText);
+    }
+
+
+    public void writeUnencrypted (String filename, byte[] clearText) throws IOException {
+        FileOutputStream fileOutputStream = null;
+
+        try {
+            fileOutputStream = new FileOutputStream(filename);
+            fileOutputStream.write(clearText);
+        } finally {
+            Utils.closeIgnoreExceptions(fileOutputStream);
+        }
+    }
+
+    public void writeEncrypted (String filename, byte[] clearText) throws IOException, EncryptionException {
         FileWriter fileWriter = null;
 
         try {

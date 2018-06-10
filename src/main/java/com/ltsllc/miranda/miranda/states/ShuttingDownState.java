@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownResponseMessage;
+import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -63,8 +63,6 @@ public class ShuttingDownState extends State {
     }
 
     public State processShutdownResponseMessage(ShutdownResponseMessage shutdownResponseMessage) {
-        getMiranda().subsystemShutDown(shutdownResponseMessage.getName());
-
         if (getMiranda().readyToShutDown()) {
             logger.info("System is shutting down");
             return StopState.getInstance();

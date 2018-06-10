@@ -66,8 +66,7 @@ public class MirandaStatusReadyState extends State {
     }
 
     private State processGetStatusResponseMessage(GetStatusResponseMessage getStatusResponseMessage) {
-        StatusObject statusObject = (StatusObject) getStatusResponseMessage.getStatusObject();
-        getMirandaStatus().receivedStatus(statusObject);
+        getMirandaStatus().receivedStatus(getStatusResponseMessage.getStatusObject());
 
         return this;
     }

@@ -18,6 +18,7 @@ package com.ltsllc.miranda.writer;
 
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 
@@ -57,11 +58,11 @@ public class WriterReadyState extends State {
     private State processWriteMessage(WriteMessage writeMessage) throws MirandaException {
         try {
             getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
-            WriteSucceededMessage writeSucceededMessage = new WriteSucceededMessage(getWriter().getQueue(), writeMessage.getFilename(), this);
-            writeMessage.reply(writeSucceededMessage);
+            WriteResponseMessage writeResponseMessage = new WriteResponseMessage(Results.Success,getWriter().getQueue(), getWriter());
+            writeMessage.reply(writeResponseMessage);
         } catch (IOException | EncryptionException e) {
-            WriteFailedMessage writeFailedMessage = new WriteFailedMessage(getWriter().getQueue(), writeMessage.getFilename(), e, this);
-            writeMessage.reply(writeFailedMessage);
+            WriteResponseMessage writeResponseMessage = new WriteResponseMessage(Results.Exception, e, getWriter().getQueue(), getWriter());
+            writeMessage.reply(writeResponseMessage);
         }
 
         return this;

@@ -24,7 +24,8 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/12/2017.
  */
-public class NewUserMessage extends Message {
+public class
+NewUserMessage extends Message {
     private User user;
 
     public User getUser() {

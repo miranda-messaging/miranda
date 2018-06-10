@@ -22,16 +22,16 @@ import com.google.gson.Gson;
 import com.ltsllc.clcl.EncryptedMessage;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PrivateKey;
+import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.concurrent.BlockingQueue;
 
 
@@ -40,7 +40,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class Reader extends Consumer {
     public static class ReadResult {
-        public ReadResponseMessage.Results result;
+        public Results result;
         public String filename;
         public byte[] data;
         public Throwable exception;
@@ -56,6 +56,15 @@ public class Reader extends Consumer {
     private static Gson gson = new Gson();
 
     private PrivateKey privateKey;
+    private boolean debugMode;
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
 
     public PrivateKey getPrivateKey() {
         return privateKey;
@@ -65,40 +74,70 @@ public class Reader extends Consumer {
         this.privateKey = privateKey;
     }
 
-    public Reader(PrivateKey privateKey) throws MirandaException {
+    public Reader(boolean isDebugMode, PrivateKey privateKey) throws MirandaException {
         super(NAME);
 
         this.privateKey = privateKey;
+        setDebugMode(isDebugMode);
 
         ReaderReadyState readerReadyState = new ReaderReadyState(this);
         setCurrentState(readerReadyState);
     }
 
     public ReadResult read(String filename) {
+        if (isDebugMode())
+            return readUnencrypted(filename);
+        else
+            return readEncrypted(filename);
+    }
+
+    public ReadResult readUnencrypted (String filename) {
+        ReadResult readResult = new ReadResult();
+        readResult.filename = filename;
+
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileInputStream = new FileInputStream(filename);
+            readResult.data = Utils.readCompletely(fileInputStream);
+            readResult.result = Results.Success;
+        } catch (FileNotFoundException e) {
+            readResult.exception = e;
+            readResult.result = Results.FileDoesNotExist;
+        } catch (Throwable e) {
+            readResult.exception = e;
+            readResult.result = Results.ExceptionReadingFile;
+        }
+
+        return readResult;
+    }
+
+
+    public ReadResult readEncrypted (String filename) {
         ReadResult result = new ReadResult();
         FileReader fileReader = null;
-        result.result = ReadResponseMessage.Results.Unknown;
+        result.result = Results.Unknown;
         result.filename = filename;
 
         File file = new File(filename);
         if (!file.exists()) {
-            result.result = ReadResponseMessage.Results.FileDoesNotExist;
+            result.result = Results.FileDoesNotExist;
         } else {
             EncryptedMessage encryptedMessage = null;
             try {
                 fileReader = new FileReader(filename);
                 encryptedMessage = readEncryptedMessage(fileReader);
             } catch (Exception e) {
-                result.result = ReadResponseMessage.Results.ExceptionReadingFile;
+                result.result = Results.ExceptionReadingFile;
                 result.exception = e;
             }
 
             if (null != encryptedMessage) {
                 try {
                     result.data = decryptMessage(encryptedMessage);
-                    result.result = ReadResponseMessage.Results.Success;
+                    result.result = Results.Success;
                 } catch (EncryptionException e) {
-                    result.result = ReadResponseMessage.Results.ExceptionDecryptingFile;
+                    result.result = Results.ExceptionDecryptingFile;
                     result.exception = e;
                 }
             }

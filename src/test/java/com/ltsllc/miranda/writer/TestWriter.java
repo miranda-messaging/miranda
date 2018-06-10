@@ -65,7 +65,7 @@ public class TestWriter extends TestCase {
         super.setup();
 
         setuplog4j();
-        writer = new Writer(getMockPublicKey());
+        writer = new Writer(false, getMockPublicKey());
     }
 
     @After

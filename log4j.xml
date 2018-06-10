@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<log4j:configuration debug="false"
+                     xmlns:log4j='http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd'
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd ">
 
     <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
@@ -8,18 +11,13 @@
         </layout>
     </appender>
 
-    <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
-        <param name="append" value="false"/>
-        <param name="file" value="out/learning.log"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
-        </layout>
-    </appender>
 
     <root>
-        <level value="INFO"/>
+        <level value="debug"/>
         <appender-ref ref="consoleAppender"/>
-        <appender-ref ref="fileAppender"/>
     </root>
+    <logger name="org.eclipse">
+        <level value="error"/>
+    </logger>
 
 </log4j:configuration>

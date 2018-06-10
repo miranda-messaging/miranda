@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.miranda;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownMessage;
+import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;

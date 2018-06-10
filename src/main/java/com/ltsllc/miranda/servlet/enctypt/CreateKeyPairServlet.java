@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.servlet.enctypt;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.objects.KeyPairObject;
 import com.ltsllc.miranda.clientinterface.objects.KeyPairResultObject;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import org.bouncycastle.asn1.pkcs.RSAPrivateKey;
 import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;

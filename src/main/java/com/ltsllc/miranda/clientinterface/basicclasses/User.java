@@ -99,6 +99,7 @@ public class User extends MirandaObject {
         Publisher,
         Subscriber,
         Admin,
+        PubSub,
         Unknown;
 
         public static boolean isValid(UserTypes type) {

@@ -121,7 +121,8 @@ public class TestMinaNetworkListener extends TestCase {
 
             mockSslServerSocketFactory = mock(SSLServerSocketFactory.class);
             mockSslContext = mock(SSLContext.class);
-            minaNetworkListener = new MinaNetworkListener(6789, getKeyStore(), TEMP_KEYSTORE_PASSWORD, getTrustStore());
+            minaNetworkListener = new MinaNetworkListener(6789, getKeyStore(), TEMP_KEYSTORE_PASSWORD, getTrustStore(),
+                    getMockNetwork());
         } catch (Exception e) {
             e.printStackTrace();
         }

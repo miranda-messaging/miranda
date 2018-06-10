@@ -52,10 +52,9 @@ public class ReaderReadyState extends State {
     }
 
     public State processReadMessage(ReadMessage readMessage) throws MirandaException {
-        ReadResponseMessage response = new ReadResponseMessage(getReader().getQueue(), this);
-        response.setFilename(readMessage.getFilename());
-
         Reader.ReadResult readResult = getReader().read(readMessage.getFilename());
+        ReadResponseMessage response = new ReadResponseMessage(readResult.result, getReader().getQueue(), getReader());
+        response.setFilename(readMessage.getFilename());
         response.setData(readResult.data);
         response.setException(readResult.exception);
         response.setFilename(readResult.filename);

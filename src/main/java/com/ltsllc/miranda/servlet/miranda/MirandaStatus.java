@@ -27,13 +27,13 @@ import com.ltsllc.miranda.miranda.Miranda;
 public class MirandaStatus extends Consumer {
     private static MirandaStatus ourInstance;
 
-    private StatusObject statusObject;
+    private Object statusObject;
 
-    public StatusObject getStatusObject() {
+    public Object getStatusObject() {
         return statusObject;
     }
 
-    public void setStatusObject(StatusObject statusObject) {
+    public void setStatusObject(Object statusObject) {
         this.statusObject = statusObject;
     }
 
@@ -54,7 +54,7 @@ public class MirandaStatus extends Consumer {
         setCurrentState(mirandaStatusReadyState);
     }
 
-    public void receivedStatus(StatusObject statusObject) {
+    public void receivedStatus(Object statusObject) {
         setStatusObject(statusObject);
 
         synchronized (this) {
@@ -62,8 +62,8 @@ public class MirandaStatus extends Consumer {
         }
     }
 
-    public StatusObject getStatus() {
-        StatusObject statusObject = null;
+    public Object getStatus() {
+        Object statusObject = null;
 
         try {
             //

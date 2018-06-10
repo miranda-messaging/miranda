@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by Clark on 2/19/2017.
  */
-public class EventsFileReadyState extends SingleFileReadyState<Event> {
+public class EventsFileReadyState extends SingleFileReadyState {
     public static final String NAME = "events file";
 
     public Type getListType() {

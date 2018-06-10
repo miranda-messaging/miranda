@@ -23,6 +23,25 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 3/10/2017.
  */
 public class LoadResponseMessage extends Message {
+    public enum Results {
+        Unknown,
+
+        Success,
+        FileDoesNotExist,
+        ExceptionReadingFile,
+        ExceptionDecryptingFile
+    }
+
+    private Results result;
+
+    public Results getResult() {
+        return result;
+    }
+
+    public void setResult(Results result) {
+        this.result = result;
+    }
+
     private List data;
 
     public List getData() {
@@ -33,9 +52,8 @@ public class LoadResponseMessage extends Message {
         this.data = data;
     }
 
-    public LoadResponseMessage(BlockingQueue<Message> senderQueue, Object sender, List data) {
+    public LoadResponseMessage(BlockingQueue<Message> senderQueue, Object sender, Results result) {
         super(Subjects.LoadResponse, senderQueue, sender);
-
-        this.data = data;
+        setResult(result);
     }
 }
