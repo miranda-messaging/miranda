@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.timer;
+package com.ltsllc.miranda.timer.messages;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.timer.messages.ScheduleMessage;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -25,12 +26,26 @@ import java.util.concurrent.BlockingQueue;
  */
 public class SchedulePeriodicMessage extends ScheduleMessage {
     private long period;
+    private long delay;
 
-    public SchedulePeriodicMessage(BlockingQueue<Message> senderQueue, Object sender, long period, Message message,
-                                   BlockingQueue<Message> receiver) {
+    public void setPeriod(long period) {
+        this.period = period;
+    }
+
+    public long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+
+    public SchedulePeriodicMessage(BlockingQueue<Message> senderQueue, Object sender, long delay,
+                                   long period, Message message, BlockingQueue<Message> receiver) {
         super(Subjects.SchedulePeriodic, senderQueue, sender, receiver, message);
 
-        this.period = period;
+        setPeriod(period);
+        setDelay(delay);
     }
 
     public long getPeriod() {

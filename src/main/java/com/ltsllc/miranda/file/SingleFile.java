@@ -281,14 +281,9 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         sendRemoveObjectsMessage(senderQueue, sender, objects);
     }
 
-    /**
-     * Ask a file to write is data
-     *
-     * @param senderQueue The object that sent the message
-     */
-    public void sendWriteMessage (BlockingQueue<Message> senderQueue, Object sender) {
-        WriteFileMessage writeFileMessage = new WriteFileMessage(senderQueue, sender);
-        sendToMe(writeFileMessage);
+    public void sendWriteMessage (BlockingQueue<Message> senderQueue, Object senderOject) {
+        WriteMessage writeMessage = new WriteMessage(senderQueue, senderOject);
+        sendToMe(writeMessage);
     }
 
     public void addObjects(List list) {

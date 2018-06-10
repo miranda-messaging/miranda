@@ -2,15 +2,13 @@ package com.ltsllc.miranda.operations.bootstrap.states;
 
 import com.ltsllc.clcl.*;
 import com.ltsllc.commons.io.Util;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.bootstrap.BootstrapOperation;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.servlet.bootstrap.BootstrapMessage;
+import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 import com.ltsllc.miranda.user.messages.BootstrapResponseMessage;
 
 import java.io.IOException;
@@ -29,6 +27,10 @@ public class Processing extends State {
     private BootstrapOperation operation;
     private BlockingQueue<Message> requester;
     private BootstrapMessage bootstrapMessage;
+
+    public BlockingQueue<Message> getRequester() {
+        return requester;
+    }
 
     public BootstrapMessage getBootstrapMessage() {
         return bootstrapMessage;
@@ -56,6 +58,42 @@ public class Processing extends State {
         setBootstrapMessage(bootstrapMessage);
     }
 
+    public State processMessage(Message message) throws MirandaException {
+        State nextState = null;
+
+        switch (message.getSubject()) {
+            case BootstrapResponse: {
+                BootstrapResponseMessage bootstrapResponseMessage = (BootstrapResponseMessage) message;
+                nextState = processBootstrapResponseMessage(bootstrapResponseMessage);
+                break;
+            }
+
+            default: {
+                nextState = super.processMessage(message);
+                break;
+            }
+        }
+
+        return nextState;
+    }
+
+    public State processBootstrapResponseMessage (BootstrapResponseMessage bootstrapResponseMessage)
+    {
+        if (bootstrapResponseMessage.getResult() == Results.Success) {
+            BootstrapResponseMessage bootstrapResponseMessage2 = new BootstrapResponseMessage(getOperation().getQueue(),
+                    getOperation(), Results.Success);
+
+            send(getRequester(), bootstrapResponseMessage2);
+        }
+        else {
+            BootstrapResponseMessage bootstrapResponseMessage2 = new BootstrapResponseMessage(getOperation().getQueue(),
+                    getOperation(), bootstrapResponseMessage.getResult());
+            send(getRequester(), bootstrapResponseMessage2);
+        }
+
+        return StopState.getInstance();
+    }
+
     @Override
     public State start() {
         try {
@@ -72,9 +110,12 @@ public class Processing extends State {
                     getBootstrapMessage().getNodeDistinguishedName(),
                     getBootstrapMessage().getNodePassword());
             BootstrapResponseMessage bootstrapResponseMessage = new BootstrapResponseMessage(getOperation().getQueue(),
-                    this,Results.Success);
+                    this, Results.Success);
             getBootstrapMessage().reply(bootstrapResponseMessage);
-        } catch (MirandaException|IOException e) {
+
+            TimeoutMessage timeoutMessage = new TimeoutMessage (Miranda.timer.getQueue(), Miranda.timer);
+            Miranda.timer.scheduleOnce(10000, getOperation().getQueue(), timeoutMessage);
+        } catch (MirandaException | IOException e) {
             Panic panic = new Panic("Exception trying to bootssrap system", e, Panic.Reasons.Exception);
             Miranda.panicMiranda(panic);
         }
@@ -83,7 +124,7 @@ public class Processing extends State {
 
 
     public ReturnValue bootstrapTruststore(String filename, DistinguishedName caDistinguishedName,
-    String caPassword) throws MirandaException {
+                                           String caPassword) throws MirandaException {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             java.security.KeyPair jsKeyPair = keyPairGenerator.generateKeyPair();

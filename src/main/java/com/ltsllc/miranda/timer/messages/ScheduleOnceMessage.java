@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.timer;
+package com.ltsllc.miranda.timer.messages;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.timer.messages.ScheduleMessage;
 
 import java.util.concurrent.BlockingQueue;
 

@@ -115,7 +115,6 @@ public abstract class State {
                 logger.error("Message created at", m.getWhere());
                 Panic panic = new Panic(message, null, Panic.Reasons.DoesNotUnderstand);
                 Miranda.getInstance().panic(panic);
-
             }
         }
 
@@ -229,5 +228,15 @@ public abstract class State {
 
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    /**
+     * Allow a state to define an optional exit action.
+     *
+     * <p>
+     *     The base class does nothing on exit.
+     * </p>
+     */
+    public void exit () {
     }
 }

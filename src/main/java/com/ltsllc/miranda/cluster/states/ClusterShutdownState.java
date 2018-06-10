@@ -7,12 +7,11 @@ import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.NodeStoppedMessage;
-import com.ltsllc.miranda.file.messages.WriteFileMessage;
-import com.ltsllc.miranda.file.messages.WriteFileResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 import com.ltsllc.miranda.shutdown.ShutdownState;
+import com.ltsllc.miranda.writer.WriteResponseMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,9 +72,9 @@ public class ClusterShutdownState extends ShutdownState {
                     break;
                 }
 
-                case WriteFileResponse: {
-                    WriteFileResponseMessage writeFileResponseMessage = (WriteFileResponseMessage) message;
-                    nextState = processFileWritten(writeFileResponseMessage);
+                case WriteResponse: {
+                    WriteResponseMessage writeResponseMessage = (WriteResponseMessage) message;
+                    nextState = processFileWritten(writeResponseMessage);
                     break;
                 }
 
@@ -93,7 +92,7 @@ public class ClusterShutdownState extends ShutdownState {
         }
     }
 
-    public State processFileWritten(WriteFileResponseMessage writeFileResponseMessage) {
+    public State processFileWritten(WriteResponseMessage writeResponseMessage) {
         clusterFileWritten = true;
 
         if (allNodesStopped() && clusterFileWritten) {

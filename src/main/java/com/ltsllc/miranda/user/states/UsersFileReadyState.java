@@ -23,6 +23,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
+import com.ltsllc.miranda.file.states.SingleFileWritingState;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import org.apache.log4j.Logger;
@@ -66,7 +67,7 @@ public class UsersFileReadyState extends SingleFileReadyState {
     private State processNewUserMessage(NewUserMessage newUserMessage) {
         getUsersFile().addUser(newUserMessage.getUser());
 
-        return this;
+        return new SingleFileWritingState(getUsersFile(), this);
     }
 
 

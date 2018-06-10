@@ -95,7 +95,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         setFile(file);
         file.start();
 
-        State startState = new ManagerStartState(this);
+        State startState = new ManagerStartState(this, getReadyState());
         setCurrentState(startState);
 
         List<E> newList = new ArrayList<E>();
@@ -105,7 +105,7 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     public Manager(String name, boolean testMode) throws MirandaException {
         super(name);
 
-        State startState = new ManagerStartState(this);
+        State startState = new ManagerStartState(this, getReadyState());
         setCurrentState(startState);
 
         List<E> newList = new ArrayList<E>();

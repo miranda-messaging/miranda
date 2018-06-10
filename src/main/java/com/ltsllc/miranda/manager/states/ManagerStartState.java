@@ -32,17 +32,28 @@ import java.util.List;
  * Created by Clark on 5/14/2017.
  */
 public class ManagerStartState extends State {
+    private State readyState;
+
+    public State getReadyState() {
+        return readyState;
+    }
+
+    public void setReadyState(State readyState) {
+        this.readyState = readyState;
+    }
+
     public Manager getManager() {
         return (Manager) getContainer();
     }
 
-    public ManagerStartState(Manager manager) throws MirandaException {
+    public ManagerStartState(Manager manager, State readyState) throws MirandaException {
         super(manager);
+        setReadyState(readyState);
     }
 
     public State start () {
         try {
-            return new ManagerLoadingState(getManager());
+            return new ManagerLoadingState(getManager(), getReadyState());
         } catch (MirandaException e) {
             Panic panic = new Panic("Exception starting actor", e, Panic.Reasons.Exception);
             Miranda.panicMiranda(panic);

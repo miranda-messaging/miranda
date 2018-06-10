@@ -73,7 +73,7 @@ public class UserManager extends StandardManager<User> {
 
     public void addUser(User user) throws DuplicateUserException {
         if (contains(user)) {
-            throw new DuplicateUserException("The system already contain this user");
+            throw new DuplicateUserException("The system already contains this user");
         } else {
             getUsers().add(user);
             getUsersFile().sendNewUserMessage(getQueue(), this, user);

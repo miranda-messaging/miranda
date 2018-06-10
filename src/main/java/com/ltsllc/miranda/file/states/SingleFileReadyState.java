@@ -43,7 +43,6 @@ import java.util.List;
  * Created by Clark on 2/10/2017.
  */
 public class SingleFileReadyState extends MirandaFileReadyState {
-
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
     private static Gson ourGson = new Gson();
 
@@ -87,11 +86,6 @@ public class SingleFileReadyState extends MirandaFileReadyState {
             case Write: {
                 WriteMessage writeMessage = (WriteMessage) message;
                 nextState = processWriteMessage(writeMessage);
-                break;
-            }
-
-            case WriteSucceeded: {
-                getFile().setDirty(false);
                 break;
             }
 
@@ -139,7 +133,7 @@ public class SingleFileReadyState extends MirandaFileReadyState {
             getFile().setData(getFileResponseMessage.getContentAsBytes());
             getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(),
                     getFile().getBytes());
-            return new SingleFileWritingState(getFile());
+            return new SingleFileWritingState(getFile(),this);
         } catch (IOException e) {
             Panic panic = new Panic("Exception trying to set data", e, Panic.Reasons.ExceptionSettingData);
             Miranda.panicMiranda(panic);
@@ -165,7 +159,7 @@ public class SingleFileReadyState extends MirandaFileReadyState {
 
     private State processLoadMessage(LoadMessage loadMessage) throws MirandaException {
         getFile().getReader().read(getFile().getFilename());
-        SingleFileReadingState singleFileReadingState = new SingleFileReadingState(getFile());
+        SingleFileReadingState singleFileReadingState = new SingleFileReadingState(getFile(), this);
         singleFileReadingState.addLoaderListener(loadMessage.getSender());
 
         return singleFileReadingState;
@@ -175,8 +169,8 @@ public class SingleFileReadyState extends MirandaFileReadyState {
         if (getFile().isDirty())
             getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(), getFile().getBytes());
 
-        SingleFileStoppingState singleFileStoppingState = new SingleFileStoppingState(getFile());
-        return singleFileStoppingState;
+        SingleFileShutdownState singleFileShutdownState = new SingleFileShutdownState(stopMessage.getSender());
+        return singleFileShutdownState;
     }
 
     public State processAddObjectsMessage(AddObjectsMessage addObjectsMessage) {
@@ -260,8 +254,7 @@ public class SingleFileReadyState extends MirandaFileReadyState {
     }
 
     public State processWriteMessage (WriteMessage writeMessage) {
-        SingleFileWritingState writingState = new SingleFileWritingState(getFile());
-        writingState.addWriteListener(writeMessage.getSender());
+        SingleFileWritingState writingState = new SingleFileWritingState(getFile(), this);
 
         return writingState;
     }

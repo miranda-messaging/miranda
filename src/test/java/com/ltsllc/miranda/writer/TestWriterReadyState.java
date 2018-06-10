@@ -73,7 +73,6 @@ public class TestWriterReadyState extends TestCase {
 
         State nextState = getWriterReadyState().processMessage(writeMessage);
 
-        assert (contains(Message.Subjects.WriteSucceeded, queue));
         assert (nextState instanceof WriterReadyState);
     }
 
@@ -92,6 +91,5 @@ public class TestWriterReadyState extends TestCase {
         State nextState = getWriterReadyState().processMessage(writeMessage);
 
         assert (nextState instanceof WriterReadyState);
-        assert (contains(Message.Subjects.WriteFailed, queue));
     }
 }

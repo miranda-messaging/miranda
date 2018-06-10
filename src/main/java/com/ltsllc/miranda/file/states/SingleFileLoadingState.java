@@ -18,6 +18,7 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
@@ -65,11 +66,11 @@ public class SingleFileLoadingState extends State {
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
         State nextState = getSingleFile().getCurrentState();
 
-        if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
+        if (readResponseMessage.getResult() == Results.Success) {
             getSingleFile().processData(readResponseMessage.getData());
             nextState = new SingleFileReadyState(getSingleFile());
             getSingleFile().fireFileLoaded();
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile) {
+        } else if (readResponseMessage.getResult() == Results.ExceptionReadingFile) {
             Panic panic = new Panic("Error trying to load file", readResponseMessage.getException(), Panic.Reasons.ErrorLoadingFile);
             Miranda.getInstance().panic(panic);
         } else {

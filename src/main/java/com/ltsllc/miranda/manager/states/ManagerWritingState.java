@@ -5,19 +5,30 @@ import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.messages.WriteFileResponseMessage;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.writer.WriteResponseMessage;
 
 
 public class ManagerWritingState extends ManagerState {
+    private State readyState;
+
+    public State getReadyState() {
+        return readyState;
+    }
+
+    public void setReadyState(State readyState) {
+        this.readyState = readyState;
+    }
+
     public Manager getManager() {
         return (Manager) getContainer();
     }
 
-    public ManagerWritingState(Manager manager) {
+    public ManagerWritingState(State readyState, Manager manager) {
         super(manager);
+        setReadyState(readyState);
     }
 
     public State processMessage(Message message) {
@@ -25,15 +36,15 @@ public class ManagerWritingState extends ManagerState {
 
         try {
             switch (message.getSubject()) {
-                case WriteFileResponse: {
-                    WriteFileResponseMessage writeFileResponseMessage = (WriteFileResponseMessage) message;
-                    nextState = processWriteFileResponseMessage(writeFileResponseMessage);
-                    break;
-                }
-
                 case GarbageCollection: {
                     GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
                     nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                    break;
+                }
+
+                case WriteResponse: {
+                    WriteResponseMessage writeResponseMessage = (WriteResponseMessage) message;
+                    nextState = processWriteResponseMessage (writeResponseMessage);
                     break;
                 }
 
@@ -52,16 +63,14 @@ public class ManagerWritingState extends ManagerState {
         return nextState;
     }
 
-    public State processWriteFileResponseMessage(WriteFileResponseMessage writeFileResponseMessage) throws MirandaException {
-        if (writeFileResponseMessage.getResult() == Results.Success) {
-            return getManager().getReadyState();
+    public State processWriteResponseMessage (WriteResponseMessage writeResponseMessage) {
+        if (writeResponseMessage.getResult() == Results.Success) {
+            return getReadyState();
         } else {
-            Panic panic = new Panic("Failure writing file", writeFileResponseMessage.getWhere(),
-                    Panic.Reasons.FailedWritigFile);
+            Panic panic = new Panic("Exception writing file", writeResponseMessage.getException(), Panic.Reasons.Exception);
             Miranda.panicMiranda(panic);
+            return this;
         }
-
-        return this;
     }
 
     public State processGarbageCollectionMessage (GarbageCollectionMessage garbageCollectionMessage) {

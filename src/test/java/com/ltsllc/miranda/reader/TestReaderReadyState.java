@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.reader;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
@@ -61,7 +62,7 @@ public class TestReaderReadyState extends TestCase {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         ReadMessage readMessage = new ReadMessage(queue, this, "whatever");
         Reader.ReadResult result = new Reader.ReadResult();
-        result.result = ReadResponseMessage.Results.Success;
+        result.result = Results.Success;
         result.data = "whatever".getBytes();
         result.filename = "whatever";
 

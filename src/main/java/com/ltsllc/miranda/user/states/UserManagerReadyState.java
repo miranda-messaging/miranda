@@ -24,6 +24,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ltsllc.miranda.Results.FileDoesNotExist;
 import static com.ltsllc.miranda.Results.UsersExist;
 
 /**

@@ -21,11 +21,11 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.MirandaFile;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.ReadMessage;
-import com.ltsllc.miranda.writer.WriteFailedMessage;
-import com.ltsllc.miranda.writer.WriteSucceededMessage;
+import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -37,7 +37,7 @@ import java.util.concurrent.BlockingQueue;
 public class FileReadyState extends State {
     private static Logger logger = Logger.getLogger(FileReadyState.class);
 
-    private MirandaFile file;
+    private SingleFile file;
 
     public BlockingQueue<Message> getInitiator() {
         return initiator;
@@ -50,14 +50,14 @@ public class FileReadyState extends State {
     private BlockingQueue<Message> initiator;
 
 
-    public FileReadyState(MirandaFile file) throws MirandaException {
+    public FileReadyState(SingleFile file) throws MirandaException {
         super(file);
 
         this.file = file;
     }
 
 
-    public MirandaFile getFile() {
+    public SingleFile getFile() {
         return file;
     }
 
@@ -78,30 +78,17 @@ public class FileReadyState extends State {
                 break;
             }
 
-            case WriteFile: {
-                WriteFileMessage writeFileMessage = (WriteFileMessage) message;
-                nextState = processWriteFileMessage(writeFileMessage);
-                break;
-            }
-
-            case WriteSucceeded: {
-                WriteSucceededMessage writeSucceededMessage = (WriteSucceededMessage) message;
-                nextState = processWriteSucceededMessage(writeSucceededMessage);
-                break;
-            }
-
-            case WriteFailed: {
-                WriteFailedMessage writeFailedMessage = (WriteFailedMessage) message;
-                nextState = processWriteFailedMessage(writeFailedMessage);
-                break;
-            }
-
             case Read: {
-                ReadFileMessage readFileMessage = (ReadFileMessage) message;
-                nextState = processReadFileMessage(readFileMessage);
+                ReadMessage readMessage = (ReadMessage) message;
+                nextState = processReadMessage(readMessage);
                 break;
             }
 
+            case Write: {
+                WriteMessage writeMessage = (WriteMessage) message;
+                nextState = processWriteMessage(writeMessage);
+                break;
+            }
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -109,44 +96,9 @@ public class FileReadyState extends State {
         return nextState;
     }
 
-    /**
-     * Someone asked us to read our file.
-     * @param readFileMessage The request
-     * @return The next state
-     */
-    private State processReadFileMessage(ReadFileMessage readFileMessage) {
-        File file = new File(getFile().getFilename());
-        getFile().getReader().sendReadMessage(getFile().getQueue(),this, getFile().getFilename());
-        setInitiator(readFileMessage.getSender());
-        return this;
-    }
-
-    public State processWriteFailedMessage(WriteFailedMessage writeFailedMessage) {
-        if (null != getInitiator()) {
-            WriteFileResponseMessage responseMessage = new WriteFileResponseMessage(getFile().getQueue(),
-                    this, Results.Failure);
-            send(getInitiator(), responseMessage);
-            setInitiator(null);
-        }
-
-        return this;
-    }
-
-    public State processWriteFileMessage(WriteFileMessage writeFileMessage) {
-        getFile().write();
-        setInitiator(writeFileMessage.getSender());
-        return this;
-    }
-
-    public State processWriteSucceededMessage (WriteSucceededMessage writeSucceededMessage) {
-        if (null != getInitiator()) {
-            WriteFileResponseMessage fileWrittenMessage = new WriteFileResponseMessage(getFile().getQueue(), this,
-                    Results.Success);
-            send(getInitiator(), fileWrittenMessage);
-            setInitiator(null);
-        }
-
-        return this;
+    public State processWriteMessage (WriteMessage writeMessage) {
+        getFile().getWriter().sendWrite(getFile().getQueue(), getFile(), getFile().getFilename(), getFile().getBytes());
+        return new SingleFileWritingState(getFile(), this);
     }
 
     private State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
@@ -158,5 +110,9 @@ public class FileReadyState extends State {
         getFile().load();
 
         return getFile().getCurrentState();
+    }
+
+    public State processReadMessage (ReadMessage readMessage) throws MirandaException {
+        return new SingleFileReadingState(getFile(), this);
     }
 }

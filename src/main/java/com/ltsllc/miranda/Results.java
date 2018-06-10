@@ -31,5 +31,5 @@ public enum Results {
     UserOwnsTopics,
     UnrecognizedUser,
     UsersExist,
-    Interrupted, MissingData, Written
+    Interrupted, MissingData, FileDoesNotExist, ExceptionReadingFile, Written
 }

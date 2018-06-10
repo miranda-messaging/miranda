@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.writer;
+package com.ltsllc.miranda.timer.messages;
 
 import com.ltsllc.miranda.Message;
 
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/29/2017.
+ * Created by Clark on 1/22/2017.
  */
-public class WriteSucceededMessage extends Message {
-    private String filename;
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public WriteSucceededMessage(BlockingQueue<Message> sender, String filename, Object senderObject) {
-        super(Subjects.WriteSucceeded, sender, senderObject);
-        this.filename = filename;
+public class TimeoutMessage extends Message {
+    public TimeoutMessage(BlockingQueue<Message> sender, Object senderObject) {
+        super(Subjects.Timeout, sender, senderObject);
     }
 }

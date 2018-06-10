@@ -1,9 +1,6 @@
 package com.ltsllc.miranda.file.states;
 
-import com.ltsllc.miranda.LoadResponseMessage;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
@@ -11,8 +8,6 @@ import com.ltsllc.miranda.file.messages.CreateMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
-import com.ltsllc.miranda.writer.WriteFailedMessage;
-import com.ltsllc.miranda.writer.WriteSucceededMessage;
 import com.sun.net.httpserver.Authenticator;
 
 import java.util.ArrayList;
@@ -21,8 +16,17 @@ import java.util.concurrent.BlockingQueue;
 
 public class SingleFileReadingState extends State {
     private List<BlockingQueue<Message>> loaderListeners = new ArrayList<>();
+    private State readyState;
 
-    public void addLoaderListener (BlockingQueue<Message> listener) {
+    public State getReadyState() {
+        return readyState;
+    }
+
+    public void setReadyState(State readyState) {
+        this.readyState = readyState;
+    }
+
+    public void addLoaderListener(BlockingQueue<Message> listener) {
         loaderListeners.add(listener);
     }
 
@@ -34,8 +38,9 @@ public class SingleFileReadingState extends State {
         return (SingleFile) getContainer();
     }
 
-    public SingleFileReadingState(SingleFile singleFile) throws MirandaException {
+    public SingleFileReadingState(SingleFile singleFile, State readyState) throws MirandaException {
         super(singleFile);
+        setReadyState(readyState);
     }
 
 
@@ -76,40 +81,29 @@ public class SingleFileReadingState extends State {
     }
 
 
-    public void addAListener (Message message) {
+    public void addAListener(Message message) {
         addLoaderListener(message.getSender());
     }
 
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
-        if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
+        if (readResponseMessage.getResult() == Results.Success) {
             getFile().setData(readResponseMessage.getData());
-            tellLoaderListeners(ReadResponseMessage.Results.Success);
             getFile().fireFileLoaded();
-            return new SingleFileReadyState(getFile());
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
-            tellLoaderListeners(ReadResponseMessage.Results.FileDoesNotExist);
-            return this;
+            return getReadyState();
+        } else if (readResponseMessage.getResult() == Results.FileDoesNotExist) {
+            getFile().fireFileDoesNotExist();
+            return getReadyState();
         } else {
-            tellLoaderListeners(ReadResponseMessage.Results.Unknown);
+            ReadResponseMessage readResponseMessage2 = new ReadResponseMessage(readResponseMessage.getResult(),
+                    getFile().getQueue(), getFile());
+            getFile().fireMessage (readResponseMessage2);
             return this;
         }
     }
 
-    public void tellLoaderListeners (ReadResponseMessage.Results result) {
-        try {
-            ReadResponseMessage readResponseMessage = new ReadResponseMessage(getFile().getQueue(), this);
-            readResponseMessage.setResult(result);
-            for (BlockingQueue<Message> listener : loaderListeners) {
-                listener.put(readResponseMessage);
-            }
-        } catch (InterruptedException e) {
-            Panic panic = new Panic("Exception trying to send message", e);
-            Miranda.panicMiranda(panic);
-        }
-    }
 
-    public State processCreateMessage (CreateMessage createMessage) {
+    public State processCreateMessage(CreateMessage createMessage) {
         getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(), getFile().getBytes());
-        return new SingleFileWritingState(getFile());
+        return new SingleFileWritingState(getFile(), getReadyState());
     }
 }

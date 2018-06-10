@@ -17,16 +17,17 @@
 package com.ltsllc.miranda.manager.states;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.Manager;
-import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.timer.messages.CancelMessage;
+import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 
 import java.util.List;
 
@@ -34,8 +35,19 @@ import java.util.List;
  * Created by Clark on 5/14/2017.
  */
 public class ManagerLoadingState extends ManagerState {
-    public ManagerLoadingState(Manager manager) throws MirandaException {
+    private State readyState;
+
+    public State getReadyState() {
+        return readyState;
+    }
+
+    public void setReadyState(State readyState) {
+        this.readyState = readyState;
+    }
+
+    public ManagerLoadingState(Manager manager, State readyState) throws MirandaException {
         super(manager);
+        setReadyState(readyState);
     }
 
     public State processMessage(Message message) throws MirandaException {
@@ -79,13 +91,11 @@ public class ManagerLoadingState extends ManagerState {
     public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {
         List list = (List) fileLoadedMessage.getData();
         getManager().setData(list);
-
         return getManager().getReadyState();
     }
 
     public State processFileDoesNotExistMessage(FileDoesNotExistMessage fileDoesNotExistMessage) throws MirandaException {
         getManager().getData().clear();
-
         return getManager().getReadyState();
     }
 
@@ -96,13 +106,32 @@ public class ManagerLoadingState extends ManagerState {
     }
 
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
-        if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
+        if (readResponseMessage.getResult() == Results.Success) {
+            CancelMessage cancelMessage = new CancelMessage (getManager().getQueue(), getManager(), getManager().getQueue());
+            send(Miranda.timer.getQueue(), cancelMessage);
+
             return getManager().getReadyState();
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
+        } else if (readResponseMessage.getResult() == Results.FileDoesNotExist) {
             getManager().getFile().sendCreateMessage(getManager().getQueue(), this);
-            return new ManagerWritingState(getManager());
+            return new ManagerWritingState(getReadyState(), getManager());
         }
 
         return this;
     }
+
+    public State start () {
+        super.start();
+
+        TimeoutMessage timeoutMessage = new TimeoutMessage(Miranda.timer.getQueue(), Miranda.timer);
+        Miranda.timer.sendScheduleOnce(10000, getManager().getQueue(), timeoutMessage);
+
+        getManager().getFile().sendLoad(getManager().getQueue(), getManager());
+
+        return this;
+    }
+
+    public void exit () {
+        Miranda.timer.sendCancel(getManager().getQueue(), getManager(), getManager().getQueue());
+    }
+
 }
