@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.enctypt;
+package com.ltsllc.miranda.servlet.encrypt;
 
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.objects.KeyPairObject;

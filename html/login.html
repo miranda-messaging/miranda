@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script src="jquery.js"></script>
+</head>
+<body>
+<form name="credentailsForm" action="/servlets/loginServlet" method="post" enctype="multipart/form-data">
+Select credentials <input name="content" id="content" type="file" onchange="load()">
+login <button id="login" onclick="login()">Login</button>
+<input type="submit">
+</form>
+<textarea name="credentials" id="credentials">
+
+</textarea>
+</body>
+</html>
+<script>
+    function load() {
+        var file = document.getElementById("content")
+        var formData = new FormData();
+        formData.append("content", file.files[0])
+
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+                    var data = JSON.parse(xmlhttp.response)
+                    var s = ""
+                    for (i = 0; i < data.content.length; i++) {
+                        s += String.fromCharCode(data.content[i])
+                    }
+                    document.getElementById("credentials").innerHTML = s
+               }
+               else if (xmlhttp.status == 400) {
+                    alert('There was an error 400');
+               }
+               else {
+                    alert('something else other than 200 was returned');
+               }
+            }
+        };
+
+        xmlhttp.open("POST", "/servlets/fileServlet", true);
+        // xmlhttp.setRequestHeader('Content-Type', 'multipart/form-data; boundary=-----boundary')
+        xmlhttp.send(formData);
+
+    }
+
+    function login() {
+    }
+</script>

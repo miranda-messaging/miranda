@@ -16,8 +16,7 @@
 
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
+import com.ltsllc.miranda.servlet.encrypt.CreateKeyPairServlet;
 import com.ltsllc.miranda.test.TestServlet;
 import org.junit.Before;
 import org.junit.Test;
