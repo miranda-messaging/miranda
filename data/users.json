@@ -1,0 +1,8 @@
+[
+  {
+    "name": "admin",
+    "category": "Admin",
+    "description": "The admin user",
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv3vm0ZB8EZa0KDJobaEd\r\nRIrqcE4Gwz6wqgMV4ciUWKWCK+8/1ZxBXsFfI/tr3oLXgMIwuhhZRPG+EmYl0AKP\r\nkknofL3FfrRxsMZw6rIdDGi8Ca7uva5CUYbrKQQJm1pjZRZgbGMQhNsRHv1J7BGQ\r\np11pQcUWEuE7JXONKIVbh52bodfiPByIGI7mWMy8nDnZ2+qqaBO79IZKLayTXGZm\r\nYXDxLS1xgaHXyUbVLFZLe5yXH2+t3ytfDqysFLG3hEegcaixyQ/VcK4kuTSiSZMt\r\nSRmOuFTO/KEAGdOpkQslLSjhW5VvCDWA4oyBrikJ1OTtCIn18Su+/OFU7Kx9Iurn\r\n3wIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
+  }
+]
