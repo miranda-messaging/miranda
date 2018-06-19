@@ -17,18 +17,23 @@
 package com.ltsllc.miranda.servlet.session;
 
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.session.Session;
+import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 
@@ -41,7 +46,7 @@ abstract public class SessionServlet extends MirandaServlet {
     abstract public ResultObject performService(HttpServletRequest request, HttpServletResponse response,
                                                 Request requestObject) throws ServletException, IOException, TimeoutException;
 
-    abstract public ServletHolder getServletHolder();
+
 
     abstract public ResultObject createResultObject();
 
@@ -66,12 +71,12 @@ abstract public class SessionServlet extends MirandaServlet {
             String json = Utils.readInputStream(request.getInputStream());
             Request requestObject = getGson().fromJson(json, getRequestClass());
 
-            setSession(getServletHolder().getSession(requestObject.getSessionIdAsLong()));
-            if (null == getSession()) {
+            Session session = checkSession(requestObject.getSessionIdAsLong());
+            if (null == session) {
                 resultObject = createResultObject();
                 resultObject.setResult(Results.SessionNotFound);
                 response.sendRedirect(LOGIN_PAGE);
-            } else if (allowAccess() || getSession().getUser().getCategory() == User.UserTypes.Admin) {
+            } else if (allowAccess() || session.getUser().getCategory() == User.UserTypes.Admin) {
                 resultObject = performService(request, response, requestObject);
             } else {
                 resultObject = createResultObject();
@@ -84,8 +89,11 @@ abstract public class SessionServlet extends MirandaServlet {
             resultObject = createResultObject();
             resultObject.setResult(Results.Exception);
             resultObject.setException(e);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
+            resultObject = createResultObject();
+            resultObject.setResult(Results.Exception);
+            resultObject.setException(e);
         }
 
 
@@ -94,5 +102,20 @@ abstract public class SessionServlet extends MirandaServlet {
         response.setStatus(200);
     }
 
+    public void send (BlockingQueue<Message> receiver, Message message) {
+        try {
+            receiver.put(message);
+        } catch (InterruptedException e) {
+            Panic panic = new Panic("Interrupted trying to send message", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
+    }
 
+    public Session checkSession (long sessionId) throws TimeoutException {
+        Miranda.getInstance().getSessionManager().sendCheckSessionMessage(getQueue(), this, sessionId);
+
+        CheckSessionResponseMessage checkSessionResponseMessage = (CheckSessionResponseMessage) waitForReply (1000);
+
+        return checkSessionResponseMessage.getSession();
+    }
 }

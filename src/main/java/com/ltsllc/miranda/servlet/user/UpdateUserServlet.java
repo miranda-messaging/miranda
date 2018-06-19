@@ -19,6 +19,8 @@ package com.ltsllc.miranda.servlet.user;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.requests.UserRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,21 +31,11 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/11/2017.
  */
-public class UpdateUserServlet extends UserServlet {
-    public ResultObject createResultObject() {
-        return new ResultObject();
-    }
+public class UpdateUserServlet extends MirandaServlet {
 
-    public boolean allowAccess() {
-        return true;
-    }
 
-    public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequest requestObject)
-            throws ServletException, IOException, TimeoutException {
-        ResultObject resultObject = new ResultObject();
-        Results result = UserHolder.getInstance().updateUser(requestObject.getUser());
-        resultObject.setResult(result);
-
-        return resultObject;
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPost(req, resp);
     }
 }

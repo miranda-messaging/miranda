@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.user.state;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.servlet.ServletHolderReadyState;
+import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.user.messages.*;
 
 /**

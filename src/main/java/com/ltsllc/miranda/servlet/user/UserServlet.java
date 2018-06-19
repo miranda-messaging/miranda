@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.user;
 
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
@@ -28,6 +29,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -36,6 +38,8 @@ import java.util.concurrent.TimeoutException;
 abstract public class UserServlet extends SessionServlet {
     abstract public ResultObject basicService(HttpServletRequest request, HttpServletResponse response,
                                               UserRequest requestObject) throws ServletException, IOException, TimeoutException;
+
+    private BlockingQueue<Message> queue;
 
     public ServletHolder getServletHolder() {
         return UserHolder.getInstance();
@@ -51,6 +55,7 @@ abstract public class UserServlet extends SessionServlet {
 
     public ResultObject performService(HttpServletRequest request, HttpServletResponse response,
                                        Request requestObject) throws ServletException, IOException, TimeoutException {
+
         UserRequest userRequestObject = (UserRequest) requestObject;
 
         if (getSession().getUser().getCategory() != User.UserTypes.Admin) {

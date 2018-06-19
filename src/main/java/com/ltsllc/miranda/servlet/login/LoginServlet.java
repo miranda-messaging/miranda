@@ -19,6 +19,7 @@ package com.ltsllc.miranda.servlet.login;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.LoginObject;
@@ -31,12 +32,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Clark on 3/31/2017.
  */
 public class LoginServlet extends MirandaServlet {
+    private BlockingQueue<Message> queue;
+
     public void doOptions(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Allow", "*");
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -48,6 +52,7 @@ public class LoginServlet extends MirandaServlet {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         LoginResultObject result = new LoginResultObject();
+        Challenge challenge = new Challenge();
 
         try {
             LoginObject loginObject = fromJson(req.getInputStream(), LoginObject.class);
@@ -59,7 +64,7 @@ public class LoginServlet extends MirandaServlet {
                 byte[] plainText = sessionIdString.getBytes();
                 byte[] cipherText = loginResult.session.getUser().getPublicKey().encrypt(plainText);
                 Base64.Encoder encoder = Base64.getEncoder();
-                result.setSession(encoder.encodeToString(cipherText));
+                challenge.setEncryptedSession(encoder.encodeToString(cipherText));
             }
         } catch (EncryptionException|MirandaException e) {
             result.setResult(Results.Exception);
@@ -69,7 +74,7 @@ public class LoginServlet extends MirandaServlet {
         }
 
         resp.setHeader("Access-Control-Allow-Origin", "*");
-        respond(resp.getOutputStream(), result);
+        respond(resp.getOutputStream(), challenge);
         resp.setStatus(200);
     }
 }

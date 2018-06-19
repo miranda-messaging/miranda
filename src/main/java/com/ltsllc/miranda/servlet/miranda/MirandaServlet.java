@@ -32,11 +32,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Clark on 4/7/2017.
  */
 public class MirandaServlet extends HttpServlet {
+    private BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+
+
     public void doOptions(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Allow", "*");
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -45,8 +50,6 @@ public class MirandaServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
         response.setHeader("Access-Control-Max-Age", "1209600");
     }
-
-    private BlockingQueue<Message> queue = new LinkedBlockingQueue<>();
 
     public BlockingQueue<Message> getQueue() {
         return queue;
@@ -114,5 +117,42 @@ public class MirandaServlet extends HttpServlet {
             Panic panic = new Panic("Interrupted while sending message", e, Panic.Reasons.ExceptionSendingMessage);
             Miranda.panicMiranda(panic);
         }
+    }
+
+    public Message waitForReply (long timeout) throws TimeoutException {
+        Message message = null;
+
+        try {
+            message = getQueue().poll(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Panic panic = new Panic("Interrupted waiting for a message", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
+
+        if (null == message) {
+            throw new TimeoutException();
+        }
+
+        return message;
+    }
+
+    public Message waitForReply (long timeout, Class clazz) throws TimeoutException {
+        long start = System.currentTimeMillis();
+        long stop = start + timeout;
+
+        Message message = null;
+
+        while (message == null && System.currentTimeMillis() < stop) {
+            message = waitForReply(stop - System.currentTimeMillis());
+            if (message != null && !(message.getClass().isAssignableFrom(clazz)))
+                message = null;
+        }
+
+        if (null == message){
+            throw new TimeoutException();
+        }
+
+        return message;
+
     }
 }

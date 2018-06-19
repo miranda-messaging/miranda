@@ -192,7 +192,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, WriteResponse
+        ConnectionCreated, Cancel, ListUsersResponse, WriteResponse
     }
 
     private static Gson ourGson = new Gson();

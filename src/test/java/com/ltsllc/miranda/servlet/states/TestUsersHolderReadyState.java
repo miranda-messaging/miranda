@@ -20,7 +20,7 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.servlet.user.UserHolder;
-import com.ltsllc.miranda.servlet.user.UserHolderReadyState;
+import com.ltsllc.miranda.servlet.user.state.UserHolderReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.messages.GetUsersResponseMessage;
 import org.junit.Before;

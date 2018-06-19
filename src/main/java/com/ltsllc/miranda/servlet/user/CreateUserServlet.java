@@ -21,6 +21,7 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.UserRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,12 +32,12 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Clark on 4/7/2017.
  */
-public class CreateUserServlet extends UserServlet {
+public class CreateUserServlet extends MirandaServlet {
     public ResultObject createResultObject() {
         return new ResultObject();
     }
 
-    public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserRequest requestObject)
+    public ResultObject basicService(HttpServletRequest req, HttpServletResponse resp, UserObjectRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
 

@@ -37,7 +37,7 @@ public class ReadUserServlet extends UserServlet {
 
     public ReadObject basicService(HttpServletRequest request, HttpServletResponse response,
                                    UserRequest requestObject) throws ServletException, IOException, TimeoutException {
-        UserHolder.getInstance().getUser(requestObject.getUser().getName());
+        UserHolder.getInstance().getUser(requestObject.getUser());
         ReadObject<User> readObject = new ReadObject<User>();
         readObject.setResult(UserHolder.getInstance().getGetUserResults());
         readObject.setObject(UserHolder.getInstance().getUser());

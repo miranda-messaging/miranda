@@ -155,13 +155,13 @@ public class UserManagerReadyState extends ManagerReadyState {
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUsersMessage(ListUsersMessage getUsersMessage) throws MirandaException {
+    public State processGetUsersMessage(ListUsersMessage listUsersMessage) throws MirandaException {
         List<User> users = getUserManager().getUsers();
 
-        GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(getUserManager().getQueue(),
-                this, users);
+        ListUsersResponseMessage listUsersResponseMessage = new ListUsersResponseMessage(getUserManager().getQueue(),
+                getUserManager(), users);
 
-        getUsersMessage.reply(getUsersResponseMessage);
+        listUsersMessage.reply(listUsersResponseMessage);
 
         return getUserManager().getCurrentState();
     }
