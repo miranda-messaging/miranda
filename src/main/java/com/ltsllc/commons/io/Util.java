@@ -1,6 +1,7 @@
 package com.ltsllc.commons.io;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,5 +19,11 @@ public class Util {
         }
 
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static void writeTextFile (String filename, String text) throws IOException {
+        FileWriter fileWriter = new FileWriter(filename);
+        fileWriter.write(text);
+        fileWriter.close();
     }
 }

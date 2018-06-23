@@ -23,20 +23,14 @@ import com.ltsllc.miranda.clientinterface.objects.UserObject;
  * Created by Clark on 4/28/2017.
  */
 public class UserRequest extends Request {
-    private User user;
+    private String user;
 
-    public UserRequest(String sessionIdString, User user) {
+    public UserRequest(String sessionIdString, String user) {
         super(sessionIdString);
         this.user = user;
     }
 
-    public UserRequest(String sessionId, Object object) {
-        super(sessionId);
-        User user = (User) object;
-        this.user = user;
-    }
-
-    public User getUser() {
+    public String getUser() {
         return user;
     }
 

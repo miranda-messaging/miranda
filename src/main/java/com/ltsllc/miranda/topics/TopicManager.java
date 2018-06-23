@@ -53,7 +53,7 @@ public class TopicManager extends StandardManager<Topic> {
     public TopicManager(String filename) throws IOException, MirandaException {
         super("topics manager", filename);
 
-        ManagerStartState topicManagerStartState = new ManagerStartState(this);
+        ManagerStartState topicManagerStartState = new ManagerStartState(this, new TopicManagerReadyState(this));
         setCurrentState(topicManagerStartState);
     }
 

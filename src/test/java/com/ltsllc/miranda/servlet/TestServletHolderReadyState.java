@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.servlet;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.Results;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
 import com.ltsllc.miranda.test.TestCase;

@@ -16,27 +16,36 @@
 
 package com.ltsllc.miranda.user.states;
 
+import com.ltsllc.clcl.*;
+import com.ltsllc.commons.io.Util;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.results.Results;
+import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
+import com.ltsllc.miranda.servlet.bootstrap.BootstrapMessage;
 import com.ltsllc.miranda.user.DuplicateUserException;
 import com.ltsllc.miranda.user.UnknownUserException;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.messages.*;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ltsllc.miranda.Results.FileDoesNotExist;
+import static com.ltsllc.miranda.Results.UsersExist;
 
 /**
  * Created by Clark on 4/1/2017.
@@ -104,6 +113,12 @@ public class UserManagerReadyState extends ManagerReadyState {
                 break;
             }
 
+            case Bootstrap: {
+                BootstrapMessage bootstrapMessage = (BootstrapMessage) message;
+                nextState = processBootstrapMessage (bootstrapMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -140,13 +155,13 @@ public class UserManagerReadyState extends ManagerReadyState {
         return getUserManager().getCurrentState();
     }
 
-    public State processGetUsersMessage(ListUsersMessage getUsersMessage) throws MirandaException {
+    public State processGetUsersMessage(ListUsersMessage listUsersMessage) throws MirandaException {
         List<User> users = getUserManager().getUsers();
 
-        GetUsersResponseMessage getUsersResponseMessage = new GetUsersResponseMessage(getUserManager().getQueue(),
-                this, users);
+        ListUsersResponseMessage listUsersResponseMessage = new ListUsersResponseMessage(getUserManager().getQueue(),
+                getUserManager(), users);
 
-        getUsersMessage.reply(getUsersResponseMessage);
+        listUsersMessage.reply(listUsersResponseMessage);
 
         return getUserManager().getCurrentState();
     }
@@ -262,5 +277,37 @@ public class UserManagerReadyState extends ManagerReadyState {
         }
 
         return getUserManager().getCurrentState();
+    }
+
+    public State processBootstrapMessage (BootstrapMessage bootstrapMessage) throws MirandaException {
+        try {
+            if (getUserManager().getUsers().size() > 1) {
+                BootstrapResponseMessage bootstrapResponseMessage = new BootstrapResponseMessage(getUserManager().getQueue(),
+                        this, com.ltsllc.miranda.Results.UsersExist);
+            } else {
+                KeyPair keyPair = KeyPair.newKeys();
+                keyPair.getPublicKey().setDn(bootstrapMessage.getAdminDistinguishedName());
+                String pem = keyPair.getPublicKey().toPem();
+                Util.writeTextFile("admin.public.pem", pem);
+                keyPair.getPrivateKey().setDn(bootstrapMessage.getAdminDistinguishedName());
+                pem = keyPair.getPrivateKey().toPem();
+                Util.writeTextFile("admin.private.pem", pem);
+                JavaKeyStore javaKeyStore = new JavaKeyStore();
+                javaKeyStore.setFilename("admin.jks");
+                javaKeyStore.setPasswordString(bootstrapMessage.getAdminPassword());
+                javaKeyStore.add("admin", keyPair, null);
+                javaKeyStore.store();
+                User admin = new User("admin", User.UserTypes.Admin, "The admin user", keyPair.getPublicKey());
+                getUserManager().addUser(admin);
+            }
+        } catch (EncryptionException|IOException e) {
+            MirandaException mirandaException = new MirandaException("Exception creating keys", e);
+            throw mirandaException;
+        } catch (DuplicateUserException e) {
+            MirandaException mirandaException = new MirandaException("There is already an admin user", e);
+            throw mirandaException;
+        }
+
+        return this;
     }
 }

@@ -23,6 +23,7 @@ import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
@@ -107,7 +108,7 @@ public class TestReader extends TestCase {
 
         result = getReader().read(TEST_FILENAME);
 
-        assert (result.result == ReadResponseMessage.Results.Success);
+        assert (result.result == Results.Success);
         assert (arraysAreEquivalent(result.data, TEST_FILE_CONTENTS.getBytes()));
         assert (null == generalSecurityException);
     }
@@ -116,7 +117,7 @@ public class TestReader extends TestCase {
     public void testReadFileDoesNotExist() throws GeneralSecurityException, IOException {
         Reader.ReadResult result = getReader().read("I don't exist");
 
-        assert (result.result == ReadResponseMessage.Results.FileDoesNotExist);
+        assert (result.result == Results.FileDoesNotExist);
     }
 
     @Test
@@ -130,7 +131,7 @@ public class TestReader extends TestCase {
         when(getMockPrivateKey().decrypt(Matchers.any(EncryptedMessage.class))).thenThrow(encryptionException);
         result = getReader().read(TEST_FILENAME);
 
-        assert (result.result == ReadResponseMessage.Results.ExceptionDecryptingFile);
+        assert (result.result == Results.ExceptionDecryptingFile);
     }
 
     @Test

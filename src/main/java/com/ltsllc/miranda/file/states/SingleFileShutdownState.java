@@ -9,10 +9,9 @@ import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
-import com.ltsllc.miranda.writer.WriteFailedMessage;
-import com.ltsllc.miranda.writer.WriteSucceededMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.ltsllc.miranda.writer.WriteResponseMessage;
+import org.apache.log4j.Logger;
+
 
 import java.util.concurrent.BlockingQueue;
 
@@ -26,7 +25,7 @@ import java.util.concurrent.BlockingQueue;
  * @param <E>
  */
 public class SingleFileShutdownState<E extends MirandaObject> extends State {
-    private static Logger LOGGER = LoggerFactory.getLogger(SingleFileShutdownState.class);
+    private static Logger LOGGER = Logger.getLogger(SingleFileShutdownState.class);
 
     private BlockingQueue<Message> initiator;
 
@@ -65,18 +64,11 @@ public class SingleFileShutdownState<E extends MirandaObject> extends State {
             State nextState = null;
 
             switch (message.getSubject()) {
-                case WriteSucceeded: {
-                    WriteSucceededMessage writeSucceededMessage = (WriteSucceededMessage) message;
-                    nextState = processWriteSucceededMessage(writeSucceededMessage);
+                case WriteResponse: {
+                    WriteResponseMessage writeResponseMessage = (WriteResponseMessage) message;
+                    nextState = processWriteResponseMessage(writeResponseMessage);
                     break;
                 }
-
-                case WriteFailed: {
-                    WriteFailedMessage writeFailedMessage = (WriteFailedMessage) message;
-                    nextState = processWriteFailedMessage (writeFailedMessage);
-                    break;
-                }
-
                 default: {
                     nextState = super.processMessage(message);
                     break;
@@ -91,18 +83,7 @@ public class SingleFileShutdownState<E extends MirandaObject> extends State {
         }
     }
 
-    public State processWriteSucceededMessage (WriteSucceededMessage writeSucceededMessage) {
-        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getSingleFile().getQueue(),
-                this, getSingleFile().getName());
-        send(getInitiator(), shutdownResponseMessage);
-        return StopState.getInstance();
-    }
-
-    public State processWriteFailedMessage (WriteFailedMessage writeFailedMessage) {
-        LOGGER.error("error writing file", writeFailedMessage.getCause());
-        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(getSingleFile().getQueue(),
-                this, getSingleFile().getName());
-        send(getInitiator(), shutdownResponseMessage);
+    public State processWriteResponseMessage (WriteResponseMessage writeResponseMessage) {
         return StopState.getInstance();
     }
 }

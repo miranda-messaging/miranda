@@ -18,8 +18,8 @@ package com.ltsllc.miranda.user.messages;
 
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.results.Results;
 
 import java.util.concurrent.BlockingQueue;
 

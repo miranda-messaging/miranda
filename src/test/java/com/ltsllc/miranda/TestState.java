@@ -108,27 +108,4 @@ public class TestState extends TestCase {
         assert (nextState == getState());
     }
 
-    @Test
-    public void testSendSuccess () {
-        Message message = new Message(Message.Subjects.WriteFailed,null, this);
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-
-        getState().send(queue, message);
-
-        assert (contains(Message.Subjects.WriteFailed, queue));
-    }
-
-    @Test
-    public void testSendException () {
-        setuplog4j();
-        setupMockMiranda();
-        Message message = new Message(Message.Subjects.WriteFailed, null, this);
-        TestBlockingQueue testBlockingQueue = new TestBlockingQueue();
-        InterruptedException interruptedException = new InterruptedException("test");
-        testBlockingQueue.setInterruptedException(interruptedException);
-
-        getState().send(testBlockingQueue, message);
-
-        verify(getMockMiranda(), atLeastOnce()).panic(Matchers.any(Panic.class));
-    }
 }

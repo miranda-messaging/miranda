@@ -24,7 +24,6 @@ abstract public class EventServlet extends SessionServlet {
         return new EventResultObject();
     }
 
-    @Override
     public ServletHolder getServletHolder() {
         return EventHolder.getInstance();
     }

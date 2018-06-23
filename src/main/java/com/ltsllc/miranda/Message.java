@@ -33,6 +33,8 @@ public class Message {
         AddServlets,
         AddSession,
         Ballot,
+        Bootstrap,
+        BootstrapResponse,
         Broadcast,
         CheckSession,
         CheckSessionResponse,
@@ -48,6 +50,7 @@ public class Message {
         ConnectionError,
         ConnectTo,
         ConnectionClosed,
+        ConnectinCreated,
         Create,
         CreateResponse,
         CreateEvent,
@@ -73,6 +76,7 @@ public class Message {
         DuplicateUser,
         Election,
         EndConversation,
+        Error,
         Evict,
         ExceptionDuringScanMessage,
         Expired,
@@ -122,7 +126,6 @@ public class Message {
         NewEvent,
         NewEventResponse,
         NewNode,
-        NewUser,
         NewTopic,
         NewTopicResponse,
         NewClusterFile,
@@ -134,6 +137,8 @@ public class Message {
         NewNodeElement,
         NewProperties,
         NewSubscription,
+        NewUser,
+        NewUserResponse,
         NoConnection,
         NodeAdded,
         NodesLoaded,
@@ -187,12 +192,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        WriteFailed,
-        WriteFile,
-        WriteFileResponse,
-        WriteResponse,
-        WriteSucceeded,
-        Error, ReadFile, ConnectionCreated;
+        ConnectionCreated, Cancel, ListUsersResponse, WriteResponse
     }
 
     private static Gson ourGson = new Gson();

@@ -32,4 +32,14 @@ public class FileResult extends ResultObject {
     public void setContent(byte[] content) {
         this.content = content;
     }
+
+    private int bytesRead;
+
+    public int getBytesRead() {
+        return bytesRead;
+    }
+
+    public void setBytesRead() {
+        this.bytesRead = content.length;
+    }
 }

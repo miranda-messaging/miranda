@@ -30,6 +30,7 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
     }
 
     public void panic(Panic panic) throws ShutdownException {
+        logger.error("A panic occurred", panic);
         String fatalMessage = "The system is terminating due to a panic";
         boolean continuePanic = false;
 

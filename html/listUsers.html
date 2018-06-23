@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Users</title>
+    <script src="jquery.js"></script>
+</head>
+<body onload="getList()">
+sessinId is <input type="text" name="sessionId" id="sessionId" size="32">
+<br/>
+</body>
+</html>
+<script>
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function getSessionId() {
+        var sessionId=getParameterByName("sessionId");
+        $('#sessionId').val(sessionId)
+    }
+
+    function getList() {
+        getSessionId()
+        var xhr = new XMLHttpRequest();
+
+        var object = new Object();
+        object.sessionId = getParameterByName("sessionId");
+
+        var json = JSON.stringify(object)
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                    var data = JSON.parse(xhr.response)
+                    alert (data);
+                    var i;
+                    for (i = 0; i < data.users.length; i++) {
+
+                }else if (xhr.status == 400) {
+                    alert('There was an error 400');
+                }else {
+                    alert('something else other than 200 was returned');
+                }
+            }
+        }
+
+        xhr.open("POST", "/users/list", true)
+        xhr.send(json);
+    }
+
+
+</script>

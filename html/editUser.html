@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+    <script src="jquery.js"></script>
+</head>
+<body>
+
+    Name/Login <input type="text" name="name" id="name" size="10">
+    <br/>
+    Type <select name="type" id="type">
+        <option value="Publisher">Publisher</option>
+        <option value="Subscriber">Subscriber</option>
+        <option value="Publisher-Subscriber">Publisher-Subscriber</option>
+        <option value="Admin">Admin</option>
+</select>
+    <br/>
+    Description <input type="text" name="desription" id="description" size="20">
+    <br/>
+    Public Key <button onclick="generateKeyPair()">Generate</button>
+    <input type="file" name="publicKeyfile" id="publicKeyfile" onchange="loadPublicKeyfile()">
+    <br/>
+    <textarea name="publicKey" id="publicKey" rows="10" cols="80"></textarea>
+<br/>
+Private Key
+    <br/>
+<textarea name="privateKey" id="privateKey" rows="10" cols="80"></textarea>
+    <br/>
+<button onclick="createUser()">Create</button>
+</body>
+</html>
+<script>
+    function loadPublicKeyfile(){
+        var keyFile = $('#publicKeyfile')
+        var formData = new FormData()
+        formData.append("content", keyFile[0].files[0]);
+        var xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {var data = JSON.parse(xhr.response)
+                    var s = ""
+                    for (i = 0; i < data.content.length; i++) {
+                        s += String.fromCharCode(data.content[i])
+                    }
+                    $('#publicKey').val(s)
+
+                }
+            }
+        }
+
+        xhr.open ("POST", "/servlets/fileServlet", true)
+        xhr.send (formData)
+    }
+
+    function generateKeyPair() {
+        $.get("/servlets/createKeyPair", populateKeys)
+    }
+
+    function populateKeys (data, status) {
+        var keyResults = JSON.parse(data);
+        $('#publicKey').val(keyResults.publicKey)
+        $('#privateKey').val(keyResults.privateKey)
+    }
+
+    function createUser () {
+        if ($('#name').val() == "")
+            alert ("Please enter a login")
+
+
+        if ($('#publicKey').val().trim() == "")
+            alert("Please paste a public key or generate a key pair")
+
+
+        var o = new Object();
+        o = {
+            name: $('#name').val(),
+            category: $('#type').val(),
+            description: $('#description').val(),
+            publicKeyPem: $('#publicKey').val()
+        }
+
+        var p = new Object()
+        p = {
+            user: o
+        }
+        var json=JSON.stringify(p)
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                    alert("Created!")
+                }
+            }
+        }
+
+        xhr.open ("POST", "/users/create", true)
+        xhr.send (json)
+    }
+
+
+
+
+
+</script>

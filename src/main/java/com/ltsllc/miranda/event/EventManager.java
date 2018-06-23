@@ -62,7 +62,7 @@ public class EventManager extends DirectoryManager {
         try {
             long period = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_EVENT_EVICTION_PERIOD);
             EvictMessage evictEventsMessage = new EvictMessage();
-            Miranda.timer.sendSchedulePeriodic(period, getQueue(), evictEventsMessage);
+            Miranda.timer.sendSchedulePeriodic(0, period, getQueue(), evictEventsMessage);
         } catch (MirandaException e) {
             StartupPanic startupPanic = new StartupPanic("Exception starting event manager", e,
                     StartupPanic.StartupReasons.ExceptionStartingEventManager);

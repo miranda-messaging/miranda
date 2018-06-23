@@ -16,9 +16,11 @@
 
 package com.ltsllc.miranda.subsciptions.states;
 
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.manager.states.ManagerStartState;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 
 /**
@@ -30,10 +32,16 @@ public class SubscriptionManagerStartState extends ManagerStartState {
     }
 
     public SubscriptionManagerStartState(SubscriptionManager subscriptionManager) throws MirandaException {
-        super(subscriptionManager);
+        super(subscriptionManager, new SubscriptionManagerReadyState(subscriptionManager));
     }
 
-    public State getReadyState() throws MirandaException {
-        return new SubscriptionManagerReadyState(getSubscriptionManager());
+    public State getReadyState() {
+        try {
+            return new SubscriptionManagerReadyState(getSubscriptionManager());
+        } catch (MirandaException e) {
+            Panic panic = new Panic("exception in getReadyState", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+            return null;
+        }
     }
 }

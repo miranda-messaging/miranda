@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script src="jquery.js"></script>
+    <script src="jsencrypt.js"></script>
+    <script src="BigInteger.js"></script>
+</head>
+<body>
+Select credentials <input name="content" id="content" type="file" onchange="load()">
+    <br/>
+    Contents:
+    <textarea name="credentials" id="credentials" rows="20" cols="80"></textarea>
+
+    <br/>
+    Set name <input type="text" onclick="name" name="name" id="name" size="20">
+
+    <br/>
+    <button id="login" onclick="login()">Login</button>
+
+    <br/>
+    Session
+    <textarea name="session" id="session" rows="4" cols="80"></textarea>
+
+<br/>
+<button onclick="decrypt">Decrypt</button>
+    <br/>
+    Decrypted
+    <textarea name="decrypted" id="decrypted" rows="4" cols="80"></textarea>
+<br/>
+<button onclick="listUsers()" name="listUsers" id="listUsers">List Users</button>
+
+
+
+</body>
+</html>
+<script>
+    function load() {
+        var file = document.getElementById("content")
+        var formData = new FormData();
+        formData.append("content", file.files[0])
+
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+                    var data = JSON.parse(xmlhttp.response)
+                    var s = ""
+                    for (i = 0; i < data.content.length; i++) {
+                        s += String.fromCharCode(data.content[i])
+                    }
+                    document.getElementById("credentials").innerHTML = s
+               }
+               else if (xmlhttp.status == 400) {
+                    alert('There was an error 400');
+               }
+               else {
+                    alert('something else other than 200 was returned');
+               }
+            }
+        };
+
+        xmlhttp.open("POST", "/servlets/fileServlet", true);
+        xmlhttp.send(formData);
+
+    }
+
+    function login() {
+        var object = new Object();
+        object = {name: $('#name').val()}
+        var json = JSON.stringify(object)
+        var xhr = new XMLHttpRequest()
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+               if (xhr.status == 200) {
+                    var data = JSON.parse(xhr.response)
+                    var decrypt = new JSEncrypt();
+                    decrypt.setPrivateKey($('#credentials').val())
+                    var plaintext = decrypt.decrypt(data.encryptedSession);
+                    var session = bigInt(plaintext);
+                    var sessionText = session.toString()
+                    $('#decrypted').val(sessionText)
+               }
+               else if (xhr.status == 400) {
+                    alert('There was an error 400');
+               }
+               else {
+                    alert('something else other than 200 was returned');
+               }
+            }
+        };
+
+        xhr.open("POST", "/login", true);
+        xhr.send(json);
+    }
+
+    function decrypt() {
+        var dc = new JSEncrypt()
+        dc.setPrivateKey ($('#credentials').val())
+
+    }
+
+    function listUsers() {
+        window.location.href = "listUsers.html?sessionId=" + $('#decrypted').val();
+    }
+
+</script>

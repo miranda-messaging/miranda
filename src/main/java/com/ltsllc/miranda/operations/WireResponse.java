@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.operations;
 
-import com.ltsllc.miranda.clientinterface.results.Results;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 
 /**

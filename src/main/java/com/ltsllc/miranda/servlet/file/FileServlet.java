@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.servlet.file;
 
-import com.ltsllc.miranda.clientinterface.results.Results;
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import org.eclipse.jetty.server.Request;
 
@@ -36,6 +36,14 @@ import java.lang.reflect.Method;
  * Created by Clark on 4/18/2017.
  */
 public class FileServlet extends MirandaServlet {
+    public void copy(InputStream inputStream, ServletOutputStream outputStream) throws IOException {
+        int c = inputStream.read();
+        while (c != -1) {
+            outputStream.write(c);
+            c = inputStream.read();
+        }
+    }
+
     public byte[] readInputStream(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -48,45 +56,22 @@ public class FileServlet extends MirandaServlet {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public void copy(InputStream inputStream, ServletOutputStream outputStream) throws IOException {
-        int c = inputStream.read();
-        while (c != -1) {
-            outputStream.write(c);
-            c = inputStream.read();
-        }
-    }
-
     public static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
 
-    public Method[] getAllDeclaredMethods(Class<? extends HttpServlet> c) {
-        Class<?> clazz = c;
-
-        Method[] allMethods;
-        for (allMethods = null; !clazz.equals(HttpServlet.class); clazz = clazz.getSuperclass()) {
-            Method[] thisMethods = clazz.getDeclaredMethods();
-            if (allMethods != null && allMethods.length > 0) {
-                Method[] subClassMethods = allMethods;
-                allMethods = new Method[thisMethods.length + allMethods.length];
-                System.arraycopy(thisMethods, 0, allMethods, 0, thisMethods.length);
-                System.arraycopy(subClassMethods, 0, allMethods, thisMethods.length, subClassMethods.length);
-            } else {
-                allMethods = thisMethods;
-            }
-        }
-
-        return allMethods != null ? allMethods : new Method[0];
-    }
-
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
-        FileResult fileResult = new FileResult();
-        Part part = req.getPart("content");
-        fileResult.setContent(readInputStream(part.getInputStream()));
+        try {
+            req.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
+            FileResult fileResult = new FileResult();
+            Part part = req.getPart("content");
+            fileResult.setContent(readInputStream(part.getInputStream()));
+            fileResult.setBytesRead();
+            fileResult.setResult(Results.Success);
 
-        fileResult.setResult(Results.Success);
-
-        respond(resp.getOutputStream(), fileResult);
-        resp.setHeader("Access-Control-Allow-Origin", "*");
-        resp.setStatus(200);
+            respond(resp.getOutputStream(), fileResult);
+            resp.setHeader("Access-Control-Allow-Origin", "*");
+            resp.setStatus(200);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 }

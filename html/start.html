@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Miranda</title>
+    <style>
+#bannerimage {
+  width: 100%;
+  background-image: url("images/miranda-banner-small.jpg");
+  height: 239px;
+  background-position: center;
+}
+</style>
+</head>
+
+<body>
+<div id="bannerimage"></div>
+<div>
+    <form method="post" action="/bootstrap" name="whatever">
+        Certificate Authority
+        <br/>
+        Country <input name="ca.country" id="ca.country" type="text" size="20" value="USA">
+        State <input name="ca.state" id="ca.state" type="text" size="20" value="Colorado">
+        City <input name="ca.city" id="ca.city" type="text" size="20" value="Denver">
+        Company <input name="ca.company" id="ca.company" type="text" size="20" value="Long Term Software">
+        Division <input name="ca.division" id="ca.divison" type="text" size="20" value="Development">
+        Name <input name="ca.name" id="ca.name" type="text" size="20" value="UNKNOWN">
+        Password <input name="ca.password" id="ca.password" type="text" size="20" value="password">
+        <br/>
+        Node
+        <br/>
+        Country <input name="node.country" id="node.country" type="text" size="20" value="USA">
+        State <input name="node.state" id="node.state" type="text" size="20" value="Colorado">
+        City <input name="node.city" id="node.city" type="text" size="20" value="Denver">
+        Company <input name="node.company" id="node.company" type="text" size="20" value="Long Term Software">
+        Division <input name="node.division" id="node.divison" type="text" size="20" value="Development">
+        Name <input name="node.name" id="node.name" type="text" size="20" value="UNKNOWN">
+        Password <input name="node.password" id="node.password" type="text" size="20" value="password">
+        <br/>
+        Admin
+        <br/>
+        Country <input name="admin.country" id="admin.country" type="text" size="20" value="USA">
+        State <input name="admin.state" id="admin.state" type="text" size="20" value="Colorado">
+        City <input name="admin.city" id="admin.city" type="text" size="20" value="Denver">
+        Company <input name="admin.company" id="admin.company" type="text" size="20" value="Long Term Software">
+        Division <input name="admin.division" id="admin.divison" type="text" size="20" value="Development">
+        Name <input name="admin.name" id="admin.name" type="text" size="20" value="admin">
+        Password <input name="admin.password" id="admin.password" type="text" size="20" value="password">
+        <br/>
+        <input type="submit" value="Bootstrap">
+
+    </form>
+</div>
+</body>
+</html>
+<script>
+	function start() {
+		window.location.href = '/bootstrap'
+	}
+</script>

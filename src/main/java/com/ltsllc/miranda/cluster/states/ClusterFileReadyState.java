@@ -30,7 +30,6 @@ import com.ltsllc.miranda.file.states.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.writer.WriteFailedMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
@@ -212,12 +211,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return "ReadyState";
     }
 
-    private State processWriteFailedMessage(WriteFailedMessage message) {
-        logger.error("Failed to write cluster file: " + message.getFilename(), message.getCause());
-
-        return this;
-    }
-
     public State start() {
         State nextState = super.start();
 
@@ -225,7 +218,7 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
         long healthCheckPeriod = properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD, MirandaProperties.DEFAULT_CLUSTER_HEALTH_CHECK_PERIOD);
         HealthCheckMessage healthCheckMessage = new HealthCheckMessage(getClusterFile().getCluster(), this);
-        Miranda.timer.sendSchedulePeriodic(healthCheckPeriod, getClusterFile().getCluster(), healthCheckMessage);
+        Miranda.timer.sendSchedulePeriodic(0, healthCheckPeriod, getClusterFile().getCluster(), healthCheckMessage);
 
         return nextState;
     }

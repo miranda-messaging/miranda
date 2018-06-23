@@ -25,13 +25,14 @@ import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
-import com.ltsllc.miranda.writer.WriteFailedMessage;
-import com.ltsllc.miranda.writer.WriteSucceededMessage;
+
 
 /**
  * A state for when the object is first created.  It waits for the read to complete
  */
-public class SingleFileStartingState extends State {
+abstract public class SingleFileStartingState extends State {
+    abstract public State getReadyState () throws MirandaException;
+
     public SingleFile getFile() {
         return (SingleFile) getContainer();
     }
@@ -62,18 +63,6 @@ public class SingleFileStartingState extends State {
                 break;
             }
 
-            case WriteSucceeded: {
-                WriteSucceededMessage writeSucceededMessage = (WriteSucceededMessage) message;
-                nextState = processWriteSucceededMessage(writeSucceededMessage);
-                break;
-            }
-
-            case WriteFailed: {
-                WriteFailedMessage writeFailedMessage = (WriteFailedMessage) message;
-                nextState = processWriteFailedMessage(writeFailedMessage);
-                break;
-            }
-
             case GarbageCollection: {
                 GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
                 nextState = processGarbageCollectionMessage(garbageCollectionMessage);
@@ -90,24 +79,24 @@ public class SingleFileStartingState extends State {
     }
 
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
-        if (readResponseMessage.getResult() == ReadResponseMessage.Results.Success) {
+        if (readResponseMessage.getResult() == Results.Success) {
             getFile().setData(readResponseMessage.getData());
             getFile().fireFileLoaded();
             restoreDeferredMessages();
-            return new SingleFileReadyState(getFile());
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.FileDoesNotExist) {
+            return getReadyState();
+        } else if (readResponseMessage.getResult() == Results.FileDoesNotExist) {
             getFile().getData().clear();
             getFile().fireFileDoesNotExist();
             restoreDeferredMessages();
             return this;
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionReadingFile) {
+        } else if (readResponseMessage.getResult() == Results.ExceptionReadingFile) {
             StartupPanic startupPanic = new StartupPanic("Problem loading " + getFile().getFilename(),
                     readResponseMessage.getException(),
                     StartupPanic.StartupReasons.ProblemLoadingFile);
             Miranda.panicMiranda(startupPanic);
 
             return StopState.getInstance();
-        } else if (readResponseMessage.getResult() == ReadResponseMessage.Results.ExceptionDecryptingFile) {
+        } else if (readResponseMessage.getResult() == Results.ExceptionDecryptingFile) {
             StartupPanic startupPanic = new StartupPanic("Error decrypting " + getFile().getFilename(),
                     readResponseMessage.getException(),
                     StartupPanic.StartupReasons.ProblemLoadingFile);
@@ -135,26 +124,15 @@ public class SingleFileStartingState extends State {
         return this;
     }
 
-    public State processCreateMessage (CreateMessage createMessage) {
+    public State processCreateMessage (CreateMessage createMessage) throws MirandaException {
         getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getName(), getFile().getBytes());
-        return this;
-    }
-
-    public State processWriteSucceededMessage (WriteSucceededMessage writeSucceededMessage) throws MirandaException {
-        return new SingleFileReadyState(getFile());
-    }
-
-    public State processWriteFailedMessage (WriteFailedMessage writeFailedMessage) {
-        StartupPanic startupPanic = new StartupPanic("write failed", writeFailedMessage.getCause(),
-                StartupPanic.StartupReasons.ExceptionWritingFile);
-        Miranda.panicMiranda(startupPanic);
-        return this;
+        return new SingleFileCreatingState (getReadyState(), getFile());
     }
 
     public State start () {
         try {
             getFile().getReader().sendReadMessage(getFile().getQueue(), this, getFile().getFilename());
-            return new SingleFileReadingState(getFile());
+            return new SingleFileReadingState(getFile(), getReadyState());
         } catch (MirandaException e) {
             Panic panic = new Panic("Exception trying to star", e, Panic.Reasons.ExceptionTryingToStart);
             Miranda.panicMiranda(panic);

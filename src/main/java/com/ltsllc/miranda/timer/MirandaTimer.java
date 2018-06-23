@@ -19,26 +19,59 @@ package com.ltsllc.miranda.timer;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.timer.messages.CancelMessage;
+import com.ltsllc.miranda.timer.messages.ScheduleOnceMessage;
+import com.ltsllc.miranda.timer.messages.SchedulePeriodicMessage;
+import org.apache.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 1/22/2017.
  */
 public class MirandaTimer extends Consumer {
-    private Timer timer;
+
+    private static class LocalTimerTask extends TimerTask {
+        private static Logger logger = Logger.getLogger(LocalTimerTask.class);
+
+        private Message message;
+        private BlockingQueue<Message> queue;
+
+
+        public Message getMessage() {
+            return message;
+        }
+
+        public LocalTimerTask(BlockingQueue<Message> receiver, Message message) {
+            this.queue = receiver;
+            this.message = message;
+        }
+
+        public void run() {
+            try {
+                queue.put(getMessage());
+            } catch (InterruptedException e) {
+                logger.error("Interrupted while sending message", e);
+            }
+        }
+    }
+
+    private Map<BlockingQueue<Message>, Timer> timerMap = new HashMap<>();
+
+    public Map<BlockingQueue<Message>, Timer> getTimerMap() {
+        return timerMap;
+    }
 
     public MirandaTimer() throws MirandaException {
         super("timer");
-        timer = new Timer("timer", true);
         MirandaTimerReadyState mirandaTimerReadyState = new MirandaTimerReadyState(this);
         setCurrentState(mirandaTimerReadyState);
     }
 
-    public Timer getTimer() {
-        return timer;
-    }
 
     public void sendScheduleOnce(long delay, BlockingQueue<Message> receiver, Message message) {
         ScheduleOnceMessage scheduleOnceMessage = new ScheduleOnceMessage(null, this, delay,
@@ -47,10 +80,48 @@ public class MirandaTimer extends Consumer {
         sendToMe(scheduleOnceMessage);
     }
 
-    public void sendSchedulePeriodic(long period, BlockingQueue<Message> receiver, Message message) {
-        SchedulePeriodicMessage periodicMessage = new SchedulePeriodicMessage(null, this, period,
-                message, receiver);
+    public void sendCancel (BlockingQueue<Message> senderQueue, Object senderObject, BlockingQueue<Message> receiver) {
+        CancelMessage cancelMessage = new CancelMessage(senderQueue, senderObject, receiver);
+        sendToMe(cancelMessage);
+    }
+
+    public void sendSchedulePeriodic(long delay, long period, BlockingQueue<Message> receiver, Message message) {
+        SchedulePeriodicMessage periodicMessage = new SchedulePeriodicMessage(null, this,
+                delay, period, message, receiver);
 
         sendToMe(periodicMessage);
+    }
+
+    public void scheduleOnce (long delay, BlockingQueue<Message> receiver, Message message) {
+        LocalTimerTask localTimerTask = new LocalTimerTask(receiver, message);
+
+        Timer timer = getTimerMap().get(receiver);
+        if (timer == null) {
+            timer = new Timer("timer", true);
+            getTimerMap().put(receiver, timer);
+        }
+
+        timer.schedule(localTimerTask, delay);
+    }
+
+
+    public void schedulePeriodic (long delay, long period, BlockingQueue<Message> receiver, Message message) {
+        LocalTimerTask localTimerTask = new LocalTimerTask(receiver, message);
+
+        Timer timer = getTimerMap().get(receiver);
+        if (timer == null) {
+            timer = new Timer("timer", true);
+            getTimerMap().put(receiver, timer);
+        }
+
+        timer.scheduleAtFixedRate(localTimerTask, delay, period);
+    }
+
+    public void cancel (BlockingQueue<Message> receiver) {
+        Timer timer = getTimerMap().get(receiver);
+        if (timer != null) {
+            timer.cancel();
+            getTimerMap().put(receiver, null);
+        }
     }
 }

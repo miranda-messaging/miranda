@@ -75,7 +75,7 @@ public class TestPanicPolicyClass extends TestCase {
     public void testStart () {
         getPanicPolicyClass().start();
 
-        verify(getMockTimer(), atLeastOnce()).sendSchedulePeriodic(Matchers.anyLong(), Matchers.any(BlockingQueue.class),
+        verify(getMockTimer(), atLeastOnce()).sendSchedulePeriodic(Matchers.anyLong(), Matchers.anyLong(), Matchers.any(BlockingQueue.class),
                 Matchers.any(Message.class));
     }
 

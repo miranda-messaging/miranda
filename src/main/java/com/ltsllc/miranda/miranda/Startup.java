@@ -31,15 +31,15 @@ import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.ServletMapping;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.states.ReadyState;
-import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.UnencryptedConnectionListener;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.servlet.basicstatus.BasicStatusServlet;
+import com.ltsllc.miranda.servlet.bootstrap.BootstrapServlet;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusServlet;
-import com.ltsllc.miranda.servlet.enctypt.CreateKeyPairServlet;
+import com.ltsllc.miranda.servlet.encrypt.CreateKeyPairServlet;
 import com.ltsllc.miranda.servlet.event.PublishServlet;
 import com.ltsllc.miranda.servlet.file.FileServlet;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
@@ -95,7 +95,7 @@ public class Startup extends State {
         INFO
     }
 
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger(Startup.class);
 
     private String[] arguments = {};
     private int index;
@@ -268,12 +268,9 @@ public class Startup extends State {
             definePanicPolicy();
             performMiscellaneousOperations();
             setupKeyStores();
-            if (systemNeedsSetup())
-            {
-                State setupState = new SetupState(getContainer());
-                return setupState;
-            }
-
+            setupHttpServer();
+            startHttpServer();
+            setupServlets();
             getKeys(getKeystorePasswordString());
             startLogger();
             logProperties();
@@ -283,9 +280,6 @@ public class Startup extends State {
             startSubsystems();
             loadFiles();
             setupSchedule();
-            setupHttpServer();
-            setupServlets();
-            startHttpServer();
             startListening();
             Miranda.getInstance().performGarbageCollection();
             exportCertificate();
@@ -322,14 +316,10 @@ public class Startup extends State {
      * @return
      */
     public boolean systemNeedsSetup() {
-        if (isDebugMode()) {
-            return false;
-        }
-
         JavaKeyStore keyStore = Miranda.getInstance().getKeyStore();
         JavaKeyStore trustStore = Miranda.getInstance().getTrustStore();
 
-        return (!keyStore.exists() && !trustStore.exists());
+        return keyStore == null || trustStore == null || !keyStore.exists() || !trustStore.exists();
     }
 
     private void performMiscellaneousOperations() throws MirandaException {
@@ -531,6 +521,9 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/shutdown", ShutdownServlet.class);
         mappings.add(servletMapping);
 
+        servletMapping = new ServletMapping("/bootstrap", BootstrapServlet.class);
+        mappings.add(servletMapping);
+
         MirandaStatus.initialize();
         MirandaStatus.getInstance().start();
 
@@ -636,9 +629,7 @@ public class Startup extends State {
         String trustStoreFilename = getProperties().getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
         File file = new File(trustStoreFilename);
         if (!file.exists()) {
-            StartupPanic startupPanic = new StartupPanic("trustore, " + trustStoreFilename + ", does not exist",
-                    StartupPanic.StartupReasons.TrustStoreMissing);
-            Miranda.panicMiranda(startupPanic);
+            logger.info("The tuststore does not exist, the system will be unable to join a cluster");
         }
 
         System.setProperty("javax.net.ssl.trustStore", trustStoreFilename);
@@ -751,7 +742,7 @@ public class Startup extends State {
 
         GarbageCollectionMessage garbageCollectionMessage = new GarbageCollectionMessage(Miranda.getInstance().getQueue(),
                 Miranda.timer);
-        Miranda.timer.sendSchedulePeriodic(garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
+        Miranda.timer.sendSchedulePeriodic(0, garbageCollectionPeriod, getMiranda().getQueue(), garbageCollectionMessage);
     }
 
     /**

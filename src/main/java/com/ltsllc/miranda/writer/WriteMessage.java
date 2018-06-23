@@ -49,4 +49,8 @@ public class WriteMessage extends Message {
         setBuffer(buffer);
         setFilename(filename);
     }
+
+    public WriteMessage (BlockingQueue<Message> senderQueue, Object senderObject) {
+        super(Subjects.Write, senderQueue, senderObject);
+    }
 }
