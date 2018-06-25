@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.servlet.session;
 
+import com.google.gson.Gson;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
@@ -30,6 +31,7 @@ import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,8 +48,6 @@ abstract public class SessionServlet extends MirandaServlet {
     abstract public ResultObject performService(HttpServletRequest request, HttpServletResponse response,
                                                 Request requestObject) throws ServletException, IOException, TimeoutException;
 
-
-
     abstract public ResultObject createResultObject();
 
     private Session session;
@@ -56,12 +56,25 @@ abstract public class SessionServlet extends MirandaServlet {
         return session;
     }
 
-    public void setSession(Session session) {
-        this.session = session;
+    public Session getSession(HttpServletRequest httpServletRequest) throws TimeoutException {
+        Cookie[] cookies = httpServletRequest.getCookies();
+        Session session = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equalsIgnoreCase("sessionId")) {
+                String value = cookie.getValue();
+                long sessionId = Long.parseLong(value);
+                session = checkSession(sessionId);
+            }
+        }
+
+        if (null != session)
+            setSession(session);
+
+        return session;
     }
 
-    public User getUser() {
-        return getSession().getUser();
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,9 +83,9 @@ abstract public class SessionServlet extends MirandaServlet {
         try {
             String json = Utils.readInputStream(request.getInputStream());
             Request requestObject = getGson().fromJson(json, getRequestClass());
-
-            Session session = checkSession(requestObject.getSessionIdAsLong());
-            if (null == session) {
+            Session session = getSession(request);
+            setSession(session);
+            if (!sessionIsGood(request)) {
                 resultObject = createResultObject();
                 resultObject.setResult(Results.SessionNotFound);
                 response.sendRedirect(LOGIN_PAGE);
@@ -100,6 +113,19 @@ abstract public class SessionServlet extends MirandaServlet {
         respond(response.getOutputStream(), resultObject);
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus(200);
+    }
+
+    public boolean sessionIsGood(HttpServletRequest request) throws TimeoutException {
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equalsIgnoreCase("sessionId")) {
+                String value = cookie.getValue();
+                long sessionId = Long.parseLong(value);
+                Session session = checkSession(sessionId);
+                return (session !=  null);
+            }
+        }
+        return false;
     }
 
     public void send (BlockingQueue<Message> receiver, Message message) {

@@ -53,6 +53,7 @@ import com.ltsllc.miranda.servlet.status.StatusServlet;
 import com.ltsllc.miranda.servlet.subscription.*;
 import com.ltsllc.miranda.servlet.topic.*;
 import com.ltsllc.miranda.servlet.user.*;
+import com.ltsllc.miranda.servlet.user.servlet.*;
 import com.ltsllc.miranda.session.SessionManager;
 import com.ltsllc.miranda.shutdown.ShutdownException;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;

@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.user.servlet;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.objects.ListObject;
 import com.ltsllc.miranda.clientinterface.requests.Request;
-import com.ltsllc.miranda.clientinterface.requests.UserRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
-import com.ltsllc.miranda.user.messages.ListUsersMessage;
+import com.ltsllc.miranda.servlet.user.request.BasicRequest;
+import com.ltsllc.miranda.servlet.user.UserListResultObject;
 import com.ltsllc.miranda.user.messages.ListUsersResponseMessage;
 
 
@@ -34,8 +30,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 /**

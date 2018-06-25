@@ -26,6 +26,7 @@ import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
+import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
@@ -55,7 +56,7 @@ import java.util.concurrent.BlockingQueue;
 
 
 /**
- * A logical grouping of {@Link Node}.
+ * A logical grouping of {@Link Node} objects.
  * <p>
  * This class allows the rest of the system to treat a cluster like a single unit.
  * For example the system can "tell" the cluster about a new message and
@@ -91,12 +92,15 @@ public class Cluster extends Manager<Node, NodeElement> {
 
         this.network = network;
         ourInstance = this;
+        ClusterFileStartingState clusterFileStartingState = new ClusterFileStartingState(getClusterFile());
+        setCurrentState(clusterFileStartingState);
     }
 
     public Cluster(Network network, boolean testMode) throws MirandaException {
         super(NAME, testMode);
 
         this.network = network;
+
     }
 
     public ClusterFile getClusterFile() {
@@ -291,8 +295,7 @@ public class Cluster extends Manager<Node, NodeElement> {
         sendToMe(newUserMessage);
     }
 
-    public void sendUpdateUserMessage(BlockingQueue<Message> senderQueue, Object sender, User user) {
-        UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, null, user);
+    public void sendUpdateUserMessage(BlockingQueue<Message> senderQueue, Object sender, User user) { UpdateUserMessage updateUserMessage = new UpdateUserMessage(senderQueue, sender, null, user);
         sendToMe(updateUserMessage);
     }
 

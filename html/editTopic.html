@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Topic</title>
+    <script src="jquery.js"></script>
+    <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+
+        function update ()
+        {
+            if ($('#owner').val().trim() == "") {
+                alert("Please enter an owner")
+                return;
+            }
+
+            var topic = new Object()
+            topic = { name: $('#name').val(), owner: $('#owner').val(), remotePolicy: $('#remotePolicy').val() }
+            var request = new Object()
+            request = { topic: topic }
+            var json = JSON.stringify (request)
+            $.post ("/topics/update", json, function (data, status, jqxhr) {
+                alert ("Updated!")
+                back ()
+            })
+        }
+
+        function getTopic () {
+            var topic = new Object ()
+            var name = getParameterByName("topic")
+            topic = { name: name }
+            var request = new Object ()
+            request = { topic: topic }
+            var json = JSON.stringify(request)
+            $.post("/topics/read", json, function (data, status, jqxhr) {
+                var response = JSON.parse(data)
+                $('#name').val (response.object.name)
+                $('#owner').val (response.object.owner)
+                $('#remotePolicy').val (response.object.remotePolicy)
+            })
+        }
+
+        function back ()
+        {
+            window.location.href = "listTopics.html"
+        }
+    </script>
+</head>
+<body onload="getTopic()">
+<h3>Edit Topic</h3>
+Name <input type="text" disabled name="name" id="name"><br/>
+Owner <input type="text" name="owner" id="owner"><br/>
+Remote policy <select name="remotePolicy" id="remotePolicy">
+    <option value="Immediate">Immediate</option>
+    <option value="Acknowledged">Acknowledged</option>
+    <option value="Written">Written</option>
+</select><br/>
+<button onclick="update()">Update</button>
+<button onclick="back()">Cancel</button>
+</body>
+</html>

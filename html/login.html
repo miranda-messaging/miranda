@@ -30,7 +30,7 @@ Select credentials <input name="content" id="content" type="file" onchange="load
     <textarea name="decrypted" id="decrypted" rows="4" cols="80"></textarea>
 <br/>
 <button onclick="listUsers()" name="listUsers" id="listUsers">List Users</button>
-
+<button onclick="listTopics()" name="listTopics" id="listTopics">List Topics</button>
 
 
 </body>
@@ -83,6 +83,7 @@ Select credentials <input name="content" id="content" type="file" onchange="load
                     var session = bigInt(plaintext);
                     var sessionText = session.toString()
                     $('#decrypted').val(sessionText)
+                    document.cookie = "sessionId=" + sessionText
                }
                else if (xhr.status == 400) {
                     alert('There was an error 400');
@@ -105,6 +106,10 @@ Select credentials <input name="content" id="content" type="file" onchange="load
 
     function listUsers() {
         window.location.href = "listUsers.html?sessionId=" + $('#decrypted').val();
+    }
+
+    function listTopics() {
+        window.location.href = "listTopics.html";
     }
 
 </script>

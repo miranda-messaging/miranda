@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.miranda;
+package com.ltsllc.miranda.miranda.states;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.State;

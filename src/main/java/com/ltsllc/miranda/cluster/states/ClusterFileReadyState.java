@@ -30,6 +30,7 @@ import com.ltsllc.miranda.file.states.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
@@ -72,9 +73,23 @@ public class ClusterFileReadyState extends SingleFileReadyState {
                 break;
             }
 
+            case HealthCheck: {
+                nextState = this;
+                break;
+            }
+
             case HealthCheckUpdate: {
                 HealthCheckUpdateMessage healthCheckUpdateMessage = (HealthCheckUpdateMessage) message;
                 nextState = processHealthCheckUpdateMessage(healthCheckUpdateMessage);
+                break;
+            }
+
+            case FileLoaded: {
+                nextState = this;
+                break;
+            }
+
+            case UpdateUser: {
                 break;
             }
 
@@ -162,6 +177,9 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
     }
 
+
+
+
     public Type getListType() {
         return new TypeToken<List<NodeElement>>() {
         }.getType();
@@ -206,10 +224,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     }
 
 
-    @Override
-    public String toString() {
-        return "ReadyState";
-    }
 
     public State start() {
         State nextState = super.start();

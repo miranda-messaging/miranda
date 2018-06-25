@@ -4,13 +4,7 @@
     <meta charset="UTF-8">
     <title>List Users</title>
     <script src="jquery.js"></script>
-</head>
-<body onload="getList()">
-sessinId is <input type="text" name="sessionId" id="sessionId" size="32">
-<br/>
-</body>
-</html>
-<script>
+    <script>
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -28,32 +22,48 @@ sessinId is <input type="text" name="sessionId" id="sessionId" size="32">
 
     function getList() {
         getSessionId()
-        var xhr = new XMLHttpRequest();
-
-        var object = new Object();
-        object.sessionId = getParameterByName("sessionId");
-
-        var json = JSON.stringify(object)
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                    var data = JSON.parse(xhr.response)
-                    alert (data);
-                    var i;
-                    for (i = 0; i < data.users.length; i++) {
-
-                }else if (xhr.status == 400) {
-                    alert('There was an error 400');
-                }else {
-                    alert('something else other than 200 was returned');
-                }
-            }
-        }
-
-        xhr.open("POST", "/users/list", true)
-        xhr.send(json);
+        $.post("/users/list", populateList)
     }
 
+    function populateList (data, status) {
+        var userList = JSON.parse(data);
+        var i;
+        for (i = 0; i < userList.userList.length; i++) {
+            var newHtml = '<li>' + userList.userList[i].name
+            + ' <a href="editUser.html?name=' + userList.userList[i].name + '">edit</a> '
+            + ' <button onclick="removeUser(\'' + userList.userList[i].name + '\')">delete</button>'
+            $('#users').append (newHtml)
+        }
+    }
 
+    function removeUser(name) {
+        if (confirm("Please confirm the delete of " + name)) {
+            var userRequest = new Object()
+            userRequest = { user: name }
+            var json = JSON.stringify (userRequest)
+            $.post("/users/delete", json, userRemoved)
+        }
+    }
+
+    function userRemoved (data,textStatus, jqXHR) {
+        window.location.reload();
+    }
+</script>
+</head>
+<body onload="getList()">
+sessionId is <input type="text" name="sessionId" id="sessionId" size="32">
+<br/>
+<div id=>
+    <ul id="users">
+
+    </ul>
+</div>
+<button onclick="add()">Create</button>
+<br/>
+</body>
+</html>
+<script>
+    function add() {
+        window.location.href = "createUser.html";
+    }
 </script>

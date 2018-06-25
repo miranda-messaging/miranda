@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.user.request;
 
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;

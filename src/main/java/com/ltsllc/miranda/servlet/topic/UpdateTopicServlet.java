@@ -39,7 +39,7 @@ public class UpdateTopicServlet extends TopicServlet {
                                             TopicRequest requestObject) throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
 
-        Results result = TopicHolder.getInstance().updateTopic(requestObject.getTopic());
+        Results result = TopicHolder.getInstance().updateTopic(requestObject.getTopic(), getSession());
         resultObject.setResult(result);
 
         return resultObject;

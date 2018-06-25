@@ -151,6 +151,10 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         load();
     }
 
+    public String toString ()
+    {
+        return "file (" + getFilename() + ")@" + getCurrentState();
+    }
 
     public String getFilename() {
         return filename;
@@ -217,9 +221,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return getVersion().equals(other.getVersion());
     }
 
-    public String toString() {
-        return filename;
-    }
+
 
     public void performGarbageCollection() {
         setLastCollection(System.currentTimeMillis());

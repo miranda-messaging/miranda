@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "name": "whatever",
+    "owner": "clark",
+    "remotePolicy": "Written"
+  }
+]

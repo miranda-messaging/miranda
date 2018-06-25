@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Topic</title>
+    <script src="jquery.js"></script>
+</head>
+<body>
+<div>
+    <h3>Create Topic</h3><br/>
+    Name <input type="text" name="topicName" id="topicName" size="20"><br/>
+    Owner <input type="text" name="owner" id="owner" size="20"><br/>
+    Remote policy <select name="remotePolicy" id="remotePolicy">
+        <option value="Immediate">Immediate</option>
+        <option value="Acknowledged">Acknowledged</option>
+        <option value="Written" selected>Written</option>
+    </select>
+</div>
+<div>
+    <button onclick="create()">Create</button>
+</div>
+</body>
+</html>
+<script>
+    function create() {
+        if ($('#topicName').val().trim() == "") {
+            alert("Please enter a topic name")
+            return
+        }
+
+        if ($('#owner').val().trim() == "") {
+            alert("Please enter an owner")
+            return
+        }
+
+        var topic = new Object();
+        topic = { name: $('#topicName').val(), owner: $('#owner').val(), remotePolicy: $('#remotePolicy').val() }
+        var request = new Object();
+        request = { topic: topic }
+        var json = JSON.stringify(request)
+        $.post("/topics/create", json, function (data, status, jqxhr) {
+            alert("created!")
+        })
+    }
+
+</script>

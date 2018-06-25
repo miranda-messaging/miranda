@@ -199,9 +199,12 @@ public class UserManagerReadyState extends ManagerReadyState {
             result = Results.Exception;
         }
 
+
         User user = getUserManager().getUser(updateUserMessage.getUser().getName());
         UpdateUserResponseMessage userUpdateResponseMessage = new UpdateUserResponseMessage(getUserManager().getQueue(),
                 this, user, result);
+
+
 
         updateUserMessage.reply(userUpdateResponseMessage);
 

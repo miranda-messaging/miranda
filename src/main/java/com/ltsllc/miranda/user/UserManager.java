@@ -128,16 +128,6 @@ public class UserManager extends StandardManager<User> {
         sendToMe(bootstrapMessage);
     }
 
-    public void updateUser(UserObject userObject) throws MirandaException {
-        User existingUser = getUser(userObject.getName());
-
-        if (null == existingUser)
-            throw new UnknownUserException("User " + userObject.getName() + " not found");
-
-        User user = userObject.asUser();
-        existingUser.merge(user);
-    }
-
     public void updateUser(User user) throws UnknownUserException, MergeException {
         User existingUser = getUser(user.getName());
 
@@ -145,6 +135,8 @@ public class UserManager extends StandardManager<User> {
             throw new UnknownUserException("User " + user.getName() + " was not found.");
         } else {
             existingUser.merge(user);
+            getUsersFile().sendUpdateObjectsMessage(getQueue(), this, user);
+            Miranda.getInstance().getCluster().sendUpdateUserMessage(getQueue(), this, existingUser);
         }
     }
 

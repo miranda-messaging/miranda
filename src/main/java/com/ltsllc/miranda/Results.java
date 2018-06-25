@@ -5,12 +5,16 @@ public enum Results {
     Duplicate,
     Exception,
     ExceptionDecryptingFile,
+    ExceptionReadingFile,
     Failure,
+    FileDoesNotExist,
     FileNotFound,
     FileTooLarge,
     InsufficientPermissions,
+    Interrupted,
     InvalidSession,
     InvalidSessionId,
+    MissingData,
     MissingSessionId,
     MissingTopic,
     NotOwner,
@@ -31,5 +35,5 @@ public enum Results {
     UserOwnsTopics,
     UnrecognizedUser,
     UsersExist,
-    Interrupted, MissingData, FileDoesNotExist, ExceptionReadingFile, Written
+    Written
 }

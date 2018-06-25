@@ -158,7 +158,7 @@ public class SingleFileReadyState extends MirandaFileReadyState {
 
 
     private State processLoadMessage(LoadMessage loadMessage) throws MirandaException {
-        getFile().getReader().read(getFile().getFilename());
+        getFile().getReader().sendReadMessage(getFile().getQueue(), getFile(), getFile().getFilename());
         SingleFileReadingState singleFileReadingState = new SingleFileReadingState(getFile(), this);
         singleFileReadingState.addLoaderListener(loadMessage.getSender());
 
@@ -176,7 +176,9 @@ public class SingleFileReadyState extends MirandaFileReadyState {
     public State processAddObjectsMessage(AddObjectsMessage addObjectsMessage) {
         getFile().addObjects(addObjectsMessage.getObjects());
 
-        return getFile().getCurrentState();
+        getFile().getWriter().sendWrite(getFile().getQueue(), getFile(), getFile().getFilename(), getFile().getBytes());
+
+        return new SingleFileWritingState(getFile(), this);
     }
 
     public State processUpdateObjectsMessage(UpdateObjectsMessage updateObjectsMessage) {

@@ -16,9 +16,8 @@
 
 package com.ltsllc.miranda.servlet;
 
-import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.servlet.user.ListUsersServlet;
+import com.ltsllc.miranda.servlet.user.servlet.ListUsersServlet;
 import com.ltsllc.miranda.servlet.user.UserHolder;
 import com.ltsllc.miranda.test.TestServlet;
 import org.junit.Before;

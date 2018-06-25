@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Topics</title>
+    <script src="jquery.js"></script>
+    <script>
+    function getList () {
+        var json = "{}"
+        $.post ("/topics/list", json, function (data, status, jqxhr) {
+            var tl = JSON.parse(data)
+            var i;
+            for (i = 0; i < tl.list.length; i++) {
+                var newHtml = "<li>" + tl.list[i].name +
+                " <a href='viewTopic.html?topic=" + tl.list[i].name + "'>view</a> " +
+                " <a href='editTopic.html?topic=" + tl.list[i].name + "'>edit</a> " +
+                "<button onclick='deleteTopic(\"" + tl.list[i].name + "\")'>delete</button></li>"
+
+                $('#topics').append(newHtml)
+            }
+        })
+    }
+    </script>
+</head>
+<body onload="getList()">
+<h3>Topics</h3>
+<div id=>
+    <ul id="topics">
+
+    </ul>
+</div>
+<button onclick="add()">Create</button>
+<br/>
+</body>
+</html>
+<script>
+    function add() {
+        window.location.href = "createTopic.html";
+    }
+
+    function deleteTopic(name) {
+        if (confirm("Please confirm deletion of " + name)) {
+            var topic = { name: name }
+            var request = { topic: topic }
+            var json = JSON.stringify(request)
+            $.post("/topics/delete", json, function (data, status, jqxhr) {
+                window.location.href = "listTopics.html"
+            });
+        }
+
+
+    }
+</script>

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.user.servlet;
 
+import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
-import com.ltsllc.miranda.clientinterface.requests.UserRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
+import com.ltsllc.miranda.servlet.user.request.UpdateUserRequest;
+import com.ltsllc.miranda.user.UnknownUserException;
+import com.ltsllc.miranda.user.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,16 +42,38 @@ public class UpdateUserServlet extends SessionServlet {
 
     @Override
     public Class<? extends Request> getRequestClass() {
-        return null;
+        return UpdateUserRequest.class;
     }
 
     @Override
     public ResultObject performService(HttpServletRequest request, HttpServletResponse response, Request requestObject) throws ServletException, IOException, TimeoutException {
-        return null;
+        ResultObject resultObject = new ResultObject();
+        try {
+            Miranda miranda = Miranda.getInstance();
+            UserManager userManager = miranda.getUserManager();
+
+            UpdateUserRequest updateUserRequest = (UpdateUserRequest) requestObject;
+            if (updateUserRequest.getUser().getName() == null || updateUserRequest.getUser().getName().trim().isEmpty()) {
+                resultObject.setResult(Results.MissingData);
+            }
+
+            if (updateUserRequest.getUser().getPublicKeyPem() == null || updateUserRequest.getUser().getPublicKeyPem().trim().isEmpty()) {
+                resultObject.setResult(Results.MissingData);
+            }
+
+            userManager.updateUser(updateUserRequest.getUser());
+        } catch (UnknownUserException e) {
+            resultObject.setResult(Results.UserNotFound);
+        } catch (MergeException|EncryptionException e) {
+            resultObject.setResult(Results.Exception);
+            resultObject.setAdditionalInfo(e);
+        }
+
+        return resultObject;
     }
 
     @Override
     public ResultObject createResultObject() {
-        return null;
+        return new ResultObject();
     }
 }

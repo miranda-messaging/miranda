@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create User</title>
+    <title>Edit User</title>
     <script src="jquery.js"></script>
 </head>
-<body>
+<body onload="callLoadUser()">
 
     Name/Login <input type="text" name="name" id="name" size="10">
     <br/>
@@ -16,18 +16,14 @@
         <option value="Admin">Admin</option>
 </select>
     <br/>
-    Description <input type="text" name="desription" id="description" size="20">
+    Description <input type="text" name="description" id="description" size="20">
     <br/>
     Public Key <button onclick="generateKeyPair()">Generate</button>
     <input type="file" name="publicKeyfile" id="publicKeyfile" onchange="loadPublicKeyfile()">
     <br/>
     <textarea name="publicKey" id="publicKey" rows="10" cols="80"></textarea>
 <br/>
-Private Key
-    <br/>
-<textarea name="privateKey" id="privateKey" rows="10" cols="80"></textarea>
-    <br/>
-<button onclick="createUser()">Create</button>
+    <button onclick="update()">Update</button>
 </body>
 </html>
 <script>
@@ -53,23 +49,15 @@ Private Key
         xhr.send (formData)
     }
 
-    function generateKeyPair() {
-        $.get("/servlets/createKeyPair", populateKeys)
-    }
 
-    function populateKeys (data, status) {
-        var keyResults = JSON.parse(data);
-        $('#publicKey').val(keyResults.publicKey)
-        $('#privateKey').val(keyResults.privateKey)
-    }
 
-    function createUser () {
+    function update () {
         if ($('#name').val() == "")
             alert ("Please enter a login")
 
 
         if ($('#publicKey').val().trim() == "")
-            alert("Please paste a public key or generate a key pair")
+            alert("Please supply a pubic key")
 
 
         var o = new Object();
@@ -86,21 +74,45 @@ Private Key
         }
         var json=JSON.stringify(p)
 
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                    alert("Created!")
-                }
-            }
-        }
+        $.post ("/users/update", json,
+        function (data, textStatus, jqxhr){
+            alert(data);
 
-        xhr.open ("POST", "/users/create", true)
-        xhr.send (json)
+            resultObject = JSON.parse(data)
+            if (resultObject.result == "Success")
+                window.location.href = "listUsers.html"
+
+        })
     }
 
 
+    function callLoadUser (userName) {
+        var userName = getParameterByName ("name")
+        var userObject = new Object();
+        request = { user: userName }
 
+        var json=JSON.stringify(request)
+        $.post("/users/read", json, userLoaded)
+    }
 
+    function userLoaded (data, status, jqxhr) {
+        var object = JSON.parse(data);
+        if (object.result == "Success") {
+            $('#name').val (object.object.name)
+            $('#category').val (object.object.category)
+            $('#description').val (object.object.description)
+            $('#publicKey').val (object.object.publicKeyPem)
+        }
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
 </script>

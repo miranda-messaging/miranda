@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Topic</title>
+    <script src="jquery.js"></script>
+    <script>
+        function getTopic () {
+            var topicName=getParameterByName("topic")
+            var topic = new Object()
+            topic = { name: topicName }
+            var request = new Object()
+            request = { topic: topic }
+            var json = JSON.stringify (request)
+            $.post("/topics/read", json, function (data, status, jqxhr) {
+                var response=JSON.parse(data)
+                $('#name').val(response.object.name)
+                $('#owner').val(response.object.owner)
+                $('#remotePolicy').val(response.object.remotePolicy)
+            })
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        function back() {
+            window.location.href="listTopics.html"
+        }
+    </script>
+</head>
+<body onload="getTopic()">
+<h3>View Topic</h3>
+Name <input type="text" disabled name="name" id="name"><br/>
+Owner <input type="text" disabled name="owner" id="owner"><br/>
+Remote Policy <input type="text" disabled name="remotePolicy" id="remotePolicy"><br/>
+<button onclick="back()">Back</button>
+</body>
+</html>

@@ -70,6 +70,9 @@ public class ClusterFile extends SingleFile<NodeElement> {
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> cluster) throws IOException, MirandaException {
         basicConstructor(filename, reader, writer, cluster);
+
+        ClusterFileStartingState clusterFileStartingState = new ClusterFileStartingState(this);
+        setCurrentState(clusterFileStartingState);
     }
 
     public ClusterFile(String filename, Reader reader, Writer writer, BlockingQueue<Message> queue,

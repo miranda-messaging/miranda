@@ -1,8 +1,1 @@
-[
-  {
-    "name": "admin",
-    "category": "Admin",
-    "description": "The admin user",
-    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv3vm0ZB8EZa0KDJobaEd\r\nRIrqcE4Gwz6wqgMV4ciUWKWCK+8/1ZxBXsFfI/tr3oLXgMIwuhhZRPG+EmYl0AKP\r\nkknofL3FfrRxsMZw6rIdDGi8Ca7uva5CUYbrKQQJm1pjZRZgbGMQhNsRHv1J7BGQ\r\np11pQcUWEuE7JXONKIVbh52bodfiPByIGI7mWMy8nDnZ2+qqaBO79IZKLayTXGZm\r\nYXDxLS1xgaHXyUbVLFZLe5yXH2+t3ytfDqysFLG3hEegcaixyQ/VcK4kuTSiSZMt\r\nSRmOuFTO/KEAGdOpkQslLSjhW5VvCDWA4oyBrikJ1OTtCIn18Su+/OFU7Kx9Iurn\r\n3wIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
-  }
-]
+[{"name":"admin","category":"Admin","description":"The admin user","publicKeyPem":"-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv3vm0ZB8EZa0KDJobaEd\r\nRIrqcE4Gwz6wqgMV4ciUWKWCK+8/1ZxBXsFfI/tr3oLXgMIwuhhZRPG+EmYl0AKP\r\nkknofL3FfrRxsMZw6rIdDGi8Ca7uva5CUYbrKQQJm1pjZRZgbGMQhNsRHv1J7BGQ\r\np11pQcUWEuE7JXONKIVbh52bodfiPByIGI7mWMy8nDnZ2+qqaBO79IZKLayTXGZm\r\nYXDxLS1xgaHXyUbVLFZLe5yXH2+t3ytfDqysFLG3hEegcaixyQ/VcK4kuTSiSZMt\r\nSRmOuFTO/KEAGdOpkQslLSjhW5VvCDWA4oyBrikJ1OTtCIn18Su+/OFU7Kx9Iurn\r\n3wIDAQAB\r\n-----END PUBLIC KEY-----\r\n"},{"name":"clark","category":"Admin","description":"","publicKeyPem":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA9yi3rfpvefrVd4ywlRE0\noeQMdTABQY+XgfhhK9t1JHntPo1NF8N8CK2hH+auIjhS1yDSYbHqHkHKjQ02ENRy\nFVWzoQlYcdoABKZiW/cKavvKt4DXucVZTGU/EC6rW9AF1oXR2nQxtcrvU0/+GAtT\neGs4J8B21yLhajallJ2q2Cq/sg6q0z5TDWDQjIwCUUtLT7+gGJMS7obX/gMxaXwt\nWkSsOKLzJcOn1IAMw1tKVqOkuqXOwx7f8oNiCnklGdr4ndxCthxO8/8eSv5zjG7u\nsOWI7J+/MOLb3cZ5YZfR3TIA5tM9vAu4U8ZMg29Y+GL/BBlZcfkeMKIo6w2iApG2\n/QIDAQAB\n-----END PUBLIC KEY-----\n\n"}]

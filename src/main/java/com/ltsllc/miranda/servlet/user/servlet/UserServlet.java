@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.servlet.user;
+package com.ltsllc.miranda.servlet.user.servlet;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Results;
@@ -24,6 +24,7 @@ import com.ltsllc.miranda.clientinterface.requests.UserRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.session.SessionServlet;
+import com.ltsllc.miranda.servlet.user.UserHolder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

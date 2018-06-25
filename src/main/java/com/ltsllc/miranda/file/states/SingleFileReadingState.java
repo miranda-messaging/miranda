@@ -5,6 +5,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.CreateMessage;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
@@ -60,6 +61,12 @@ public class SingleFileReadingState extends State {
                 break;
             }
 
+            case FileLoaded: {
+                FileLoadedMessage fileLoadedMessage = (FileLoadedMessage) message;
+                nextState = processFileLoadedMessage (fileLoadedMessage);
+                break;
+            }
+
             case Create: {
                 CreateMessage createMessage = (CreateMessage) message;
                 nextState = processCreateMessage(createMessage);
@@ -101,6 +108,11 @@ public class SingleFileReadingState extends State {
         }
     }
 
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) {
+        List list = (List) fileLoadedMessage.getData();
+        getFile().setData(list);
+        return getReadyState();
+    }
 
     public State processCreateMessage(CreateMessage createMessage) {
         getFile().getWriter().sendWrite(getFile().getQueue(), this, getFile().getFilename(), getFile().getBytes());

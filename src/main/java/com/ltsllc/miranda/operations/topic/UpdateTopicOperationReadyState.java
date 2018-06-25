@@ -75,7 +75,7 @@ public class UpdateTopicOperationReadyState extends State {
         if (getUpdateTopicOperation().getSession().getUser().getName().equals(getUpdateTopicOperation().getTopic().getOwner())
                 || getUpdateTopicOperation().getSession().getUser().getCategory() == User.UserTypes.Admin) {
             Miranda.getInstance().getTopicManager().sendUpdateTopicMessage(getUpdateTopicOperation().getQueue(),
-                    this, getUpdateTopicOperation().getTopic());
+                    this, getUpdateTopicOperation().getTopic(), getUpdateTopicOperation().getSession());
         } else {
             UpdateTopicResponseMessage updateTopicResponseMessage = new UpdateTopicResponseMessage(getUpdateTopicOperation().getQueue(),
                     this, Results.NotOwner);

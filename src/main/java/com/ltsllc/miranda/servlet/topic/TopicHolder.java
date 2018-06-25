@@ -21,6 +21,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
+import com.ltsllc.miranda.session.Session;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -137,9 +138,10 @@ public class TopicHolder extends ServletHolder {
         wake();
     }
 
-    public Results updateTopic(Topic topic) throws TimeoutException {
+    public Results updateTopic(Topic topic, Session session) throws TimeoutException {
         setUpdateResult(Results.Unknown);
-        Miranda.getInstance().sendUpdateTopicMessage(getQueue(), this, getSession(), topic);
+
+        Miranda.getInstance().sendUpdateTopicMessage(getQueue(), this, session, topic);
 
         sleep();
 

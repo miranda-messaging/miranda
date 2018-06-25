@@ -153,7 +153,7 @@ public class Consumer extends Subsystem implements Comparer {
             nextState = startCurrentState();
         }
 
-        logger.info(this + " starting");
+        logger.debug("Consumer " + this + " starting");
         setCurrentState(nextState);
 
         State stop = StopState.getInstance();

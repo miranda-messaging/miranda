@@ -24,6 +24,7 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.manager.states.ManagerStartState;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.topics.messages.*;
 import com.ltsllc.miranda.topics.states.TopicManagerReadyState;
@@ -117,8 +118,8 @@ public class TopicManager extends StandardManager<Topic> {
         sendToMe(createTopicMessage);
     }
 
-    public void sendUpdateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Topic topic) {
-        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, null, topic);
+    public void sendUpdateTopicMessage(BlockingQueue<Message> senderQueue, Object sender, Topic topic, Session session) {
+        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(senderQueue, sender, session, topic);
         sendToMe(updateTopicMessage);
     }
 

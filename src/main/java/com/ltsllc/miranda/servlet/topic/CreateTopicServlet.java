@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.TopicRequest;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
+import com.ltsllc.miranda.miranda.Miranda;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,8 @@ public class CreateTopicServlet extends TopicServlet {
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
         requestObject.getTopic().setOwner(getSession().getUser().getName());
+
+        Miranda.getInstance().getTopicManager().sendCreateTopicMessage(getQueue(), this, requestObject.getTopic());
         Results result = TopicHolder.getInstance().createTopic(requestObject.getTopic());
         resultObject.setResult(result);
 

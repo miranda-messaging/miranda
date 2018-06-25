@@ -72,7 +72,7 @@ public abstract class State {
     }
 
     public State start() {
-        logger.info(getContainer() + " starting");
+        // logger.debug("State " + getContainer() + " starting");
         return this;
     }
 
@@ -110,7 +110,7 @@ public abstract class State {
             }
 
             default: {
-                String message = getContainer() + " in state " + getContainer().getCurrentState() + " does not understand " + m;
+                String message = getContainer() + " in state " + this + " does not understand " + m;
                 logger.error(message);
                 logger.error("Message created at", m.getWhere());
                 Panic panic = new Panic(message, null, Panic.Reasons.DoesNotUnderstand);

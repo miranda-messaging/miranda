@@ -38,7 +38,7 @@ public class ListTopicsServlet extends TopicServlet {
     }
 
     public ResultObject createResultObject() {
-        return new ResultObject();
+        return new ListObject();
     }
 
     public ListObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, TopicRequest requestObject)
