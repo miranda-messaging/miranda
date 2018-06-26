@@ -37,7 +37,8 @@ public class UpdateSubscriptionServlet extends SubscriptionServlet {
     public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
-        Results result = SubscriptionHolder.getInstance().updateSubscription(requestObject.getSubscription());
+        Results result = SubscriptionHolder.getInstance().updateSubscription(requestObject.getSubscription(),
+                getSession());
         resultObject.setResult(result);
 
         return resultObject;

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Subscription</title>
+    <script src="jquery.js"></script>
+    <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        function populate () {
+            var name=getParameterByName('subscription')
+            var subscription = { name: decodeURI(name) }
+            var request = { subscription: subscription }
+            var json = JSON.stringify (request)
+            $.post ("/subscriptions/read", json, function (data, status, jqxmr) {
+                 response = JSON.parse(data)
+                 if (response.result == "Success") {
+                    $('#name').val(response.object.name)
+                    $('#owner').val(response.object.owner)
+                    $('#topic').val(response.object.topic)
+                    $('#dataUrl').val(response.object.dataUrl)
+                    $('#livelinessUrl').val(response.object.livelinessUrl)
+                    $('#errorPolicy').val(response.object.errorPolicy)
+                 }
+            })
+        }
+
+        function update() {
+            var name=$('#name').val().trim()
+            var owner=$('#owner').val().trim()
+            if (owner == "") {
+                alert("Please enter an owner")
+                return
+            }
+
+            var topic = $('#topic').val().trim()
+            if (topic == "") {
+                alert("Please enter a topic")
+                return
+            }
+
+            var dataUrl = $('#dataUrl').val().trim()
+            if (dataUrl == "") {
+                alert("Please enter a data URL")
+                return
+            }
+
+            var livelinessUrl = $('#livelinessUrl').val().trim()
+            if (livelinessUrl == "") {
+                alert("Please enter a liveliness URL")
+                return
+            }
+
+            var errorPolicy = $('#errorPolicy').val()
+
+            var subscription = { name: name, owner: owner, topic: topic, dataUrl: dataUrl, livelinessUrl: livelinessUrl,
+                errorPolicy: errorPolicy }
+            var request = { subscription: subscription }
+            var json = JSON.stringify(request)
+
+            $.post("/subscriptions/update", json, function (data, status, jqxhr) {
+                var response=JSON.parse (data)
+                if (response.result == "Success") {
+                    alert ("Updated!")
+                    window.location.href = "listSubscriptions.html"
+                } else {
+                    alert ("Something other than success (" + response.result + ") was returned")
+                }
+            })
+        }
+    </script>
+</head>
+<body onload="populate()">
+<h3>View Subscription</h3>
+Name <input type="text" name="name" id="name" size="20" disabled/>
+<br/>
+Owner <input type="text" name="owner" id="owner" size="20" />
+<br/>
+Topic <input type="text" name="topic" id="topic" size="20" />
+<br/>
+Data URL <input type="text" name="dataUrl" id="dataUrl" size="50" />
+<br/>
+Liveliness URL <input type="text" name="livelinessUrl" id="livelinessUrl" size="50" />
+<br/>
+Error policy
+<select name="errorPolicy" id="errorPolicy">
+    <option value="Drop">Drop</option>
+    <option value="Retry">Retry</option>
+    <option value="DeadLetter">Dead Letter Queue</option>
+</select>
+<br/>
+<button onclick="update()">Update</button>
+<button onclick="window.location.href='listSubscriptions.html'">Cancel</button>
+</body>
+</html>

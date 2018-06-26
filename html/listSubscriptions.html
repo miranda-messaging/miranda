@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Subscriptions</title>
+    <script>
+        function populate () {
+            var json="{}"
+            $.post("/subscriptions/list", json, function(data, status, jqxhr) {
+                var response = JSON.parse(data)
+                if (response.result == "Success") {
+                    var i
+                    for (i = 0; i < response.list.length; i++) {
+                        var newHtml = "<li>" + response.list[i].name +
+                            " <a href=\"viewSubscription.html?subscription=" + encodeURIComponent(response.list[i].name) + "\">view</a> " +
+                            " <a href=\"editSubscription.html?subscription=" + encodeURIComponent(response.list[i].name) + "\">edit</a> " +
+                            "<button onclick=\'deleteSubscription(\"" + encodeURIComponent(response.list[i].name) + "\")'>delete</button></li>"
+
+                        $('#list').append(newHtml)
+                    }
+                }
+            })
+        }
+
+        function deleteSubscription (name) {
+            if (confirm("Delete " + name + "?")) {
+                var subscription = { name: name }
+                var request = { subscription: subscription }
+                var json = JSON.stringify(request)
+                $.post ("/subscriptions/delete", json, function (data, status, jqxhr) {
+                    var response=JSON.parse(data)
+                    if (response.result == "Success")
+                        window.location.reload()
+                    else {
+                        alert ("Something other than success was returned (" + response.result + ")")
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+<script src="jquery.js"></script>
+<body onload="populate()">
+<h3>List Subscriptions</h3>
+<div>
+<ul name="list" id="list">
+
+</ul>
+</div>
+<br/>
+<button onclick="window.location.href='createSubscription.html'">Create</button>
+</body>
+</html>

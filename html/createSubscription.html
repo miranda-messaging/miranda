@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Subscription</title>
+    <script src="jquery.js"></script>
+    <script>
+        function create() {
+            var name = $('#name').val().trim();
+            if (name == "") {
+                alert("Please enter a name")
+                return
+            }
+
+            var owner = $('#owner').val().trim()
+            if (owner == "") {
+                alert("Please enter an owner")
+                return
+            }
+
+            var topic = $('#topic').val().trim()
+            if (topic == "") {
+                alert("Please enter a topic")
+                return
+            }
+
+            var dataUrl = $('#dataUrl').val().trim()
+            if (dataUrl == "") {
+                alert("Please enter a data URL")
+                return
+            }
+
+            var livelinessUrl = $('#livelinessUrl').val().trim()
+            if (livelinessUrl == "") {
+                alert("Please enter a liveliness url")
+                return
+            }
+
+            var subscription = { name: name, owner: owner, topic: topic, dataUrl: dataUrl, livelinessUrl: livelinessUrl,
+                errorPolicy: $('#errorPolicy').val() }
+
+            var request = { subscription: subscription }
+
+            var json = JSON.stringify (request)
+            $.post ("/subscriptions/create", json, function () {
+                alert ("Created!")
+                window.location.href="listSubscriptions.html"
+            })
+
+        }
+    </script>
+</head>
+<body>
+<h3>Create Subscription</h3>
+Name <input type="text" name="name" id="name" size="20"/>
+<br/>
+Owner <input type="text" name="owner" id="owner" size="20"/>
+<br/>
+Topic <input type="text" name="topic" id="topic" size="20"/>
+<br/>
+Data URL <input type="text" name="dataUrl" id="dataUrl" size="50"/>
+<br/>
+Liveliness URL <input type="text" name="livelinessUrl" id="livelinessUrl" size="50">
+<br/>
+Error Policy
+<select name="errorPolicy" id="errorPolicy">
+    <option value="Drop">Drop</option>
+    <option value="Retry">Retry</option>
+    <option value="DeadLetter">Deadletter Queue</option>
+</select>
+<br/>
+<button onclick="create()">Create</button>
+<button onclick="window.location.href='listSubscriptions.html'">Cancel</button>
+</body>
+</html>

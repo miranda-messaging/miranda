@@ -21,6 +21,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.servlet.ServletHolder;
+import com.ltsllc.miranda.session.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,20 +140,20 @@ public class SubscriptionHolder extends ServletHolder {
         return getCreateResult();
     }
 
-    public Results updateSubscription(Subscription subscription) throws TimeoutException {
+    public Results updateSubscription(Subscription subscription, Session session) throws TimeoutException {
         setUpdateResult(Results.Unknown);
 
-        Miranda.getInstance().sendUpdateSubscriptionMessage(getQueue(), this, getSession(), subscription);
+        Miranda.getInstance().sendUpdateSubscriptionMessage(getQueue(), this, session, subscription);
 
         sleep();
 
         return getUpdateResult();
     }
 
-    public Results deleteSubscription(String name) throws TimeoutException {
+    public Results deleteSubscription(String name, Session session) throws TimeoutException {
         setDeleteResult(Results.Unknown);
 
-        Miranda.getInstance().sendDeleteSubscriptionMessage(getQueue(), this, getSession(), name);
+        Miranda.getInstance().sendDeleteSubscriptionMessage(getQueue(), this, session, name);
 
         sleep();
 

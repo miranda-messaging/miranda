@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "name": "Clark\u0027s subscription",
+    "owner": "clark",
+    "topic": "whatever",
+    "dataUrl": "temp",
+    "livelinessUrl": "temp",
+    "errorPolicy": "Drop"
+  },
+  {
+    "name": "delete",
+    "owner": "admin",
+    "topic": "whatever",
+    "dataUrl": "temp",
+    "livelinessUrl": "temp",
+    "errorPolicy": "Drop"
+  }
+]

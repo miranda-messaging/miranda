@@ -19,19 +19,15 @@ Select credentials <input name="content" id="content" type="file" onchange="load
     <br/>
     <button id="login" onclick="login()">Login</button>
 
-    <br/>
-    Session
-    <textarea name="session" id="session" rows="4" cols="80"></textarea>
-
 <br/>
 <button onclick="decrypt">Decrypt</button>
     <br/>
     Decrypted
     <textarea name="decrypted" id="decrypted" rows="4" cols="80"></textarea>
 <br/>
-<button onclick="listUsers()" name="listUsers" id="listUsers">List Users</button>
-<button onclick="listTopics()" name="listTopics" id="listTopics">List Topics</button>
-
+<button onclick="listUsers()" name="listUsers" id="listUsers">Users</button>
+<button onclick="listTopics()" name="listTopics" id="listTopics">Topics</button>
+<button onclick="window.location.href='listSubscriptions.html'">Subscriptions</button>
 
 </body>
 </html>

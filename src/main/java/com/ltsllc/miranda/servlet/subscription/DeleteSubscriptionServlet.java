@@ -37,7 +37,8 @@ public class DeleteSubscriptionServlet extends SubscriptionServlet {
     public ResultObject basicPerformService(HttpServletRequest req, HttpServletResponse resp, SubscriptionRequest requestObject)
             throws ServletException, IOException, TimeoutException {
         ResultObject resultObject = new ResultObject();
-        Results result = SubscriptionHolder.getInstance().deleteSubscription(requestObject.getSubscription().getName());
+        Results result = SubscriptionHolder.getInstance().deleteSubscription(requestObject.getSubscription().getName(),
+                getSession());
         resultObject.setResult(result);
 
         return resultObject;
