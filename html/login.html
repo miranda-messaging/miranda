@@ -6,12 +6,14 @@
     <script src="jquery.js"></script>
     <script src="jsencrypt.js"></script>
     <script src="BigInteger.js"></script>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <script src="bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
 Select credentials <input name="content" id="content" type="file" onchange="load()">
     <br/>
     Contents:
-    <textarea name="credentials" id="credentials" rows="20" cols="80"></textarea>
+    <textarea name="credentials" id="credentials" rows="20" cols="84"></textarea>
 
     <br/>
     Set name <input type="text" onclick="name" name="name" id="name" size="20">
@@ -28,7 +30,7 @@ Select credentials <input name="content" id="content" type="file" onchange="load
 <button onclick="listUsers()" name="listUsers" id="listUsers">Users</button>
 <button onclick="listTopics()" name="listTopics" id="listTopics">Topics</button>
 <button onclick="window.location.href='listSubscriptions.html'">Subscriptions</button>
-
+<button onclick="window.location.href='messages.html'">Messages</button>
 </body>
 </html>
 <script>

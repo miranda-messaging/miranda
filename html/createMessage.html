@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Message</title>
+    <script src="jquery.js"></script>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <script src="bootstrap/js/bootstrap.js"></script>
+    <script>
+        function populate () {
+            var json = "{}"
+            $.post ("/topics/list", json, function (data, status, jqxhr) {
+                var response = JSON.parse (data)
+                if (response.result != "Success") {
+                    alert ("Got a non-success result (" + response.result + ") while trying to get a list of topics")
+                } else {
+                    var i
+                    for (i = 0; i < response.list.length; i++) {
+                        var newHtml = "<option value='" + response.list[i].name + "'>" + response.list[i].name + "</option>"
+                        $('#topics').append(newHtml)
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body onload="populate()">
+<table>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Topic</td>
+        <td>
+            <select name="topics" id="topics">
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Content</td>
+        <td>
+            <textarea name="content" id="content" rows="25" cols="80"></textarea>
+        </td>
+    </tr>
+</table>
+<button onclick="create()">Create</button>
+<button onclick="window.location.href='messages.html'">Cancel</button>
+</body>
+</html>

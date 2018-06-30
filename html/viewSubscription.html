@@ -36,18 +36,32 @@
 </head>
 <body onload="populate()">
 <h3>View Subscription</h3>
-Name <input type="text" name="name" id="name" size="20" disabled/>
-<br/>
-Owner <input type="text" name="owner" id="owner" size="20" disabled/>
-<br/>
-Topic <input type="text" name="topic" id="topic" size="20" disabled/>
-<br/>
-Data URL <input type="text" name="dataUrl" id="dataUrl" size="50" disabled/>
-<br/>
-Liveliness URL <input type="text" name="livelinessUrl" id="livelinessUrl" size="50" disabled/>
-<br/>
-Error policy <input type="text" name="errorPolicy" id="errorPolicy" disabled/>
-<br/>
+<table>
+    <tr>
+        <td>Name</td>
+        <td><input type="text" name="name" id="name" size="20" disabled/></td>
+    </tr>
+    <tr>
+        <td>Owner</td>
+        <td><input type="text" name="owner" id="owner" size="20" disabled/></td>
+    </tr>
+    <tr>
+        <td>Topic</td>
+        <td><input type="text" name="topic" id="topic" size="20" disabled/></td>
+    </tr>
+    <tr>
+        <td>Data URL</td>
+        <td><input type="text" name="dataUrl" id="dataUrl" size="50" disabled/></td>
+    </tr>
+    <tr>
+        <td>Liveliness URL</td>
+        <td><input type="text" name="livelinessUrl" id="livelinessUrl" size="50" disabled/></td>
+    </tr>
+    <tr>
+        <td>Error Plicy</td>
+        <td><input type="text" name="errorPolicy" id="errorPolicy" disabled/></td>
+    </tr>
+</table>
 <button onclick="window.location.href='listSubscriptions.html'">Back</button>
 </body>
 </html>
