@@ -16,8 +16,7 @@
 
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

@@ -16,10 +16,10 @@
 
 package com.ltsllc.miranda.cluster;
 
-import com.ltsllc.miranda.AcknowledgeQuorum;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.quorum.AcknowledgeQuorum;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.WriteQuorum;
+import com.ltsllc.miranda.quorum.WriteQuorum;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;

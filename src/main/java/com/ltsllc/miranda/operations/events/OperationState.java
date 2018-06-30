@@ -2,7 +2,7 @@ package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;

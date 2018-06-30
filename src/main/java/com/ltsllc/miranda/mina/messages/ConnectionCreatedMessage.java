@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.mina.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import org.apache.mina.core.session.IoSession;
 
 import java.util.concurrent.BlockingQueue;

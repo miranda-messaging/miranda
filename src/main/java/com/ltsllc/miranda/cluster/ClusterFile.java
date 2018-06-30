@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;

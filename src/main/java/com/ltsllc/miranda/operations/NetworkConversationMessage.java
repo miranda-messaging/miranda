@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.operations;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 

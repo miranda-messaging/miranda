@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.manager.states;
 
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 import com.ltsllc.miranda.State;

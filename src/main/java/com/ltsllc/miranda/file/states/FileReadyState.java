@@ -16,11 +16,9 @@
 
 package com.ltsllc.miranda.file.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
@@ -28,7 +26,6 @@ import com.ltsllc.miranda.reader.ReadMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.util.concurrent.BlockingQueue;
 
 /**

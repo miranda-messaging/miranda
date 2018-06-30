@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.operations.user;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.miranda.Miranda;

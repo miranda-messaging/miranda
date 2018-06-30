@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda;
 
-import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

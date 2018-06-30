@@ -17,12 +17,14 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
+import com.ltsllc.miranda.panics.Panic;
+import com.ltsllc.miranda.panics.ShutdownPanic;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
-import com.ltsllc.miranda.shutdown.ShutdownState;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
@@ -31,7 +33,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * An object that knows how to process a {@link BlockingQueue<Message>}
+ * An object that knows how to process a {@link BlockingQueue< Message >}
  * <p>
  * Created by Clark on 12/30/2016.
  */

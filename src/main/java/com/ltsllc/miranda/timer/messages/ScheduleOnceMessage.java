@@ -16,8 +16,7 @@
 
 package com.ltsllc.miranda.timer.messages;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.timer.messages.ScheduleMessage;
+import com.ltsllc.miranda.message.Message;
 
 import java.util.concurrent.BlockingQueue;
 

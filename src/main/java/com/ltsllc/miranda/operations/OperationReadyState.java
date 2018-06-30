@@ -18,6 +18,7 @@ package com.ltsllc.miranda.operations;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import org.apache.log4j.Logger;
 

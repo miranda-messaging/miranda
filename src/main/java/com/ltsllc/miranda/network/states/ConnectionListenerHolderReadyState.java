@@ -18,8 +18,10 @@ package com.ltsllc.miranda.network.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.ConnectionListenerHolder;
+import com.ltsllc.miranda.panics.ShutdownPanic;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 

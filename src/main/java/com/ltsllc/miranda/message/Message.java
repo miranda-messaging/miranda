@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.message;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;

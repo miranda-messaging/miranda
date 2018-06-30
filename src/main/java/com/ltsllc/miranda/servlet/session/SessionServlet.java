@@ -16,16 +16,14 @@
 
 package com.ltsllc.miranda.servlet.session;
 
-import com.google.gson.Gson;
 import com.ltsllc.commons.util.Utils;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.requests.Request;
 import com.ltsllc.miranda.clientinterface.results.ResultObject;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.servlet.ServletHolder;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.messages.CheckSessionResponseMessage;

@@ -1,4 +1,6 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.panics;
+
+import com.ltsllc.miranda.panics.Panic;
 
 /**
  * A panic that occurs during a shutdown.

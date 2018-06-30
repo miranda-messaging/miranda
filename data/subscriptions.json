@@ -8,7 +8,7 @@
     "errorPolicy": "Drop"
   },
   {
-    "name": "delete",
+    "name": "a new subscription",
     "owner": "admin",
     "topic": "whatever",
     "dataUrl": "temp",

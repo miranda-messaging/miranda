@@ -16,12 +16,7 @@
 
 package com.ltsllc.miranda.file.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.FileWatcherService;
-import com.ltsllc.miranda.file.messages.StopWatchingMessage;
 import com.ltsllc.miranda.file.messages.WatchFileMessage;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -29,10 +24,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;

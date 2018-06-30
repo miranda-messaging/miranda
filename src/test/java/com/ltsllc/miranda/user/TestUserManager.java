@@ -16,12 +16,8 @@
 
 package com.ltsllc.miranda.user;
 
-import com.ltsllc.commons.util.HexConverter;
-import com.ltsllc.commons.util.Utils;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.clientinterface.objects.StatusObject;
 import com.ltsllc.miranda.file.Subscriber;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.After;
@@ -29,11 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.security.GeneralSecurityException;
-import java.security.Key;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.atLeastOnce;

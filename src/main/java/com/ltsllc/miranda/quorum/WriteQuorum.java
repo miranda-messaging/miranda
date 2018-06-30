@@ -1,4 +1,4 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.quorum;
 
 import com.ltsllc.miranda.node.Node;
 

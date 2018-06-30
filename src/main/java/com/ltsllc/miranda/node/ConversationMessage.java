@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.node;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 /**
  * A decorator that adds a key to a message.

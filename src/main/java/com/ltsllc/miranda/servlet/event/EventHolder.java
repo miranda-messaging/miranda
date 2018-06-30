@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.servlet.event;
 
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;

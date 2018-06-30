@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.file.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.io.File;
 import java.util.concurrent.BlockingQueue;

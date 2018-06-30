@@ -16,11 +16,11 @@
 
 package com.ltsllc.miranda.session.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.util.concurrent.BlockingQueue;
 
-import static com.ltsllc.miranda.Message.Subjects.CheckSession;
+import static com.ltsllc.miranda.message.Message.Subjects.CheckSession;
 
 /**
  * Created by Clark on 4/27/2017.

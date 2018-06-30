@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
 
 import java.util.concurrent.BlockingQueue;

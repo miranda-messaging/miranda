@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Subscription</title>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <script src="bootstrap/js/bootstrap.js"></script>
     <script src="jquery.js"></script>
     <script>
         function create() {
@@ -46,30 +48,83 @@
                 alert ("Created!")
                 window.location.href="listSubscriptions.html"
             })
+        }
 
+        function populate () {
+            var json = "{}"
+            // get users
+            $.post ("/users/list", json, function (data, status, jqxhr) {
+                var response = JSON.parse (data)
+                if (response.result != "Success") {
+                    alert ("Got a non-success result (" + response.result + ") while trying to get users.")
+                } else {
+                    var i;
+                    for (i = 0; i < response.userList.length; i++)
+                    {
+                        var newHtml = "<option value='" + response.userList[i].name + "'>" + response.userList[i].name + "</option>";
+                        $('#owner').append (newHtml);
+                    }
+                }
+            })
+
+            // get topics
+            $.post ("/topics/list", json, function (data, status, jqxhr) {
+                var response = JSON.parse (data)
+                if (response.result != "Success") {
+                    alert ("Got a non-success result (" + response.result + ") while trying to get topics.")
+                } else {
+                    var i
+                    for (i = 0; i < response.list.length; i++) {
+                        var newHtml = "<option value='" + response.list[i].name + "'>" + response.list[i].name + "</option>";
+                        $('#topic').append (newHtml);
+                    }
+                }
+            })
         }
     </script>
 </head>
-<body>
+<body onload="populate()">
 <h3>Create Subscription</h3>
-Name <input type="text" name="name" id="name" size="20"/>
-<br/>
-Owner <input type="text" name="owner" id="owner" size="20"/>
-<br/>
-Topic <input type="text" name="topic" id="topic" size="20"/>
-<br/>
-Data URL <input type="text" name="dataUrl" id="dataUrl" size="50"/>
-<br/>
-Liveliness URL <input type="text" name="livelinessUrl" id="livelinessUrl" size="50">
-<br/>
-Error Policy
-<select name="errorPolicy" id="errorPolicy">
-    <option value="Drop">Drop</option>
-    <option value="Retry">Retry</option>
-    <option value="DeadLetter">Deadletter Queue</option>
-</select>
+<table>
+    <tr>
+        <td>Name</td><td><input type="text" name="name" id="name" size="20"/></td>
+    </tr>
+
+    <tr>
+        <td>Owner</td>
+        <td>
+            <select name="owner" id="owner">
+            </select>
+
+        </td>
+    </tr>
+    <tr>
+        <td>Topic</td>
+        <td>
+            <select name="topic" id="topic" >
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Data URL</td><td><input type="text" name="dataUrl" id="dataUrl" size="50"/></td>
+    </tr>
+    <tr>
+        <td>Liveliness URL</td><td><input type="text" name="livelinessUrl" id="livelinessUrl" size="50"></td>
+    </tr>
+    <tr>
+        <td>Error policy</td>
+        <td>
+            <select name="errorPolicy" id="errorPolicy">
+                <option value="Drop">Drop</option>
+                <option value="Retry">Retry</option>
+                <option value="DeadLetter">Deadletter Queue</option>
+            </select>
+        </td>
+    </tr>
+</table>
 <br/>
 <button onclick="create()">Create</button>
 <button onclick="window.location.href='listSubscriptions.html'">Cancel</button>
+</table>
 </body>
 </html>

@@ -1,4 +1,6 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.panics;
+
+import com.ltsllc.miranda.panics.Panic;
 
 /**
  * A Panic that represents an Exception being thrown during the course of handling a Message.

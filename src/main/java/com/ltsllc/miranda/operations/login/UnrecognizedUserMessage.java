@@ -1,10 +1,10 @@
 package com.ltsllc.miranda.operations.login;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.util.concurrent.BlockingQueue;
 
-import static com.ltsllc.miranda.Message.Subjects.UnrecognizedUser;
+import static com.ltsllc.miranda.message.Message.Subjects.UnrecognizedUser;
 
 public class UnrecognizedUserMessage extends Message {
     private String user;

@@ -1,18 +1,15 @@
 package com.ltsllc.miranda.mina;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.mina.messages.ConnectionCreatedMessage;
 import com.ltsllc.miranda.mina.states.MinaUnecryptedConnectionListenerReadyState;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.UnencryptedConnectionListener;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.transport.socket.SocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import java.io.IOException;

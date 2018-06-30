@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.directory;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
 import com.ltsllc.miranda.file.MirandaFile;

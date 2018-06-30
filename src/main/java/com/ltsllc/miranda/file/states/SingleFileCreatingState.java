@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.file.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.file.SingleFile;

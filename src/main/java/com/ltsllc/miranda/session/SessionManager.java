@@ -18,7 +18,7 @@ package com.ltsllc.miranda.session;
 
 import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.cluster.Cluster;

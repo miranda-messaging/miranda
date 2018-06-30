@@ -17,8 +17,6 @@
 package com.ltsllc.miranda.topics.states;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;

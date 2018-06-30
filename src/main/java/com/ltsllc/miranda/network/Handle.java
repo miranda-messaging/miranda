@@ -17,9 +17,9 @@
 package com.ltsllc.miranda.network;
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.PanicMessage;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.Panic;
+import com.ltsllc.miranda.panics.PanicMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;

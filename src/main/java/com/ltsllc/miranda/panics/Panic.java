@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.panics;
 
 import java.io.IOException;
 import java.io.PrintWriter;

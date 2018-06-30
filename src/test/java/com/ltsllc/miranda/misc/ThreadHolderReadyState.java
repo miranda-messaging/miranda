@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.misc;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownPanic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.ShutdownPanic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;

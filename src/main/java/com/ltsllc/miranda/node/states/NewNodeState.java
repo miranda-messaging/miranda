@@ -20,7 +20,7 @@ package com.ltsllc.miranda.node.states;
  * Created by Clark on 2/7/2017.
  */
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;

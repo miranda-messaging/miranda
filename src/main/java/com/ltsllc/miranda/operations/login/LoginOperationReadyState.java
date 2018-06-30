@@ -19,12 +19,11 @@ package com.ltsllc.miranda.operations.login;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.results.GetUserResponseObject;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.session.LoginResponseMessage;
 import com.ltsllc.miranda.session.messages.CreateSessionResponseMessage;
 import com.ltsllc.miranda.session.messages.GetSessionResponseMessage;
-import com.ltsllc.miranda.user.UnknownUserException;
 import com.ltsllc.miranda.user.messages.GetUserResponseMessage;
 import org.apache.log4j.Logger;
 

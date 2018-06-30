@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.node.states;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;

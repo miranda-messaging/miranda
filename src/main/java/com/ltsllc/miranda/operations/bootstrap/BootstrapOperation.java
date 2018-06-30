@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.operations.bootstrap;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.operations.bootstrap.states.Start;
 

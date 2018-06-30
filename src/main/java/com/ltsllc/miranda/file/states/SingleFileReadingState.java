@@ -2,14 +2,11 @@ package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.CreateMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
-import com.sun.net.httpserver.Authenticator;
 
 import java.util.ArrayList;
 import java.util.List;

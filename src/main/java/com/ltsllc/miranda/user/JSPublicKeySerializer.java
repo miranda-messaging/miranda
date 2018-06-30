@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.user;
 
 import com.google.gson.*;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPublicKey;
 import sun.security.rsa.RSAPublicKeyImpl;

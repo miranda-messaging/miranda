@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.session.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.session.Session;
 

@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.message;
+
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.session.Session;
 
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 3/2/2017.
+ * Created by Clark on 4/29/2017.
  */
-public class PanicMessage extends Message {
-    public PanicMessage(BlockingQueue<Message> senderQueue, Object sender) {
-        super(Subjects.Panic, senderQueue, sender);
+public class SessionMessage extends Message {
+    private Session session;
+
+    public Session getSession() {
+        return session;
+    }
+
+    public SessionMessage(Subjects subject, BlockingQueue<Message> senderQueue, Object sender, Session session) {
+        super(subject, senderQueue, sender);
+
+        this.session = session;
     }
 }

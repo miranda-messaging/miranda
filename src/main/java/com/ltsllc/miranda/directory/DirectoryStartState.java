@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.directory;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;

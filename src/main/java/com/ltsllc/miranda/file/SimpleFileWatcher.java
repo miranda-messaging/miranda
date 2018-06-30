@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.MirandaUncheckedException;
 
 import java.io.File;

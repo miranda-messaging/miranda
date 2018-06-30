@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.topics.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 
 import java.util.concurrent.BlockingQueue;

@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.http;
 
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.panics.Panic;
+import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;

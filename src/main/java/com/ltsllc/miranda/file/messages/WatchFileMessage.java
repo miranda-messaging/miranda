@@ -16,12 +16,12 @@
 
 package com.ltsllc.miranda.file.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.io.File;
 import java.util.concurrent.BlockingQueue;
 
-import static com.ltsllc.miranda.Message.Subjects.WatchFile;
+import static com.ltsllc.miranda.message.Message.Subjects.WatchFile;
 
 /**
  * Created by Clark on 2/25/2017.

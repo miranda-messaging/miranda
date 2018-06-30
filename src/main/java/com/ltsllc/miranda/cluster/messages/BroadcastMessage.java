@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.cluster.messages;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.cluster.networkMessages.ConversationWireMessage;
 
 import java.util.concurrent.BlockingQueue;

@@ -18,19 +18,12 @@ package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
-
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Created by Clark on 2/11/2017.

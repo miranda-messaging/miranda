@@ -18,7 +18,7 @@ package com.ltsllc.miranda.operations.login;
 
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 

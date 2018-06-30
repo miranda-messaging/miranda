@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.panics;
+
+import com.ltsllc.miranda.panics.Panic;
 
 /**
  * Something Very Bad happend startup.  This is usually fatal.

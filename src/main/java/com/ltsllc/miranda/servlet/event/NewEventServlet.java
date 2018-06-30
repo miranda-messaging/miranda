@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.servlet.event;
 
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
 
 import javax.servlet.ServletException;

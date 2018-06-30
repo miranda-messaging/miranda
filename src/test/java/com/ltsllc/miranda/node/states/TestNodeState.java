@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.node.states;
 
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;

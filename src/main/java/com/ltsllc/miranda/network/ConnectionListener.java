@@ -17,16 +17,8 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
-import com.ltsllc.miranda.mina.states.ConnectionListenerReadyState;
-import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.node.Node;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A class to make switching between netty and sockets easier.

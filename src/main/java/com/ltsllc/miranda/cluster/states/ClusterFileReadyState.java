@@ -17,8 +17,7 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.LoadResponseMessage;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -30,7 +29,6 @@ import com.ltsllc.miranda.file.states.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
-import com.ltsllc.miranda.user.messages.UpdateUserMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 

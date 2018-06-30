@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.io.File;
 import java.io.IOException;

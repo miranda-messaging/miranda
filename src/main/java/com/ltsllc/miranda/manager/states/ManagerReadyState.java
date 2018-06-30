@@ -16,10 +16,9 @@
 
 package com.ltsllc.miranda.manager.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.ShutdownPanic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.ShutdownPanic;
 import com.ltsllc.miranda.manager.Manager;
-import com.ltsllc.miranda.manager.states.ManagerShuttingDownState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.State;
@@ -28,8 +27,6 @@ import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
-
-import java.util.List;
 
 /**
  * Created by Clark on 4/26/2017.

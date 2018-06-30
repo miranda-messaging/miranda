@@ -2,7 +2,10 @@ package com.ltsllc.miranda.shutdown;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
+import com.ltsllc.miranda.panics.ShutdownPanic;
 
 import java.util.concurrent.BlockingQueue;
 

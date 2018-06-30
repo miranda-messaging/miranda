@@ -1,5 +1,6 @@
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.quorum;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.operations.WireResponse;
 import org.apache.log4j.Logger;

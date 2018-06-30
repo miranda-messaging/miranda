@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.util.List;

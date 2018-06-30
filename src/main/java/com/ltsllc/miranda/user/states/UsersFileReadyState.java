@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.user.states;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;

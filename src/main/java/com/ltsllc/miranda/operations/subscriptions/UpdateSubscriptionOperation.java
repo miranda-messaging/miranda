@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.operations.subscriptions;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.miranda.Miranda;

@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.file.states;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;

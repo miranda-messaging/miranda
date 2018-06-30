@@ -16,19 +16,14 @@
 
 package com.ltsllc.miranda.timer;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.timer.messages.CancelMessage;
 import com.ltsllc.miranda.timer.messages.ScheduleOnceMessage;
 import com.ltsllc.miranda.timer.messages.SchedulePeriodicMessage;
 import org.apache.log4j.Logger;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 2/12/2017.

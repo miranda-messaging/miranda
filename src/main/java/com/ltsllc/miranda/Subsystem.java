@@ -17,6 +17,7 @@
 package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.deliveries.Comparer;
+import com.ltsllc.miranda.message.Message;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

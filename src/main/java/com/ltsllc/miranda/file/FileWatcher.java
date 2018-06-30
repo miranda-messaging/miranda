@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.file;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import org.apache.log4j.Logger;
 

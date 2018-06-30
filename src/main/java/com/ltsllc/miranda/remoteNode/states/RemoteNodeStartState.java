@@ -1,12 +1,10 @@
 package com.ltsllc.miranda.remoteNode.states;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.node.networkMessages.GetVersionsWireMessage;
-import com.ltsllc.miranda.node.networkMessages.JoinWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
-import com.ltsllc.miranda.remoteNode.actions.GetVersionsAction;
 
 /**
  * A State that waits for a certificate

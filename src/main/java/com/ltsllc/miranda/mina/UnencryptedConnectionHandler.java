@@ -1,12 +1,10 @@
 package com.ltsllc.miranda.mina;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.NewConnectionMessage;
-import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
 import java.util.concurrent.BlockingQueue;

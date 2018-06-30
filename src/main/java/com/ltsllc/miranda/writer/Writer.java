@@ -22,7 +22,7 @@ import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 
 import java.io.*;

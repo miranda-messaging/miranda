@@ -17,20 +17,16 @@
 package com.ltsllc.miranda.servlet.login;
 
 import com.ltsllc.clcl.EncryptionException;
-import com.ltsllc.clcl.PublicKey;
-import com.ltsllc.commons.util.Utils;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.LoginObject;
 import com.ltsllc.miranda.clientinterface.objects.LoginResultObject;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;

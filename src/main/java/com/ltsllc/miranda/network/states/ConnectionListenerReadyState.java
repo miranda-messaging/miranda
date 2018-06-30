@@ -16,15 +16,14 @@
 
 package com.ltsllc.miranda.network.states;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.network.ConnectionListener;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
-import com.ltsllc.miranda.shutdown.ShutdownResponseMessage;
 
 /**
  * Created by Clark on 3/10/2017.

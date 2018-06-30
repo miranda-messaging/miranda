@@ -1,7 +1,7 @@
 package com.ltsllc.miranda.servlet.bootstrap;
 
 import com.ltsllc.clcl.DistinguishedName;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.util.concurrent.BlockingQueue;
 

@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.subsciptions.messages;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.SessionMessage;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.message.SessionMessage;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.session.Session;
 

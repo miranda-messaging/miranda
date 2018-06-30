@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.network;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.network.messages.ConnectToMessage;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;

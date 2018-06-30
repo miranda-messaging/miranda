@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.mina;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.network.Handle;
 import com.ltsllc.miranda.network.NetworkException;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;

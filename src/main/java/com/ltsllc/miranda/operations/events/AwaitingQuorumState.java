@@ -2,9 +2,11 @@ package com.ltsllc.miranda.operations.events;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.operations.NetworkConversationMessage;
 import com.ltsllc.miranda.operations.Operation;
 import com.ltsllc.miranda.operations.WireResponse;
+import com.ltsllc.miranda.quorum.Quorum;
 import org.apache.log4j.Logger;
 
 /**

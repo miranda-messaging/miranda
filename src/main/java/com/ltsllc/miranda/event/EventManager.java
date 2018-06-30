@@ -16,8 +16,8 @@
 
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.event.messages.CreateEventMessage;

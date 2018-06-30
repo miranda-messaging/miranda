@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.servlet.cluster;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.miranda.Miranda;

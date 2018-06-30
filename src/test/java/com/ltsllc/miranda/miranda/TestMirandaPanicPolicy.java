@@ -16,9 +16,9 @@
 
 package com.ltsllc.miranda.miranda;
 
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.shutdown.ShutdownException;
-import com.ltsllc.miranda.StartupPanic;
+import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

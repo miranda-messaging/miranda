@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.writer;
 
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import org.apache.log4j.Logger;

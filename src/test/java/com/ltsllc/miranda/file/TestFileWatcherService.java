@@ -16,10 +16,8 @@
 
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.file.messages.StopWatchingMessage;
-import com.ltsllc.miranda.file.messages.WatchFileMessage;
 import com.ltsllc.miranda.file.states.FileWatcherReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
@@ -29,12 +27,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Clark on 2/26/2017.

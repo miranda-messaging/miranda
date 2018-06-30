@@ -17,7 +17,6 @@
 package com.ltsllc.miranda.file.states;
 
 import com.google.gson.Gson;
-import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
@@ -27,17 +26,17 @@ import com.ltsllc.miranda.file.messages.AddObjectsMessage;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
 import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.reader.ReadResponseMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Created by Clark on 2/10/2017.

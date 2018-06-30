@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.timer;
 
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 import org.junit.Before;

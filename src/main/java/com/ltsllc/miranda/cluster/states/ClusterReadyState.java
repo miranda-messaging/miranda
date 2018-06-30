@@ -27,7 +27,8 @@ import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
 
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
-import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.message.LoadResponseMessage;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda;
+package com.ltsllc.miranda.message;
+
+import com.ltsllc.miranda.message.Message;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

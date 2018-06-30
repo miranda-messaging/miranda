@@ -18,17 +18,14 @@ package com.ltsllc.miranda.user.states;
 
 import com.ltsllc.clcl.*;
 import com.ltsllc.commons.io.Util;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
-import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
-import com.ltsllc.miranda.manager.StandardManagerReadyState;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
-import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
@@ -43,9 +40,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.ltsllc.miranda.Results.FileDoesNotExist;
-import static com.ltsllc.miranda.Results.UsersExist;
 
 /**
  * Created by Clark on 4/1/2017.

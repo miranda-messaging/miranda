@@ -21,7 +21,7 @@ package com.ltsllc.miranda.network;
  */
 
 import com.google.gson.Gson;
-import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import org.apache.log4j.Logger;

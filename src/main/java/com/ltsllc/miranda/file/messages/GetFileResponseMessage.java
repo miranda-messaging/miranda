@@ -17,8 +17,7 @@
 package com.ltsllc.miranda.file.messages;
 
 import com.ltsllc.commons.util.HexConverter;
-import com.ltsllc.commons.util.Utils;
-import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.message.Message;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
