@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.file.messages.ListMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.Version;
@@ -360,5 +361,10 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
     public void sendCreateMessage(BlockingQueue<Message> senderQueue, Object sender) {
         CreateMessage createMessage = new CreateMessage(senderQueue, sender);
         sendToMe(createMessage);
+    }
+
+    public void sendList (BlockingQueue<Message> senderQueue, Object sender) {
+        ListMessage listMessage = new ListMessage(senderQueue, sender);
+        sendToMe(listMessage);
     }
 }

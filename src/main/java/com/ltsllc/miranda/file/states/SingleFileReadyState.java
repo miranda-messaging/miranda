@@ -22,10 +22,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
-import com.ltsllc.miranda.file.messages.AddObjectsMessage;
-import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
-import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
-import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
+import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
@@ -39,7 +36,9 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 /**
- * Created by Clark on 2/10/2017.
+ * A single file as opposed to a directory of files.
+ *
+ *
  */
 public class SingleFileReadyState extends MirandaFileReadyState {
     private static Logger logger = Logger.getLogger(SingleFileReadyState.class);
@@ -118,12 +117,25 @@ public class SingleFileReadyState extends MirandaFileReadyState {
                 break;
             }
 
+            case List: {
+                ListMessage listMessage = (ListMessage) message;
+                nextState = processListMessage(listMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
         }
 
         return nextState;
+    }
+
+    public State processListMessage(ListMessage listMessage) throws MirandaException {
+        ListResponseMessage listResponseMessage = new ListResponseMessage(getFile().getQueue(), getFile(),
+                Results.Success, getFile().getData());
+        listMessage.reply(listResponseMessage);
+        return getFile().getCurrentState();
     }
 
 

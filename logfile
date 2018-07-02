@@ -173,7 +173,7 @@ user.variant =
 06:45:29,898 INFO  [Consumer] com.ltsllc.miranda.subsciptions.SubscriptionManager@3e87376 in state com.ltsllc.miranda.subsciptions.states.SubscriptionManagerReadyState@48b59d3a received com.ltsllc.miranda.file.messages.FileDoesNotExistMessage@9889701
 06:45:29,900 INFO  [Consumer] C:\Users\miranda\IdeaProjects\miranda\data\messages transitioning from null to com.ltsllc.miranda.directory.DirectoryStartState@7ebdb52b
 06:45:29,901 INFO  [Consumer] C:\Users\miranda\IdeaProjects\miranda\data\messages in state com.ltsllc.miranda.directory.DirectoryStartState@7ebdb52b transitioning to com.ltsllc.miranda.directory.MirandaDirectoryLoadingState@314114f6
-06:45:29,901 INFO  [Consumer] com.ltsllc.miranda.event.EventManager@4e624c28 transitioning from null to com.ltsllc.miranda.event.EventManagerReadyState@71d27463
+06:45:29,901 INFO  [Consumer] com.ltsllc.miranda.event.EventManager@4e624c28 transitioning from null to com.ltsllc.miranda.event.states.EventManagerReadyState@71d27463
 06:45:29,901 INFO  [Consumer] com.ltsllc.miranda.timer.MirandaTimer@da04299 in state com.ltsllc.miranda.timer.MirandaTimerReadyState@21e1398e received com.ltsllc.miranda.timer.messages.SchedulePeriodicMessage@7342ac58
 06:45:29,902 INFO  [Consumer] C:\Users\miranda\IdeaProjects\miranda\data\deliveries transitioning from null to com.ltsllc.miranda.directory.DirectoryStartState@64b510df
 06:45:29,902 INFO  [Consumer] C:\Users\miranda\IdeaProjects\miranda\data\deliveries in state com.ltsllc.miranda.directory.DirectoryStartState@64b510df transitioning to com.ltsllc.miranda.directory.MirandaDirectoryLoadingState@6a61146
@@ -193,7 +193,7 @@ user.variant =
 06:45:30,015 DEBUG [AbstractConnector] ServerConnector@3a8cdc48{HTTP/1.1,[http/1.1]}{0.0.0.0:0} added HttpConnectionFactory@4b173436[HTTP/1.1]
 06:45:30,017 DEBUG [ContainerLifeCycle] ServerConnector@3a8cdc48{HTTP/1.1,[http/1.1]}{0.0.0.0:0} added {org.eclipse.jetty.server.ServerConnector$ServerConnectorManager@3ba4c823,MANAGED}
 06:45:30,017 DEBUG [ContainerLifeCycle] org.eclipse.jetty.server.Server@47878c56 added {ServerConnector@3a8cdc48{HTTP/1.1,[http/1.1]}{0.0.0.0:5000},AUTO}
-06:45:30,019 INFO  [Consumer] com.ltsllc.miranda.http.JettyHttpServer@1fa8305d transitioning from null to com.ltsllc.miranda.http.HttpReadyState@423570a9
+06:45:30,019 INFO  [Consumer] com.ltsllc.miranda.http.JettyHttpServer@1fa8305d transitioning from null to com.ltsllc.miranda.http.states.HttpReadyState@423570a9
 06:45:30,020 INFO  [State] com.ltsllc.miranda.http.JettyHttpServer@1fa8305d starting
 06:45:30,020 INFO  [Consumer] com.ltsllc.miranda.http.JettyHttpServer@1fa8305d starting
 06:45:30,035 INFO  [Consumer] com.ltsllc.miranda.servlet.miranda.MirandaStatus@2c05a955 transitioning from null to com.ltsllc.miranda.servlet.miranda.MirandaStatusReadyState@4c8847a0
@@ -312,7 +312,7 @@ user.variant =
 06:45:30,083 DEBUG [ContainerLifeCycle] org.eclipse.jetty.servlet.ServletHandler@4420a6c8 added {com.ltsllc.miranda.servlet.misc.ShutdownServlet-3328274a@edfa9698==com.ltsllc.miranda.servlet.misc.ShutdownServlet,jsp=null,order=-1,inst=false,AUTO}
 06:45:30,083 DEBUG [ContainerLifeCycle] org.eclipse.jetty.servlet.ServletHandler@4420a6c8 added {[/shutdown]=>com.ltsllc.miranda.servlet.misc.ShutdownServlet-3328274a,POJO}
 06:45:30,083 DEBUG [ContainerLifeCycle] org.eclipse.jetty.server.handler.HandlerCollection@6f73f4ea[org.eclipse.jetty.server.handler.ResourceHandler@65b488b9, org.eclipse.jetty.servlet.ServletHandler@4420a6c8] added {org.eclipse.jetty.servlet.ServletHandler@4420a6c8,AUTO}
-06:45:30,084 INFO  [Consumer] com.ltsllc.miranda.http.JettyHttpServer@1fa8305d in state com.ltsllc.miranda.http.HttpReadyState@423570a9 received com.ltsllc.miranda.http.StartHttpServerMessage@5cd63a2e
+06:45:30,084 INFO  [Consumer] com.ltsllc.miranda.http.JettyHttpServer@1fa8305d in state com.ltsllc.miranda.http.states.HttpReadyState@423570a9 received com.ltsllc.miranda.http.messages.StartHttpServerMessage@5cd63a2e
 06:45:30,085 INFO  [Consumer] com.ltsllc.miranda.mina.MinaNetworkListener@24d2d292 transitioning from null to com.ltsllc.miranda.network.states.ConnectionListenerReadyState@770601c6
 06:45:30,085 DEBUG [ContainerLifeCycle] org.eclipse.jetty.servlet.ServletHandler@132cd5ff added {com.ltsllc.miranda.servlet.catchall.CatchallServlet-562e515e@c8ca8a56==com.ltsllc.miranda.servlet.catchall.CatchallServlet,jsp=null,order=-1,inst=false,AUTO}
 06:45:30,085 DEBUG [ContainerLifeCycle] org.eclipse.jetty.servlet.ServletHandler@132cd5ff added {[/]=>com.ltsllc.miranda.servlet.catchall.CatchallServlet-562e515e,POJO}

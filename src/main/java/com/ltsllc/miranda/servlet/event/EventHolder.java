@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.servlet.event;
 
+import com.ltsllc.miranda.operations.events.CreateEventOperation;
 import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -177,10 +178,20 @@ public class EventHolder extends ServletHolder {
         return getEvent();
     }
 
-    public CreateResult create(Event event) throws TimeoutException {
+    public CreateResult create(Event event, Session session) throws TimeoutException {
+        Miranda miranda = Miranda.getInstance();
         setCreateResult(Results.Unknown);
         setGuid(null);
-        Miranda.getInstance().getEventManager().sendCreateEventMessage(getQueue(), this, event);
+
+        try {
+            CreateEventOperation createEventOperation = new CreateEventOperation(miranda.getEventManager(),
+                    miranda.getTopicManager(), miranda.getCluster(), session, getQueue(), event);
+
+            createEventOperation.start();
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception trying to create event", e, Panic.Reasons.ExceptionCreatingEvent);
+            Miranda.panicMiranda(panic);
+        }
 
         sleep();
 

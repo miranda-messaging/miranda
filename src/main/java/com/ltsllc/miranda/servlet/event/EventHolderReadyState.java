@@ -29,7 +29,7 @@ public class EventHolderReadyState extends ServletHolderReadyState {
                 break;
             }
 
-            case CreateResponse: {
+            case CreateEventResponse: {
                 CreateEventResponseMessage createEventResponseMessage = (CreateEventResponseMessage) message;
                 nextState = processCreateEventResponseMessage(createEventResponseMessage);
                 break;

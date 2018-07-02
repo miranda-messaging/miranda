@@ -20,7 +20,7 @@
                         <option name="consoleUUID" value="65a6b635-ecf7-420d-a7a1-41c2f178546e" />
                         <option name="grepModel">
                           <GrepModel>
-                            <option name="expression" value="user manager" />
+                            <option name="expression" value="topics manager" />
                             <option name="unlessExpression" value="" />
                           </GrepModel>
                         </option>

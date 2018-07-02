@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletHandler;
-
 import java.util.List;
 
 /**
@@ -33,7 +32,6 @@ import java.util.List;
  */
 public class JettyHttpServer extends HttpServer {
     private static HandlerCollection ourHandlerCollection;
-    private static ServletHandler ourServletHandler;
     private static Logger logger = Logger.getLogger(JettyHttpServer.class);
     private Server jetty;
 
@@ -45,10 +43,6 @@ public class JettyHttpServer extends HttpServer {
     }
 
 
-    public static ServletHandler getServletHandler() {
-        return ourServletHandler;
-    }
-
     public static HandlerCollection getHandlerCollection() {
         return ourHandlerCollection;
     }
@@ -57,6 +51,13 @@ public class JettyHttpServer extends HttpServer {
         return jetty;
     }
 
+    @Override
+    public Object basicAddServlet(ServletMapping servletMapping) {
+        ServletHandler servletHandler = new ServletHandler();
+        servletHandler.addServletWithMapping(servletMapping.getServletClass(), servletMapping.getPath());
+        getHandlerCollection().addHandler(servletHandler);
+        return servletHandler;
+    }
 
     @Override
     public void addServlets(List<ServletMapping> servlets) {
@@ -74,6 +75,7 @@ public class JettyHttpServer extends HttpServer {
         try {
             ServletHandler servletHandler = new ServletHandler();
             servletHandler.addServletWithMapping(CatchallServlet.class, "/");
+            // getHandlerCollection().addHandler(servletHandler);
             getJetty().setHandler(getHandlerCollection());
             getJetty().start();
             logger.info("JettySSL started");
@@ -82,4 +84,6 @@ public class JettyHttpServer extends HttpServer {
             Miranda.getInstance().panic(panic);
         }
     }
+
+
 }

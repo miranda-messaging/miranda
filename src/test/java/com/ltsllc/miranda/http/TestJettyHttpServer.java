@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.http;
 
-import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.http.states.HttpReadyState;
 import com.ltsllc.miranda.servlet.status.StatusServlet;
 import com.ltsllc.miranda.test.TestCase;
 import org.eclipse.jetty.server.Handler;

@@ -75,6 +75,11 @@ public class SingleFileReadingState extends State {
                 break;
             }
 
+            case List: {
+                defer(message);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -91,6 +96,7 @@ public class SingleFileReadingState extends State {
 
     public State processReadResponseMessage(ReadResponseMessage readResponseMessage) throws MirandaException {
         if (readResponseMessage.getResult() == Results.Success) {
+            restoreDeferredMessages();
             getFile().setData(readResponseMessage.getData());
             getFile().fireFileLoaded();
             return getReadyState();

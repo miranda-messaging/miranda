@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.http;
+package com.ltsllc.miranda.http.messages;
 
 import com.ltsllc.miranda.message.Message;
 
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 3/9/2017.
+ * Created by Clark on 3/10/2017.
  */
-public class SetupServletsMessage extends Message {
-    private List<ServletMapping> mappings;
-
-    public List<ServletMapping> getMappings() {
-        return mappings;
-    }
-
-    public SetupServletsMessage(BlockingQueue<Message> senderQueue, Object sender, List<ServletMapping> mappings) {
-        super(Subjects.SetupServlets, senderQueue, sender);
-        this.mappings = mappings;
+public class StartHttpServerMessage extends Message {
+    public StartHttpServerMessage(BlockingQueue<Message> senderQueue, Object sender) {
+        super(Subjects.StartHttpServer, senderQueue, sender);
     }
 }

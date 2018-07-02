@@ -17,9 +17,14 @@
 package com.ltsllc.miranda.http;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.http.messages.AddServletMessage;
+import com.ltsllc.miranda.http.messages.SetupServletsMessage;
+import com.ltsllc.miranda.http.messages.StartHttpServerMessage;
+import com.ltsllc.miranda.http.states.HttpReadyState;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -28,8 +33,16 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class HttpServer extends Consumer {
     abstract public void addServlets(List<ServletMapping> servlets);
-
     abstract public void startServer();
+    abstract public Object basicAddServlet (ServletMapping servletMapping);
+
+    private HashMap<String, Object> pathMap = new HashMap<>();
+
+    public void addServlet(ServletMapping servletMapping)
+    {
+        Object object = basicAddServlet(servletMapping);
+        pathMap.put(servletMapping.getPath(), object);
+    }
 
     public HttpServer() throws MirandaException {
         super("http server");
@@ -48,4 +61,10 @@ abstract public class HttpServer extends Consumer {
         SetupServletsMessage setupServletsMessage = new SetupServletsMessage(senderQueue, sender, servletMappings);
         sendToMe(setupServletsMessage);
     }
+
+    public void sendAddServlet (BlockingQueue<Message> senderQueue, Object sender, ServletMapping servletMapping) {
+        AddServletMessage addServletMessage = new AddServletMessage(senderQueue, sender, servletMapping);
+        sendToMe(addServletMessage);
+    }
+
 }

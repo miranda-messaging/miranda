@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 4/9/2017.
+ * A manager for topics
  */
 public class TopicManager extends StandardManager<Topic> {
     public static final String NAME = "TopicManager";
@@ -93,6 +93,13 @@ public class TopicManager extends StandardManager<Topic> {
             List<Topic> topics = new ArrayList<Topic>();
             topics.add(topic);
             getTopicsFile().sendAddObjectsMessage(getQueue(), this, topics);
+
+            //
+            // Start listening for messages
+            //
+            TopicActor topicActor = new TopicActor(topic, Miranda.getInstance().getSubscriptionManager(),
+                    Miranda.getInstance().getHttpServer());
+
         }
     }
 

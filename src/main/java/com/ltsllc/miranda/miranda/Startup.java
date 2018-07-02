@@ -43,6 +43,7 @@ import com.ltsllc.miranda.servlet.bootstrap.BootstrapServlet;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatus;
 import com.ltsllc.miranda.servlet.cluster.ClusterStatusServlet;
 import com.ltsllc.miranda.servlet.encrypt.CreateKeyPairServlet;
+import com.ltsllc.miranda.servlet.event.EventHolder;
 import com.ltsllc.miranda.servlet.event.PublishServlet;
 import com.ltsllc.miranda.servlet.file.FileServlet;
 import com.ltsllc.miranda.servlet.login.LoginHolder;
@@ -519,7 +520,7 @@ public class Startup extends State {
         servletMapping = new ServletMapping("/servlets/shutdown", ShutdownServlet.class);
         mappings.add(servletMapping);
 
-        servletMapping = new ServletMapping("/publish", PublishServlet.class);
+        servletMapping = new ServletMapping("/publish/*", PublishServlet.class);
         mappings.add(servletMapping);
 
         servletMapping = new ServletMapping("/shutdown", ShutdownServlet.class);
@@ -550,6 +551,9 @@ public class Startup extends State {
 
         ShutdownHolder.initialize(timeoutPeriod);
         ShutdownHolder.getInstance().start();
+
+        EventHolder.initialize(timeoutPeriod);
+        EventHolder.getInstance().start();
 
         getMiranda().getHttpServer().addServlets(mappings);
     }

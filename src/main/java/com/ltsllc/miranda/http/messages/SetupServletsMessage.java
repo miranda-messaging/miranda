@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.event;
+package com.ltsllc.miranda.http.messages;
 
-import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.states.SingleFileStartingState;
+import com.ltsllc.miranda.http.ServletMapping;
+import com.ltsllc.miranda.message.Message;
+
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 5/18/2017.
+ * Created by Clark on 3/9/2017.
  */
-public class EventsFileStartingState extends SingleFileStartingState {
-    public EventsFile getEventsFile() {
-        return (EventsFile) getContainer();
+public class SetupServletsMessage extends Message {
+    private List<ServletMapping> mappings;
+
+    public List<ServletMapping> getMappings() {
+        return mappings;
     }
 
-    public EventsFileStartingState(EventsFile eventsFile) throws MirandaException {
-        super(eventsFile);
-    }
-
-    public State getReadyState() throws MirandaException {
-        return new EventsFileReadyState(getEventsFile());
+    public SetupServletsMessage(BlockingQueue<Message> senderQueue, Object sender, List<ServletMapping> mappings) {
+        super(Subjects.SetupServlets, senderQueue, sender);
+        this.mappings = mappings;
     }
 }

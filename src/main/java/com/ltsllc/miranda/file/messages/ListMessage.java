@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.manager;
+package com.ltsllc.miranda.file.messages;
 
 import com.ltsllc.miranda.message.Message;
 

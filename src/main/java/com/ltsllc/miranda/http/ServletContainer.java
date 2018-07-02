@@ -29,9 +29,9 @@ import java.util.List;
  * </table>
  */
 abstract public class ServletContainer extends Consumer {
-    abstract void startContainer();
+    abstract public void startContainer();
 
-    abstract void stopContainer();
+    abstract public void stopContainer();
 
     private List<ServletMapping> servlets;
 

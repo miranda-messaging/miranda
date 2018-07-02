@@ -1,5 +1,6 @@
-package com.ltsllc.miranda.http;
+package com.ltsllc.miranda.http.messages;
 
+import com.ltsllc.miranda.http.ServletMapping;
 import com.ltsllc.miranda.message.Message;
 
 import java.util.List;

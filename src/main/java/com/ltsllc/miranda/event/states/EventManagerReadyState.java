@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.event;
+package com.ltsllc.miranda.event.states;
 
+import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.event.EventManager;
+import com.ltsllc.miranda.event.messages.CreateEventMessage;
+import com.ltsllc.miranda.event.messages.CreateEventResponseMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.operations.events.CreateEventOperation;
 import com.ltsllc.miranda.operations.events.NewEventOperation;
 
 /**
@@ -45,6 +50,12 @@ public class EventManagerReadyState extends State {
                 break;
             }
 
+            case CreateEvent: {
+                CreateEventMessage createEventMessage = (CreateEventMessage) message;
+                nextState = processCreateEventMessage(createEventMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -60,6 +71,18 @@ public class EventManagerReadyState extends State {
                 message.getSender(), message.getEvent());
 
         newEventOperation.start();
+
+        return getEventManager().getCurrentState();
+    }
+
+    public State processCreateEventMessage(CreateEventMessage createEventMessage) throws MirandaException {
+        getEventManager().createEvent(createEventMessage.getEvent());
+
+
+        CreateEventResponseMessage createEventResponseMessage = new CreateEventResponseMessage(getEventManager().getQueue(),
+                getEventManager(), Results.Success, createEventMessage.getEvent().getGuid());
+
+        createEventMessage.reply(createEventResponseMessage);
 
         return getEventManager().getCurrentState();
     }

@@ -19,6 +19,8 @@ package com.ltsllc.miranda.operations;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.session.Session;
 
 import java.util.concurrent.BlockingQueue;
@@ -53,5 +55,9 @@ public class Operation extends Consumer {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    public void respondToRequester (Message message) {
+        send(message, getRequester());
     }
 }

@@ -203,7 +203,7 @@ public class NewNodeState extends NodeState {
     }
 
     private State processConnectMessage(ConnectMessage connectMessage) {
-        String message = getNode() + " in state " + this + " was told to connect when it already has a connection!  "
+        String message = getNode() + " was told to connect when it already has a connection!  "
                 + " ignoring message.";
 
         logger.warn(message, connectMessage.getWhere());

@@ -16,11 +16,10 @@
 
 package com.ltsllc.miranda.event;
 
+import com.ltsllc.miranda.event.states.EventManagerReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
 
 /**
  * Created by Clark on 5/13/2017.

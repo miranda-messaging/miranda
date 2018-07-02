@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.event;
 
+import com.ltsllc.miranda.event.states.EventManagerReadyState;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -25,7 +26,7 @@ import com.ltsllc.miranda.event.messages.EvictMessage;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.event.messages.ReadEventMessage;
 import com.ltsllc.miranda.manager.DirectoryManager;
-import com.ltsllc.miranda.manager.ListMessage;
+import com.ltsllc.miranda.file.messages.ListMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.Reader;
@@ -33,6 +34,7 @@ import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -42,7 +44,7 @@ import java.util.concurrent.BlockingQueue;
 public class EventManager extends DirectoryManager {
     public static final String NAME = "event manager";
 
-    private Map<String, Event> eventMap;
+    private Map<String, Event> eventMap = new HashMap<>();
 
     public EventManager(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directoryName, objectLimit, reader, writer);
@@ -54,12 +56,13 @@ public class EventManager extends DirectoryManager {
     /**
      * Start the manager.
      * <p>
-     * <p>
      * This entails starting periodic evictions.
      * </p>
      */
     public void start() {
         try {
+            super.start();
+
             long period = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_EVENT_EVICTION_PERIOD);
             EvictMessage evictEventsMessage = new EvictMessage();
             Miranda.timer.sendSchedulePeriodic(0, period, getQueue(), evictEventsMessage);
@@ -76,8 +79,8 @@ public class EventManager extends DirectoryManager {
         sendToMe(readEventMessage);
     }
 
-    public void sendCreateEventMessage(BlockingQueue<Message> senderQueue, Object sender, Event event) {
-        CreateEventMessage createEventMessage = new CreateEventMessage(senderQueue, sender, event);
+    public void sendCreateEventMessage(BlockingQueue<Message> senderQueue, Object sender, Event event, Session session) {
+        CreateEventMessage createEventMessage = new CreateEventMessage(senderQueue, sender, event, session);
         sendToMe(createEventMessage);
     }
 

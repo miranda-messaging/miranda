@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.event;
+package com.ltsllc.miranda.event.states;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.states.SingleFileLoadingState;
+import com.ltsllc.miranda.event.EventsFile;
+import com.ltsllc.miranda.event.states.EventsFileReadyState;
+import com.ltsllc.miranda.file.states.SingleFileStartingState;
 
 /**
- * Created by Clark on 5/14/2017.
+ * Created by Clark on 5/18/2017.
  */
-public class EventsFileLoadingState extends SingleFileLoadingState {
+public class EventsFileStartingState extends SingleFileStartingState {
     public EventsFile getEventsFile() {
         return (EventsFile) getContainer();
     }
 
-    public EventsFileLoadingState(EventsFile eventsFile) throws MirandaException {
+    public EventsFileStartingState(EventsFile eventsFile) throws MirandaException {
         super(eventsFile);
     }
 

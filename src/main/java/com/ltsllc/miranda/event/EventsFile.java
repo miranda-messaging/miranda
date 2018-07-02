@@ -19,6 +19,7 @@ package com.ltsllc.miranda.event;
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.event.states.EventsFileLoadingState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;

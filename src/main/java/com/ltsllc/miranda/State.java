@@ -80,7 +80,7 @@ public abstract class State {
 
     public void send(BlockingQueue<Message> queue, Message m) {
         try {
-            logger.info(getContainer() + " in state " + this + " sending " + m);
+            logger.info(getContainer() + " sending " + m);
             queue.put(m);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Interrupted while trying to send message", e, Panic.Reasons.ExceptionSendingMessage);
@@ -112,7 +112,7 @@ public abstract class State {
             }
 
             default: {
-                String message = getContainer() + " in state " + this + " does not understand " + m;
+                String message = getContainer() + " does not understand " + m;
                 logger.error(message);
                 logger.error("Message created at", m.getWhere());
                 Panic panic = new Panic(message, null, Panic.Reasons.DoesNotUnderstand);

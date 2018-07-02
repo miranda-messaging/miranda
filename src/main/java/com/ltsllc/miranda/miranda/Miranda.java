@@ -45,6 +45,7 @@ import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.property.NewPropertiesMessage;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.servlet.receivemessage.PublisherMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
@@ -465,6 +466,11 @@ public class Miranda extends Consumer {
             System.err.println("Exception while trying to shut down");
             System.exit(1);
         }
+    }
+
+    public void sendPublisherMessage (BlockingQueue<Message> senderQueue, Object sender, byte[] content, String url) {
+        PublisherMessage publisherMessage = new PublisherMessage (senderQueue, sender, content, url);
+        sendToMe(publisherMessage);
     }
 
     public void sendAddSessionMessage(BlockingQueue<Message> senderQueue, Object sender, Session session) {

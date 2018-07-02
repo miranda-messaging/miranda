@@ -193,7 +193,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, ListUsersResponse, WriteResponse
+        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, WriteResponse
     }
 
     private static Gson ourGson = new Gson();
@@ -204,12 +204,16 @@ public class Message {
     private Object senderObject;
     private Exception where;
 
-    public BlockingQueue<Message> getSender() {
-        return sender;
-    }
-
     public Subjects getSubject() {
         return subject;
+    }
+
+    public void setSubject(Subjects subject) {
+        this.subject = subject;
+    }
+
+    public BlockingQueue<Message> getSender() {
+        return sender;
     }
 
     public Object getSenderObject() {
@@ -220,6 +224,9 @@ public class Message {
         return where;
     }
 
+    public void setWhere(Exception where) {
+        this.where = where;
+    }
 
     public Message(Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
         this.subject = subject;
@@ -229,8 +236,11 @@ public class Message {
         this.where = new Exception();
     }
 
-    public void respond(Message m) throws InterruptedException {
-        getSender().put(m);
+    public Message (Message other) {
+        setSender(other.getSender());
+        setSenderObject(other.getSenderObject());
+        setSubject(other.getSubject());
+        setWhere(other.getWhere());
     }
 
     public boolean expired(long time) {
@@ -244,7 +254,7 @@ public class Message {
 
     public void reply(Message message) throws MirandaException {
         try {
-            logger.info (message.getSenderObject() + " sent " + message);
+            logger.debug (message.getSenderObject() + " sent " + message);
             getSender().put(message);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Interrupted trying to send reply.", e, Panic.Reasons.ExceptionSendingMessage);

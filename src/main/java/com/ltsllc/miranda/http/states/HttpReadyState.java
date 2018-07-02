@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.http;
+package com.ltsllc.miranda.http.states;
 
+import com.ltsllc.miranda.http.HttpServer;
+import com.ltsllc.miranda.http.messages.AddServletMessage;
+import com.ltsllc.miranda.http.messages.AddServletResponseMessage;
+import com.ltsllc.miranda.http.messages.SetupServletsMessage;
+import com.ltsllc.miranda.http.messages.StartHttpServerMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -49,6 +54,12 @@ public class HttpReadyState extends State {
                 break;
             }
 
+            case AddServlet: {
+                AddServletMessage addServletMessage = (AddServletMessage) message;
+                nextState = processAddServletMessage(addServletMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -56,6 +67,14 @@ public class HttpReadyState extends State {
         }
 
         return nextState;
+    }
+
+    public State processAddServletMessage(AddServletMessage addServletMessage) throws MirandaException {
+        getHttpServer().addServlet(addServletMessage.getServletMapping());
+        AddServletResponseMessage addServletResponseMessage = new AddServletResponseMessage(getHttpServer().getQueue(),
+                getHttpServer(), addServletMessage.getServletMapping().getPath());
+        addServletMessage.reply(addServletResponseMessage);
+        return getHttpServer().getCurrentState();
     }
 
     private State processSetupServletsMessage(SetupServletsMessage message) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.http;
+package com.ltsllc.miranda.http.messages;
 
 import com.ltsllc.miranda.message.Message;
 import io.netty.channel.ChannelHandlerContext;

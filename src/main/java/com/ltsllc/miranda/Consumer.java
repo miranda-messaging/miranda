@@ -57,9 +57,9 @@ public class Consumer extends Subsystem implements Comparer {
         if (null == currentState)
             logger.info(this + " transitioning from null to " + s);
         else if (null == s)
-            logger.info(this + " in state " + currentState + " transitioning to null");
+            logger.info(this  + " transitioning to null");
         else if (currentState.getClass() != s.getClass())
-            logger.info(this + " in state " + currentState + " transitioning to " + s);
+            logger.info(this + " transitioning to " + s);
 
         State nextState = s;
 
@@ -91,7 +91,7 @@ public class Consumer extends Subsystem implements Comparer {
         State current = getCurrentState();
 
         if (null == current) {
-            Panic panic = new StartupPanic("Null start state", null, StartupPanic.StartupReasons.NullStartState);
+            Panic panic = new Panic("Null start state", null, Panic.Reasons.NullCurrentState);
             Miranda.getInstance().panic(panic);
         } else {
             try {
@@ -171,7 +171,7 @@ public class Consumer extends Subsystem implements Comparer {
                         logger.info("In shutting down state");
                     }
 
-                    logger.info(this + " in state " + getCurrentState() + " received " + m + " from " + m.getSenderObject());
+                    logger.info(this + " received " + m + " from " + m.getSenderObject());
                     nextState = processMessageInCurrentState(m);
                     if (currentState.getClass() == ShuttingDownState.class && nextState.getClass() != ShuttingDownState.class) {
                         logger.info("transitioning out of ShuttingDownState", new Exception());
@@ -254,7 +254,7 @@ public class Consumer extends Subsystem implements Comparer {
 
 
     public void send(Message m, BlockingQueue<Message> queue) {
-        logger.info(this + " in state " + getCurrentState() + " is sending " + m);
+        logger.info(this + " is sending " + m);
         try {
             queue.put(m);
         } catch (InterruptedException e) {
@@ -300,6 +300,7 @@ public class Consumer extends Subsystem implements Comparer {
      * Send a message to this object.
      */
     public void sendToMe(Message message) {
+        logger.debug (message.getSenderObject() + " sent " + message + " to " + this);
         try {
             getQueue().put(message);
         } catch (InterruptedException e) {

@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.event;
 
-import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.event.states.EventManagerReadyState;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.mockito.Mock;

@@ -1,6 +1,7 @@
 package com.ltsllc.miranda.servlet.event;
 
 import com.google.gson.Gson;
+import com.ltsllc.commons.io.Util;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -11,6 +12,7 @@ import com.ltsllc.miranda.session.Session;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,19 +67,25 @@ public class PublishServlet extends HttpServlet {
 
     public static final String HEADER_SESSION_ID = "sessionId";
 
-    public void checkSession(HttpServletRequest request, HttpServletResponse response)
+    public Session checkSession(HttpServletRequest request, HttpServletResponse response)
             throws IOException, TimeoutException, ServletException {
-        String sessionIdString = request.getHeader(HEADER_SESSION_ID);
+        String sessionIdString = null;
+        for (Cookie cookie : request.getCookies())
+        {
+            if (cookie.getName().equalsIgnoreCase("sessionId"))
+                sessionIdString = cookie.getValue();
+        }
+
 
         if (null == sessionIdString) {
-            logger.warn("missing session ID header, " + HEADER_SESSION_ID);
+            logger.warn("missing session ID cookie, sessionId");
             throw new ServletException("Missing sessionId");
         }
 
         Long sessionId = null;
 
         try {
-            long value = Long.parseLong(sessionIdString);
+            sessionId = Long.parseLong(sessionIdString);
         } catch (NumberFormatException e) {
             logger.warn("Exception parsing session ID, " + sessionIdString, e);
             throw new ServletException("Exception parsing sessionId");
@@ -91,6 +99,7 @@ public class PublishServlet extends HttpServlet {
         }
 
         setSession(session);
+        return session;
     }
 
     public String getTopicName(HttpServletRequest request, HttpServletResponse response)
@@ -114,49 +123,23 @@ public class PublishServlet extends HttpServlet {
             throw new MirandaException("missing topic name");
         }
 
-        int count = url.length - index - 1;
+        int count = url.length - index;
         return new String(url, index, count);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
-            checkSession(request, response);
+            Session session = checkSession(request, response);
             String topicName = getTopicName(request, response);
-            byte[] content = com.ltsllc.commons.io.Util.readCompletely(request.getInputStream());
+            byte[] content = Util.readCompletely(request.getInputStream());
             Event event = new Event(getUser(), Event.Methods.POST, topicName, content);
-            EventHolder.CreateResult createResult = EventHolder.getInstance().create(event);
+            EventHolder.CreateResult createResult = EventHolder.getInstance().create(event, session);
             sendCreateEventResult(response, createResult);
             response.setStatus(200);
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(400);
         }
     }
 
-    public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            checkSession(request, response);
-            String topicName = getTopicName(request, response);
-            byte[] content = com.ltsllc.commons.io.Util.readCompletely(request.getInputStream());
-            Event event = new Event(getUser(), Event.Methods.PUT, topicName, content);
-            EventHolder.CreateResult createResult = EventHolder.getInstance().create(event);
-            sendCreateEventResult(response, createResult);
-            response.setStatus(200);
-        } catch (Exception e) {
-            response.setStatus(400);
-        }
-    }
-
-    public void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            checkSession(request, response);
-            String topicName = getTopicName(request, response);
-            Event event = new Event(getUser(), Event.Methods.DELETE, topicName, null);
-            EventHolder.CreateResult createResult = EventHolder.getInstance().create(event);
-            sendCreateEventResult(response, createResult);
-            response.setStatus(200);
-        } catch (Exception e) {
-            response.setStatus(400);
-        }
-    }
 }

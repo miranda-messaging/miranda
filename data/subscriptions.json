@@ -6,13 +6,5 @@
     "dataUrl": "temp",
     "livelinessUrl": "temp",
     "errorPolicy": "Drop"
-  },
-  {
-    "name": "a new subscription",
-    "owner": "admin",
-    "topic": "whatever",
-    "dataUrl": "temp",
-    "livelinessUrl": "temp",
-    "errorPolicy": "Drop"
   }
 ]
