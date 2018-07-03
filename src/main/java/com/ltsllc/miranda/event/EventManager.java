@@ -18,6 +18,8 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.event.states.EventManagerReadyState;
 import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.page.EventRecord;
+import com.ltsllc.miranda.page.PageCache;
 import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
@@ -34,7 +36,9 @@ import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -44,13 +48,33 @@ import java.util.concurrent.BlockingQueue;
 public class EventManager extends DirectoryManager {
     public static final String NAME = "event manager";
 
-    private Map<String, Event> eventMap = new HashMap<>();
+
+    private PageCache pageCache;
+    private Map<String, EventRecord> eventMap = new HashMap<>();
 
     public EventManager(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directoryName, objectLimit, reader, writer);
 
         EventManagerReadyState eventManagerReadyState = new EventManagerReadyState(this);
         setCurrentState(eventManagerReadyState);
+        pageCache = new PageCache(directoryName,5, objectLimit, Miranda.getInstance().getWriter());
+        pageCache.start();
+    }
+
+    public PageCache getPageCache() {
+        return pageCache;
+    }
+
+    public void setPageCache(PageCache pageCache) {
+        this.pageCache = pageCache;
+    }
+
+    public Map<String, EventRecord> getEventMap() {
+        return eventMap;
+    }
+
+    public void setEventMap(Map<String, EventRecord> eventMap) {
+        this.eventMap = eventMap;
     }
 
     /**
@@ -64,7 +88,7 @@ public class EventManager extends DirectoryManager {
             super.start();
 
             long period = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_EVENT_EVICTION_PERIOD);
-            EvictMessage evictEventsMessage = new EvictMessage();
+            EvictMessage evictEventsMessage = new EvictMessage(getQueue(), this);
             Miranda.timer.sendSchedulePeriodic(0, period, getQueue(), evictEventsMessage);
         } catch (MirandaException e) {
             StartupPanic startupPanic = new StartupPanic("Exception starting event manager", e,
@@ -95,6 +119,7 @@ public class EventManager extends DirectoryManager {
     }
 
     public void createEvent(Event event) {
-        eventMap.put(event.getGuid(), event);
+        eventMap.put(event.getGuid(), new EventRecord());
+        getPageCache().addEvent(event);
     }
 }

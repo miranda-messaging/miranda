@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -127,7 +128,7 @@ public class PublishServlet extends HttpServlet {
         return new String(url, index, count);
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             Session session = checkSession(request, response);
             String topicName = getTopicName(request, response);
@@ -136,6 +137,11 @@ public class PublishServlet extends HttpServlet {
             EventHolder.CreateResult createResult = EventHolder.getInstance().create(event, session);
             sendCreateEventResult(response, createResult);
             response.setStatus(200);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(response.getOutputStream());
+            outputStreamWriter.write("Timeout");
+            outputStreamWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(400);

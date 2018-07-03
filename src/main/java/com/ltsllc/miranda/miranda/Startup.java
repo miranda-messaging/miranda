@@ -721,7 +721,7 @@ public class Startup extends State {
             subscriptionManager.start();
             miranda.setSubscriptionManager(subscriptionManager);
 
-            String directoryName = properties.getProperty(MirandaProperties.PROPERTY_MESSAGES_DIRECTORY);
+            String directoryName = properties.getProperty(MirandaProperties.PROPERTY_EVENT_DIRECTORY);
             File f = new File(directoryName);
             directoryName = f.getCanonicalPath();
             int objectLimit = properties.getIntProperty(MirandaProperties.PROPERTY_EVENT_OBJECT_LIMIT);

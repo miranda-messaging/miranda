@@ -6,8 +6,17 @@ import com.ltsllc.miranda.Results;
 import java.util.concurrent.BlockingQueue;
 
 public class WriteResponseMessage extends Message {
+    private String filename;
     private Results result;
     private Throwable exception;
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
     public Results getResult() {
         return result;
@@ -25,15 +34,18 @@ public class WriteResponseMessage extends Message {
         this.exception = exception;
     }
 
-    public WriteResponseMessage(Results result, BlockingQueue<Message> queue, Object senderObject) {
+    public WriteResponseMessage(String filename, Results result, BlockingQueue<Message> queue, Object senderObject) {
         super(Subjects.WriteResponse, queue, senderObject);
         setResult(result);
+        setFilename(filename);
     }
 
-    public WriteResponseMessage(Results result, Throwable exception, BlockingQueue<Message> senderQueue,
+    public WriteResponseMessage(String filename, Results result, Throwable exception, BlockingQueue<Message> senderQueue,
                                 Object senderObject)
     {
         super(Subjects.WriteResponse, senderQueue, senderObject);
         setResult(result);
+        setFilename(filename);
+        setException(exception);
     }
 }

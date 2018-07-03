@@ -58,10 +58,12 @@ public class WriterReadyState extends State {
     private State processWriteMessage(WriteMessage writeMessage) throws MirandaException {
         try {
             getWriter().write(writeMessage.getFilename(), writeMessage.getBuffer());
-            WriteResponseMessage writeResponseMessage = new WriteResponseMessage(Results.Success,getWriter().getQueue(), getWriter());
+            WriteResponseMessage writeResponseMessage = new WriteResponseMessage(writeMessage.getFilename(),
+                    Results.Success,getWriter().getQueue(), getWriter());
             writeMessage.reply(writeResponseMessage);
         } catch (IOException | EncryptionException e) {
-            WriteResponseMessage writeResponseMessage = new WriteResponseMessage(Results.Exception, e, getWriter().getQueue(), getWriter());
+            WriteResponseMessage writeResponseMessage = new WriteResponseMessage(writeMessage.getFilename(),
+                    Results.Exception, e, getWriter().getQueue(), getWriter());
             writeMessage.reply(writeResponseMessage);
         }
 

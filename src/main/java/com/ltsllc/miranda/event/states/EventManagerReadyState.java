@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.event.messages.CreateEventMessage;
 import com.ltsllc.miranda.event.messages.CreateEventResponseMessage;
+import com.ltsllc.miranda.event.messages.EvictMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -56,6 +57,12 @@ public class EventManagerReadyState extends State {
                 break;
             }
 
+            case Evict: {
+                EvictMessage evictMessage = (EvictMessage) message;
+                nextState = processEvictMessage (evictMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -83,6 +90,13 @@ public class EventManagerReadyState extends State {
                 getEventManager(), Results.Success, createEventMessage.getEvent().getGuid());
 
         createEventMessage.reply(createEventResponseMessage);
+
+        return getEventManager().getCurrentState();
+    }
+
+    public State processEvictMessage(EvictMessage evictMessage) {
+        EvictMessage evictMessage2 = new EvictMessage(getEventManager().getQueue(), getEventManager());
+        send(getEventManager().getPageCache().getQueue(), evictMessage2);
 
         return getEventManager().getCurrentState();
     }
