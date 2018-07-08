@@ -80,7 +80,7 @@ public abstract class State {
 
     public void send(BlockingQueue<Message> queue, Message m) {
         try {
-            logger.info(getContainer() + " sending " + m);
+            logger.debug(getContainer() + " sending " + m);
             queue.put(m);
         } catch (InterruptedException e) {
             Panic panic = new Panic("Interrupted while trying to send message", e, Panic.Reasons.ExceptionSendingMessage);

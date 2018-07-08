@@ -21,7 +21,7 @@ import com.ltsllc.miranda.message.Message;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 5/3/2017.
+ * A request to read a file
  */
 public class ReadMessage extends Message {
     private String filename;
@@ -30,8 +30,8 @@ public class ReadMessage extends Message {
         return filename;
     }
 
-    public ReadMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
-        super(Subjects.Read, senderQueue, sender);
+    public ReadMessage(BlockingQueue<Message> senderQueue, Object senderObject, String filename) {
+        super(Subjects.Read, senderQueue, senderObject);
 
         this.filename = filename;
     }

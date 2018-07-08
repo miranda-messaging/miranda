@@ -1,10 +1,11 @@
 [
   {
-    "name": "Clark\u0027s subscription",
-    "owner": "clark",
+    "name": "admin",
+    "owner": "admin",
     "topic": "whatever",
     "dataUrl": "temp",
     "livelinessUrl": "temp",
-    "errorPolicy": "Drop"
+    "errorPolicy": "Drop",
+    "isLocal": false
   }
 ]

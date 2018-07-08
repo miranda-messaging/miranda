@@ -14,25 +14,42 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.deliveries;
+package com.ltsllc.miranda.deliveries.states;
 
-import com.ltsllc.miranda.State;
+import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.file.states.SingleFileStartingState;
+import com.ltsllc.miranda.clientinterface.basicclasses.Delivery;
+import com.ltsllc.miranda.deliveries.DeliveriesFile;
+import com.ltsllc.miranda.file.states.SingleFileReadyState;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Clark on 5/18/2017.
  */
-public class DeliveriesFileStartingState extends SingleFileStartingState {
+public class DeliveriesFileReadyState extends SingleFileReadyState {
+    public static final String NAME = "deliveries file";
+
     public DeliveriesFile getDeliveriesFile() {
         return (DeliveriesFile) getContainer();
     }
 
-    public DeliveriesFileStartingState(DeliveriesFile deliveriesFile) throws MirandaException {
+    public String getName() {
+        return NAME;
+    }
+
+    public DeliveriesFileReadyState(DeliveriesFile deliveriesFile) throws MirandaException {
         super(deliveriesFile);
     }
 
-    public State getReadyState() throws MirandaException {
-        return new DeliveriesFileReadyState(getDeliveriesFile());
+    public Type getListType() {
+        return new TypeToken<List<Delivery>>() {
+        }.getType();
+    }
+
+    public List getPerishables() {
+        return new ArrayList(getDeliveriesFile().getData());
     }
 }

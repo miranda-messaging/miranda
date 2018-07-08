@@ -57,7 +57,7 @@ public class NodeElement extends MirandaObject {
     }
 
     @Override
-    public void copyFrom(Mergeable mergeable) {
+    public void copyFrom(MergeableObject mergeable) {
         NodeElement other = (NodeElement) mergeable;
 
         dns = other.dns;
@@ -214,5 +214,14 @@ public class NodeElement extends MirandaObject {
 
     public boolean matches(NodeElement other) {
         return getDns().equals(other.getDns()) && getPort() == other.getPort();
+    }
+
+    public void copyFrom (Mergeable mergeable) {
+        NodeElement other = (NodeElement) mergeable;
+
+        setDescription(other.getDescription());
+        setDns(other.getDns());
+        setLastChange(other.getLastChange());
+        setLastConnected(other.getLastConnected());
     }
 }

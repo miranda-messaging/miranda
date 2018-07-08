@@ -16,6 +16,9 @@
 
 package com.ltsllc.miranda.topics.states;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
@@ -92,6 +95,18 @@ public class TopicManagerReadyState extends ManagerReadyState {
                 break;
             }
 
+            case NewEvent: {
+                NewEventMessage newEventMessage = (NewEventMessage) message;
+                nextState = processNewEventMessage(newEventMessage);
+                break;
+            }
+
+            case Subscribe: {
+                SubscribeMessage subscribeMessage = (SubscribeMessage) message;
+                nextState = processSubscribeMessage(subscribeMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -99,6 +114,16 @@ public class TopicManagerReadyState extends ManagerReadyState {
         }
 
         return nextState;
+    }
+
+    public State processSubscribeMessage(SubscribeMessage subscribeMessage) {
+        Subscription subscription = subscribeMessage.getSubscription();
+        for (Topic topic : getTopicManager().getTopics()) {
+            if (topic.getName().equals(subscription.getTopic()))
+                topic.addSubscription(subscription);
+        }
+
+        return getTopicManager().getCurrentState();
     }
 
     public State processGarbageCollectionMessage(GarbageCollectionMessage garbageCollectionMessage) {
@@ -210,6 +235,16 @@ public class TopicManagerReadyState extends ManagerReadyState {
                 this, ownerQueryMessage.getName(), property, "TopicManager");
 
         ownerQueryMessage.reply(ownerQueryResponseMessage);
+
+        return getTopicManager().getCurrentState();
+    }
+
+    public State processNewEventMessage (NewEventMessage newEventMessage) {
+        Event event = newEventMessage.getEvent();
+
+        for (Topic topic : getTopicManager().getTopics()) {
+            topic.newEvent(getTopicManager().getQueue(), event);
+        }
 
         return getTopicManager().getCurrentState();
     }

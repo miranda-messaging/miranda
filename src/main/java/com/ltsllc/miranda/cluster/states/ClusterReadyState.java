@@ -19,6 +19,7 @@ package com.ltsllc.miranda.cluster.states;
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
@@ -26,6 +27,8 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.*;
 
+import com.ltsllc.miranda.event.messages.NewEventMessage;
+import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.message.LoadResponseMessage;
 import com.ltsllc.miranda.message.Message;
@@ -217,12 +220,28 @@ public class ClusterReadyState extends ManagerReadyState {
                 break;
             }
 
+            case NewEvent: {
+                NewEventMessage newEventMessage = (NewEventMessage) m;
+                nextState = processNewEventMessage(newEventMessage);
+                break;
+            }
+
             default:
                 nextState = super.processMessage(m);
                 break;
         }
 
         return nextState;
+    }
+
+    public State processNewEventMessage(NewEventMessage newEventMessage) {
+        Event event = newEventMessage.getEvent();
+
+        for (Node node : getCluster().getNodes()) {
+            node.sendNewEventMessage(event, getCluster().getQueue(), getCluster());
+        }
+
+        return getCluster().getCurrentState();
     }
 
 
@@ -425,4 +444,10 @@ public class ClusterReadyState extends ManagerReadyState {
         forwardMessage(message);
         return getCluster().getCurrentState();
     }
+
+    public State processFileLoadedMessage(FileLoadedMessage fileLoadedMessage) throws MirandaException {
+        return new ClusterReadyState(getCluster());
+    }
+
+
 }

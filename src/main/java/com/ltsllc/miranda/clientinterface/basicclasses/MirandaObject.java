@@ -1,6 +1,9 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
 
 /**
  * An Object that knows how to merge itself with another object.
@@ -22,7 +25,7 @@ import com.google.gson.Gson;
  * </tr>
  * </table>
  */
-abstract public class MirandaObject extends Mergeable implements Equivalent {
+abstract public class MirandaObject extends MergeableObject implements Equivalent {
     private static Gson gson;
 
     public static Gson getGson() {
@@ -30,9 +33,16 @@ abstract public class MirandaObject extends Mergeable implements Equivalent {
     }
 
 
+    public MirandaObject() {
+        if (gson == null) {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.setPrettyPrinting();
+            gson = gsonBuilder.create();
+        }
+    }
+
     /**
      * Are two strings equal?
-     * <p>
      * <p>
      * This method is null safe --- one or both parameters can be null.
      * </p>
@@ -103,8 +113,36 @@ abstract public class MirandaObject extends Mergeable implements Equivalent {
         return true;
     }
 
+    public static boolean listsAreEqual (List l1, List l2) {
+        if (l1 == l2)
+            return true;
+
+        if (l1.size() != l2.size())
+            return false;
+
+        for (int i = 0; i < l1.size(); i++) {
+            Object o1 = l1.get(i);
+            Object o2 = l2.get(i);
+
+            if (!o1.equals(o2))
+                return false;
+        }
+
+        return true;
+    }
 
     public String toJson() {
         return gson.toJson(this);
     }
+
+    public boolean merge (Mergeable mergable) {
+        if (getLastChange() > mergable.getLastChange())
+            return false;
+        else {
+            copyFrom(mergable);
+            return true;
+        }
+    }
+
+
 }

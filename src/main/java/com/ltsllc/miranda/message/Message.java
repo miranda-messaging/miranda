@@ -193,7 +193,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, WriteResponse
+        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, DeliverEvent, Subscribe, WriteResponse
     }
 
     private static Gson ourGson = new Gson();
@@ -228,9 +228,9 @@ public class Message {
         this.where = where;
     }
 
-    public Message(Subjects subject, BlockingQueue<Message> sender, Object senderObject) {
+    public Message(Subjects subject, BlockingQueue<Message> senderQueue, Object senderObject) {
         this.subject = subject;
-        this.sender = sender;
+        this.sender = senderQueue;
         this.senderObject = senderObject;
 
         this.where = new Exception();

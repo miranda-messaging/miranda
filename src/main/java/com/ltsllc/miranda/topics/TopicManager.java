@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.topics;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -185,5 +186,10 @@ public class TopicManager extends StandardManager<Topic> {
 
     public State getReadyState() throws MirandaException {
         return new TopicManagerReadyState(this);
+    }
+
+    public void sendSubscribe (BlockingQueue<Message> senderQueue, Object senderObject, Subscription subscription) {
+        SubscribeMessage subscribeMessage = new SubscribeMessage(subscription, senderQueue, senderObject);
+        sendToMe(subscribeMessage);
     }
 }

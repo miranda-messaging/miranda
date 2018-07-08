@@ -16,7 +16,10 @@
 
 package com.ltsllc.miranda;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -36,8 +39,23 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 1/1/2017.
  */
-public class Consumer extends Subsystem implements Comparer {
+public class Consumer extends Subsystem implements Comparer, Mergeable {
     private static Logger logger = Logger.getLogger(Consumer.class);
+    private static Gson gson;
+
+    public static Gson getGson() {
+        if (gson == null) {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.setPrettyPrinting();
+            gson = gsonBuilder.create();
+        }
+
+        return gson;
+    }
+
+    public static void setGson(Gson gson) {
+        Consumer.gson = gson;
+    }
 
     public static void setLogger(Logger logger) {
         Consumer.logger = logger;
@@ -48,6 +66,15 @@ public class Consumer extends Subsystem implements Comparer {
     }
 
     private State currentState;
+    private long lastChange = -1;
+
+    public long getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(long lastChange) {
+        this.lastChange = lastChange;
+    }
 
     public State getCurrentState() {
         return currentState;
@@ -55,18 +82,18 @@ public class Consumer extends Subsystem implements Comparer {
 
     public void setCurrentState(State s) {
         if (null == currentState)
-            logger.info(this + " transitioning from null to " + s);
+            logger.debug(this + " transitioning from null to " + s);
         else if (null == s)
-            logger.info(this  + " transitioning to null");
+            logger.debug(this  + " transitioning to null");
         else if (currentState.getClass() != s.getClass())
-            logger.info(this + " transitioning to " + s);
+            logger.debug(this + " transitioning to " + s);
 
         State nextState = s;
 
         if (nextState == s)
             currentState = nextState;
         else {
-            logger.info("The start method in " + s + " transitioned to " + nextState + " for " + this);
+            logger.debug("The start method in " + s + " transitioned to " + nextState + " for " + this);
             currentState = nextState;
         }
     }
@@ -168,14 +195,14 @@ public class Consumer extends Subsystem implements Comparer {
                     State current = currentState;
                     Message message = m;
                     if (currentState.getClass() == ShuttingDownState.class && m.getClass() == ShutdownResponseMessage.class) {
-                        logger.info("In shutting down state");
+                        logger.debug("In shutting down state");
                     }
 
-                    logger.info(this + " received " + m + " from " + m.getSenderObject());
+                    logger.debug(this + " received " + m + " from " + m.getSenderObject());
                     nextState = processMessageInCurrentState(m);
                     if (currentState.getClass() == ShuttingDownState.class && nextState.getClass() != ShuttingDownState.class) {
-                        logger.info("transitioning out of ShuttingDownState", new Exception());
-                        logger.info(m);
+                        logger.debug("transitioning out of ShuttingDownState", new Exception());
+                        logger.debug(m);
                     }
 
                     if (currentState.getOverideState() != null) {
@@ -369,7 +396,27 @@ public class Consumer extends Subsystem implements Comparer {
         setCurrentState(StopState.getInstance());
     }
 
+    public boolean merge (Mergeable mergeable) {
+        if (getLastChange() > mergeable.getLastChange())
+            return false;
+        else {
+            copyFrom(mergeable);
+            return true;
+        }
+    }
+
+    public void copyFrom (Mergeable mergeable) {
+        Consumer other = (Consumer) mergeable;
+
+        setCurrentState(other.getCurrentState());
+        setLastChange(other.getLastChange());
+    }
+
     public String toString() {
         return getName() + "@" + getCurrentState();
+    }
+
+    public String toJson () {
+        return getGson().toJson(this);
     }
 }

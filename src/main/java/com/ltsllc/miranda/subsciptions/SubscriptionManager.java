@@ -16,6 +16,8 @@
 
 package com.ltsllc.miranda.subsciptions;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
@@ -163,5 +165,10 @@ public class SubscriptionManager extends StandardManager<Subscription> {
 
     public State getReadyState () throws MirandaException {
         return new SubscriptionManagerReadyState(this);
+    }
+
+    public void sendNewEvent(Event event, BlockingQueue<Message> senderQueue, Object sender) {
+        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, sender, null, event);
+        sendToMe(newEventMessage);
     }
 }

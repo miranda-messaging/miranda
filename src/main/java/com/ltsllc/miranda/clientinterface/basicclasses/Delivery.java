@@ -70,7 +70,7 @@ public class Delivery extends MirandaObject {
     }
 
     @Override
-    public void copyFrom(Mergeable mergeable) {
+    public void copyFrom(MergeableObject mergeable) {
         Delivery other = (Delivery) mergeable;
 
         eventGuid = other.eventGuid;
@@ -119,5 +119,15 @@ public class Delivery extends MirandaObject {
 
         Delivery delivery = new Delivery(random);
         return delivery;
+    }
+
+    public void copyFrom (Mergeable mergeable) {
+        Delivery other = (Delivery) mergeable;
+
+        setAttemptId(other.getAttemptId());
+        setDelivered(other.getDelivered());
+        setEventGuid(other.getEventGuid());
+        setLastChange(other.getLastChange());
+        setSubscription(other.getSubscription());
     }
 }

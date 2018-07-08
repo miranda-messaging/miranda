@@ -16,16 +16,25 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
+import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.MirandaUncheckedException;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
+
+import java.io.File;
+import java.util.concurrent.BlockingQueue;
+
 /**
  * A subscription to a topic.
  * <p>
  * <h3>Attributes</h3>
  * <table border="1">
- * <th>
- * <td>Name</td>
- * <td>Type</td>
- * <td>Description</td>
- * </th>
+ *
+ * <td><b>Name</b></td>
+ * <td><b>Type</b></td>
+ * <td><b>Description</b></td>
+ *
  * <tr>
  * <td>name</td>
  * <td>String</td>
@@ -101,7 +110,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
  * </tr>
  * </table>
  */
-public class Subscription extends MirandaObject {
+public class Subscription extends Consumer implements Mergeable,Equivalent {
     public enum ErrorPolicies {
         Drop,
         Retry,
@@ -114,32 +123,80 @@ public class Subscription extends MirandaObject {
     private String dataUrl;
     private String livelinessUrl;
     private ErrorPolicies errorPolicy;
+    private EventQueue eventQueue;
+    private DeadLetterQueue deadLetterQueue;
+    private String queueDirectory;
+    private boolean isLocal;
 
-    @Override
+    public String getQueueDirectory() {
+        return queueDirectory;
+    }
+
+    public void setQueueDirectory(String queueDirectory) {
+        this.queueDirectory = queueDirectory;
+    }
+
+    public EventQueue getEventQueue() {
+        if (null == eventQueue) {
+            String filename = getQueueDirectory() + File.separator + getName();
+            eventQueue = new EventQueue(filename);
+        }
+
+        return eventQueue;
+    }
+
+    public void setEventQueue(EventQueue eventQueue) {
+        this.eventQueue = eventQueue;
+    }
+
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    public void setLocal(boolean local) {
+        isLocal = local;
+    }
+
+
+    public DeadLetterQueue getDeadLetterQueue() {
+        return deadLetterQueue;
+    }
+
+    public void setDeadLetterQueue(DeadLetterQueue deadLetterQueue) {
+        this.deadLetterQueue = deadLetterQueue;
+    }
+
     public boolean isEquivalentTo(Object o) {
         if (o == null || !(o instanceof Subscription))
             return false;
 
         Subscription other = (Subscription) o;
-        if (!(stringsAreEqual(owner, other.owner)))
+        if (!(MirandaObject.stringsAreEqual(owner, other.owner)))
             return false;
 
-        if (!(stringsAreEqual(dataUrl, other.dataUrl)))
+        if (!(MirandaObject.stringsAreEqual(dataUrl, other.dataUrl)))
             return false;
 
-        return stringsAreEqual(livelinessUrl, other.livelinessUrl);
+        return MirandaObject.stringsAreEqual(livelinessUrl, other.livelinessUrl);
     }
 
-    @Override
-    public void copyFrom(Mergeable mergeable) {
-        Subscription other = (Subscription) mergeable;
+    public void copyFrom(Object o) {
+        try {
+            Subscription other = (Subscription) o;
 
-        name = other.name;
-        owner = other.owner;
-        topic = other.topic;
-        dataUrl = other.dataUrl;
-        livelinessUrl = other.livelinessUrl;
-        errorPolicy = other.errorPolicy;
+            name = other.name;
+            owner = other.owner;
+            topic = other.topic;
+            dataUrl = other.dataUrl;
+            livelinessUrl = other.livelinessUrl;
+            errorPolicy = other.errorPolicy;
+            eventQueue = (EventQueue) other.clone();
+            deadLetterQueue.copyFrom(other.deadLetterQueue);
+            queueDirectory = other.queueDirectory;
+            isLocal = other.isLocal;
+        } catch (CloneNotSupportedException e) {
+            throw new MirandaUncheckedException("exception while copying", e);
+        }
     }
 
     public String getTopic() {
@@ -154,19 +211,20 @@ public class Subscription extends MirandaObject {
     public Subscription() {
     }
 
-    public Subscription(String name) {
-        this();
-        this.name = name;
-    }
 
     public Subscription(String name, String owner, String topic, String dataUrl, String livelinessUrl,
-                        ErrorPolicies errorPolicy) {
+                        ErrorPolicies errorPolicy, String queueDirectory) {
         this.name = name;
         this.owner = owner;
         this.topic = topic;
         this.dataUrl = dataUrl;
         this.livelinessUrl = livelinessUrl;
         this.errorPolicy = errorPolicy;
+
+        String filename = queueDirectory + File.separator + name + ".json";
+
+        this.eventQueue = new EventQueue(filename);
+        this.deadLetterQueue = new DeadLetterQueue();
     }
 
     public ErrorPolicies getErrorPolicy() {
@@ -227,24 +285,74 @@ public class Subscription extends MirandaObject {
 
         Subscription other = (Subscription) o;
 
-        if (!stringsAreEqual(getDataUrl(), other.getDataUrl()))
+        if (!MirandaObject.stringsAreEqual(getDataUrl(), other.getDataUrl()))
             return false;
 
-        if (!stringsAreEqual(getLivelinessUrl(), other.getLivelinessUrl()))
+        if (!MirandaObject.stringsAreEqual(getLivelinessUrl(), other.getLivelinessUrl()))
             return false;
 
-        if (!stringsAreEqual(getName(), other.getName()))
+        if (!MirandaObject.stringsAreEqual(getName(), other.getName()))
             return false;
 
-        if (!stringsAreEqual(getTopic(), other.getTopic()))
+        if (!MirandaObject.stringsAreEqual(getTopic(), other.getTopic()))
             return false;
 
-        if (!stringsAreEqual(getOwner(), other.getOwner()))
+        if (!MirandaObject.stringsAreEqual(getOwner(), other.getOwner()))
             return false;
 
         if (getErrorPolicy() != other.getErrorPolicy())
             return false;
 
         return true;
+    }
+
+
+    public void newEvent (BlockingQueue<Message> queue, Event event) {
+        getEventQueue().newEvent(event);
+        if (isLocal()) {
+            Miranda.getInstance().getDeliveryManager().sendDeliverEvent(event, this, queue, this);
+        }
+    }
+
+    @Override
+    public void copyFrom(Mergeable mergeable) {
+        try {
+            Subscription other = (Subscription) mergeable;
+
+            setOwner(other.getOwner());
+            setName(other.getName());
+            setDataUrl(other.getDataUrl());
+            setErrorPolicy(other.getErrorPolicy());
+            setLivelinessUrl(other.getLivelinessUrl());
+            setQueueDirectory(getQueueDirectory());
+
+            DeadLetterQueue deadLetterQueue = (DeadLetterQueue) other.getDeadLetterQueue().clone();
+            setDeadLetterQueue(deadLetterQueue);
+
+            setLocal(other.isLocal());
+            setTopic(other.getTopic());
+
+            EventQueue eventQueue = (EventQueue) other.getEventQueue().clone();
+            setEventQueue(eventQueue);
+        } catch (CloneNotSupportedException e) {
+            Panic panic = new Panic("CloneNotSupportedException while executing copyFrom", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
+
+    }
+
+    @Override
+    public boolean merge(Mergeable other) {
+        return false;
+    }
+
+    @Override
+    public String toJson() {
+        return null;
+    }
+
+    @Override
+    public long getLastChange() {
+        return 0;
     }
 }

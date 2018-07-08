@@ -18,6 +18,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * A set of Miranda systems
+ * <p>
+ *     This allows clinetes to "tell the cluster" something and have it repeated to all the other Miranda systems.
+ * </p>
+ */
 public class ClusterShutdownState extends ShutdownState {
     private Map<Node, Boolean> nodesShutDown;
     private boolean clusterFileWritten = false;

@@ -17,6 +17,9 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
+import com.ltsllc.miranda.manager.messages.FileWrittenMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -35,7 +38,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * A class that manages a file.
  */
-public abstract class Manager<E, F extends MirandaObject> extends Consumer {
+public abstract class Manager<E, F extends Mergeable & Equivalent> extends Consumer {
     abstract public SingleFile<F> createFile(String filename) throws IOException, MirandaException;
     abstract public E convert(F f) throws MirandaException;
     abstract public State getReadyState() throws MirandaException;
@@ -137,5 +140,10 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     public void sendGetVersion (Consumer consumer) {
         GetVersionsMessage getVersionsMessage = new GetVersionsMessage(consumer.getQueue(), consumer);
         sendToMe(getVersionsMessage);
+    }
+
+    public void sendFileWritten (BlockingQueue<Message> senderQueue, Object senderObject) {
+        FileWrittenMessage fileWrittenMessage = new FileWrittenMessage(senderQueue, senderObject);
+        sendToMe(fileWrittenMessage);
     }
 }

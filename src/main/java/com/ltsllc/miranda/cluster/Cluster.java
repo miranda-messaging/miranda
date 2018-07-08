@@ -16,6 +16,8 @@
 
 package com.ltsllc.miranda.cluster;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.quorum.AcknowledgeQuorum;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
@@ -26,7 +28,6 @@ import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
-import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
@@ -92,8 +93,9 @@ public class Cluster extends Manager<Node, NodeElement> {
 
         this.network = network;
         ourInstance = this;
-        ClusterFileStartingState clusterFileStartingState = new ClusterFileStartingState(getClusterFile());
-        setCurrentState(clusterFileStartingState);
+
+        ClusterReadyState clusterReadyState = new ClusterReadyState(this);
+        setCurrentState(clusterReadyState);
     }
 
     public Cluster(Network network, boolean testMode) throws MirandaException {
@@ -398,5 +400,10 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     public State getReadyState() throws MirandaException {
         return new ClusterReadyState(this);
+    }
+
+    public void sendNewEvent (Event event, BlockingQueue<Message> senderQueue, Object senderObject) {
+        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, senderObject, null, event);
+        sendToMe(newEventMessage);
     }
 }

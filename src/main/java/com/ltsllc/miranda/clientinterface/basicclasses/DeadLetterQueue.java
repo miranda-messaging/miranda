@@ -1,14 +1,12 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
-import com.ltsllc.commons.util.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ltsllc on 7/2/2017.
  */
-public class DeadLetterQueue extends MirandaObject {
+public class DeadLetterQueue extends MirandaObject implements Cloneable,Mergeable {
     private List<String> events;
 
     public DeadLetterQueue() {
@@ -45,8 +43,13 @@ public class DeadLetterQueue extends MirandaObject {
     }
 
     @Override
-    public void copyFrom(Mergeable mergeable) {
+    public void copyFrom(MergeableObject mergeable) {
+        DeadLetterQueue other = (DeadLetterQueue) mergeable;
 
+        List<String> events = new ArrayList<String>(other.getEvents());
+        setEvents(events);
+
+        setLastChange(other.getLastChange());
     }
 
     public List<String> getEvents() {
@@ -63,5 +66,26 @@ public class DeadLetterQueue extends MirandaObject {
 
     public void addEventGuid(String guid) {
         events.add(guid);
+    }
+
+    @Override
+    public void copyFrom(Mergeable mergeable) {
+
+    }
+
+    @Override
+    public boolean merge(Mergeable mergeable) {
+        if (getLastChange() > mergeable.getLastChange())
+            return false;
+        else {
+            copyFrom(mergeable);
+            return true;
+        }
+
+
+    }
+
+    public Object clone () throws CloneNotSupportedException {
+        return super.clone();
     }
 }

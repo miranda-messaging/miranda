@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.cluster;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.*;
@@ -457,7 +458,8 @@ public class TestCluster extends TestCase {
     public void testSendCreateSubscriptionMessage () {
         getCluster().stop();
 
-        Subscription subscription = new Subscription("whatever");
+        Subscription subscription = new Subscription("whatever", "whatever", "whatever",
+                "whatever", "whatever", Subscription.ErrorPolicies.Drop, "whtever");
 
         getCluster().sendCreateSubscriptionMessage(null, this, getMockSession(), subscription);
 
@@ -468,7 +470,11 @@ public class TestCluster extends TestCase {
     public void testSendUpdateSubscription () {
         getCluster().stop();
 
-        Subscription subscription = new Subscription("whatever");
+        Subscription subscription = new Subscription("whatever", "whatever", "whatever",
+                "whatever", "whatever", Subscription.ErrorPolicies.Drop, "whtever");
+
+        getCluster().sendCreateSubscriptionMessage(null, this, getMockSession(), subscription);
+
 
         getCluster().sendUpdateSubscriptionMessage(null, this, getMockSession(), subscription);
 
@@ -479,7 +485,11 @@ public class TestCluster extends TestCase {
     public void testSendDeleteSubscription () {
         getCluster().stop();
 
-        Subscription subscription = new Subscription("whatever");
+        Subscription subscription = new Subscription("whatever", "whatever", "whatever",
+                "whatever", "whatever", Subscription.ErrorPolicies.Drop, "whtever");
+
+        getCluster().sendCreateSubscriptionMessage(null, this, getMockSession(), subscription);
+
 
         getCluster().sendDeleteSubscriptionMessage(null, this, getMockSession(), "whatever");
 

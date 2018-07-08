@@ -83,7 +83,7 @@ public class MinaUnencryptedConnectionListener extends UnencryptedConnectionList
         exception = new Exception();
 
 
-        setCurrentState(new MinaUnecryptedConnectionListenerReadyState());
+        setCurrentState(new MinaUnecryptedConnectionListenerReadyState(this));
     }
 
 }

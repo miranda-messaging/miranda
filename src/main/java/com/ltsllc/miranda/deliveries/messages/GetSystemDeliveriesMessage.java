@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.deliveries;
+package com.ltsllc.miranda.deliveries.messages;
 
 import com.ltsllc.miranda.message.Message;
 

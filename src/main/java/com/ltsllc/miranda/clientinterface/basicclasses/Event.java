@@ -19,6 +19,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.MirandaUncheckedException;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -175,8 +176,7 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         this.awaitingDelivery = new ArrayList();
     }
 
-    @Override
-    public boolean isEquivalentTo(Object o) {
+    public boolean isEquivalentTo(Mergeable o) {
         if (o == null || !(o instanceof Event))
             return false;
 
@@ -185,7 +185,17 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     }
 
     @Override
-    public void copyFrom(Mergeable mergeable) {
+    public boolean isEquivalentTo (Object o) {
+        if (!(o instanceof Mergeable))
+            return false;
+        else {
+            Mergeable mergeable = (Mergeable) o;
+            return isEquivalentTo(mergeable);
+        }
+
+    }
+    @Override
+    public void copyFrom(MergeableObject mergeable) {
         Event other = (Event) mergeable;
         guid = other.guid;
         topicName = other.topicName;
@@ -348,5 +358,22 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
      */
     public boolean canBeEvicted() {
         return awaitingDelivery.size() <= 0;
+    }
+
+    public boolean merge (Mergeable mergeable) {
+        throw new MirandaUncheckedException ("Merging events is not supported");
+    }
+
+    @Override
+    public void copyFrom(Mergeable mergeable) {
+        Event other = (Event) mergeable;
+
+        awaitingDelivery = new ArrayList(other.awaitingDelivery);
+        setContent(other.getContent());
+        setGuid(other.getGuid());
+        setMethod(other.getMethod());
+        setTimeOfCreation(other.getTimeOfCreation());
+        setTopicName(other.getTopicName());
+        setUserName(other.getUserName());
     }
 }

@@ -17,11 +17,17 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.miranda.message.Message;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/5/2017.
+ * A topic in the Miranda System
  */
 public class Topic extends MirandaObject {
+
     public enum RemotePolicies {
         Immediate,
         Acknowledged,
@@ -31,6 +37,16 @@ public class Topic extends MirandaObject {
     private String name;
     private String owner;
     private RemotePolicies remotePolicy;
+    private List<Subscription> subscriptionList = new ArrayList<>();
+
+
+    public List<Subscription> getSubscriptionList() {
+        return subscriptionList;
+    }
+
+    public void setSubscriptionList(List<Subscription> subscriptionList) {
+        this.subscriptionList = subscriptionList;
+    }
 
     @Override
     public boolean isEquivalentTo(Object o) {
@@ -39,16 +55,20 @@ public class Topic extends MirandaObject {
 
         Topic other = (Topic) o;
 
+        if (!listsAreEqual(getSubscriptionList(), other.getSubscriptionList()))
+            return false;
+
         return stringsAreEqual(name, other.name);
     }
 
     @Override
-    public void copyFrom(Mergeable mergeable) {
+    public void copyFrom(MergeableObject mergeable) {
         Topic other = (Topic) mergeable;
 
         name = other.name;
         owner = other.owner;
         remotePolicy = other.remotePolicy;
+        subscriptionList = new ArrayList<>(other.getSubscriptionList());
     }
 
     public RemotePolicies getRemotePolicy() {
@@ -129,7 +149,7 @@ public class Topic extends MirandaObject {
             "arnold",
             "sam",
             "steve",
-            "hedi",
+            "heidi",
             "mushroom",
             "oscar",
             "clark"
@@ -140,5 +160,51 @@ public class Topic extends MirandaObject {
         String owner = OWNERS[improvedRandom.nextIndex(OWNERS)];
 
         return new Topic(name, owner);
+    }
+
+    /**
+     * A new {@link Event} came in, process it.
+     *
+     * <p>
+     *     Note that the event may not pertain to us; in which case it will be ignored.
+     * </p>
+     *
+     * @param event The new Event
+     */
+    public void newEvent(BlockingQueue<Message> queue, Event event) {
+        if (getName().equals (event.getTopicName())) {
+            for (Subscription subscription : getSubscriptionList()) {
+                subscription.newEvent(queue, event);
+            }
+        }
+    }
+
+    public void addSubscription(Subscription subscription) {
+        getSubscriptionList().add(subscription);
+    }
+
+    @Override
+    public void copyFrom(Mergeable mergeable) {
+        Topic other = (Topic) mergeable;
+
+        setName(other.getName());
+        setOwner(other.getOwner());
+        setRemotePolicy(other.getRemotePolicy());
+
+        List subscriptions = new ArrayList(other.getSubscriptionList());
+        setSubscriptionList(subscriptions);
+        setLastChange(other.getLastChange());
+    }
+
+    @Override
+    public boolean merge(Mergeable mergeable) {
+        Topic other = (Topic) mergeable;
+
+        if (getLastChange() > other.getLastChange())
+            return false;
+        else {
+            copyFrom(other);
+            return true;
+        }
     }
 }

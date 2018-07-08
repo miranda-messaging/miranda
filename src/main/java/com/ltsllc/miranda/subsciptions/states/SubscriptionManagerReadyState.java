@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.subsciptions.states;
 
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
@@ -79,6 +80,12 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
             case DeleteSubscription: {
                 DeleteSubscriptionMessage deleteSubscriptionMessage = (DeleteSubscriptionMessage) message;
                 nextState = processDeleteSubscriptionMessage(deleteSubscriptionMessage);
+                break;
+            }
+
+            case NewEvent: {
+                NewEventMessage newEventMessage = (NewEventMessage) message;
+                nextState = processNewEventMessage(newEventMessage);
                 break;
             }
 
@@ -168,6 +175,14 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
         List<Subscription> subscriptions = (List<Subscription>) fileLoadedMessage.getData();
 
         getSubscriptionManager().setSubscriptions(subscriptions);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processNewEventMessage (NewEventMessage newEventMessage) {
+        for (Subscription subscription : getSubscriptionManager().getSubscriptions()) {
+            subscription.newEvent(getSubscriptionManager().getQueue(), newEventMessage.getEvent());
+        }
 
         return getSubscriptionManager().getCurrentState();
     }

@@ -59,6 +59,8 @@ public class ReaderReadyState extends State {
         response.setException(readResult.exception);
         response.setFilename(readResult.filename);
         response.setResult(readResult.result);
+        response.setSender(getReader().getQueue());
+
         readMessage.reply(response);
 
         return getReader().getCurrentState();

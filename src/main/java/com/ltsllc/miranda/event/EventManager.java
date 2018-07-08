@@ -65,10 +65,6 @@ public class EventManager extends DirectoryManager {
         return pageCache;
     }
 
-    public void setPageCache(PageCache pageCache) {
-        this.pageCache = pageCache;
-    }
-
     public Map<String, EventRecord> getEventMap() {
         return eventMap;
     }
@@ -118,8 +114,12 @@ public class EventManager extends DirectoryManager {
         sendToMe(newEventMessage);
     }
 
-    public void createEvent(Event event) {
+    public boolean createEvent(Event event) {
+        if (eventMap.containsKey(event.getGuid()))
+            return false;
+
         eventMap.put(event.getGuid(), new EventRecord());
         getPageCache().addEvent(event);
+        return true;
     }
 }

@@ -19,6 +19,8 @@ package com.ltsllc.miranda.file;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.commons.util.Utils;
+import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.file.messages.ListMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.panics.Panic;
@@ -46,7 +48,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * What the rest of the JVM would call a file
  */
-abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
+abstract public class SingleFile<E extends Mergeable & Equivalent> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
     abstract public Type getListType();
     abstract public void checkForDuplicates();
@@ -211,15 +213,16 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         boolean changed = false;
 
         for (Object o : list) {
-            E mergeable = (E) o;
+            Equivalent equivalent = (Equivalent) o;
 
-            MirandaObject existing = find(mergeable);
+            Mergeable existing = find(equivalent);
 
             if (null == existing) {
-                E e = (E) mergeable;
+                E e = (E) equivalent;
                 newItems.add(e);
                 changed = true;
             } else {
+                Mergeable mergeable = (Mergeable) existing;
                 boolean temp = existing.merge(mergeable);
                 if (!(changed))
                     changed = temp;
@@ -344,10 +347,11 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         write();
     }
 
-    public MirandaObject find(MirandaObject object) {
-        for (MirandaObject candidate : getData()) {
+    public <E extends Equivalent>  Mergeable find(E object) {
+        for (Mergeable element : getData()) {
+            Equivalent  candidate = (Equivalent) element;
             if (candidate.isEquivalentTo(object))
-                return candidate;
+                return (Mergeable) candidate;
         }
 
         return null;

@@ -164,6 +164,7 @@ public class MirandaProperties {
     public static final String PROPERTY_EVENT_OBJECT_LIMIT = EVENT_PACKAGE + "ObjectLimit";
     public static final String PROPERTY_EVENT_EVICTION_PERIOD = EVENT_PACKAGE + "EvictionPeriod";
     public static final String PROPERTY_EVENT_DIRECTORY = EVENT_PACKAGE + "Directory";
+    public static final String PROPERTY_EVENT_QUEUE_DIRECTORY = EVENT_PACKAGE + "EventQueueDirectory";
 
     public static final String PROPERTY_DELIVERY_OBJECT_LIMIT = DELIVERY_PACKAGE + "ObjectLimit";
 
@@ -217,6 +218,7 @@ public class MirandaProperties {
     public static final String DEFAULT_EVENT_OBJECT_LIMIT = "1000000";
     public static final String DEFAULT_EVENT_EVICTION_PERIOD = ONE_HOUR;
     public static final String DEFAULT_EVENT_DIRECTORY = "data/events";
+    public static final String DEFAULT_EVENT_QUEUE_DIRECTORY = "data/queues";
 
     public static final String DEFAULT_DELIVERY_OBJECT_LIMIT = "1000000";
 
@@ -270,6 +272,7 @@ public class MirandaProperties {
             {PROPERTY_EVENT_OBJECT_LIMIT, DEFAULT_EVENT_OBJECT_LIMIT},
             {PROPERTY_EVENT_EVICTION_PERIOD, DEFAULT_EVENT_EVICTION_PERIOD},
             {PROPERTY_EVENT_DIRECTORY, DEFAULT_EVENT_DIRECTORY},
+            {PROPERTY_EVENT_QUEUE_DIRECTORY, DEFAULT_EVENT_QUEUE_DIRECTORY},
 
             {PROPERTY_DELIVERY_OBJECT_LIMIT, DEFAULT_DELIVERY_OBJECT_LIMIT}
     };

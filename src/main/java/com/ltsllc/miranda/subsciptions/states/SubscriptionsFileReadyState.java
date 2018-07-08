@@ -17,12 +17,16 @@
 package com.ltsllc.miranda.subsciptions.states;
 
 import com.google.gson.reflect.TypeToken;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
+import com.ltsllc.miranda.manager.messages.FileWrittenMessage;
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.writer.WriteMessage;
+import com.ltsllc.miranda.writer.WriteResponseMessage;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
@@ -46,6 +50,33 @@ public class SubscriptionsFileReadyState extends SingleFileReadyState {
 
     public SubscriptionsFile getSubscriptionsFile() {
         return subscriptionsFile;
+    }
+
+    @Override
+    public State processMessage(Message message) throws MirandaException {
+        State nextState;
+
+        switch (message.getSubject()) {
+            case WriteResponse: {
+                WriteResponseMessage writeResponseMessage = (WriteResponseMessage) message;
+                nextState = processWriteResponseMessage(writeResponseMessage);
+                break;
+            }
+
+            default: {
+                nextState = super.processMessage(message);
+                break;
+            }
+        }
+
+        return nextState;
+    }
+
+    public State processWriteResponseMessage(WriteResponseMessage writeResponseMessage) {
+        FileWrittenMessage fileWrittenMessage = new FileWrittenMessage (getSubscriptionsFile().getQueue(),
+                getSubscriptionsFile());
+
+        return getSubscriptionsFile().getCurrentState();
     }
 
     @Override

@@ -33,9 +33,19 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 12/31/2016.
  */
 public class Writer extends Consumer {
+    private static Writer instance;
     private static Gson gson = new Gson();
 
     private PublicKey publicKey;
+    private boolean debugMode;
+
+    public static Writer getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(Writer instance) {
+        Writer.instance = instance;
+    }
 
     public boolean isDebugMode() {
         return debugMode;
@@ -45,14 +55,9 @@ public class Writer extends Consumer {
         this.debugMode = debugMode;
     }
 
-    private boolean debugMode;
-
     public PublicKey getPublicKey() {
         return publicKey;
     }
-
-
-
 
     public Writer(boolean isDebugMode, PublicKey publicKey) throws MirandaException {
         super("writer");
@@ -64,6 +69,7 @@ public class Writer extends Consumer {
 
         setDebugMode(isDebugMode);
         this.publicKey = publicKey;
+        setInstance(this);
     }
 
     public void write(String filename, byte[] clearText) throws IOException, EncryptionException {

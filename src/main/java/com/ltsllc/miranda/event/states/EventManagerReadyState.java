@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.event.states;
 
 import com.ltsllc.miranda.Results;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.event.messages.CreateEventMessage;
 import com.ltsllc.miranda.event.messages.CreateEventResponseMessage;
@@ -45,12 +46,6 @@ public class EventManagerReadyState extends State {
         State nextState = getEventManager().getCurrentState();
 
         switch (message.getSubject()) {
-            case NewEvent: {
-                NewEventMessage newEventMessage = (NewEventMessage) message;
-                nextState = processNewEventMessage(newEventMessage);
-                break;
-            }
-
             case CreateEvent: {
                 CreateEventMessage createEventMessage = (CreateEventMessage) message;
                 nextState = processCreateEventMessage(createEventMessage);
@@ -72,24 +67,22 @@ public class EventManagerReadyState extends State {
         return nextState;
     }
 
-    public State processNewEventMessage(NewEventMessage message) throws MirandaException {
-        NewEventOperation newEventOperation = new NewEventOperation(getEventManager(),
-                Miranda.getInstance().getTopicManager(), Miranda.getInstance().getCluster(), message.getSession(),
-                message.getSender(), message.getEvent());
-
-        newEventOperation.start();
-
-        return getEventManager().getCurrentState();
-    }
-
     public State processCreateEventMessage(CreateEventMessage createEventMessage) throws MirandaException {
-        getEventManager().createEvent(createEventMessage.getEvent());
+        Event event = createEventMessage.getEvent();
+        Results result;
 
+        if (getEventManager().createEvent(event))
+            result = Results.Success;
+        else
+            result = Results.Duplicate;
 
         CreateEventResponseMessage createEventResponseMessage = new CreateEventResponseMessage(getEventManager().getQueue(),
-                getEventManager(), Results.Success, createEventMessage.getEvent().getGuid());
+                getEventManager(), result, createEventMessage.getEvent().getGuid());
 
         createEventMessage.reply(createEventResponseMessage);
+
+        tellSubsciptionManager(event);
+        tellCluster(event);
 
         return getEventManager().getCurrentState();
     }
@@ -99,5 +92,14 @@ public class EventManagerReadyState extends State {
         send(getEventManager().getPageCache().getQueue(), evictMessage2);
 
         return getEventManager().getCurrentState();
+    }
+
+    public void tellSubsciptionManager (Event event) {
+        Miranda.getInstance().getSubscriptionManager().sendNewEvent(event, getEventManager().getQueue(),
+                getEventManager());
+    }
+
+    public void tellCluster (Event event) {
+        Miranda.getInstance().getCluster().sendNewEvent(event, getEventManager().getQueue(), getEventManager());
     }
 }

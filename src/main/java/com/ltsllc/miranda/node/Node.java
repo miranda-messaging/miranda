@@ -17,6 +17,8 @@
 package com.ltsllc.miranda.node;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -205,5 +207,10 @@ public class Node extends Consumer {
         stringBuilder.append("}");
 
         return stringBuilder.toString();
+    }
+
+    public void sendNewEventMessage(Event event, BlockingQueue<Message> senderQueue, Object senderObject) {
+        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, senderObject, null, event);
+        sendToMe(newEventMessage);
     }
 }

@@ -4,7 +4,6 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
  * Classes that implement this interface have the ability to determine if they refer
  * to the same thing.
  * <p>
- * <p>
  * If an instance of this interface returns true when {@link #isEquivalentTo(Object)} is
  * called, then they refer to the same thing.  One may be a more recent version of
  * the thing.

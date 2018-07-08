@@ -18,11 +18,10 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.PublicKey;
-import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.MirandaUncheckedException;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
-
-import java.io.IOException;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
 
 /**
  * A user of the Miranda system.
@@ -114,7 +113,7 @@ public class User extends MirandaObject {
     private PublicKey publicKey;
 
     @Override
-    public void copyFrom(Mergeable mergeable) {
+    public void copyFrom(MergeableObject mergeable) {
         User other = (User) mergeable;
 
         this.name = other.name;
@@ -132,6 +131,7 @@ public class User extends MirandaObject {
 
         return stringsAreEqual(name, other.name);
     }
+
 
     public String getPublicKeyPem() throws EncryptionException {
         if (null == publicKeyPem && null != publicKey)
@@ -284,6 +284,34 @@ public class User extends MirandaObject {
             return stringBuilder.toString();
         } catch (EncryptionException e) {
             throw new MirandaUncheckedException("Exception in toString", e);
+        }
+    }
+
+    @Override
+    public void copyFrom(Mergeable mergeable) {
+        try {
+            User other = (User) mergeable;
+
+            setCategory(other.getCategory());
+            setDescription(other.getDescription());
+            setPublicKey(other.getPublicKey());
+            setPublicKeyPem(other.getPublicKeyPem());
+            setName(other.getName());
+            setLastChange(other.getLastChange());
+        } catch (EncryptionException e) {
+            Panic panic = new Panic("EncrptionException during copyFrom", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
+    }
+
+    @Override
+    public boolean merge(Mergeable mergeable) {
+        User other = (User) mergeable;
+        if (getLastChange() > other.getLastChange())
+            return false;
+        else {
+            copyFrom(other);
+            return true;
         }
     }
 }
