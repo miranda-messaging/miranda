@@ -933,6 +933,7 @@ public class Startup extends State {
             EventQueueManager eventQueueManager =
                     new EventQueueManager(Miranda.properties.getProperty(MirandaProperties.PROPERTY_EVENT_QUEUE_DIRECTORY));
             Miranda.getInstance().setEventQueueManager(eventQueueManager);
+            eventQueueManager.start();
         } catch (Throwable e) {
             StartupPanic startupPanic = new StartupPanic("Exception trying to start Event Queues", e,
                     StartupPanic.StartupReasons.ExceptionStartingEventQueues);

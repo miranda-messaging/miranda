@@ -29,11 +29,17 @@ public class EventQueueManager extends DirectoryManager<EventQueue> {
         setCurrentState(new DirectoryManagerStartState(this));
     }
 
+    /**
+     * Process a directory entry.
+     * @param string The entry to be processed.  This is expected to be a full filename for the directory entry
+     */
     @Override
     public void processEntry(String string) {
-        EventQueue eventQueue = new EventQueue(string);
-        eventQueue.start();
-        getMap().put(string, eventQueue);
+        if (string.endsWith("queue")) {
+            EventQueue eventQueue = new EventQueue(string);
+            eventQueue.start();
+            getMap().put(string, eventQueue);
+        }
     }
 
     public State getReadyState()  {

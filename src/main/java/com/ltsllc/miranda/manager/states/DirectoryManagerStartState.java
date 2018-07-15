@@ -20,7 +20,7 @@ public class DirectoryManagerStartState extends State {
             Miranda.getInstance().getReader().sendScan(getDirectoryManager().getDirectory().getFilename(),
                     getDirectoryManager().getQueue(), getDirectoryManager());
 
-            return new DirectoryManagerReadyState(getDirectoryManager());
+            return new DirectoryManagerLoadingState(getDirectoryManager());
         } catch (Exception e) {
             Panic panic = new Panic("Exception while trying to scan directory", e, Panic.Reasons.Exception);
             Miranda.panicMiranda(panic);

@@ -46,7 +46,7 @@ public class ScanResponseMessage extends Message {
     public ScanResponseMessage (Results result, String filename, String[] contents, BlockingQueue<Message> senderQueue,
                                 Object senderObject)
     {
-        super(Subjects.ScanResponseMessage, senderQueue, senderObject);
+        super(Subjects.ScanResponse, senderQueue, senderObject);
         setFilename(filename);
         setContents(contents);
         setResult(result);

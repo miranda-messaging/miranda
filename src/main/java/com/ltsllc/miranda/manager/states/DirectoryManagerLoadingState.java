@@ -12,24 +12,19 @@ import com.ltsllc.miranda.miranda.states.ShuttingDownState;
 import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.reader.messages.ScanResponseMessage;
 
+import java.io.File;
+
+/**
+ * A state where the {@link DirectoryManager} is waiting for a {@link ScanResponseMessage} from when the manager first
+ * starts.
+ */
 public class DirectoryManagerLoadingState extends State {
-    private State readyState;
-
-    public State getReadyState() {
-        return readyState;
-    }
-
-    public void setReadyState(State readyState) {
-        this.readyState = readyState;
-    }
-
     public DirectoryManager getDirectoryManager () {
         return (DirectoryManager) getContainer();
     }
 
-    public DirectoryManagerLoadingState (DirectoryManager directoryManager, State readyState) {
+    public DirectoryManagerLoadingState (DirectoryManager directoryManager) {
         setContainer(directoryManager);
-        setReadyState(readyState);
     }
 
     public State processMessage (Message message) throws MirandaException {
@@ -66,7 +61,8 @@ public class DirectoryManagerLoadingState extends State {
 
         if (scanResponseMessage.getResult() == Results.Success) {
             for (String string : scanResponseMessage.getContents()) {
-                getDirectoryManager().processEntry(string);
+                String filename = scanResponseMessage.getFilename() + File.separator + string;
+                getDirectoryManager().processEntry(filename);
             }
 
             nextState = getDirectoryManager().getReadyState();

@@ -27,10 +27,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A Miranda subsystem.
- * <p>
+ *  <p>
+ *      A key aspect of being a subsystem is that it runs in it's own thread.
+ *  </p>
  * <H2>Attributes</H2>
  * <UL>
- * <LI>map - unlike most other attributes</LI>
  * <LI>name - the name of the subsystem</LI>
  * <LI>queue - the queue that the subsystem gets messages from.</LI>
  * <LI>thre - the thread the subystem is running in.</LI>
@@ -43,20 +44,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by Clark on 12/30/2016.
  */
 public abstract class Subsystem implements Runnable, Comparer {
-    private static Map<String, BlockingQueue<Message>> ourMap = new HashMap<String, BlockingQueue<Message>>();
-
-    public static synchronized void register(String name, BlockingQueue<Message> queue) {
-        ourMap.put(name, queue);
-    }
-
-    public static synchronized void unregister(String name) {
-        ourMap.remove(name);
-    }
-
-    public synchronized BlockingQueue<Message> find(String name) {
-        return ourMap.get(name);
-    }
-
     static private Logger logger = Logger.getLogger("Subsytem");
 
     private String name;

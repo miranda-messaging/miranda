@@ -24,7 +24,7 @@ public class EventQueueManagerLoadingState extends DirectoryManagerLoadingState 
     }
 
     public EventQueueManagerLoadingState(EventQueueManager eventQueueManager) throws MirandaException {
-        super(eventQueueManager, new EventQueueManagerReadyState(eventQueueManager));
+        super(eventQueueManager);
     }
 
     public int getNumberOfSubscriptionsWaitingOn() {
@@ -97,7 +97,7 @@ public class EventQueueManagerLoadingState extends DirectoryManagerLoadingState 
         decrementNumberOfSubscriptionsWaitingOn();
 
         if (getNumberOfSubscriptionsWaitingOn() < 1)
-            return getReadyState();
+            return getDirectoryManager().getReadyState();
         else
             return getEventQueueManager().getCurrentState();
     }

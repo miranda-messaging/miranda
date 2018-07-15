@@ -47,6 +47,7 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
 
     public EventQueue (String filename) {
         super (filename, new LinkedBlockingQueue<Message>());
+        setCurrentState(new EventQueueReadyState(this));
     }
 
     public EventQueue (Subscription subscription) {
@@ -89,7 +90,7 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
     public void newEvent (Event event) {
         getEvents().add(event.getGuid());
         String filename = Miranda.properties.getProperty(MirandaProperties.PROPERTY_EVENT_QUEUE_DIRECTORY)
-                + File.separator + getSubscription().getName();
+                + File.separator + getSubscription().getName() + ".queue";
 
         Miranda.getInstance().getWriter().sendWrite(getQueue(), this, filename, toJson().getBytes());
     }
@@ -136,5 +137,6 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         String json = getGson().toJson(getEvents());
         return json.getBytes();
     }
+
 
 }

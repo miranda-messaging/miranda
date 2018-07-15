@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 1/1/2017.
+ * An object that
  */
 public class Consumer extends Subsystem implements Comparer, Mergeable {
     private static Logger logger = Logger.getLogger(Consumer.class);
@@ -241,7 +241,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
             try {
                 nextMessage = getQueue().take();
             } catch (InterruptedException e) {
-                String message = "Interupted while waiting for next message";
+                String message = "Interrupted while waiting for next message";
                 logger.warn(message, e);
 
                 Panic panic = new Panic(message, e, Panic.Reasons.ExceptionGettingNextMessage);
