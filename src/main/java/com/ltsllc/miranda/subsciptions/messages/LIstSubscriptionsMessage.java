@@ -23,8 +23,8 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 4/22/2017.
  */
-public class LIstSubscriptionsMessage extends Message {
-    public LIstSubscriptionsMessage(BlockingQueue<Message> senderQueue, Object sender) {
+public class ListSubscriptionsMessage extends Message {
+    public ListSubscriptionsMessage(BlockingQueue<Message> senderQueue, Object sender) {
         super(Message.Subjects.ListSubscriptions, senderQueue, sender);
     }
 }

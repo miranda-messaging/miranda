@@ -16,12 +16,18 @@
 
 package com.ltsllc.miranda.deliveries;
 
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.deliveries.messages.DeliverEventMessage;
+import com.ltsllc.miranda.deliveries.states.DeliveryManagerReadyState;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
@@ -42,5 +48,31 @@ public class DeliveryManager extends DirectoryManager {
                             Object senderObjet) {
         DeliverEventMessage deliverEventMessage = new DeliverEventMessage(event, subscription, senderQueue, senderObjet);
         sendToMe(deliverEventMessage);
+    }
+
+    public State getReadyState () {
+        try {
+            return new DeliveryManagerReadyState(this);
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception while trying to get the DeliveryManager's ready state", e,
+                    Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+
+            return null;
+        }
+    }
+
+    @Override
+    public void processEntry(String string) {
+        try {
+            DeliveriesFile deliveriesFile = new DeliveriesFile(string, Miranda.getInstance().getReader(),
+                    Miranda.getInstance().getWriter());
+            deliveriesFile.start();
+            getMap().put (string, deliveriesFile);
+
+        } catch (Exception e) {
+            Panic panic = new Panic("Exception while processing entry", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
     }
 }

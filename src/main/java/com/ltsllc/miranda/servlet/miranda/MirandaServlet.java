@@ -106,8 +106,12 @@ public class MirandaServlet extends HttpServlet {
     }
 
     public void respond(ServletOutputStream output, Object o) throws IOException {
-        String json = gson.toJson(o);
-        output.println(json);
+        try {
+            String json = gson.toJson(o);
+            output.println(json);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public void send (BlockingQueue<Message> queue, Message message) {

@@ -6,7 +6,7 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.CreateMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.message.Message;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
 
 import java.util.ArrayList;
 import java.util.List;

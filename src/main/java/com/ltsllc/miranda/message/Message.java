@@ -193,7 +193,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, DeliverEvent, Subscribe, WriteResponse
+        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, DeliverEvent, Subscribe, DirectoryScanned, Scan, ScanResponseMessage, ScanResponse, WriteResponse
     }
 
     private static Gson ourGson = new Gson();
@@ -249,7 +249,8 @@ public class Message {
 
 
     public String toJson() {
-        return ourGson.toJson(this);
+        String json = ourGson.toJson(this);
+        return json;
     }
 
     public void reply(Message message) throws MirandaException {

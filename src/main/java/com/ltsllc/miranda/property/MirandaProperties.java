@@ -28,6 +28,7 @@ import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import org.apache.log4j.Logger;
 
+import javax.xml.bind.annotation.XmlType;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -274,7 +275,8 @@ public class MirandaProperties {
             {PROPERTY_EVENT_DIRECTORY, DEFAULT_EVENT_DIRECTORY},
             {PROPERTY_EVENT_QUEUE_DIRECTORY, DEFAULT_EVENT_QUEUE_DIRECTORY},
 
-            {PROPERTY_DELIVERY_OBJECT_LIMIT, DEFAULT_DELIVERY_OBJECT_LIMIT}
+            {PROPERTY_DELIVERY_OBJECT_LIMIT, DEFAULT_DELIVERY_OBJECT_LIMIT},
+            {PROPERTY_EVENT_QUEUE_DIRECTORY, DEFAULT_EVENT_QUEUE_DIRECTORY}
     };
 
     private static MirandaProperties instance;

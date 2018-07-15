@@ -4,7 +4,7 @@ import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
 
 /**
  * Created by Clark on 6/7/2017.

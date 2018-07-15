@@ -25,7 +25,7 @@ import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.Manager;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
 import com.ltsllc.miranda.timer.messages.CancelMessage;
 import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 
@@ -76,6 +76,11 @@ public class ManagerLoadingState extends ManagerState {
             case GarbageCollection: {
                 GarbageCollectionMessage garbageCollectionMessage = (GarbageCollectionMessage) message;
                 nextState = processGarbageCollectionMessage(garbageCollectionMessage);
+                break;
+            }
+
+            case Timeout: {
+                defer(message);
                 break;
             }
 

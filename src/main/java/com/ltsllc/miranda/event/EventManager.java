@@ -16,10 +16,14 @@
 
 package com.ltsllc.miranda.event;
 
+import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.event.states.EventManagerReadyState;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.page.EventRecord;
 import com.ltsllc.miranda.page.PageCache;
+import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
@@ -121,5 +125,26 @@ public class EventManager extends DirectoryManager {
         eventMap.put(event.getGuid(), new EventRecord());
         getPageCache().addEvent(event);
         return true;
+    }
+
+    public State getReadyState () {
+        try {
+            return new EventManagerReadyState(this);
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception creating ready state", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+            return null;
+        }
+    }
+
+    @Override
+    public void processEntry(String string) {
+        try {
+            EventsFile eventsFile = new EventsFile(string, Miranda.getInstance().getReader(),
+                    Miranda.getInstance().getWriter());
+        } catch (Exception e) {
+            Panic panic = new Panic("Exception processing an entry", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
     }
 }

@@ -31,7 +31,7 @@ import com.ltsllc.miranda.operations.events.CreateEventOperation;
 import com.ltsllc.miranda.operations.events.NewEventOperation;
 
 /**
- * Created by Clark on 5/14/2017.
+ * When the {@link EventManager} is in this state, it is ready to handle new events
  */
 public class EventManagerReadyState extends State {
     public EventManager getEventManager() {

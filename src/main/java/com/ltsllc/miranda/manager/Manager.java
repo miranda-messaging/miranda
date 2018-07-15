@@ -94,7 +94,6 @@ public abstract class Manager<E, F extends Mergeable & Equivalent> extends Consu
         super(name);
 
         SingleFile<F> file = createFile(filename);
-        file.addSubscriber(getQueue());
         setFile(file);
         file.start();
 

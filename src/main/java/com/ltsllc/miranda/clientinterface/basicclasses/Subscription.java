@@ -18,12 +18,16 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.MirandaUncheckedException;
+import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.panics.Panic;
+import com.ltsllc.miranda.subsciptions.states.SubscriptionReadyState;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A subscription to a topic.
@@ -117,33 +121,15 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
         DeadLetter
     }
 
-    private String name;
     private String owner;
     private String topic;
     private String dataUrl;
     private String livelinessUrl;
     private ErrorPolicies errorPolicy;
-    private EventQueue eventQueue;
-    private DeadLetterQueue deadLetterQueue;
-    private String queueDirectory;
+    private transient EventQueue eventQueue;
+    private transient DeadLetterQueue deadLetterQueue;
     private boolean isLocal;
 
-    public String getQueueDirectory() {
-        return queueDirectory;
-    }
-
-    public void setQueueDirectory(String queueDirectory) {
-        this.queueDirectory = queueDirectory;
-    }
-
-    public EventQueue getEventQueue() {
-        if (null == eventQueue) {
-            String filename = getQueueDirectory() + File.separator + getName();
-            eventQueue = new EventQueue(filename);
-        }
-
-        return eventQueue;
-    }
 
     public void setEventQueue(EventQueue eventQueue) {
         this.eventQueue = eventQueue;
@@ -162,9 +148,14 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
         return deadLetterQueue;
     }
 
+    public EventQueue getEventQueue () {
+        return eventQueue;
+    }
+
     public void setDeadLetterQueue(DeadLetterQueue deadLetterQueue) {
         this.deadLetterQueue = deadLetterQueue;
     }
+
 
     public boolean isEquivalentTo(Object o) {
         if (o == null || !(o instanceof Subscription))
@@ -184,7 +175,7 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
         try {
             Subscription other = (Subscription) o;
 
-            name = other.name;
+            setName(other.getName());
             owner = other.owner;
             topic = other.topic;
             dataUrl = other.dataUrl;
@@ -192,7 +183,6 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
             errorPolicy = other.errorPolicy;
             eventQueue = (EventQueue) other.clone();
             deadLetterQueue.copyFrom(other.deadLetterQueue);
-            queueDirectory = other.queueDirectory;
             isLocal = other.isLocal;
         } catch (CloneNotSupportedException e) {
             throw new MirandaUncheckedException("exception while copying", e);
@@ -209,12 +199,22 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
 
 
     public Subscription() {
+        super();
+        setQueue(new LinkedBlockingQueue<Message>());
+
+        EventQueue eventQueue = new EventQueue(this);
+        eventQueue.start();
+        setEventQueue(eventQueue);
+
+        setCurrentState(new SubscriptionReadyState(this));
     }
 
 
     public Subscription(String name, String owner, String topic, String dataUrl, String livelinessUrl,
                         ErrorPolicies errorPolicy, String queueDirectory) {
-        this.name = name;
+        super(name, new LinkedBlockingQueue<Message>());
+
+        setName(name);
         this.owner = owner;
         this.topic = topic;
         this.dataUrl = dataUrl;
@@ -223,7 +223,9 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
 
         String filename = queueDirectory + File.separator + name + ".json";
 
-        this.eventQueue = new EventQueue(filename);
+        this.eventQueue = new EventQueue(this);
+        getEventQueue().start();
+
         this.deadLetterQueue = new DeadLetterQueue();
     }
 
@@ -233,14 +235,6 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
 
     public void setErrorPolicy(ErrorPolicies errorPolicy) {
         this.errorPolicy = errorPolicy;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getOwner() {
@@ -260,7 +254,6 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
     }
 
     public String getDataUrl() {
-
         return dataUrl;
     }
 
@@ -300,17 +293,14 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
         if (!MirandaObject.stringsAreEqual(getOwner(), other.getOwner()))
             return false;
 
-        if (getErrorPolicy() != other.getErrorPolicy())
-            return false;
-
-        return true;
+        return getErrorPolicy() == other.getErrorPolicy();
     }
 
 
-    public void newEvent (BlockingQueue<Message> queue, Event event) {
-        getEventQueue().newEvent(event);
+    public void newEvent (Event event) {
+        getEventQueue().SendNewEvent(getQueue(), this, event);
         if (isLocal()) {
-            Miranda.getInstance().getDeliveryManager().sendDeliverEvent(event, this, queue, this);
+            Miranda.getInstance().getDeliveryManager().sendDeliverEvent(event, this, getQueue(), this);
         }
     }
 
@@ -324,7 +314,6 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
             setDataUrl(other.getDataUrl());
             setErrorPolicy(other.getErrorPolicy());
             setLivelinessUrl(other.getLivelinessUrl());
-            setQueueDirectory(getQueueDirectory());
 
             DeadLetterQueue deadLetterQueue = (DeadLetterQueue) other.getDeadLetterQueue().clone();
             setDeadLetterQueue(deadLetterQueue);
@@ -354,5 +343,10 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
     @Override
     public long getLastChange() {
         return 0;
+    }
+
+    public void sendNewEvent(BlockingQueue<Message> senderQueue, Object senderObject, Event event) {
+        NewEventMessage newEventMessage = new NewEventMessage(senderQueue, senderObject, null, event);
+        sendToMe(newEventMessage);
     }
 }

@@ -29,6 +29,8 @@ import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.reader.messages.ReadMessage;
+import com.ltsllc.miranda.reader.messages.ScanMessage;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -170,5 +172,10 @@ public class Reader extends Consumer {
 
             Miranda.panicMiranda(panic);
         }
+    }
+
+    public void sendScan (String filename, BlockingQueue<Message> senderQueue, Object senderObject) {
+        ScanMessage scanMessage = new ScanMessage(filename, senderQueue, senderObject);
+        sendToMe(scanMessage);
     }
 }

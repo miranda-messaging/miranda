@@ -27,6 +27,7 @@ import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.timer.messages.TimeoutMessage;
 
 /**
  * Created by Clark on 4/26/2017.
@@ -70,6 +71,12 @@ public class ManagerReadyState extends ManagerState {
                 break;
             }
 
+            case Timeout: {
+                TimeoutMessage timeoutMessage = (TimeoutMessage) message;
+                nextState = processTimeoutMessage (timeoutMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -77,6 +84,10 @@ public class ManagerReadyState extends ManagerState {
         }
 
         return nextState;
+    }
+
+    private State processTimeoutMessage(TimeoutMessage timeoutMessage) {
+        return getManager().getCurrentState();
     }
 
     public State processShutdownMessage(ShutdownMessage shutdownMessage) {

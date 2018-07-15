@@ -18,6 +18,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.miranda.Miranda;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,11 +173,7 @@ public class Topic extends MirandaObject {
      * @param event The new Event
      */
     public void newEvent(BlockingQueue<Message> queue, Event event) {
-        if (getName().equals (event.getTopicName())) {
-            for (Subscription subscription : getSubscriptionList()) {
-                subscription.newEvent(queue, event);
-            }
-        }
+        Miranda.getInstance().getSubscriptionManager().sendNewEvent(event, queue, this);
     }
 
     public void addSubscription(Subscription subscription) {

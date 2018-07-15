@@ -1,5 +1,6 @@
-package com.ltsllc.miranda.manager;
+package com.ltsllc.miranda.manager.states;
 
+import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;

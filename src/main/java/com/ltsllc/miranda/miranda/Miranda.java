@@ -28,6 +28,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.event.EventManager;
+import com.ltsllc.miranda.eventqueue.EventQueueManager;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.message.Message;
@@ -98,6 +99,7 @@ public class Miranda extends Consumer {
     private TopicManager topicManager;
     private SubscriptionManager subscriptionManager;
     private EventManager eventManager;
+    private EventQueueManager eventQueueManager;
     private DeliveryManager deliveryManager;
     private Cluster cluster;
     private PanicPolicy panicPolicy;
@@ -122,6 +124,14 @@ public class Miranda extends Consumer {
     public JavaKeyStore getKeyStore() {
 
         return keyStore;
+    }
+
+    public EventQueueManager getEventQueueManager() {
+        return eventQueueManager;
+    }
+
+    public void setEventQueueManager(EventQueueManager eventQueueManager) {
+        this.eventQueueManager = eventQueueManager;
     }
 
     public void setKeyStore(JavaKeyStore JavaKeyStore) {
@@ -624,4 +634,6 @@ public class Miranda extends Consumer {
     public void run() {
         super.run();
     }
+
+
 }

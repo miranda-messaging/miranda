@@ -26,7 +26,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.panics.StartupPanic;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
 
 
 /**

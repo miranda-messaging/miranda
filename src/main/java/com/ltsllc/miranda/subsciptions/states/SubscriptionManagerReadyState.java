@@ -66,7 +66,7 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
             }
 
             case ListSubscriptions: {
-                LIstSubscriptionsMessage getSubscriptionsMessage = (LIstSubscriptionsMessage) message;
+                ListSubscriptionsMessage getSubscriptionsMessage = (ListSubscriptionsMessage) message;
                 nextState = processGetSubscriptionsMessage(getSubscriptionsMessage);
                 break;
             }
@@ -140,7 +140,7 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
         return getSubscriptionManager().getCurrentState();
     }
 
-    public State processGetSubscriptionsMessage(LIstSubscriptionsMessage getSubscriptionsMessage) throws MirandaException {
+    public State processGetSubscriptionsMessage(ListSubscriptionsMessage getSubscriptionsMessage) throws MirandaException {
         GetSubscriptionsResponseMessage response = new GetSubscriptionsResponseMessage(getSubscriptionManager().getQueue(),
                 this, getSubscriptionManager().getSubscriptions());
 
@@ -181,7 +181,7 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
 
     public State processNewEventMessage (NewEventMessage newEventMessage) {
         for (Subscription subscription : getSubscriptionManager().getSubscriptions()) {
-            subscription.newEvent(getSubscriptionManager().getQueue(), newEventMessage.getEvent());
+            subscription.sendNewEvent(getSubscriptionManager().getQueue(), getSubscriptionManager(), newEventMessage.getEvent());
         }
 
         return getSubscriptionManager().getCurrentState();

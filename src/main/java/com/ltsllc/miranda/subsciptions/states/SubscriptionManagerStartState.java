@@ -16,6 +16,7 @@
 
 package com.ltsllc.miranda.subsciptions.states;
 
+import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
@@ -33,6 +34,19 @@ public class SubscriptionManagerStartState extends ManagerStartState {
 
     public SubscriptionManagerStartState(SubscriptionManager subscriptionManager) throws MirandaException {
         super(subscriptionManager, new SubscriptionManagerReadyState(subscriptionManager));
+    }
+
+    @Override
+    public State start() {
+        State state = null;
+        try {
+            state = new SubscriptionManagerLoadingState(getSubscriptionManager());
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception in start", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+        }
+
+        return state;
     }
 
     public State getReadyState() {

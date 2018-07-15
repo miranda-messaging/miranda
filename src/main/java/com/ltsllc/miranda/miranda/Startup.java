@@ -26,6 +26,7 @@ import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.commadline.MirandaCommandLine;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.event.EventManager;
+import com.ltsllc.miranda.eventqueue.EventQueueManager;
 import com.ltsllc.miranda.file.FileWatcherService;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.http.ServletMapping;
@@ -285,6 +286,7 @@ public class Startup extends State {
             startSubsystems();
             loadFiles();
             setupSchedule();
+            startEventQueues();
             startListening();
             Miranda.getInstance().performGarbageCollection();
             exportCertificate();
@@ -924,5 +926,17 @@ public class Startup extends State {
         long panicTimeout = Long.parseLong(MirandaProperties.DEFAULT_PANIC_TIMEOUT);
         MirandaPanicPolicy mirandaPanicPolicy = new MirandaPanicPolicy (maxPanics, panicTimeout, Miranda.getInstance(), Miranda.timer);
         Miranda.getInstance().setPanicPolicy(mirandaPanicPolicy);
+    }
+
+    public void startEventQueues () {
+        try {
+            EventQueueManager eventQueueManager =
+                    new EventQueueManager(Miranda.properties.getProperty(MirandaProperties.PROPERTY_EVENT_QUEUE_DIRECTORY));
+            Miranda.getInstance().setEventQueueManager(eventQueueManager);
+        } catch (Throwable e) {
+            StartupPanic startupPanic = new StartupPanic("Exception trying to start Event Queues", e,
+                    StartupPanic.StartupReasons.ExceptionStartingEventQueues);
+        }
+
     }
 }

@@ -48,7 +48,7 @@ abstract public class MultipleFiles {
     }
 
     public void fileChanged(String s) {
-        logger.info(s + " changed");
+        logger.debug(s + " changed");
     }
 
 

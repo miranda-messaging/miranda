@@ -6,6 +6,6 @@
     "dataUrl": "temp",
     "livelinessUrl": "temp",
     "errorPolicy": "Drop",
-    "isLocal": false
+    "isLocal": true
   }
 ]

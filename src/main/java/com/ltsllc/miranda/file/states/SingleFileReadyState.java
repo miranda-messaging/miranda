@@ -28,7 +28,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.panics.Panic;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;

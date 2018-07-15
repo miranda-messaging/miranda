@@ -20,6 +20,7 @@ import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.reader.messages.ReadMessage;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;

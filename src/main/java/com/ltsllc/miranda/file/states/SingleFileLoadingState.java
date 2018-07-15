@@ -24,7 +24,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileChangedMessage;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.reader.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
 
 /**
  * Created by Clark on 5/14/2017.

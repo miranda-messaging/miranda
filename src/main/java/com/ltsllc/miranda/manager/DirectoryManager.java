@@ -17,8 +17,11 @@
 package com.ltsllc.miranda.manager;
 
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.directory.MirandaDirectory;
 import com.ltsllc.miranda.event.EventDirectory;
 import com.ltsllc.miranda.reader.Reader;
@@ -29,9 +32,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Clark on 5/3/2017.
+ * A {@link Manager}-like class that manages a directory instead of one file.
  */
-public class DirectoryManager<T> extends Consumer {
+abstract public class DirectoryManager<T extends Mergeable & Equivalent> extends Consumer {
+    /**
+     * This method gets called when the directory is loaded.
+     *
+     * <p>
+     *     The idea is for subclasses to convert an entry into whatever class the manager deals with
+     * </p>
+     *
+     * @param string The entry to be processed.  This is expected to be a full filename for the directory entry
+     */
+    public abstract void processEntry(String string);
+
+    /**
+     * Return the ready state for this manager.
+     *
+     * <p>
+     *     The idea is that the subclass will want to add the ability to process some messages that this
+     *     class wouldn't understand.
+     * </p>
+     *
+     * @return The "ready state" for this manager
+     */
+    public abstract State getReadyState();
+
     private Reader reader;
     private Writer writer;
     private MirandaDirectory directory;

@@ -22,7 +22,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.*;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
-import com.ltsllc.miranda.reader.ReadMessage;
+import com.ltsllc.miranda.reader.messages.ReadMessage;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 

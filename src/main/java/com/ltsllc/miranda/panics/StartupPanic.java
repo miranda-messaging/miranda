@@ -54,7 +54,7 @@ public class StartupPanic extends Panic {
         UndefinedKeystore, // The keystore property was null or empty
         UnrecognizedEncryptionMode,
         UnrecognizedResult,
-        WebServer // a problem that prevented the web server from starting occurred
+        ExceptionStartingEventQueues, WebServer // a problem that prevented the web server from starting occurred
     }
 
     private StartupReasons startupReason;

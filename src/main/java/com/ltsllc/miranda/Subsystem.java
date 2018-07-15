@@ -60,10 +60,10 @@ public abstract class Subsystem implements Runnable, Comparer {
     static private Logger logger = Logger.getLogger("Subsytem");
 
     private String name;
-    private BlockingQueue<Message> queue;
-    private Thread thread;
-    private boolean started;
-    private boolean stopped;
+    private transient BlockingQueue<Message> queue;
+    private transient Thread thread;
+    private transient boolean started;
+    private transient boolean stopped;
 
     public boolean getStopped() {
         return stopped;
@@ -71,6 +71,10 @@ public abstract class Subsystem implements Runnable, Comparer {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BlockingQueue<Message> getQueue() {

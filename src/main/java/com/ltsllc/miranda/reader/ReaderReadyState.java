@@ -16,9 +16,17 @@
 
 package com.ltsllc.miranda.reader;
 
+import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.reader.messages.ReadMessage;
+import com.ltsllc.miranda.reader.messages.ReadResponseMessage;
+import com.ltsllc.miranda.reader.messages.ScanMessage;
+import com.ltsllc.miranda.reader.messages.ScanResponseMessage;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Clark on 5/3/2017.
@@ -42,6 +50,12 @@ public class ReaderReadyState extends State {
                 break;
             }
 
+            case Scan: {
+                ScanMessage scanMessage = (ScanMessage) message;
+                nextState = processScanMessage (scanMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -62,6 +76,24 @@ public class ReaderReadyState extends State {
         response.setSender(getReader().getQueue());
 
         readMessage.reply(response);
+
+        return getReader().getCurrentState();
+    }
+
+    public State processScanMessage (ScanMessage scanMessage) throws MirandaException {
+        File file = new File(scanMessage.getFilename());
+        if (!file.isDirectory()) {
+            ScanResponseMessage scanResponseMessage = new ScanResponseMessage(Results.FileNotFound, scanMessage.getFilename(),
+                    null, getReader().getQueue(), getReader());
+            scanMessage.reply(scanResponseMessage);
+        }
+        String[] files = file.list();
+
+
+        ScanResponseMessage scanResponseMessage = new ScanResponseMessage(Results.Success, scanMessage.getFilename(),
+                files, getReader().getQueue(), getReader());
+
+        scanMessage.reply(scanResponseMessage);
 
         return getReader().getCurrentState();
     }

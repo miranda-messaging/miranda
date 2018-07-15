@@ -51,6 +51,12 @@ public class SubscriptionManager extends StandardManager<Subscription> {
 
     public void setSubscriptions(List<Subscription> subscriptions) {
         setData(subscriptions);
+        for (Subscription subscription : subscriptions) {
+            if (!subscription.isStarted()) {
+                subscription.start();
+            }
+        }
+
     }
 
     public SubscriptionManager(String filename) throws IOException, MirandaException {
@@ -74,7 +80,7 @@ public class SubscriptionManager extends StandardManager<Subscription> {
     }
 
     public void sendGetSubscriptionsMessage(BlockingQueue<Message> senderQueue, Object sender) {
-        LIstSubscriptionsMessage getSubscriptionsMessage = new LIstSubscriptionsMessage(senderQueue, sender);
+        ListSubscriptionsMessage getSubscriptionsMessage = new ListSubscriptionsMessage(senderQueue, sender);
         sendToMe(getSubscriptionsMessage);
     }
 
@@ -171,4 +177,5 @@ public class SubscriptionManager extends StandardManager<Subscription> {
         NewEventMessage newEventMessage = new NewEventMessage(senderQueue, sender, null, event);
         sendToMe(newEventMessage);
     }
+
 }

@@ -65,7 +65,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
         return Consumer.logger;
     }
 
-    private State currentState;
+    private transient State currentState;
     private long lastChange = -1;
 
     public long getLastChange() {
