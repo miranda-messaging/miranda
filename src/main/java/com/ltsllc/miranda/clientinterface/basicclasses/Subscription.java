@@ -298,7 +298,7 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
 
 
     public void newEvent (Event event) {
-        getEventQueue().SendNewEvent(getQueue(), this, event);
+        getEventQueue().sendNewEvent(getQueue(), this, event);
         if (isLocal()) {
             Miranda.getInstance().getDeliveryManager().sendDeliverEvent(event, this, getQueue(), this);
         }
@@ -348,5 +348,9 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
     public void sendNewEvent(BlockingQueue<Message> senderQueue, Object senderObject, Event event) {
         NewEventMessage newEventMessage = new NewEventMessage(senderQueue, senderObject, null, event);
         sendToMe(newEventMessage);
+    }
+
+    public void rectify () {
+        getEventQueue().setSubscription(this);
     }
 }

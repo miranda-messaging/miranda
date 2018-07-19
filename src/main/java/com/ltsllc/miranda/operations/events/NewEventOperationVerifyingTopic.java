@@ -109,8 +109,8 @@ public class NewEventOperationVerifyingTopic extends OperationState {
         // otherwise, if the user doesn't own the topic and they are not an admin
         // then tell the user and stop
         //
-        else if (!ownsTopic(message.getTopic()) && !isAdmin()) {
-            reply(Results.NotOwner);
+        else if (!isSubscriber() && !isAdmin()) {
+            reply(Results.NotSubscriber);
             return StopState.getInstance();
         }
 
@@ -163,6 +163,10 @@ public class NewEventOperationVerifyingTopic extends OperationState {
 
     public boolean isAdmin() {
         return getOperation().getSession().getUser().getCategory() == User.UserTypes.Admin;
+    }
+
+    public boolean isSubscriber() {
+        return getOperation().getSession().getUser().getCategory() == User.UserTypes.Subscriber;
     }
 
     public void tellNewEvent(Event event) {

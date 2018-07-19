@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * A queue of GUIDs that represent the events that haven't been delivered yet.
+ */
 public class EventQueue extends Consumer implements Cloneable, Mergeable, Equivalent {
     private transient Subscription subscription;
     private List<String> events = new LinkedList();
@@ -35,6 +38,7 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
 
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
+        setSubscriptionName(subscription.getName());
     }
 
     public List<String> getEvents() {
@@ -110,7 +114,8 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setPrettyPrinting();
         Gson gson = gsonBuilder.create();
-        return gson.toJson(getEvents());
+        String json = gson.toJson(this);
+        return json;
     }
 
     @Override
@@ -128,7 +133,7 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         return super.clone();
     }
 
-    public void SendNewEvent(BlockingQueue<Message> senderQueue, Object senderObject, Event event) {
+    public void sendNewEvent(BlockingQueue<Message> senderQueue, Object senderObject, Event event) {
         NewEventMessage newEventMessage = new NewEventMessage(senderQueue, senderObject, null, event);
         sendToMe(newEventMessage);
     }
@@ -138,5 +143,11 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         return json.getBytes();
     }
 
-
+    public void rectify () {
+        LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();
+        setQueue(queue);
+        EventQueueReadyState state = new EventQueueReadyState(this);
+        setCurrentState(state);
+        Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionMessage(getQueue(), this, getSubscriptionName());
+    }
 }

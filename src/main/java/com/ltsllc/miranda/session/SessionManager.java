@@ -127,6 +127,10 @@ public class SessionManager extends Consumer {
 
         for (Long key : getSessions().keySet()) {
             Session session = getSessions().get(key);
+            if (session == null) {
+                continue;
+            }
+
             if (now >= session.getExpires()) {
                 expired.add(session);
             }

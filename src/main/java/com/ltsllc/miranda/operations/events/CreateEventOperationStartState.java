@@ -16,11 +16,6 @@ public class CreateEventOperationStartState extends State {
 
     @Override
     public State start() {
-        CreateEventMessage createEventMessage = new CreateEventMessage(getCreateEventOperation().getQueue(),
-                getCreateEventOperation(), getCreateEventOperation().getEvent(), getCreateEventOperation().getSession());
-
-        send(Miranda.getInstance().getEventManager().getQueue(), createEventMessage);
-
         getCreateEventOperation().getEventManager().sendCreateEventMessage(getCreateEventOperation().getQueue(),
                 getCreateEventOperation(), getCreateEventOperation().getEvent(), getCreateEventOperation().getSession());
 

@@ -10,9 +10,13 @@ import com.ltsllc.miranda.manager.states.DirectoryManagerLoadingState;
 import com.ltsllc.miranda.manager.states.ManagerLoadingState;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.reader.messages.ScanResponseMessage;
 import com.ltsllc.miranda.subsciptions.messages.GetSubscriptionResponseMessage;
 import org.apache.log4j.Logger;
+
+import java.io.File;
 
 public class EventQueueManagerLoadingState extends DirectoryManagerLoadingState {
     private int numberOfSubscriptionsWaitingOn = 0;
@@ -44,13 +48,6 @@ public class EventQueueManagerLoadingState extends DirectoryManagerLoadingState 
         State nextState = getEventQueueManager().getCurrentState();
 
         switch (message.getSubject()) {
-            case GetSubscriptionResponse: {
-                GetSubscriptionResponseMessage getSubscriptionResponseMessage =
-                        (GetSubscriptionResponseMessage) message;
-                nextState = processGetSubscriptionResponseMessage(getSubscriptionResponseMessage);
-                break;
-            }
-
             case ScanResponseMessage: {
                 ScanResponseMessage scanResponseMessage = (ScanResponseMessage) message;
                 nextState = processScanResponseMessage(scanResponseMessage);
@@ -67,38 +64,23 @@ public class EventQueueManagerLoadingState extends DirectoryManagerLoadingState 
     }
 
     public State processScanResponseMessage (ScanResponseMessage scanResponseMessage) {
-        super.processScanResponseMessage(scanResponseMessage);
+        try {
+            super.processScanResponseMessage(scanResponseMessage);
 
-        int count = 0;
-        for (EventQueue eventQueue : getEventQueueManager().getEventQueues()) {
-            Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionMessage(getEventQueueManager().getQueue(),
-                    getEventQueueManager(), eventQueue.getSubscriptionName());
-            count++;
+            for (String entry : scanResponseMessage.getContents()) {
+                String filename = Miranda.properties.getProperty(MirandaProperties.PROPERTY_EVENT_QUEUE_DIRECTORY) +
+                        File.separator + entry;
+
+                getEventQueueManager().processEntry(filename);
+            }
+
+            return new EventQueueManagerReadyState(getEventQueueManager());
+        } catch (MirandaException e) {
+            Panic panic = new Panic("Exception trying to rectify EventQueues", e, Panic.Reasons.Exception);
+            Miranda.panicMiranda(panic);
+            return getEventQueueManager().getCurrentState();
         }
-
-        setNumberOfSubscriptionsWaitingOn(count);
-        return this;
     }
 
-    public State processGetSubscriptionResponseMessage (GetSubscriptionResponseMessage getSubscriptionResponseMessage) {
-        if (getSubscriptionResponseMessage.getResult() != Results.Success)
-        {
-            LOGGER.warn ("Could not find Subscription for EventQueue.  Looking for");
-            return getEventQueueManager().getCurrentState();
-        }
 
-        EventQueue eventQueue = getEventQueueManager().getEventQueueFor(getSubscriptionResponseMessage.getSubscription().getName());
-        if (eventQueue == null) {
-            LOGGER.warn ("Could not find EventQueue for Subscription.  Looking for " + getSubscriptionResponseMessage.getSubscription().getName());
-            return getEventQueueManager().getCurrentState();
-        }
-
-        getSubscriptionResponseMessage.getSubscription().setEventQueue(eventQueue);
-        decrementNumberOfSubscriptionsWaitingOn();
-
-        if (getNumberOfSubscriptionsWaitingOn() < 1)
-            return getDirectoryManager().getReadyState();
-        else
-            return getEventQueueManager().getCurrentState();
-    }
-}
+ }

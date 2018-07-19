@@ -71,5 +71,4 @@ public class CreateSubscriptionOperation extends Operation {
         miranda.getUserManager().sendGetUser(getQueue(), this, getSubscription().getOwner());
         miranda.getTopicManager().sendGetTopicMessage(getQueue(), this, getSubscription().getTopic());
     }
-
 }

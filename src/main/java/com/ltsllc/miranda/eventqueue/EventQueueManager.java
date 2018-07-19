@@ -13,6 +13,7 @@ import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,9 +37,16 @@ public class EventQueueManager extends DirectoryManager<EventQueue> {
     @Override
     public void processEntry(String string) {
         if (string.endsWith("queue")) {
-            EventQueue eventQueue = new EventQueue(string);
-            eventQueue.start();
-            getMap().put(string, eventQueue);
+            try {
+                FileReader fileReader = new FileReader(string);
+                EventQueue eventQueue = getGson().fromJson(fileReader, EventQueue.class);
+                eventQueue.rectify();
+                eventQueue.start();
+                getMap().put(string, eventQueue);
+            } catch (Exception e) {
+                Panic panic = new Panic ("Exception while processing " + string, e, Panic.Reasons.Exception);
+                Miranda.panicMiranda(panic);
+            }
         }
     }
 

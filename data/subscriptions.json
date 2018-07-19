@@ -1,11 +1,12 @@
 [
   {
-    "name": "admin",
     "owner": "admin",
     "topic": "whatever",
     "dataUrl": "temp",
     "livelinessUrl": "temp",
     "errorPolicy": "Drop",
-    "isLocal": true
+    "isLocal": false,
+    "lastChange": -1,
+    "name": "whatever"
   }
 ]

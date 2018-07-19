@@ -35,5 +35,5 @@ public enum Results {
     UserOwnsTopics,
     UnrecognizedUser,
     UsersExist,
-    Written
+    NotSubscriber, Written
 }
