@@ -736,6 +736,7 @@ public class Startup extends State {
             directoryName = f.getCanonicalPath();
             objectLimit = properties.getIntProperty(MirandaProperties.PROPERTY_DELIVERY_OBJECT_LIMIT);
             DeliveryManager deliveryManager = new DeliveryManager(directoryName, objectLimit, getReader(), getWriter());
+            deliveryManager.start();
             miranda.setDeliveryManager(deliveryManager);
 
         } catch (Exception e) {

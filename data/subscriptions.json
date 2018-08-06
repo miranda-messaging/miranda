@@ -2,10 +2,10 @@
   {
     "owner": "admin",
     "topic": "whatever",
-    "dataUrl": "temp",
+    "dataUrl": "http://192.168.0.11/event",
     "livelinessUrl": "temp",
     "errorPolicy": "Drop",
-    "isLocal": false,
+    "isLocal": true,
     "lastChange": -1,
     "name": "whatever"
   }

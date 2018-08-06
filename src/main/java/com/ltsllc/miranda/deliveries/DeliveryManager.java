@@ -25,6 +25,7 @@ import com.ltsllc.miranda.deliveries.messages.DeliverEventMessage;
 import com.ltsllc.miranda.deliveries.states.DeliveryManagerReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.DirectoryManager;
+import com.ltsllc.miranda.manager.states.DirectoryManagerStartState;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.panics.Panic;
@@ -35,13 +36,15 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 /**
- *
+ * A manager that manages a directory of event deliveries
  */
 public class DeliveryManager extends DirectoryManager {
     public static final String NAME = "delivery manager";
 
     public DeliveryManager(String directory, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directory, objectLimit, reader, writer);
+
+        setCurrentState(new DirectoryManagerStartState(this));
     }
 
     public void sendDeliverEvent(Event event, Subscription subscription, BlockingQueue<Message> senderQueue,

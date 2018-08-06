@@ -66,27 +66,6 @@ public class TestMirandaFile extends TestCase {
 
     @Before
     public void setup() throws Exception{
-        try {
-            reset();
-
-            super.setup();
-
-            setuplog4j();
-            setupMiranda();
-            setupMockFileWatcher();
-            setupMockReader();
-            setupMirandaProperties();
-            setupWriter();
-
-            Event event = new Event(Event.Methods.POST, "010203");
-            List<Event> eventList = new ArrayList<Event>();
-            eventList.add(event);
-
-            eventsFile = new EventsFile("whatever", getMockReader(), getMockWriter());
-            eventsFile.setData(eventList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @After
@@ -103,21 +82,6 @@ public class TestMirandaFile extends TestCase {
 
     @Test
     public void testVersion() throws Exception {
-        Version oldVersion = getEventsFile().getVersion();
-
-        assert (oldVersion.equals(oldVersion));
-
-        Event event = new Event(Event.Methods.POST, "010203");
-        List<Event> eventList = new ArrayList<Event>();
-        eventList.add(event);
-
-        getEventsFile().setData(eventList);
-
-        getEventsFile().recalculateVersion();
-
-        Version newVersion = getEventsFile().getVersion();
-
-        assert (!oldVersion.equals(newVersion));
     }
 
 

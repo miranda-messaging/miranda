@@ -129,10 +129,19 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
     private transient EventQueue eventQueue;
     private transient DeadLetterQueue deadLetterQueue;
     private boolean isLocal;
+    private transient boolean isOnline = true;
 
 
     public void setEventQueue(EventQueue eventQueue) {
         this.eventQueue = eventQueue;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 
     public boolean isLocal() {

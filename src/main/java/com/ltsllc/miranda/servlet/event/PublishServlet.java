@@ -133,7 +133,7 @@ public class PublishServlet extends HttpServlet {
             Session session = checkSession(request, response);
             String topicName = getTopicName(request, response);
             byte[] content = Util.readCompletely(request.getInputStream());
-            Event event = new Event(getUser(), Event.Methods.POST, topicName, content);
+            Event event = new Event(getUser(), Event.Methods.POST, topicName, request, content);
             EventHolder.CreateResult createResult = EventHolder.getInstance().create(event, session);
             sendCreateEventResult(response, createResult);
             response.setStatus(200);

@@ -16,11 +16,15 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
+import com.ltsllc.commons.io.Util;
 import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.MirandaUncheckedException;
+import org.apache.http.Header;
+import org.apache.http.HttpRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.*;
@@ -139,32 +143,29 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     private Methods method;
     private String topicName;
     private List awaitingDelivery;
+    private Header[] headers;
 
-    public Event(Methods method, String hexString) throws IOException {
-        byte[] content = HexConverter.toByteArray(hexString);
+    public Header[] getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Header[] headers) {
+        this.headers = headers;
+    }
+
+
+    public Event(User user, Methods method, String topicName, HttpServletRequest httpServletRequest, byte[] content) {
         String guid = UUID.randomUUID().toString();
-
-        basicConstructor(null, guid, null, System.currentTimeMillis(), method,
-                content);
+        basicConstructor(user.getName(), guid, topicName, System.currentTimeMillis(), method, httpServletRequest, content);
     }
 
-    public Event(Methods method, byte[] buffer) {
+    public Event(User user, Methods method, HttpServletRequest request, byte[] content) {
         String guid = UUID.randomUUID().toString();
-        basicConstructor(null, guid, null, System.currentTimeMillis(), method, buffer);
     }
 
-
-    public Event(User user, Methods method, String topicName, byte[] content) {
-        String guid = UUID.randomUUID().toString();
-        basicConstructor(user.getName(), guid, topicName, System.currentTimeMillis(), method, content);
-    }
-
-    public Event(String userName, String guid, String topicName, long timeOfCreation, Methods method, byte[] content) {
-        basicConstructor(userName, guid, topicName, timeOfCreation, method, content);
-    }
 
     public void basicConstructor(String userName, String guid, String topicName, long timeOfCreation, Methods method,
-                                 byte[] content) {
+                                 HttpServletRequest httpServletRequest, byte[] content) {
 
         this.userName = userName;
         this.guid = guid;
@@ -173,6 +174,8 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
         this.method = method;
         this.content = content;
 
+        Header[] headers = Util.getHeaders(httpServletRequest);
+        setHeaders(headers);
         this.awaitingDelivery = new ArrayList();
     }
 

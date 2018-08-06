@@ -59,7 +59,11 @@ public class DirectoryManagerLoadingState extends State {
     public State processScanResponseMessage (ScanResponseMessage scanResponseMessage) {
         State nextState = getDirectoryManager().getCurrentState();
 
-        if (scanResponseMessage.getResult() == Results.Success) {
+        if (scanResponseMessage.getResult() != Results.Success) {
+            Panic panic = new Panic("Scan directory returned non-success (" + scanResponseMessage.getResult() + ")",
+                    Panic.Reasons.ScanFailed);
+            Miranda.panicMiranda(panic);
+        } else {
             for (String string : scanResponseMessage.getContents()) {
                 String filename = scanResponseMessage.getFilename() + File.separator + string;
                 getDirectoryManager().processEntry(filename);

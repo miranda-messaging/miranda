@@ -68,6 +68,9 @@ public class EventQueueReadyState extends State {
         WriteMessage writeMessage = new WriteMessage(getEventQueue().getQueue(), getEventQueue());
         Miranda.timer.sendScheduleOnce(1000, getEventQueue().getQueue(), writeMessage);
 
+        Miranda.getInstance().getDeliveryManager().sendDeliverEvent(newEventMessage.getEvent(), getEventQueue().getSubscription(),
+                getEventQueue().getQueue(), getEventQueue());
+
         return getEventQueue().getCurrentState();
     }
 

@@ -29,5 +29,7 @@ public class DeliverEventMessage extends Message {
     public DeliverEventMessage (Event event, Subscription subscription, BlockingQueue<Message> senderQueue,
                                 Object senderObject) {
         super (Subjects.DeliverEvent, senderQueue, senderObject);
+        setEvent(event);
+        setSubscription(subscription);
     }
 }

