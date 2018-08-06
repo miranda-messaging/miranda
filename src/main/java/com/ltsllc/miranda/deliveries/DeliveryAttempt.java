@@ -10,11 +10,18 @@ public class DeliveryAttempt
     private long time;
     private int tries;
 
-    protected DeliveryAttempt (Event event)
+    public DeliveryAttempt (Event event)
     {
         setEvent(event.getGuid());
         setTime(-1);
         setTries(0);
+    }
+
+    public DeliveryAttempt (DeliveryAttempt other) {
+        setId(new String(other.getId()));
+        setEvent(other.getEvent());
+        setTime(other.getTime());
+        setTries(other.getTries());
     }
 
     public long getTime() {
