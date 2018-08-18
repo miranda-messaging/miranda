@@ -22,6 +22,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.deliveries.messages.DeliverEventMessage;
+import com.ltsllc.miranda.deliveries.messages.ScheduleDeliveryMessage;
 import com.ltsllc.miranda.deliveries.states.DeliveryManagerReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.DirectoryManager;
@@ -78,4 +79,9 @@ public class DeliveryManager extends DirectoryManager {
             Miranda.panicMiranda(panic);
         }
     }
+
+    public void scheduleDelivery (Event event, String Url, BlockingQueue<Message> senderQueue, Object senderObject) {
+        ScheduleDeliveryMessage scheduleDeliveryMessage = new ScheduleDeliveryMessage(event, Url, senderQueue, senderObject);
+    }
+
 }

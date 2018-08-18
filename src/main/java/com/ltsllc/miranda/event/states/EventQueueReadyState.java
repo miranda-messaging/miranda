@@ -4,7 +4,10 @@ import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.clientinterface.basicclasses.EventQueue;
+import com.ltsllc.miranda.deliveries.messages.DeliveryOutcomeMessage;
+import com.ltsllc.miranda.deliveries.messages.DeliveryResultMessage;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -52,6 +55,13 @@ public class EventQueueReadyState extends State {
                 nextState = processGetSubscriptionResponseMessage (getSubscriptionResponseMessage);
                 break;
             }
+
+            case DeliveryResult: {
+                DeliveryResultMessage deliveryResultMessage = (DeliveryResultMessage) message;
+                nextState = processDeliveryResultMessage (deliveryResultMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -68,8 +78,10 @@ public class EventQueueReadyState extends State {
         WriteMessage writeMessage = new WriteMessage(getEventQueue().getQueue(), getEventQueue());
         Miranda.timer.sendScheduleOnce(1000, getEventQueue().getQueue(), writeMessage);
 
-        Miranda.getInstance().getDeliveryManager().sendDeliverEvent(newEventMessage.getEvent(), getEventQueue().getSubscription(),
-                getEventQueue().getQueue(), getEventQueue());
+        if (getEventQueue().getEvents().size() < 2) {
+            Miranda.getInstance().getDeliveryManager().sendDeliverEvent(newEventMessage.getEvent(), getEventQueue().getSubscription(),
+                    getEventQueue().getQueue(), getEventQueue());
+        }
 
         return getEventQueue().getCurrentState();
     }
@@ -97,5 +109,18 @@ public class EventQueueReadyState extends State {
         }
 
         return getEventQueue().getCurrentState();
+    }
+
+    public State processDeliveryResultMessage (DeliveryResultMessage deliveryResultMessage) {
+        if (deliveryResultMessage.getResult() == Results.Success) {
+            if (getEventQueue().getEvents().size() > 1) {
+                String eventId = getEventQueue().getEvents().get(0);
+                Event event = Miranda.getInstance().getEventManager().sendGetEvent(eventId, getEventQueue().getQueue());
+            }
+        } else {
+            getEventQueue().incrementNumberOfTries();
+
+        }
+
     }
 }

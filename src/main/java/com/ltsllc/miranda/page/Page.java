@@ -10,10 +10,10 @@ import java.util.*;
  * A collection of {@link com.ltsllc.miranda.clientinterface.basicclasses.Event}
  */
 public class Page {
-    private boolean isDirty = false;
-    private boolean isBeingWritten = false;
+    private transient boolean isDirty = false;
+    private transient boolean isBeingWritten = false;
     private Map<String, Event> eventMap = new HashMap<>();
-    private Gson gson;
+    private transient Gson gson;
 
     public boolean isBeingWritten() {
         return isBeingWritten;
@@ -82,6 +82,4 @@ public class Page {
         String json = getGson().toJson(eventList);
         return json;
     }
-
-
 }

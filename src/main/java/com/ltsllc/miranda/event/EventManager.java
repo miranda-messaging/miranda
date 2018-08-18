@@ -18,6 +18,7 @@ package com.ltsllc.miranda.event;
 
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.basicclasses.Mergeable;
+import com.ltsllc.miranda.event.messages.*;
 import com.ltsllc.miranda.event.states.EventManagerReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.message.Message;
@@ -27,10 +28,6 @@ import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
-import com.ltsllc.miranda.event.messages.CreateEventMessage;
-import com.ltsllc.miranda.event.messages.EvictMessage;
-import com.ltsllc.miranda.event.messages.NewEventMessage;
-import com.ltsllc.miranda.event.messages.ReadEventMessage;
 import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.file.messages.ListMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -147,4 +144,27 @@ public class EventManager extends DirectoryManager {
             Miranda.panicMiranda(panic);
         }
     }
+
+    public void sendGetEvent(String eventId, BlockingQueue<Message> senderQueue, Object senderObject) {
+        GetEventMessage getEventMessage = new GetEventMessage(eventId, senderQueue, senderObject);
+        sendToMe(getEventMessage);
+    }
+
+    public Event lookupEvent (String eventId) {
+        EventRecord eventRecord = getEventMap().get(eventId);
+
+        if (null == eventRecord) {
+            return null;
+        }
+
+        if (eventRecord.isOnline()) {
+            Event event = getPageCache().getEvent(eventId);
+            return event;
+        } else {
+            Event event = findEvent(eventId);
+            return event;
+        }
+    }
+
+    public 
 }

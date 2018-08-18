@@ -120,4 +120,13 @@ public class PageCache extends Consumer {
 
         getWriter().sendWrite(getQueue(), this, filename, json.getBytes());
     }
+
+    public Event getEvent (String eventId) {
+        for (Page p : getPages()) {
+            Event event = p.getEvent(eventId);
+            if (event != null)
+                return event;
+        }
+        return null;
+    }
 }

@@ -19,13 +19,10 @@ package com.ltsllc.miranda.event.states;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.event.EventManager;
-import com.ltsllc.miranda.event.messages.CreateEventMessage;
-import com.ltsllc.miranda.event.messages.CreateEventResponseMessage;
-import com.ltsllc.miranda.event.messages.EvictMessage;
+import com.ltsllc.miranda.event.messages.*;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.events.CreateEventOperation;
 import com.ltsllc.miranda.operations.events.NewEventOperation;
@@ -56,6 +53,11 @@ public class EventManagerReadyState extends State {
                 EvictMessage evictMessage = (EvictMessage) message;
                 nextState = processEvictMessage (evictMessage);
                 break;
+            }
+
+            case GetEvent: {
+                GetEventMessage getEventMessage = (GetEventMessage) message;
+                nextState = processGetEventMessage(getEventMessage);
             }
 
             default: {
@@ -101,5 +103,18 @@ public class EventManagerReadyState extends State {
 
     public void tellCluster (Event event) {
         Miranda.getInstance().getCluster().sendNewEvent(event, getEventManager().getQueue(), getEventManager());
+    }
+
+    public State processGetEventMessage (GetEventMessage getEventMessage) {
+        Results result = null;
+        Event event = getEventManager().getEvent(getEventMessage.getEventId());
+        if (event != null){
+            result = Results.Success;
+        } else {
+            result = Results.Failure;
+        }
+
+        GetEventReplyMessage getEventReplyMessage = new GetEventReplyMessage(result, event, getEventManager().getQueue(),
+                getEventManager());
     }
 }

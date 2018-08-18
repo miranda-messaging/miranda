@@ -4,7 +4,6 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Consumer;
-import com.ltsllc.miranda.event.DeliveryAttempt;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.eventqueue.states.EventQueueReadyState;
 import com.ltsllc.miranda.message.Message;
@@ -22,7 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class EventQueue extends Consumer implements Cloneable, Mergeable, Equivalent {
     private transient Subscription subscription;
-    private List<DeliveryAttempt> events = new LinkedList();
+    private List<String> events = new LinkedList();
     private String subscriptionName;
 
     public String getSubscriptionName() {
@@ -42,11 +41,11 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         setSubscriptionName(subscription.getName());
     }
 
-    public List<DeliveryAttempt> getEvents() {
+    public List<String> getEvents() {
         return events;
     }
 
-    public void setEvents(List<DeliveryAttempt> events) {
+    public void setEvents(List<String> events) {
         this.events = events;
     }
 
@@ -83,9 +82,10 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         }
 
         for (int i = 0; i < getEvents().size(); i++) {
-            DeliveryAttempt myEventTry = getEvents().get (i);
-            DeliveryAttempt theirEventTry = other.getEvents().get(i);
-            if (!myEventTry.equals(theirEventTry))
+            String myEvent = getEvents().get (i);
+            String theirEvent = other.getEvents().get(i);
+
+            if (!MirandaObject.stringsAreEqual(myEvent, theirEvent))
                 return false;
         }
 
@@ -93,8 +93,8 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
     }
 
     public void newEvent (Event event) {
-        DeliveryAttempt eventTry = new DeliveryAttempt(event);
-        getEvents().add(eventTry);
+        String eventId = event.getGuid();
+        getEvents().add(eventId);
         String filename = Miranda.properties.getProperty(MirandaProperties.PROPERTY_EVENT_QUEUE_DIRECTORY)
                 + File.separator + getSubscription().getName() + ".queue";
 
@@ -104,7 +104,7 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
     public void copyFrom (Mergeable mergeable) {
         EventQueue other = (EventQueue) mergeable;
 
-        List<DeliveryAttempt> newEvents = new LinkedList<>(other.events);
+        List<String> newEvents = new LinkedList<>(other.events);
     }
 
     public boolean isEquivalentTo (Mergeable object) {

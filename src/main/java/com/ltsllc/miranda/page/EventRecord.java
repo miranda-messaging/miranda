@@ -1,18 +1,18 @@
 package com.ltsllc.miranda.page;
 
 /**
- * Some data that the systen keep on each {@link com.ltsllc.miranda.clientinterface.basicclasses.Event}
+ * Some data that the system keeps on each {@link com.ltsllc.miranda.clientinterface.basicclasses.Event}
  */
 public class EventRecord {
-    private boolean hasBeenWriten;
+    private boolean hasBeenWritten;
     private boolean isOnline;
 
-    public boolean getHasBeenWriten() {
-        return hasBeenWriten;
+    public boolean getHasBeenWritten() {
+        return hasBeenWritten;
     }
 
-    public void setHasBeenWriten(boolean hasBeenWriten) {
-        this.hasBeenWriten = hasBeenWriten;
+    public void setHasBeenWritten(boolean hasBeenWritten) {
+        this.hasBeenWritten = hasBeenWritten;
     }
 
     public boolean isOnline() {
