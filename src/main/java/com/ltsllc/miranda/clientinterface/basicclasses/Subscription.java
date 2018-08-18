@@ -18,6 +18,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.MirandaUncheckedException;
+import com.ltsllc.miranda.deliveries.DeliveryAttempt;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -130,7 +131,15 @@ public class Subscription extends Consumer implements Mergeable,Equivalent {
     private transient DeadLetterQueue deadLetterQueue;
     private boolean isLocal;
     private transient boolean isOnline = true;
+    private transient DeliveryAttempt currentEvent = null;
 
+    public DeliveryAttempt getCurrentEvent() {
+        return currentEvent;
+    }
+
+    public void setCurrentEvent(DeliveryAttempt currentEvent) {
+        this.currentEvent = currentEvent;
+    }
 
     public void setEventQueue(EventQueue eventQueue) {
         this.eventQueue = eventQueue;
