@@ -4,6 +4,7 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.deliveries.DeliveryAttempt;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.eventqueue.states.EventQueueReadyState;
 import com.ltsllc.miranda.message.Message;
@@ -11,8 +12,10 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -23,6 +26,16 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
     private transient Subscription subscription;
     private List<String> events = new LinkedList();
     private String subscriptionName;
+    private Map<String, DeliveryAttempt> deliveryAttemptMap = new HashMap<>();
+    private Event currentEvent;
+
+    public Event getCurrentEvent() {
+        return currentEvent;
+    }
+
+    public void setCurrentEvent(Event currentEvent) {
+        this.currentEvent = currentEvent;
+    }
 
     public String getSubscriptionName() {
         return subscriptionName;
@@ -151,5 +164,33 @@ public class EventQueue extends Consumer implements Cloneable, Mergeable, Equiva
         EventQueueReadyState state = new EventQueueReadyState(this);
         setCurrentState(state);
         Miranda.getInstance().getSubscriptionManager().sendGetSubscriptionMessage(getQueue(), this, getSubscriptionName());
+    }
+
+    public DeliveryAttempt getDeliveryAttemptFor (Event event) {
+        DeliveryAttempt deliveryAttempt = deliveryAttemptMap.get(event.getGuid());
+        if (null == deliveryAttempt) {
+            deliveryAttempt = new DeliveryAttempt(event);
+            deliveryAttemptMap.put (event.getGuid(), deliveryAttempt);
+        }
+
+        return deliveryAttempt;
+    }
+
+    public void incrementNumberOfTries (Event event) {
+        DeliveryAttempt deliveryAttempt = getDeliveryAttemptFor(event);
+        deliveryAttempt.incrementTries();
+    }
+
+    public long getTimeOfNextTry(Event event) {
+        DeliveryAttempt deliveryAttempt = getDeliveryAttemptFor(event);
+        return deliveryAttempt.getTime();
+    }
+
+    public void advance ()
+    {
+        if (getEvents().size() > 0) {
+            String theCurrentEventId = getEvents().remove(0);
+            Miranda.getInstance().getEventManager().sendGetEvent(theCurrentEventId, getQueue(), this);
+        }
     }
 }

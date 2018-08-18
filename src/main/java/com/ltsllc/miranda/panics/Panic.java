@@ -90,6 +90,10 @@ public class Panic extends Exception {
         return reason;
     }
 
+    public Panic (String message) {
+        super(message);
+    }
+
     public Panic(String message, Throwable cause, Reasons reason) {
         super(message, cause);
         basicConstructor(reason, cause);

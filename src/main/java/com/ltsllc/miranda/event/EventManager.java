@@ -36,6 +36,8 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +55,10 @@ public class EventManager extends DirectoryManager {
     private PageCache pageCache;
     private Map<String, EventRecord> eventMap = new HashMap<>();
 
+    public Map<String, EventRecord> getEventMap() {
+        return eventMap;
+    }
+
     public EventManager(String directoryName, int objectLimit, Reader reader, Writer writer) throws IOException, MirandaException {
         super(NAME, directoryName, objectLimit, reader, writer);
 
@@ -66,9 +72,7 @@ public class EventManager extends DirectoryManager {
         return pageCache;
     }
 
-    public Map<String, EventRecord> getEventMap() {
-        return eventMap;
-    }
+
 
     public void setEventMap(Map<String, EventRecord> eventMap) {
         this.eventMap = eventMap;
@@ -150,7 +154,7 @@ public class EventManager extends DirectoryManager {
         sendToMe(getEventMessage);
     }
 
-    public Event lookupEvent (String eventId) {
+    public Event lookupEvent (String eventId) throws IOException {
         EventRecord eventRecord = getEventMap().get(eventId);
 
         if (null == eventRecord) {
@@ -166,5 +170,56 @@ public class EventManager extends DirectoryManager {
         }
     }
 
-    public 
+    /**
+     * Find an offline {@link Event}.
+     *
+     * @param id The UUID of the event to find
+     *
+     * @return The corresponding Event or null if no matching Event could be found.
+     */
+    public Event findEvent (String id) throws IOException {
+        String eventDirectoryString = Miranda.properties.getProperty(MirandaProperties.PROPERTY_EVENT_DIRECTORY);
+        File eventDirectory = new File(eventDirectoryString);
+        String[] files = eventDirectory.list();
+        for (String fileName : files) {
+            if (isEventFile(fileName)) {
+                File eventFile = new File(fileName);
+                Event event = findEvent(eventFile, id);
+                if (event != null) {
+                    return event;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Is the file, whose name is the argument to this Method, a file that holds events?
+     *
+     * @param fileName The name of the file,
+     * @return true if the specified file has events, false otherwise.
+     */
+    public boolean isEventFile (String fileName) {
+        int index = fileName.indexOf(".events");
+        return index != -1;
+    }
+
+    /**
+     * Search an event file for a particular event.
+     *
+     * @param file The file to search
+     * @param id The UUID of the event to search for.
+     * @return The corresponding Event or null if no matching Event could be found.
+     */
+    public Event findEvent (File file, String id) throws IOException {
+        FileReader fileReader = new FileReader(file);
+        Event[] events = getGson().fromJson(fileReader, Event[].class);
+        for (Event event : events) {
+            if (event.getGuid().equals(id))
+                return event;
+        }
+
+        return null;
+    }
 }

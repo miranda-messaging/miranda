@@ -9,6 +9,15 @@ import java.util.concurrent.BlockingQueue;
 public class GetEventReplyMessage extends Message {
     private Results result;
     private Event event;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Results getResult() {
         return result;
@@ -26,11 +35,12 @@ public class GetEventReplyMessage extends Message {
         this.event = event;
     }
 
-    public GetEventReplyMessage (Results result, Event event, BlockingQueue<Message> senderQueque, Object senderObject) {
+    public GetEventReplyMessage (Results result, Event event, String id, BlockingQueue<Message> senderQueque, Object senderObject) {
         super (Subjects.GetEventReply, senderQueque, senderObject);
 
         setEvent(event);
         setResult(result);
+        setId(id);
 
     }
 }

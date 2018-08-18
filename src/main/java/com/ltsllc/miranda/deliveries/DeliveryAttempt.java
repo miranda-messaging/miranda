@@ -40,6 +40,8 @@ public class DeliveryAttempt
         this.tries = tries;
     }
 
+    public void incrementTries () { tries++; }
+
     public String getId() {
         return id;
     }

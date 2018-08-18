@@ -193,7 +193,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, DeliverEvent, Subscribe, DirectoryScanned, Scan, ScanResponseMessage, ScanResponse, ScheduleDelivery, DeliveryResult, GetEvent, GetEventReply, WriteResponse
+        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, DeliverEvent, Subscribe, DirectoryScanned, Scan, ScanResponseMessage, ScanResponse, ScheduleDelivery, DeliveryResult, GetEvent, GetEventReply, AttemptDelivery, WriteResponse
     }
 
     private static Gson ourGson = new Gson();

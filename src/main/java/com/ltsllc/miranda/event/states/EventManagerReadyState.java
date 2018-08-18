@@ -26,6 +26,9 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.operations.events.CreateEventOperation;
 import com.ltsllc.miranda.operations.events.NewEventOperation;
+import com.ltsllc.miranda.panics.Panic;
+
+import java.io.IOException;
 
 /**
  * When the {@link EventManager} is in this state, it is ready to handle new events
@@ -106,15 +109,22 @@ public class EventManagerReadyState extends State {
     }
 
     public State processGetEventMessage (GetEventMessage getEventMessage) {
-        Results result = null;
-        Event event = getEventManager().getEvent(getEventMessage.getEventId());
-        if (event != null){
-            result = Results.Success;
-        } else {
-            result = Results.Failure;
+        try {
+            Results result = null;
+            Event event = getEventManager().findEvent(getEventMessage.getEventId());
+            if (event != null) {
+                result = Results.Success;
+            } else {
+                result = Results.Failure;
+            }
+
+            GetEventReplyMessage getEventReplyMessage = new GetEventReplyMessage(result, event, getEventMessage.getEventId(),
+                    getEventManager().getQueue(), getEventManager());
+        } catch (IOException e) {
+            Panic panic = new Panic("Exception trying to find event",e);
+            Miranda.panicMiranda(panic);
         }
 
-        GetEventReplyMessage getEventReplyMessage = new GetEventReplyMessage(result, event, getEventManager().getQueue(),
-                getEventManager());
+        return getEventManager().getCurrentState();
     }
 }
