@@ -19,6 +19,7 @@ package com.ltsllc.commons.util;
 
 import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.clcl.JavaKeyStore;
+import com.ltsllc.miranda.property.MirandaProperties;
 
 import java.io.*;
 import java.net.Socket;
@@ -276,4 +277,34 @@ public class Utils {
     public static KeyStore loadKeyStore(String filename, String password) throws EncryptionException {
         return JavaKeyStore.loadJsKeyStore(filename, password);
     }
+
+    public static void backup(File file, String backupPrefix,  String backupSuffix, String backupExtension) throws IOException {
+        File backup = new File(file.getCanonicalPath() + backupExtension);
+        if (backup.exists())
+        {
+            backup = File.createTempFile(backupPrefix, backupSuffix, new File(file.getParent()));
+        }
+
+        copyFile (file, backup);
+    }
+
+    public static int BUFFER_SIZE = 8192;
+
+    public static void copyFile (File srcfile, File dstfile) throws IOException {
+        byte buffer[] = new byte[BUFFER_SIZE];
+
+        InputStream inputStream = new FileInputStream(srcfile);
+        OutputStream outputStream = new FileOutputStream(dstfile);
+
+        int bytesread;
+        do {
+            bytesread = inputStream.read(buffer);
+            outputStream.write(buffer, 0, bytesread);
+        } while (bytesread >= BUFFER_SIZE);
+
+        closeIgnoreExceptions(inputStream);
+        closeReturnExceptions(outputStream);
+    }
+
+
 }

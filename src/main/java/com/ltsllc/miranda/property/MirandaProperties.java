@@ -109,7 +109,15 @@ public class MirandaProperties {
 
     public static final String EVENT_PACKAGE = PACKAGE_NAME + "event.";
 
-    public static final String DELIVERY_PACKAGE = PACKAGE_NAME + "delivery,";
+    public static final String DELIVERY_PACKAGE = PACKAGE_NAME + "delivery.";
+
+    public static final String TEMPFILE_PACKAGE = PACKAGE_NAME + "tempfile.";
+
+    public static final String BACKUPS_PACKAGE = PACKAGE_NAME + "backups.";
+
+    public static final String CA_PACKAGE = PACKAGE_NAME +  "certificateAuthority.";
+
+    public static final String NODE_PACKAGE = PACKAGE_NAME + "node.";
 
     public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
     public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
@@ -169,6 +177,17 @@ public class MirandaProperties {
 
     public static final String PROPERTY_DELIVERY_OBJECT_LIMIT = DELIVERY_PACKAGE + "ObjectLimit";
 
+    public static final String PROPERTY_TEMP_FILE_PREFIX = TEMPFILE_PACKAGE + "Prefix";
+    public static final String PROPERTY_TEMP_FILE_SUFFIX = TEMPFILE_PACKAGE + "Suffix";
+
+    public static final String PROPERTY_CA_PUBLIC_KEY_FILE = CA_PACKAGE + "PublicKeyFile";
+    public static final String PROPERTY_CA_PRIVATE_KEY_FILE = CA_PACKAGE + "PrivateKeyFile";
+
+    public static final String PROPERTY_NODE_PUBLIC_KEY_FILE = NODE_PACKAGE + "PublicKeyFile";
+    public static final String PROPERTY_NODE_PRIVATE_KEY_FILE = NODE_PACKAGE + "PrivateKeyFile";
+
+    public static final String PROPERTY_BACKUP_FILE_EXTENSION = BACKUPS_PACKAGE + "Extension";
+
     public static final String DEFAULT_FILE_CHECK_PERIOD = "1000";
     public static final String DEFAULT_PROPERTIES_FILENAME = "miranda.properties";
     public static final String DEFAULT_USERS_FILE = "data/users.json";
@@ -223,6 +242,12 @@ public class MirandaProperties {
 
     public static final String DEFAULT_DELIVERY_OBJECT_LIMIT = "1000000";
 
+    public static final String DEFAULT_TEMP_FILE_PREFIX = "miranda";
+    public static final String DEFAULT_TEMP_FILE_SUFFIX = "Temp";
+
+    public static final String DEFAULT_BACKUP_EXTENSION = "bak";
+
+
     public static String[][] DEFAULT_PROPERTIES = {
             {PROPERTY_USERS_FILE, DEFAULT_USERS_FILE},
             {PROPERTY_TOPICS_FILE, DEFAULT_TOPICS_FILE},
@@ -276,7 +301,11 @@ public class MirandaProperties {
             {PROPERTY_EVENT_QUEUE_DIRECTORY, DEFAULT_EVENT_QUEUE_DIRECTORY},
 
             {PROPERTY_DELIVERY_OBJECT_LIMIT, DEFAULT_DELIVERY_OBJECT_LIMIT},
-            {PROPERTY_EVENT_QUEUE_DIRECTORY, DEFAULT_EVENT_QUEUE_DIRECTORY}
+            {PROPERTY_EVENT_QUEUE_DIRECTORY, DEFAULT_EVENT_QUEUE_DIRECTORY},
+
+            {PROPERTY_TEMP_FILE_PREFIX, DEFAULT_TEMP_FILE_PREFIX},
+            {PROPERTY_TEMP_FILE_SUFFIX, DEFAULT_TEMP_FILE_SUFFIX},
+            {PROPERTY_BACKUP_FILE_EXTENSION, DEFAULT_BACKUP_EXTENSION}
     };
 
     private static MirandaProperties instance;

@@ -70,12 +70,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -264,6 +262,112 @@ public class Startup extends State {
     public State start() {
         super.start();
 
+        if (systemNeedsSetup())
+            setup();
+        else
+            reglarStartup();
+
+        return StopState.getInstance();
+
+    }
+
+    /**
+     * This method creates a certifaction authority, a keystore and a truststore
+     *
+     * @return
+     */
+    public void setup () {
+        try {
+            MirandaProperties mirandaProperties = MirandaProperties.getInstance();
+            String tempFilePrefix = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TEMP_FILE_PREFIX);
+            String tempFileSuffix = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TEMP_FILE_SUFFIX);
+            String backupExtension = mirandaProperties.getProperty(MirandaProperties.PROPERTY_BACKUP_FILE_EXTENSION);
+
+            File caPublicKeyFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PUBLIC_KEY_FILE));
+            Utils.backup(caPublicKeyFile, tempFilePrefix, tempFileSuffix, backupExtension);
+
+            File caPrivateKeyFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PRIVATE_KEY_FILE));
+            Utils.backup(caPrivateKeyFile, tempFilePrefix, tempFileSuffix, backupExtension);
+
+            File nodePublic = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PUBLIC_KEY_FILE));
+            Utils.backup(nodePublic, tempFilePrefix, tempFilePrefix, backupExtension);
+
+            File nodePrivate = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PRIVATE_KEY_FILE));
+            Utils.backup(nodePrivate, tempFilePrefix, tempFileSuffix, backupExtension);
+
+            File certificate = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_FILE));
+            Utils.backup(certificate, tempFilePrefix, tempFileSuffix, backupExtension);
+
+            File keystoreFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE));
+            Utils.backup(keystoreFile, tempFilePrefix, tempFileSuffix, backupExtension);
+
+            File truststoreFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME));
+            Utils.backup(truststoreFile, tempFilePrefix, tempFileSuffix, backupExtension);
+
+            KeyPair caPair = createCertificateAuthority();
+            createNode(caPair);
+        } catch (IOException|EncryptionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public KeyPair createNode (KeyPair caKeyPair) throws EncryptionException, IOException {
+        KeyPair nodeKeyPair = KeyPair.newKeys();
+        MirandaProperties mirandaProperties = MirandaProperties.getInstance();
+        String publicKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PUBLIC_KEY_FILE);
+
+        String pem = nodeKeyPair.getPublicKey().toPem();
+        Utils.writeTextFile(publicKeyFileName, pem);
+
+        String privateKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PRIVATE_KEY_FILE);
+        pem = nodeKeyPair.getPrivateKey().toPem();
+        Utils.writeTextFile(privateKeyFileName, pem);
+
+        String certificateFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_FILE);
+        CertificateSigningRequest certificateSigningRequest = caKeyPair.createCertificateSigningRequest();
+        Calendar calendar = Calendar.getInstance();
+        Date now = new Date();
+        calendar.setTime(now);
+        calendar.add(Calendar.YEAR, 10);
+        Date tenYearsFromNow = calendar.getTime();
+        com.ltsllc.clcl.Certificate certificate = caKeyPair.getPrivateKey().sign(certificateSigningRequest,
+                now, tenYearsFromNow);
+        pem = certificate.toPem();
+        Utils.writeTextFile(certificateFileName, pem);
+
+        return nodeKeyPair;
+    }
+
+
+
+    /**
+     * Create a new certificate authority PEM file
+     */
+    public KeyPair createCertificateAuthority () throws IOException, EncryptionException {
+            MirandaProperties mirandaProperties = MirandaProperties.getInstance();
+            String publicKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PUBLIC_KEY_FILE);
+            KeyPair keyPair = KeyPair.newKeys();
+
+            String pem = keyPair.getPublicKey().toPem();
+            Utils.writeTextFile(publicKeyFileName, pem);
+
+            String privateKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+            String truststoreFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
+            KeyStore trustStore = new KeyStore(truststoreFileName);
+            trustStore.addCetificate()
+            return keyPair;
+
+
+        }
+
+    }
+    /**
+     * Normal Miranda startup
+     *
+     * @return
+     */
+    public State reglarStartup ()
+    {
         try {
             setupPanicPolicy();
             setupLogging();

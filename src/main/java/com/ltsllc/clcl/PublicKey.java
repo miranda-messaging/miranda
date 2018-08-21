@@ -18,6 +18,7 @@
 package com.ltsllc.clcl;
 
 import com.ltsllc.commons.util.Utils;
+import org.bouncycastle.asn1.eac.RSAPublicKey;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
@@ -46,10 +47,17 @@ public class PublicKey extends Key {
         return securityPublicKey;
     }
 
-    public PublicKey(java.security.PublicKey publicKey) {
-        this.securityPublicKey = publicKey;
+    public PublicKey () {
+
     }
 
+    public PublicKey(java.security.PublicKey publicKey) {
+        setSecurityPublicKey(publicKey);
+    }
+
+    public void setSecurityPublicKey(java.security.PublicKey securityPublicKey) {
+        this.securityPublicKey = securityPublicKey;
+    }
 
     @Override
     public String getSessionAlgorithm() {

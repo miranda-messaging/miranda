@@ -297,4 +297,4 @@ public class PrivateKey extends Key {
         PrivateKey other = (PrivateKey) o;
         return getSecurityPrivateKey().equals(other.getSecurityPrivateKey());
     }
-}
+ }
