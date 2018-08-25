@@ -101,4 +101,8 @@ public class Certificate {
     public DistinguishedName getIssuer () {
         return new DistinguishedName(getCertificate().getIssuerDN());
     }
+
+    public java.security.cert.Certificate getJsCertificate() {
+        return (java.security.cert.Certificate) certificate;
+    }
 }

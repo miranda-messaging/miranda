@@ -122,6 +122,11 @@ public class PublicKey extends Key {
         }
     }
 
+    @Override
+    public java.security.Key getJsEntry() {
+        return securityPublicKey;
+    }
+
 
     public static PublicKey fromPEM(String pem) throws EncryptionException {
         try {

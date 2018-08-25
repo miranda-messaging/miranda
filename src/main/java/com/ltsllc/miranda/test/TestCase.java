@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.ltsllc.clcl.*;
 import com.ltsllc.clcl.Certificate;
 import com.ltsllc.clcl.KeyPair;
+import com.ltsllc.clcl.KeyStore;
 import com.ltsllc.clcl.PrivateKey;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.commons.util.HexConverter;
@@ -939,8 +940,8 @@ public class TestCase {
     public String loadPrivateKey(String filename, String password, String alias) {
         ByteArrayOutputStream byteArrayOutputStream = null;
         try {
-            KeyStore keyStore = Utils.loadKeyStore(filename, password);
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+            KeyStore keyStore = new KeyStore(filename, password);
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias);
             byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(privateKey);

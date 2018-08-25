@@ -181,6 +181,11 @@ public class PrivateKey extends Key {
         }
     }
 
+    @Override
+    public java.security.Key getJsEntry() {
+        return securityPrivateKey;
+    }
+
 
     public String toPem(String password) throws EncryptionException {
         try {

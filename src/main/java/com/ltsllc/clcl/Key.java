@@ -43,6 +43,7 @@ abstract public class Key implements Serializable {
     abstract public byte[] encrypt (byte[] plainText) throws EncryptionException;
     abstract public byte[] decrypt (byte[] cipherText) throws EncryptionException;
     abstract public String toPem () throws EncryptionException;
+    abstract public java.security.Key getJsEntry();
 
     public static String SESSION_ALGORITHM = "AES";
 
@@ -202,4 +203,5 @@ abstract public class Key implements Serializable {
         if (!hasBouncyCastle)
             Security.addProvider(new BouncyCastleProvider());
     }
+
 }

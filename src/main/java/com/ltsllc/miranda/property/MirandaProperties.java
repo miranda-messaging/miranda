@@ -182,6 +182,7 @@ public class MirandaProperties {
 
     public static final String PROPERTY_CA_PUBLIC_KEY_FILE = CA_PACKAGE + "PublicKeyFile";
     public static final String PROPERTY_CA_PRIVATE_KEY_FILE = CA_PACKAGE + "PrivateKeyFile";
+    public static final String PROPERTY_CA_PASSWORD = CA_PACKAGE + "Password";
 
     public static final String PROPERTY_NODE_PUBLIC_KEY_FILE = NODE_PACKAGE + "PublicKeyFile";
     public static final String PROPERTY_NODE_PRIVATE_KEY_FILE = NODE_PACKAGE + "PrivateKeyFile";
@@ -245,6 +246,10 @@ public class MirandaProperties {
     public static final String DEFAULT_TEMP_FILE_PREFIX = "miranda";
     public static final String DEFAULT_TEMP_FILE_SUFFIX = "Temp";
 
+    public static final String DEFAULT_CA_PUBLIC_KEY_FILE = "ca.public.pem";
+    public static final String DEFAULT_CA_PRIVATE_KEY_FILE = "ca.private.pem";
+    public static final String DEFAULT_CA_PASSWORD = "whatever";
+
     public static final String DEFAULT_BACKUP_EXTENSION = "bak";
 
 
@@ -305,6 +310,9 @@ public class MirandaProperties {
 
             {PROPERTY_TEMP_FILE_PREFIX, DEFAULT_TEMP_FILE_PREFIX},
             {PROPERTY_TEMP_FILE_SUFFIX, DEFAULT_TEMP_FILE_SUFFIX},
+
+            {PROPERTY_CA_PUBLIC_KEY_FILE, DEFAULT_CA_PUBLIC_KEY_FILE},
+            {PROPERTY_CA_PRIVATE_KEY_FILE, DEFAULT_CA_PRIVATE_KEY_FILE},
             {PROPERTY_BACKUP_FILE_EXTENSION, DEFAULT_BACKUP_EXTENSION}
     };
 

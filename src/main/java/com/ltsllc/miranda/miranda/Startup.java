@@ -71,8 +71,6 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.KeyStore;
-import java.security.cert.Certificate;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
@@ -344,22 +342,24 @@ public class Startup extends State {
      * Create a new certificate authority PEM file
      */
     public KeyPair createCertificateAuthority () throws IOException, EncryptionException {
-            MirandaProperties mirandaProperties = MirandaProperties.getInstance();
-            String publicKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PUBLIC_KEY_FILE);
-            KeyPair keyPair = KeyPair.newKeys();
+        MirandaProperties mirandaProperties = MirandaProperties.getInstance();
+        KeyPair keyPair = KeyPair.newKeys();
 
-            String pem = keyPair.getPublicKey().toPem();
-            Utils.writeTextFile(publicKeyFileName, pem);
+        String publicKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PUBLIC_KEY_FILE);
+        String pem = keyPair.getPublicKey().toPem();
+        Utils.writeTextFile(publicKeyFileName, pem);
 
-            String privateKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
-            String truststoreFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-            KeyStore trustStore = new KeyStore(truststoreFileName);
-            trustStore.addCetificate()
-            return keyPair;
+        String privateKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PRIVATE_KEY_FILE);
+        pem = keyPair.getPrivateKey().toPem();
+        Utils.writeTextFile(privateKeyFileName, pem);
 
+        String truststoreFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
+        String trustStorePassword = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PASSWORD);
 
-        }
-
+        Certificate certificate = keyPair.createCertificate();
+        KeyStore trustStore = new KeyStore(truststoreFileName, trustStorePassword);
+        trustStore.addCertificate("CA", certificate);
+        return keyPair;
     }
     /**
      * Normal Miranda startup
@@ -977,7 +977,7 @@ public class Startup extends State {
 
     public KeyStore loadKeyStore(String filename, String password) {
         try {
-            return Utils.loadKeyStore(filename, password);
+            KeyStore keyStore = new KeyStore(filename, password);
         } catch (Exception e) {
             StartupPanic startupPanic = new StartupPanic("Exception loading keystore from " + filename, e,
                     StartupPanic.StartupReasons.ExceptionLoadingKeystore);
@@ -1018,9 +1018,8 @@ public class Startup extends State {
         if (isDebugMode()) {
 
         } else {
-
-            KeyStore keyStore = getKeyStore().getJsKeyStore();
-            Certificate certificate = keyStore.getCertificate("private");
+            java.security.KeyStore keyStore = getKeyStore().getJsKeyStore();
+            java.security.cert.Certificate certificate = keyStore.getCertificate("private");
             if (null != certificate)
                 com.ltsllc.clcl.Certificate.writeAsPem("tempfile", certificate);
         }
