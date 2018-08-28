@@ -35,8 +35,13 @@ public class LDAPName {
 
     public void initialize (String name) {
         String fields[] = name.split("=");
-        this.key = fields[0].trim();
-        this.value = fields[1].trim();
+        if (fields.length > 1)  {
+            key = fields[0].trim();
+            value = fields[1].trim();
+        } else {
+            key = fields[0].trim();
+            value = "";
+        }
     }
 
     public String toString () {

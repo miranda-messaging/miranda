@@ -250,6 +250,8 @@ public class MirandaProperties {
     public static final String DEFAULT_CA_PRIVATE_KEY_FILE = "ca.private.pem";
     public static final String DEFAULT_CA_PASSWORD = "whatever";
 
+    public static final String DEFAULT_NODE_PUBLIC_KEY_FILE = "node.public.pem";
+    public static final String DEFAULT_NODE_PRIVATE_KEY_FILE = "node.private.pem";
     public static final String DEFAULT_BACKUP_EXTENSION = "bak";
 
 
@@ -313,7 +315,11 @@ public class MirandaProperties {
 
             {PROPERTY_CA_PUBLIC_KEY_FILE, DEFAULT_CA_PUBLIC_KEY_FILE},
             {PROPERTY_CA_PRIVATE_KEY_FILE, DEFAULT_CA_PRIVATE_KEY_FILE},
-            {PROPERTY_BACKUP_FILE_EXTENSION, DEFAULT_BACKUP_EXTENSION}
+            {PROPERTY_BACKUP_FILE_EXTENSION, DEFAULT_BACKUP_EXTENSION},
+
+            {PROPERTY_NODE_PRIVATE_KEY_FILE, DEFAULT_NODE_PRIVATE_KEY_FILE},
+            {PROPERTY_NODE_PUBLIC_KEY_FILE, DEFAULT_NODE_PUBLIC_KEY_FILE},
+
     };
 
     private static MirandaProperties instance;

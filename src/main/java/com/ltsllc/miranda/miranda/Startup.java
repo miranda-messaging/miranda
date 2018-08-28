@@ -71,6 +71,8 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
@@ -259,11 +261,22 @@ public class Startup extends State {
 
     public State start() {
         super.start();
+        try {
+            setupPanicPolicy();
+            setupLogging();
+            processCommandLine();
+            processPasswords();
+            defineFactory();
+            setupProperties();
+        } catch (Throwable t) {
+            System.out.println("Exception while trying to start up");
+            t.printStackTrace();
+        }
 
         if (systemNeedsSetup())
             setup();
         else
-            reglarStartup();
+            regularStartup();
 
         return StopState.getInstance();
 
@@ -276,34 +289,41 @@ public class Startup extends State {
      */
     public void setup () {
         try {
+            setupPanicPolicy();
+
             MirandaProperties mirandaProperties = MirandaProperties.getInstance();
             String tempFilePrefix = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TEMP_FILE_PREFIX);
             String tempFileSuffix = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TEMP_FILE_SUFFIX);
             String backupExtension = mirandaProperties.getProperty(MirandaProperties.PROPERTY_BACKUP_FILE_EXTENSION);
 
+            Path currentRelativePath = Paths.get("");
+            String s = currentRelativePath.toAbsolutePath().toString();
+            File tempDirectory = new File(s);
+
             File caPublicKeyFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PUBLIC_KEY_FILE));
-            Utils.backup(caPublicKeyFile, tempFilePrefix, tempFileSuffix, backupExtension);
+            Utils.backup(caPublicKeyFile, tempFilePrefix, tempFileSuffix, backupExtension, tempDirectory);
 
             File caPrivateKeyFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PRIVATE_KEY_FILE));
-            Utils.backup(caPrivateKeyFile, tempFilePrefix, tempFileSuffix, backupExtension);
+            Utils.backup(caPrivateKeyFile, tempFilePrefix, tempFileSuffix, backupExtension, tempDirectory);
 
             File nodePublic = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PUBLIC_KEY_FILE));
-            Utils.backup(nodePublic, tempFilePrefix, tempFilePrefix, backupExtension);
+            Utils.backup(nodePublic, tempFilePrefix, tempFilePrefix, backupExtension, tempDirectory);
 
             File nodePrivate = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PRIVATE_KEY_FILE));
-            Utils.backup(nodePrivate, tempFilePrefix, tempFileSuffix, backupExtension);
+            Utils.backup(nodePrivate, tempFilePrefix, tempFileSuffix, backupExtension, tempDirectory);
 
             File certificate = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_CERTIFICATE_FILE));
-            Utils.backup(certificate, tempFilePrefix, tempFileSuffix, backupExtension);
+            Utils.backup(certificate, tempFilePrefix, tempFileSuffix, backupExtension, tempDirectory);
 
             File keystoreFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE));
-            Utils.backup(keystoreFile, tempFilePrefix, tempFileSuffix, backupExtension);
+            Utils.backup(keystoreFile, tempFilePrefix, tempFileSuffix, backupExtension, tempDirectory);
 
             File truststoreFile = new File(mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME));
-            Utils.backup(truststoreFile, tempFilePrefix, tempFileSuffix, backupExtension);
+            Utils.backup(truststoreFile, tempFilePrefix, tempFileSuffix, backupExtension, tempDirectory);
 
             KeyPair caPair = createCertificateAuthority();
             createNode(caPair);
+            System.exit(0);
         } catch (IOException|EncryptionException e) {
             e.printStackTrace();
         }
@@ -311,6 +331,12 @@ public class Startup extends State {
 
     public KeyPair createNode (KeyPair caKeyPair) throws EncryptionException, IOException {
         KeyPair nodeKeyPair = KeyPair.newKeys();
+
+        System.out.println ("Enter distinguished name for node");
+        DistinguishedName distinguishedName = getDistinguishedName(null);
+        nodeKeyPair.getPublicKey().setDn(distinguishedName);
+        nodeKeyPair.getPrivateKey().setDn (distinguishedName);
+
         MirandaProperties mirandaProperties = MirandaProperties.getInstance();
         String publicKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_NODE_PUBLIC_KEY_FILE);
 
@@ -333,6 +359,14 @@ public class Startup extends State {
         pem = certificate.toPem();
         Utils.writeTextFile(certificateFileName, pem);
 
+        String keystoreFilename = mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE);
+        KeyStore nodeKeyStore = new KeyStore(keystoreFilename, getKeystorePasswordString());
+        Certificate[] chain = new Certificate[1];
+        chain[0] = certificate;
+
+        nodeKeyStore.addPrivateKey("server", nodeKeyPair.getPrivateKey(), chain);
+        nodeKeyStore.write();
+
         return nodeKeyPair;
     }
 
@@ -342,8 +376,14 @@ public class Startup extends State {
      * Create a new certificate authority PEM file
      */
     public KeyPair createCertificateAuthority () throws IOException, EncryptionException {
+        System.out.println("Enter distinguished name for the certificate authority");
+        DistinguishedName distinguishedName = getDistinguishedName(null);
+
         MirandaProperties mirandaProperties = MirandaProperties.getInstance();
         KeyPair keyPair = KeyPair.newKeys();
+
+        keyPair.getPrivateKey().setDn(distinguishedName);
+        keyPair.getPublicKey().setDn(distinguishedName);
 
         String publicKeyFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PUBLIC_KEY_FILE);
         String pem = keyPair.getPublicKey().toPem();
@@ -354,11 +394,12 @@ public class Startup extends State {
         Utils.writeTextFile(privateKeyFileName, pem);
 
         String truststoreFileName = mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME);
-        String trustStorePassword = mirandaProperties.getProperty(MirandaProperties.PROPERTY_CA_PASSWORD);
+        String trustorePassword = getTrustorePasswordString();
 
         Certificate certificate = keyPair.createCertificate();
-        KeyStore trustStore = new KeyStore(truststoreFileName, trustStorePassword);
+        KeyStore trustStore = new KeyStore(truststoreFileName, getTrustorePasswordString());
         trustStore.addCertificate("CA", certificate);
+        trustStore.write();
         return keyPair;
     }
     /**
@@ -366,15 +407,9 @@ public class Startup extends State {
      *
      * @return
      */
-    public State reglarStartup ()
+    public State regularStartup ()
     {
         try {
-            setupPanicPolicy();
-            setupLogging();
-            processCommandLine();
-            processPasswords();
-            defineFactory();
-            setupProperties();
             definePanicPolicy();
             performMiscellaneousOperations();
             setupKeyStores();
@@ -421,16 +456,18 @@ public class Startup extends State {
      *     The system needs setup when
      *     <ul>
      *         <li>No keystore exists</li>
-     *         <li>No truststore exists</li>
+     *         <li>or No truststore exists</li>
      *     </ul>
      * </p>
      * @return
      */
     public boolean systemNeedsSetup() {
-        JavaKeyStore keyStore = Miranda.getInstance().getKeyStore();
-        JavaKeyStore trustStore = Miranda.getInstance().getTrustStore();
+        MirandaProperties mirandaProperties = MirandaProperties.getInstance();
+        File keyStoreFile = new File (mirandaProperties.getProperty(MirandaProperties.PROPERTY_KEYSTORE_FILE));
+        File trustStoreFile = new File (mirandaProperties.getProperty(MirandaProperties.PROPERTY_TRUST_STORE_FILENAME));
 
-        return keyStore == null || trustStore == null || !keyStore.exists() || !trustStore.exists();
+
+        return keyStoreFile == null || trustStoreFile == null || !keyStoreFile.exists() || !trustStoreFile.exists();
     }
 
     private void performMiscellaneousOperations() throws MirandaException {
@@ -963,6 +1000,7 @@ public class Startup extends State {
             setKeystorePasswordString(temp);
         }
 
+
         if (isDebugMode())
             ;
         else if (null != getCommandLine().getTrustorePassword())
@@ -973,7 +1011,93 @@ public class Startup extends State {
             String temp = scanner.nextLine();
             setTrustorePasswordString(temp);
         }
+
+
     }
+
+    public DistinguishedName getDistinguishedName (DistinguishedName dn) {
+
+        DistinguishedName distinguishedName = null;
+
+
+        while (distinguishedName == null) {
+            if (dn == null)
+                System.out.print("Enter a country code> ");
+            else
+                System.out.print("Enter a country code (" + dn.getCountryCode() + ")> ");
+            Scanner scanner = new Scanner(Miranda.inputStream);
+            String countryCode = scanner.nextLine();
+            if (countryCode.equals("") && (dn != null))
+                countryCode = dn.getCountryCode();
+
+            if (dn == null)
+                System.out.print("State> ");
+            else
+                System.out.print("State (" + dn.getState() + ")> ");
+            String state = scanner.nextLine();
+            if (state.equals("") && (dn != null))
+                state = dn.getState();
+
+            if (dn == null)
+                System.out.print("city> ");
+            else
+                System.out.print("City (" + dn.getCity() + ")> ");
+            String city = scanner.nextLine();
+            if (city.equals("") && dn != null)
+                city = dn.getCity();
+
+            if (dn == null)
+                System.out.print("Organization> ");
+            else
+                System.out.print("Organization (" + dn.getCompany() + ")> ");
+            String organization = scanner.nextLine();
+            if (organization.equals("") && dn != null)
+                organization = dn.getCompany();
+
+
+            if (dn == null)
+                System.out.print("Organizational Unit> ");
+            else
+                System.out.print("Organizational Unit (" + dn.getDivision() + ")> ");
+            String organizationalUnit = scanner.nextLine();
+            if (organizationalUnit.equals("") && dn != null)
+                organizationalUnit = dn.getDivision();
+
+            if (dn == null)
+                System.out.print("Name or system> ");
+            else
+                System.out.print("Name or system (" + dn.getName() + ")> ");
+            String name = scanner.nextLine();
+            if (name.equals("") && dn != null)
+                name = dn.getName();
+
+            System.out.println("is this correct?");
+            System.out.println("country = " + countryCode);
+            System.out.println("state/province = " + state);
+            System.out.println("city/locality = " + city);
+            System.out.println("company/organization = " + organization);
+            System.out.println("division/organizational unit = " + organizationalUnit);
+            System.out.println("person or system name = " + name);
+            System.out.println("y/<n>");
+            String answer = scanner.nextLine();
+            if (answer.startsWith("Y") || answer.startsWith("y")) {
+                distinguishedName = new DistinguishedName();
+                distinguishedName.setCountryCode(countryCode);
+                distinguishedName.setState(state);
+                distinguishedName.setCity(city);
+                distinguishedName.setCompany(organization);
+                distinguishedName.setDivision(organizationalUnit);
+                distinguishedName.setName(name);
+            }
+        }
+
+        return distinguishedName;
+    }
+
+
+
+
+
 
     public KeyStore loadKeyStore(String filename, String password) {
         try {

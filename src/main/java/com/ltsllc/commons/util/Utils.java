@@ -278,14 +278,16 @@ public class Utils {
         return JavaKeyStore.loadJsKeyStore(filename, password);
     }
 
-    public static void backup(File file, String backupPrefix,  String backupSuffix, String backupExtension) throws IOException {
-        File backup = new File(file.getCanonicalPath() + backupExtension);
-        if (backup.exists())
-        {
-            backup = File.createTempFile(backupPrefix, backupSuffix, new File(file.getParent()));
-        }
+    public static void backup(File file, String backupPrefix,  String backupSuffix, String backupExtension,
+                              File backupDirectory) throws IOException {
+        if (file.exists()) {
+            File backup = new File(file.getCanonicalPath() + "." + backupExtension);
+            if (backup.exists()) {
+                backup = File.createTempFile(backupPrefix, backupSuffix, backupDirectory);
+            }
 
-        copyFile (file, backup);
+            copyFile(file, backup);
+        }
     }
 
     public static int BUFFER_SIZE = 8192;
