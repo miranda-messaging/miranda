@@ -25,6 +25,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.StopWireMessage;

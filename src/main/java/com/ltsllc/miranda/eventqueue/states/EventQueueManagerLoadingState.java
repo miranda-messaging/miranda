@@ -48,7 +48,7 @@ public class EventQueueManagerLoadingState extends DirectoryManagerLoadingState 
         State nextState = getEventQueueManager().getCurrentState();
 
         switch (message.getSubject()) {
-            case ScanResponseMessage: {
+            case ScanResponse: {
                 ScanResponseMessage scanResponseMessage = (ScanResponseMessage) message;
                 nextState = processScanResponseMessage(scanResponseMessage);
                 break;

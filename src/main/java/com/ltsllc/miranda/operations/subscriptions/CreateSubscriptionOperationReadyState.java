@@ -77,8 +77,6 @@ public class CreateSubscriptionOperationReadyState extends State {
             Miranda.getInstance().getCluster().sendCreateSubscriptionMessage(getCreateSubscriptionOperation().getQueue(),
                     this, getCreateSubscriptionOperation().getSession(),
                     getCreateSubscriptionOperation().getSubscription());
-
-            Miranda.getInstance().sendAuctionMessage(getCreateSubscriptionOperation().getQueue(), this);
         }
 
         CreateSubscriptionResponseMessage createSubscriptionResponseMessage2 = new CreateSubscriptionResponseMessage(

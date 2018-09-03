@@ -27,6 +27,7 @@ import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 import com.ltsllc.miranda.miranda.messages.StopMessage;
 import com.ltsllc.miranda.network.Network;
@@ -37,6 +38,8 @@ import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
+import com.ltsllc.miranda.operations.auction.Auction;
+import com.ltsllc.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
 import com.ltsllc.miranda.topics.TopicsFile;
@@ -77,15 +80,27 @@ public class NodeReadyState extends NodeState {
         State nextState = this;
 
         switch (networkMessage.getWireMessage().getWireSubject()) {
-            case GetVersions: {
-                GetVersionsWireMessage getVersionsWireMessage = (GetVersionsWireMessage) networkMessage.getWireMessage();
-                nextState = processGetVersionsWireMessage(getVersionsWireMessage);
+            case Auction: {
+                AuctionWireMessage auctionWireMessage = (AuctionWireMessage) networkMessage.getWireMessage();
+                nextState = processAuctionWireMessage(auctionWireMessage);
                 break;
             }
 
-            case Versions: {
-                VersionsWireMessage versionsWireMessage = (VersionsWireMessage) networkMessage.getWireMessage();
-                nextState = processVersionsWireMessage(versionsWireMessage);
+            case DeleteUser: {
+                DeleteUserWireMessage deleteUserWireMessage = (DeleteUserWireMessage) networkMessage.getWireMessage();
+                nextState = processDeleteUserWireMessage(deleteUserWireMessage);
+                break;
+            }
+
+            case ExpiredSessions: {
+                SessionsExpiredWireMessage sessionsExpiredWireMessage = (SessionsExpiredWireMessage) networkMessage.getWireMessage();
+                nextState = processSessionsExpiredWireMessage(sessionsExpiredWireMessage);
+                break;
+            }
+
+            case GetVersions: {
+                GetVersionsWireMessage getVersionsWireMessage = (GetVersionsWireMessage) networkMessage.getWireMessage();
+                nextState = processGetVersionsWireMessage(getVersionsWireMessage);
                 break;
             }
 
@@ -101,12 +116,6 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
-            case ExpiredSessions: {
-                SessionsExpiredWireMessage sessionsExpiredWireMessage = (SessionsExpiredWireMessage) networkMessage.getWireMessage();
-                nextState = processSessionsExpiredWireMessage(sessionsExpiredWireMessage);
-                break;
-            }
-
             case NewUser: {
                 NewUserWireMessage newUserWireMessage = (NewUserWireMessage) networkMessage.getWireMessage();
                 nextState = processNewUserWireMessage(newUserWireMessage);
@@ -119,9 +128,9 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
-            case DeleteUser: {
-                DeleteUserWireMessage deleteUserWireMessage = (DeleteUserWireMessage) networkMessage.getWireMessage();
-                nextState = processDeleteUserWireMessage(deleteUserWireMessage);
+            case Versions: {
+                VersionsWireMessage versionsWireMessage = (VersionsWireMessage) networkMessage.getWireMessage();
+                nextState = processVersionsWireMessage(versionsWireMessage);
                 break;
             }
 
@@ -204,6 +213,12 @@ public class NodeReadyState extends NodeState {
             case EndConversation: {
                 EndConversationMessage endConversationMessage = (EndConversationMessage) message;
                 nextState = processEndConversation(endConversationMessage);
+                break;
+            }
+
+            case Auction: {
+                AuctionMessage auctionMessage = (AuctionMessage) message;
+                nextState = processAuctionMessage(auctionMessage);
                 break;
             }
 
@@ -378,6 +393,25 @@ public class NodeReadyState extends NodeState {
 
     public State processEndConversation(EndConversationMessage message) {
         getConversations().remove(message.getKey());
+
+        return getNode().getCurrentState();
+    }
+
+    public State processAuctionMessage (AuctionMessage auctionMessage) {
+        AuctionWireMessage auctionWireMessage = new AuctionWireMessage(auctionMessage.getBid());
+        sendOnWire(auctionWireMessage);
+
+
+        return getNode().getCurrentState();
+    }
+
+    public State processAuctionWireMessage(AuctionWireMessage auctionWireMessage) {
+        try {
+            AuctionOperation auctionOperation = new AuctionOperation();
+            auctionOperation.sendAuction(getNode().getQueue(), getNode(), auctionWireMessage.getBid());
+        } catch (MirandaException e) {
+            logger.error ("Exception creating auction", e);
+        }
 
         return getNode().getCurrentState();
     }

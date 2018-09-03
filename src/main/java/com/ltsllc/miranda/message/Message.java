@@ -27,16 +27,25 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Clark on 12/30/2016.
  */
-public class Message {
+public class Message implements Cloneable {
     public enum Subjects {
         Auction,
+        AuctionAbort,
+        AuctionReply,
+        AuctionResults,
+        AuctionTimeout,
         AddObjects,
+        AddServlet,
+        AddServletResponse,
         AddServlets,
         AddSession,
+        AttemptDelivery,
         Ballot,
+        Bid,
         Bootstrap,
         BootstrapResponse,
         Broadcast,
+        Cancel,
         CheckSession,
         CheckSessionResponse,
         Close,
@@ -51,10 +60,13 @@ public class Message {
         ConnectionError,
         ConnectTo,
         ConnectionClosed,
-        ConnectinCreated,
+        ConnectionCreated,
         Create,
-        CreateResponse,
+        CreateBid,
+        CreateBidResponse,
         CreateEvent,
+        CreateEventResponse,
+        CreateResponse,
         CreateSession,
         CreateSessionResponse,
         CreateSubscription,
@@ -70,6 +82,9 @@ public class Message {
         DeleteUserResponse,
         DeleteSubscription,
         DeleteSubscriptionResponse,
+        DeliverEvent,
+        DeliveryResult,
+        DirectoryScanned,
         Disconnect,
         Disconnected,
         DoneSynchronizing,
@@ -86,23 +101,27 @@ public class Message {
         FileLoaded,
         FileWritten,
         GarbageCollection,
-        GetDeliveries,
-        GetFile,
-        GetSubscriptionsFile,
         GetClusterFile,
+        GetDeliveries,
+        GetEvent,
+        GetEventReply,
+        GetFile,
         GetFileResponse,
+        GetNodeCount,
+        GetNodeCountResponse,
         GetSession,
         GetSessionResponse,
         GetStatus,
         GetStatusResponse,
+        GetSubscriptionsFile,
+        GetSubcription,
+        GetSubscriptionResponse,
+        GetSubscriptionsResponse,
         GetSystemMessages,
         GetTopic,
         GetTopicResponse,
         GetTopicsResponse,
         GetTopicsFile,
-        GetSubcription,
-        GetSubscriptionResponse,
-        GetSubscriptionsResponse,
         GetUser,
         GetUsersResponse,
         GetUserResponse,
@@ -115,9 +134,11 @@ public class Message {
         Join,
         JoinSuccess,
         List,
-        ListTopics,
+        ListResponse,
         ListSubscriptions,
+        ListTopics,
         ListUsers,
+        ListUsersResponse,
         Listen,
         Load,
         LoadResponse,
@@ -150,13 +171,18 @@ public class Message {
         OwnerQuery,
         OwnerQueryResponse,
         Panic,
+        PublisherMessage,
         RemoveObjects,
         RemoteVersion,
         Read,
         ReadResponse,
         Retry,
+        Result,
         Results,
+        Scan,
+        ScanResponse,
         ScanCompleteMessage,
+        ScheduleDelivery,
         ScheduleOnce,
         SchedulePeriodic,
         SessionsExpired,
@@ -172,6 +198,7 @@ public class Message {
         Starting,
         Stop,
         StopWatching,
+        Subscribe,
         Synchronize,
         Timeout,
         UnknownHandle,
@@ -193,7 +220,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, ListUsersResponse, PublisherMessage, AddServlet, ListResponse, AddServletResponse, CreateEventResponse, DeliverEvent, Subscribe, DirectoryScanned, Scan, ScanResponseMessage, ScanResponse, ScheduleDelivery, DeliveryResult, GetEvent, GetEventReply, AttemptDelivery, WriteResponse
+        WriteResponse, LocalTopics,
     }
 
     private static Gson ourGson = new Gson();
@@ -203,6 +230,15 @@ public class Message {
     private BlockingQueue<Message> sender;
     private Object senderObject;
     private Exception where;
+
+
+    public void setSender(BlockingQueue<Message> queue) {
+        this.sender = queue;
+    }
+
+    public void setSenderObject(Object object) {
+        this.senderObject = object;
+    }
 
     public Subjects getSubject() {
         return subject;
@@ -227,6 +263,8 @@ public class Message {
     public void setWhere(Exception where) {
         this.where = where;
     }
+
+    public Message () {}
 
     public Message(Subjects subject, BlockingQueue<Message> senderQueue, Object senderObject) {
         this.subject = subject;
@@ -274,15 +312,21 @@ public class Message {
                 && getSenderObject() == other.getSenderObject();
     }
 
-    public void setSender(BlockingQueue<Message> queue) {
-        this.sender = queue;
-    }
-
-    public void setSenderObject(Object object) {
-        this.senderObject = object;
-    }
-
     public String toString () {
         return getClass().getSimpleName();
+    }
+
+    public Object clone () {
+        Message clone = new Message();
+        deepCopy(this, clone);
+        return clone;
+    }
+
+
+    public void deepCopy (Message original, Message clone) {
+        clone.setSender(original.getSender());
+        clone.setSubject(original.getSubject());
+        clone.setWhere(new Exception());
+        clone.setSenderObject(original.getSenderObject());
     }
 }

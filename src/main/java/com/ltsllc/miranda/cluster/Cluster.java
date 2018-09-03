@@ -18,6 +18,10 @@ package com.ltsllc.miranda.cluster;
 
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
+import com.ltsllc.miranda.operations.auction.Auction;
+import com.ltsllc.miranda.operations.auction.AuctionOperation;
+import com.ltsllc.miranda.operations.auction.Bid;
 import com.ltsllc.miranda.quorum.AcknowledgeQuorum;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.State;
@@ -53,6 +57,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 
@@ -405,5 +410,25 @@ public class Cluster extends Manager<Node, NodeElement> {
     public void sendNewEvent (Event event, BlockingQueue<Message> senderQueue, Object senderObject) {
         NewEventMessage newEventMessage = new NewEventMessage(senderQueue, senderObject, null, event);
         sendToMe(newEventMessage);
+    }
+
+    public void sendAuction(BlockingQueue<Message> queue, Object sender, Bid bid) {
+        AuctionMessage auctionMessage = new AuctionMessage(queue, sender, bid);
+        sendToMe(auctionMessage);
+    }
+
+    public void sendGetNodeCount(BlockingQueue<Message> queue, Object senderObject) {
+        GetNodeCountMessage getNodeCountMessage = new GetNodeCountMessage(queue, senderObject);
+        sendToMe(getNodeCountMessage);
+    }
+
+    public void sendAuctionResults(Auction auction, BlockingQueue<Message> queue, Object senderObject) {
+        AuctionResultsMessage auctionResultsMessage = new AuctionResultsMessage(queue, senderObject, auction);
+        sendToMe(auctionResultsMessage);
+    }
+
+    public void sendAuctionAbort (BlockingQueue<Message> queue, Object senderObject) {
+        AuctionAbortMessage auctionAbortMessage = new AuctionAbortMessage(queue, senderObject);
+        sendToMe(auctionAbortMessage);
     }
 }

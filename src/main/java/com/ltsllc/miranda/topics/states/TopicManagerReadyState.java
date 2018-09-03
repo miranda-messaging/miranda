@@ -26,7 +26,10 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.operations.auction.Bid;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryResponseMessage;
 import com.ltsllc.miranda.topics.DuplicateTopicException;
@@ -34,8 +37,11 @@ import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.TopicNotFoundException;
 import com.ltsllc.miranda.topics.messages.*;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Clark on 4/9/2017.
@@ -104,6 +110,12 @@ public class TopicManagerReadyState extends ManagerReadyState {
             case Subscribe: {
                 SubscribeMessage subscribeMessage = (SubscribeMessage) message;
                 nextState = processSubscribeMessage(subscribeMessage);
+                break;
+            }
+
+            case CreateBid: {
+                CreateBidMessage createBidMessage = (CreateBidMessage) message;
+                nextState = processCreateBidMessage (createBidMessage);
                 break;
             }
 
@@ -245,6 +257,27 @@ public class TopicManagerReadyState extends ManagerReadyState {
         for (Topic topic : getTopicManager().getTopics()) {
             topic.newEvent(getTopicManager().getQueue(), event);
         }
+
+        return getTopicManager().getCurrentState();
+    }
+
+    public State processCreateBidMessage (CreateBidMessage createBidMessage) throws MirandaException {
+        SecureRandom secureRandom = new SecureRandom();
+        List<Topic> topics = getTopicManager().getTopics();
+        Map<String, Long> temp = new HashMap<>();
+        for (Topic topic : topics) {
+            temp.put(topic.getName(), new Long(secureRandom.nextLong()));
+        }
+
+        String host = Miranda.properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);
+        int port = Miranda.properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
+        String bidder = host + ":" + port;
+        Bid bid = new Bid (bidder, temp);
+
+        CreateBidResponseMessage createBidResponseMessage = new CreateBidResponseMessage(bid, getTopicManager().getQueue(),
+                getTopicManager());
+
+        createBidMessage.reply(createBidResponseMessage);
 
         return getTopicManager().getCurrentState();
     }

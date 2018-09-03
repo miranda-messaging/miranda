@@ -28,6 +28,7 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
+import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;

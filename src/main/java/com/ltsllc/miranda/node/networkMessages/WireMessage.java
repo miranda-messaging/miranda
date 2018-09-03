@@ -56,7 +56,7 @@ public class WireMessage {
         UpdateTopic,
         UpdateUser,
         Versions,
-        Version
+        Auction, Version
     }
 
     private WireSubjects subject;

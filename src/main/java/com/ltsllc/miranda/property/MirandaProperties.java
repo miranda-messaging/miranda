@@ -119,22 +119,21 @@ public class MirandaProperties {
 
     public static final String NODE_PACKAGE = PACKAGE_NAME + "node.";
 
-    public static final String PROPERTY_DELAY_BETWEEN_RETRIES = "com.ltsllc.miranda.DelayBetweenRetries";
-    public static final String PROPERTY_DELIVERY_DIRECTORY = "com.ltsllc.miranda.DeliveryDirectory";
+    public static final String PROPERTY_DELAY_BETWEEN_RETRIES = PACKAGE_NAME +"DelayBetweenRetries";
+    public static final String PROPERTY_DELIVERY_DIRECTORY = PACKAGE_NAME + "DeliveryDirectory";
     public static final String PROPERTY_FILE_CHECK_PERIOD = PACKAGE_NAME + "FileCheckPeriod";
     public static final String PROPERTY_GARBAGE_COLLECTION_PERIOD = PACKAGE_NAME + "GarbageCollectionPeriod";
-    public static final String PROPERTY_LOG4J_FILE = "com.ltsllc.miranda.Log4jFile";
+    public static final String PROPERTY_LOG4J_FILE = PACKAGE_NAME + "Log4jFile";
     public static final String PROPERTY_MAX_WRITE_FAILURES = PACKAGE_NAME + "MaxWriteFailures";
-    public static final String PROPERTY_MESSAGE_FILE_SIZE = "com.ltsllc.miranda.MessageFileSize";
-    public static final String PROPERTY_MESSAGE_PORT = "com.ltsllc.miranda.MessagePort";
+    public static final String PROPERTY_MESSAGE_FILE_SIZE = PACKAGE_NAME + "MessageFileSize";
+    public static final String PROPERTY_MESSAGE_PORT = PACKAGE_NAME + "MessagePort";
     public static final String PROPERTY_NETWORK = PACKAGE_NAME + "Network";
     public static final String PROPERTY_PROPERTIES_FILE = PACKAGE_NAME + "PropertiesFile";
-    public static final String PROPERTY_SUBSCRIPTIONS_FILE = "com.ltsllc.miranda.SubscriptionsFile";
-    public static final String PROPERTY_TOPICS_FILE = "com.ltsllc.miranda.TopicsFile";
-    public static final String PROPERTY_USERS_FILE = "com.ltsllc.miranda.UsersFile";
-
+    public static final String PROPERTY_SUBSCRIPTIONS_FILE = PACKAGE_NAME + "SubscriptionsFile";
+    public static final String PROPERTY_TOPICS_FILE = PACKAGE_NAME + "TopicsFile";
+    public static final String PROPERTY_USERS_FILE = PACKAGE_NAME + "UsersFile";
+    public static final String PROPERTY_AUCTION_TIMEOUT = PACKAGE_NAME + "AuctionTimeout";
     public static final String PROPERTY_CERTIFICATE_FILE = PACKAGE_NAME + "CertificateFile";
-
     public static final String PROPERTY_CLUSTER_FILE = CLUSTER_PACKAGE + "File";
     public static final String PROPERTY_CLUSTER_HEALTH_CHECK_PERIOD = CLUSTER_PACKAGE + "HealthCheckPeriod";
     public static final String PROPERTY_CLUSTER_TIMEOUT = CLUSTER_PACKAGE + "Timeout";
@@ -198,6 +197,7 @@ public class MirandaProperties {
     public static final String DEFAULT_DELIVERY_DIRECTORY = "data/deliveries";
     public static final String DEFAULT_MESSAGES_DIRECTORY = "data/messages";
     public static final String DEFAULT_LOG4J_FILE = "log4j.xml";
+    public static final String DEFAULT_AUCTION_TIMEOUT = "2000";
     public static final String DEFAULT_MESSAGE_FILE_SIZE = "100";
     public static final String DEFAULT_DELAY_BETWEEN_RETRIES = "10000";
     public static final String DEFAULT_GARBAGE_COLLECTION_PERIOD = "3600000"; // once/hour
@@ -262,6 +262,7 @@ public class MirandaProperties {
             {PROPERTY_MESSAGE_PORT, DEFAULT_MESSAGE_PORT},
             {PROPERTY_DELIVERY_DIRECTORY, DEFAULT_DELIVERY_DIRECTORY},
             {PROPERTY_LOG4J_FILE, DEFAULT_LOG4J_FILE},
+            {PROPERTY_AUCTION_TIMEOUT, DEFAULT_AUCTION_TIMEOUT},
             {PROPERTY_MESSAGE_FILE_SIZE, DEFAULT_MESSAGE_FILE_SIZE},
             {PROPERTY_FILE_CHECK_PERIOD, DEFAULT_FILE_CHECK_PERIOD},
             {PROPERTY_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILENAME},

@@ -18,14 +18,58 @@ package com.ltsllc.miranda.operations.auction;
 
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
+import com.ltsllc.miranda.node.Node;
+import com.ltsllc.miranda.property.MirandaProperties;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 4/22/2017.
+ *
+ * Where each node 'bids' on each subscription
  */
 public class AuctionOperation extends Consumer {
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public void setAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    private Auction auction;
+    private int numberWaiting;
+
+    public int getNumberWaiting() {
+        return numberWaiting;
+    }
+
+    public void setNumberWaiting(int numberWaiting) {
+        this.numberWaiting = numberWaiting;
+    }
+
+    public int decrementNumberWaiting () {
+        numberWaiting--;
+        return numberWaiting;
+    }
+
     public AuctionOperation() throws MirandaException {
         super("auction operations");
-        AuctionOperationReadyState auctionOperationReadyState = new AuctionOperationReadyState(this);
-        setCurrentState(auctionOperationReadyState);
+        AuctionOperationStartState auctionStartState = new AuctionOperationStartState(this);
+        setCurrentState(auctionStartState);
+    }
+
+    public void recordBid(Bid bid) {
+        getAuction().recordBid(bid);
+    }
+
+    public void sendAuction(BlockingQueue<Message> queue, Object senderObject, Bid bid) {
+        AuctionMessage auctionMessage = new AuctionMessage(queue, senderObject, bid);
+        sendToMe(auctionMessage);
     }
 }

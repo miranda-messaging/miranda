@@ -17,14 +17,40 @@
 package com.ltsllc.miranda.miranda.messages;
 
 import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.operations.auction.Bid;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 4/22/2017.
+ * Create an auction and include a bid with announcement
  */
-public class AuctionMessage extends Message {
-    public AuctionMessage(BlockingQueue<Message> senderQueue, Object sender) {
+public class AuctionMessage extends Message implements Cloneable {
+    private Bid bid;
+
+    public Bid getBid() {
+        return bid;
+    }
+
+    public void setBid(Bid bid) {
+        this.bid = bid;
+    }
+
+    public AuctionMessage() {}
+
+    public AuctionMessage(BlockingQueue<Message> senderQueue, Object sender, Bid bid) {
         super(Subjects.Auction, senderQueue, sender);
+        setBid(bid);
+    }
+
+    public Object clone () {
+        AuctionMessage auctionMessage = new AuctionMessage();
+        deepCopy(this, auctionMessage);
+        return auctionMessage;
+    }
+
+    public void deepCopy (AuctionMessage original, AuctionMessage clone) {
+        super.deepCopy(original, clone);
+        clone.setBid((Bid) original.getBid().clone());
     }
 }

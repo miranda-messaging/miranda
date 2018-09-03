@@ -41,6 +41,7 @@ import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.messages.UserAddedMessage;
 import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.messages.UserUpdatedMessage;
+import com.ltsllc.miranda.operations.auction.Bid;
 import com.ltsllc.miranda.panics.Panic;
 import com.ltsllc.miranda.panics.StartupPanic;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -557,8 +558,8 @@ public class Miranda extends Consumer {
         sendToMe(deleteSubscriptionMessage);
     }
 
-    public void sendAuctionMessage(BlockingQueue<Message> senderQueue, Object sender) {
-        AuctionMessage auctionMessage = new AuctionMessage(senderQueue, sender);
+    public void sendAuctionMessage(BlockingQueue<Message> senderQueue, Object sender, Bid bid) {
+        AuctionMessage auctionMessage = new AuctionMessage(senderQueue, sender, bid);
         sendToMe(auctionMessage);
     }
 

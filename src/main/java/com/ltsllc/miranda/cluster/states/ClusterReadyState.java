@@ -32,6 +32,7 @@ import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.message.LoadResponseMessage;
 import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -223,6 +224,18 @@ public class ClusterReadyState extends ManagerReadyState {
             case NewEvent: {
                 NewEventMessage newEventMessage = (NewEventMessage) m;
                 nextState = processNewEventMessage(newEventMessage);
+                break;
+            }
+
+            case GetNodeCount: {
+                GetNodeCountMessage getNodeCountMessage = (GetNodeCountMessage) m;
+                nextState = processGetNodeCountMessage (getNodeCountMessage);
+                break;
+            }
+
+            case Auction: {
+                AuctionMessage auctionMessage = (AuctionMessage) m;
+                nextState = processAuctionMessage(auctionMessage);
                 break;
             }
 
@@ -449,5 +462,25 @@ public class ClusterReadyState extends ManagerReadyState {
         return new ClusterReadyState(getCluster());
     }
 
+    public State processGetNodeCountMessage (GetNodeCountMessage message) throws MirandaException {
+        GetNodeCountResponseMessage getNodeCountResponseMessage = new GetNodeCountResponseMessage(getCluster().getQueue(),
+                getCluster(), getCluster().getNodes().size());
+        message.reply(getNodeCountResponseMessage);
+
+        return getCluster().getCurrentState();
+    }
+
+    public State processAuctionMessage(AuctionMessage auctionMessage) throws MirandaException {
+        try {
+            for (Node node : getCluster().getNodes()) {
+                AuctionMessage clone = (AuctionMessage) auctionMessage.clone();
+                node.getQueue().put(clone);
+            }
+        } catch (InterruptedException e) {
+            throw new MirandaException("Excetion error trying to create Auction", e);
+        }
+
+        return getCluster().getCurrentState();
+    }
 
 }
