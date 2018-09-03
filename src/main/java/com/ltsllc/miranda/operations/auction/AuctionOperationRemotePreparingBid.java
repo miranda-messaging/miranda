@@ -45,7 +45,7 @@ public class AuctionOperationRemotePreparingBid extends State {
         int port = Miranda.properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
 
         getAuction().recordBid(createBidResponseMessage.getBid());
-        AuctionOperationRemoteWaitingForResultState nextState = new AuctionOperationRemoteWaitingForResultState();
+        AuctionOperationRemoteWaitingForResultState nextState = new AuctionOperationRemoteWaitingForResultState(getAuction());
 
         long timeout = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_AUCTION_TIMEOUT,
                 MirandaProperties.DEFAULT_AUCTION_TIMEOUT);

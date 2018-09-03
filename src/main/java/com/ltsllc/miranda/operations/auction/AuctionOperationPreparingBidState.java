@@ -57,7 +57,7 @@ public class AuctionOperationPreparingBidState extends State {
         Auction auction = new Auction();
         auction.recordBid(auctionMessage.getBid());
 
-        AuctionOperationRemotePreparingBid auctionOperationRemotePrepairingBid = new AuctionOperationRemotePreparingBid();
+        AuctionOperationRemotePreparingBid auctionOperationRemotePrepairingBid = new AuctionOperationRemotePreparingBid(getAuction());
         return  auctionOperationRemotePrepairingBid;
     }
 }

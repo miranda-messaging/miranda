@@ -83,6 +83,12 @@ public class ClusterReadyState extends ManagerReadyState {
         State nextState = this;
 
         switch (m.getSubject()) {
+            case AuctionAbort: {
+                AuctionAbortMessage auctionAbortMessage = (AuctionAbortMessage) m;
+                nextState = processAuctionAbortMessage(auctionAbortMessage);
+                break;
+            }
+
             case Load: {
                 LoadMessage loadMessage = (LoadMessage) m;
                 nextState = processLoad(loadMessage);
@@ -477,10 +483,22 @@ public class ClusterReadyState extends ManagerReadyState {
                 node.getQueue().put(clone);
             }
         } catch (InterruptedException e) {
-            throw new MirandaException("Excetion error trying to create Auction", e);
+            throw new MirandaException("Exception trying to create Auction", e);
         }
 
         return getCluster().getCurrentState();
     }
 
+    public State processAuctionAbortMessage (AuctionAbortMessage auctionAbortMessage) throws MirandaException {
+        try {
+            for (Node node : getCluster().getNodes()) {
+                AuctionAbortMessage clone = (AuctionAbortMessage) auctionAbortMessage.clone();
+                node.getQueue().put(clone);
+            }
+        } catch (InterruptedException e) {
+            throw new MirandaException("Exception trying to abort auction", e);
+        }
+
+        return getCluster().getCurrentState();
+    }
 }
