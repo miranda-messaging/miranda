@@ -26,10 +26,13 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.operations.auction.Auction;
+import com.ltsllc.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.*;
 import com.ltsllc.miranda.subsciptions.states.SubscriptionManagerReadyState;
 import com.ltsllc.miranda.subsciptions.states.SubscriptionManagerStartState;
+import com.ltsllc.miranda.topics.messages.CreateBidMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -178,4 +181,14 @@ public class SubscriptionManager extends StandardManager<Subscription> {
         sendToMe(newEventMessage);
     }
 
+    public void sendCreateBid(BlockingQueue<Message> queue, Object senderObject) {
+        CreateBidMessage createBidMessage = new CreateBidMessage(queue, senderObject);
+        sendToMe(createBidMessage);
+    }
+
+    public void sendLocalSubscriptions(BlockingQueue<Message> queue, Object senderObject, List<String> localSubscriptions) {
+        LocalSubscriptionsMessage localSubscriptionsMessage = new LocalSubscriptionsMessage(queue, senderObject,
+                localSubscriptions);
+        sendToMe(localSubscriptionsMessage);
+    }
 }

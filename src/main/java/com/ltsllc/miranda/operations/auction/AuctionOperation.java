@@ -22,6 +22,7 @@ import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.AuctionMessage;
 import com.ltsllc.miranda.node.Node;
+import com.ltsllc.miranda.operations.OperationRegistry;
 import com.ltsllc.miranda.property.MirandaProperties;
 
 import java.util.HashMap;
@@ -62,6 +63,7 @@ public class AuctionOperation extends Consumer {
         super("auction operations");
         AuctionOperationStartState auctionStartState = new AuctionOperationStartState(this);
         setCurrentState(auctionStartState);
+        OperationRegistry.getInstance().register("auction", this);
     }
 
     public void recordBid(Bid bid) {
@@ -71,5 +73,9 @@ public class AuctionOperation extends Consumer {
     public void sendAuction(BlockingQueue<Message> queue, Object senderObject, Bid bid) {
         AuctionMessage auctionMessage = new AuctionMessage(queue, senderObject, bid);
         sendToMe(auctionMessage);
+    }
+
+    public void done () {
+        OperationRegistry.getInstance().unregister("auction");
     }
 }

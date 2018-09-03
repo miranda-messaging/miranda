@@ -24,12 +24,20 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
+import com.ltsllc.miranda.operations.auction.Bid;
+import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.subsciptions.SubscriptionManager;
 import com.ltsllc.miranda.subsciptions.messages.*;
+import com.ltsllc.miranda.topics.messages.CreateBidMessage;
+import com.ltsllc.miranda.topics.messages.CreateBidResponseMessage;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Clark on 4/12/2017.
@@ -59,9 +67,21 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
                 break;
             }
 
+            case CreateBid: {
+                CreateBidMessage createBidMessage = (CreateBidMessage) message;
+                nextState = processCreateBidMessage(createBidMessage);
+                break;
+            }
+
             case GetSubcription: {
                 GetSubscriptionMessage getSubscriptionMessage = (GetSubscriptionMessage) message;
                 nextState = processGetSubscriptionMessage(getSubscriptionMessage);
+                break;
+            }
+
+            case LocalSubscriptions: {
+                LocalSubscriptionsMessage localSubscriptionsMessage = (LocalSubscriptionsMessage) message;
+                nextState = processLocalSubscriptionsMessage(localSubscriptionsMessage);
                 break;
             }
 
@@ -186,4 +206,42 @@ public class SubscriptionManagerReadyState extends ManagerReadyState {
 
         return getSubscriptionManager().getCurrentState();
     }
+
+    public State processCreateBidMessage (CreateBidMessage createBidMessage) throws MirandaException {
+        SecureRandom secureRandom = new SecureRandom();
+        Map<String, Long> map = new HashMap<>();
+
+
+        String host = Miranda.properties.getProperty(MirandaProperties.PROPERTY_MY_DNS);
+        int port = Miranda.properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
+        String me = host + ":" + port;
+
+        for (Subscription subscription : getSubscriptionManager().getSubscriptions())
+        {
+            map.put(subscription.getName(), secureRandom.nextLong());
+        }
+
+        Bid bid = new Bid(me, map);
+        CreateBidResponseMessage createBidResponseMessage = new CreateBidResponseMessage(bid, getSubscriptionManager()
+                .getQueue(), getSubscriptionManager());
+
+        createBidMessage.reply(createBidResponseMessage);
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+    public State processLocalSubscriptionsMessage (LocalSubscriptionsMessage localSubscriptionsMessage) {
+        for (Subscription subscription : getSubscriptionManager().getSubscriptions()) {
+            subscription.setLocal(false);
+        }
+
+        for (String subscriptionName : localSubscriptionsMessage.getLocalSubscriptions()) {
+            Subscription subscription = getSubscriptionManager().findSubscription(subscriptionName);
+            subscription.setLocal(true);
+        }
+
+        return getSubscriptionManager().getCurrentState();
+    }
+
+
 }

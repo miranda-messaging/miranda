@@ -1,16 +1,16 @@
 package com.ltsllc.miranda.operations.auction;
 
 public class AuctionItem {
-    private String topic;
+    private String subscription;
     private long bid;
     private String bidder;
 
-    public String getTopic() {
-        return topic;
+    public String getSubscription() {
+        return subscription;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
+    public void setSubscription(String subscription) {
+        this.subscription = subscription;
     }
 
     public long getBid() {

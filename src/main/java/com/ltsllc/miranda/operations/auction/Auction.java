@@ -6,26 +6,26 @@ import java.util.Map;
  * A redistribution of topic
  */
 public class Auction {
-    private Map<String, AuctionItem>  topicToAuctionItem;
+    private Map<String, AuctionItem>  subscriptionToAuctionItem;
 
-    public Map<String, AuctionItem> getTopicToAuctionItem() {
-        return topicToAuctionItem;
+    public Map<String, AuctionItem> getSubscriptionToAuctionItem() {
+        return subscriptionToAuctionItem;
     }
 
-    public void setTopicToAuctionItem(Map<String, AuctionItem> topicToAuctionItem) {
-        this.topicToAuctionItem = topicToAuctionItem;
+    public void setSubscriptionToAuctionItem(Map<String, AuctionItem> topicToAuctionItem) {
+        this.subscriptionToAuctionItem = subscriptionToAuctionItem;
     }
 
     public void recordBid (Bid bid) {
-        for (String topic : bid.getBids().keySet()) {
-            if (topicToAuctionItem.get(topic).getBid() < bid.getBidFor(topic)) {
-                AuctionItem auctionItem = topicToAuctionItem.get(topic);
+        for (String subscription : bid.getBids().keySet()) {
+            if (subscriptionToAuctionItem.get(subscription).getBid() < bid.getBidFor(subscription)) {
+                AuctionItem auctionItem = subscriptionToAuctionItem.get(subscription);
                 if (null == auctionItem) {
                     auctionItem = new AuctionItem();
-                    auctionItem.setTopic(topic);
+                    auctionItem.setSubscription(subscription);
                 }
 
-                auctionItem.setBid(bid.getBidFor(topic));
+                auctionItem.setBid(bid.getBidFor(subscription));
                 auctionItem.setBidder(bid.getBidder());
             }
         }

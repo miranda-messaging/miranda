@@ -281,4 +281,5 @@ public class TopicManagerReadyState extends ManagerReadyState {
 
         return getTopicManager().getCurrentState();
     }
+
 }

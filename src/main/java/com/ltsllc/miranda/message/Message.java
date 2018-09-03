@@ -220,7 +220,7 @@ public class Message implements Cloneable {
         WatchFile,
         WatchDirectory,
         Write,
-        WriteResponse, LocalTopics,
+        WriteResponse, LocalTopics, LocalSubscriptions,
     }
 
     private static Gson ourGson = new Gson();

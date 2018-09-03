@@ -19,6 +19,7 @@ package com.ltsllc.miranda.node.states;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.messages.AuctionAbortMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
@@ -38,6 +39,7 @@ import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
+import com.ltsllc.miranda.operations.OperationRegistry;
 import com.ltsllc.miranda.operations.auction.Auction;
 import com.ltsllc.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
@@ -83,6 +85,12 @@ public class NodeReadyState extends NodeState {
             case Auction: {
                 AuctionWireMessage auctionWireMessage = (AuctionWireMessage) networkMessage.getWireMessage();
                 nextState = processAuctionWireMessage(auctionWireMessage);
+                break;
+            }
+
+            case AbortAuction: {
+                AuctionAbortWireMessage auctionAbortWireMessage = (AuctionAbortWireMessage) networkMessage.getWireMessage();
+                nextState = processAuctionAbortWireMessage(auctionAbortWireMessage);
                 break;
             }
 
@@ -151,6 +159,11 @@ public class NodeReadyState extends NodeState {
         processConversations(message);
 
         switch (message.getSubject()) {
+            case AuctionAbort: {
+                AuctionAbortMessage auctionAbortMessage = (AuctionAbortMessage) message;
+                nextState = processAuctionAbortMessage (auctionAbortMessage);
+                break;
+            }
             case NetworkMessage: {
                 NetworkMessage networkMessage = (NetworkMessage) message;
                 nextState = processNetworkMessage(networkMessage);
@@ -408,6 +421,7 @@ public class NodeReadyState extends NodeState {
     public State processAuctionWireMessage(AuctionWireMessage auctionWireMessage) {
         try {
             AuctionOperation auctionOperation = new AuctionOperation();
+
             auctionOperation.sendAuction(getNode().getQueue(), getNode(), auctionWireMessage.getBid());
         } catch (MirandaException e) {
             logger.error ("Exception creating auction", e);
@@ -415,5 +429,27 @@ public class NodeReadyState extends NodeState {
 
         return getNode().getCurrentState();
     }
+
+    public State processAuctionAbortMessage(AuctionAbortMessage auctionAbortMessage) {
+        AuctionAbortWireMessage auctionAbortWireMessage = new AuctionAbortWireMessage();
+        sendOnWire(auctionAbortWireMessage);
+
+        return getNode().getCurrentState();
+    }
+
+    public State processAuctionAbortWireMessage (AuctionAbortWireMessage auctionAbortWireMessage) {
+        try {
+            if (OperationRegistry.getInstance().find("auction") != null) {
+                AuctionOperation auctionOperation = (AuctionOperation) OperationRegistry.getInstance().find("auction");
+                AuctionAbortMessage auctionAbortMessage = new AuctionAbortMessage();
+                auctionOperation.getQueue().put(auctionAbortMessage);
+            }
+        } catch (InterruptedException e) {
+            logger.error ("Exception trying to abort auction", e);
+        }
+
+        return getNode().getCurrentState();
+    }
+
 
 }

@@ -14,7 +14,7 @@ public class AuctionOperationStartState extends State {
 
     @Override
     public State start() {
-        Miranda.getInstance().getTopicManager().sendCreateBid(getOperation().getQueue(), getOperation());
+        Miranda.getInstance().getSubscriptionManager().sendCreateBid(getOperation().getQueue(), getOperation());
         AuctionOperationPreparingBidState auctionPreparingBidState = new AuctionOperationPreparingBidState();
         return auctionPreparingBidState;
     }

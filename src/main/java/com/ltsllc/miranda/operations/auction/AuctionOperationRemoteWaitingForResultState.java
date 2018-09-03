@@ -54,12 +54,12 @@ public class AuctionOperationRemoteWaitingForResultState extends State {
         int port = Miranda.properties.getIntProperty(MirandaProperties.PROPERTY_MY_PORT);
         String me = host + ":" + port;
         Auction auction = message.getAuction();
-        for (AuctionItem auctionItem : auction.getTopicToAuctionItem().values()) {
+        for (AuctionItem auctionItem : auction.getSubscriptionToAuctionItem().values()) {
             if (auctionItem.getBidder().equalsIgnoreCase(me))
-                topics.add(auctionItem.getTopic());
+                topics.add(auctionItem.getSubscription());
         }
 
-        Miranda.getInstance().getTopicManager().sendLocalTopics(getAuction().getQueue(), getAuction(), topics);
+        Miranda.getInstance().getSubscriptionManager().sendLocalSubscriptions(getAuction().getQueue(), getAuction(), topics);
         return StopState.getInstance();
     }
 

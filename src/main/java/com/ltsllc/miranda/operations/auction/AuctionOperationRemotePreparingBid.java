@@ -1,7 +1,9 @@
 package com.ltsllc.miranda.operations.auction;
 
 import com.ltsllc.miranda.State;
+import com.ltsllc.miranda.StopState;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.cluster.messages.AuctionAbortMessage;
 import com.ltsllc.miranda.message.Message;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -31,6 +33,12 @@ public class AuctionOperationRemotePreparingBid extends State {
                 break;
             }
 
+            case AuctionAbort: {
+                AuctionAbortMessage auctionAbortMessage = (AuctionAbortMessage) message;
+                nextState = processAuctionAbortMessage (auctionAbortMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -52,5 +60,9 @@ public class AuctionOperationRemotePreparingBid extends State {
         AuctionTimeoutMessage auctionTimeoutMessage = new AuctionTimeoutMessage();
         Miranda.timer.sendScheduleOnce(new Long(timeout), getAuction().getQueue(), auctionTimeoutMessage);
         return nextState;
+    }
+
+    public State processAuctionAbortMessage (AuctionAbortMessage message) {
+        return StopState.getInstance();
     }
 }
