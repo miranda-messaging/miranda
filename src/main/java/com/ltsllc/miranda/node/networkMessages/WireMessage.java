@@ -25,6 +25,8 @@ public class WireMessage {
     private static Gson ourGson = new Gson();
 
     public enum WireSubjects {
+        AbortAuction,
+        Auction,
         ClusterFile,
         DeleteSubscription,
         DeleteTopic,
@@ -56,7 +58,7 @@ public class WireMessage {
         UpdateTopic,
         UpdateUser,
         Versions,
-        Auction, AbortAuction, Version
+        Version
     }
 
     private WireSubjects subject;

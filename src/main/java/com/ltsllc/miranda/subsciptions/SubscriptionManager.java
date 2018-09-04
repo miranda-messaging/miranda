@@ -26,6 +26,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.operations.auction.Auction;
 import com.ltsllc.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.session.Session;
@@ -190,5 +191,10 @@ public class SubscriptionManager extends StandardManager<Subscription> {
         LocalSubscriptionsMessage localSubscriptionsMessage = new LocalSubscriptionsMessage(queue, senderObject,
                 localSubscriptions);
         sendToMe(localSubscriptionsMessage);
+    }
+
+    public void sendNewSubscriptionMessage(BlockingQueue<Message> queue, Object senderObject, Subscription subscription) {
+        NewSubscriptionMessage newSubscriptionMessage = new NewSubscriptionMessage(queue, senderObject, subscription);
+        sendToMe(newSubscriptionMessage);
     }
 }

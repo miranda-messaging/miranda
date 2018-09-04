@@ -45,7 +45,7 @@ public class MinaNetwork extends Network {
     private KeyStore truststore;
     private String keyStorePassword;
 
-    public boolean isUseEncryption() {
+    public boolean getUseEncryption() {
         return useEncryption;
     }
 
@@ -95,7 +95,7 @@ public class MinaNetwork extends Network {
         try {
             NioSocketConnector nioSocketConnector = new NioSocketConnector();
 
-            if (isUseEncryption()) {
+            if (getUseEncryption()) {
                 KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
                 keyManagerFactory.init(getKeyStore(), getKeyStorePassword().toCharArray());
 
@@ -111,7 +111,7 @@ public class MinaNetwork extends Network {
 
             InetSocketAddress inetSocketAddress = new InetSocketAddress(host, port);
 
-            if (isUseEncryption()) {
+            if (getUseEncryption()) {
                 Certificate certificate = getTruststore().getCertificate("ca");
 
                 nioSocketConnector.setHandler(new ConnectionHandler(this, certificate));

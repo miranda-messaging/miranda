@@ -21,9 +21,7 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.AuctionAbortMessage;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
-import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
-import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
-import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.*;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.message.Message;
@@ -118,6 +116,12 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+            case NewSubscription: {
+                NewSubscriptionWireMessage newSubscriptionWireMessage = (NewSubscriptionWireMessage) networkMessage.getWireMessage();
+                nextState = processNewSubscriptionWireMessage (newSubscriptionWireMessage);
+                break;
+            }
+
             case NewSession: {
                 NewSessionWireMessage newSessionWireMessage = (NewSessionWireMessage) networkMessage.getWireMessage();
                 nextState = processNewSessionWireMessage(newSessionWireMessage);
@@ -127,6 +131,12 @@ public class NodeReadyState extends NodeState {
             case NewUser: {
                 NewUserWireMessage newUserWireMessage = (NewUserWireMessage) networkMessage.getWireMessage();
                 nextState = processNewUserWireMessage(newUserWireMessage);
+                break;
+            }
+
+            case NewTopic: {
+                NewTopicWireMessage newTopicWireMessage = (NewTopicWireMessage) networkMessage.getWireMessage();
+                nextState = processNewTopicWireMessage(newTopicWireMessage);
                 break;
             }
 
@@ -234,6 +244,8 @@ public class NodeReadyState extends NodeState {
                 nextState = processAuctionMessage(auctionMessage);
                 break;
             }
+
+
 
             default:
                 nextState = super.processMessage(message);
@@ -451,5 +463,17 @@ public class NodeReadyState extends NodeState {
         return getNode().getCurrentState();
     }
 
+    public State processNewSubscriptionWireMessage (NewSubscriptionWireMessage newSubscriptionWireMessage) {
+        Miranda.getInstance().getSubscriptionManager().sendNewSubscriptionMessage(getNode().getQueue(), getNode(),
+                newSubscriptionWireMessage.getSubscription());
 
+        return getNode().getCurrentState();
+    }
+
+
+    public State processNewTopicWireMessage (NewTopicWireMessage message) {
+        Miranda.getInstance().getTopicManager().sendNewTopic (getNode().getQueue(), getNode(), message.getTopic());
+
+        return getNode().getCurrentState();
+    }
 }

@@ -25,6 +25,7 @@ import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.manager.states.ManagerStartState;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.operations.auction.AuctionOperation;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.messages.OwnerQueryMessage;
@@ -202,5 +203,10 @@ public class TopicManager extends StandardManager<Topic> {
     public void sendLocalTopics(BlockingQueue<Message> queue, Object senderObject, List<String> topics) {
         LocalTopicsMessages localTopicsMessages = new LocalTopicsMessages(queue,senderObject, topics);
         sendToMe(localTopicsMessages);
+    }
+
+    public void sendNewTopic(BlockingQueue<Message> queue, Object senderObject, Topic topic) {
+        NewTopicMessage newTopicMessage = new NewTopicMessage(queue, senderObject, topic);
+        sendToMe(newTopicMessage);
     }
 }
