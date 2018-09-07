@@ -273,12 +273,14 @@ public class Startup extends State {
             t.printStackTrace();
         }
 
-        if (systemNeedsSetup())
+        State nextState;
+        if (systemNeedsSetup()) {
             setup();
-        else
-            regularStartup();
+            nextState = StopState.getInstance();
+        } else
+            nextState = regularStartup();
 
-        return StopState.getInstance();
+        return nextState;
 
     }
 

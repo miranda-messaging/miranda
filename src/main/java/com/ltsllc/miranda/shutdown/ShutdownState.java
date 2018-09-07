@@ -28,7 +28,8 @@ public class ShutdownState extends State {
         this.initiator = initiator;
     }
 
-    public ShutdownState (BlockingQueue<Message> initiator) {
+    public ShutdownState (Consumer consumer, BlockingQueue<Message> initiator) {
+        super(consumer);
         setInitiator(initiator);
     }
 

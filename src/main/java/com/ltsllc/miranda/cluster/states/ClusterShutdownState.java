@@ -53,17 +53,17 @@ public class ClusterShutdownState extends ShutdownState {
         return true;
     }
 
-    public ClusterShutdownState (BlockingQueue<Message> initiator)
+    public ClusterShutdownState (Cluster cluster, BlockingQueue<Message> initiator)
     {
-        super(initiator);
+        super(cluster, initiator);
 
         nodesShutDown = new HashMap<>();
         clusterFileWritten = false;
     }
 
     public State start () {
-        getCluster().shutdown();
         getCluster().getClusterFile().sendWriteMessage(getCluster().getQueue(), this);
+        getCluster().shutdown();
         return this;
     }
 

@@ -18,6 +18,8 @@ package com.ltsllc.miranda;
 
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.message.Message;
+import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.panics.Panic;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -139,6 +141,16 @@ public abstract class Subsystem implements Runnable, Comparer {
             return false;
 
         return getThread().equals(other.getThread());
+    }
+
+    public Message getNextMessage () {
+        try {
+            return queue.take();
+        } catch (InterruptedException e) {
+            Panic panic = new Panic("Exception getting the next message",e);
+            Miranda.panicMiranda(panic);
+            return null;
+        }
     }
 
 

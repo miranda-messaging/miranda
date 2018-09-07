@@ -161,6 +161,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
     }
 
 
+
     /**
      * run a Consumer.
      * <p>
@@ -176,6 +177,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
     public void run() {
         State nextState = startCurrentState();
 
+
         while (nextState != getCurrentState()) {
             exitCurrentState();
             setCurrentState(nextState);
@@ -186,6 +188,11 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
         setCurrentState(nextState);
 
         State stop = StopState.getInstance();
+
+        if (stop == currentState) {
+            int i = 1;
+            i++;
+        }
 
         while (nextState != stop && !Miranda.panicking && !getStopped()) {
             Message m = getNextMessage();
@@ -205,6 +212,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
                         logger.debug(m);
                     }
 
+
                     if (currentState.getOverideState() != null) {
                         nextState = currentState.getOverideState();
                         currentState.setOverideState(null);
@@ -213,7 +221,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
                     if (current != nextState) {
                         exitCurrentState();
 
-                        if (nextState != null) {
+                       if (nextState != null) {
                             nextState.start();
                         }
                     }
@@ -233,24 +241,7 @@ public class Consumer extends Subsystem implements Comparer, Mergeable {
         }
     }
 
-    public Message getNextMessage() {
-        Message nextMessage = null;
-        boolean keepWaiting = true;
 
-        while (null == nextMessage && keepWaiting) {
-            try {
-                nextMessage = getQueue().take();
-            } catch (InterruptedException e) {
-                String message = "Interrupted while waiting for next message";
-                logger.warn(message, e);
-
-                Panic panic = new Panic(message, e, Panic.Reasons.ExceptionGettingNextMessage);
-                Miranda.panicMiranda(panic);
-            }
-        }
-
-        return nextMessage;
-    }
 
     /**
      * Process the next message.

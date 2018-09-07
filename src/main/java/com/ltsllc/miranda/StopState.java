@@ -44,4 +44,14 @@ public class StopState extends State {
     public State processMessage() {
         throw new IllegalStateException();
     }
+
+    public boolean equals (Object o) {
+        if (o == null)
+            return false;
+
+        if (!(o instanceof StopState))
+            return false;
+
+        return true;
+    }
 }

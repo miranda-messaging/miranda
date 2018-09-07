@@ -401,7 +401,7 @@ public class ClusterReadyState extends ManagerReadyState {
     }
 
     public State processShutdownMessage(ShutdownMessage shutdownMessage) {
-        ClusterShutdownState clusterShutdownState = new ClusterShutdownState(shutdownMessage.getSender());
+        ClusterShutdownState clusterShutdownState = new ClusterShutdownState(getCluster(), shutdownMessage.getSender());
         return clusterShutdownState;
     }
 
