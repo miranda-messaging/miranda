@@ -21,6 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
@@ -49,6 +50,19 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
     abstract public List buildEmptyList();
     abstract public Type getListType();
     abstract public void checkForDuplicates();
+    abstract public void fromJson(String json);
+
+
+
+    private State readyState;
+
+    public void setReadyState(State readyState) {
+        this.readyState = readyState;
+    }
+
+    public State getReadyState() {
+        return readyState;
+    }
 
     private static Logger logger = Logger.getLogger(SingleFile.class);
 
@@ -56,12 +70,14 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
             .setPrettyPrinting()
             .create();
 
+
     protected SingleFile() {
     }
 
     public SingleFile(String filename, Reader reader, com.ltsllc.miranda.writer.Writer writer) throws IOException {
         super(filename, reader, writer);
 
+        setReadyState(readyState);
         setDirty(false);
     }
 

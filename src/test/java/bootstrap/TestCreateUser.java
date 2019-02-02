@@ -3,7 +3,6 @@ package bootstrap;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.test.TestCase;
 import com.ltsllc.miranda.user.BootstrapUsersFile;
-import org.bouncycastle.openssl.PEMEncryptor;
 import org.junit.Test;
 
 /**

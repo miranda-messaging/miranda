@@ -24,6 +24,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -124,9 +125,9 @@ public class TestClusterFileReadyState extends TestCase {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         LoadMessage loadMessage = new LoadMessage (queue, this);
 
+        when(getClusterFileReadyState().getFile().getReader()).thenReturn(getMockReader());
         getClusterFileReadyState().processMessage(loadMessage);
 
-        verify(getMockClusterfile(), atLeastOnce()).load();
         assert(contains(Message.Subjects.LoadResponse, queue));
     }
 

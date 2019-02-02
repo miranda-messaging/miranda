@@ -370,11 +370,8 @@ public class TestClusterReadyState extends TestCase {
     public void testProcessShutdownMessage () throws MirandaException {
         ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
 
-        when(getMockCluster().getClusterFile()).thenReturn(getMockClusterFile());
         State nextState = getClusterReadyState().processMessage(shutdownMessage);
 
-        verify(getMockCluster(), atLeastOnce()).shutdown();
-        verify(getMockCluster(), atLeastOnce()).setClusterFileResponded(Matchers.eq(false));
-        verify(getMockClusterFile(), atLeastOnce()).sendShutdown(Matchers.any(BlockingQueue.class), Matchers.any());
+        assert (nextState instanceof ClusterShutdownState);
     }
 }

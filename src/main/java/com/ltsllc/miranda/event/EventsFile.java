@@ -32,6 +32,11 @@ import java.util.List;
  * Created by Clark on 2/19/2017.
  */
 public class EventsFile extends SingleFile<Event> {
+    public void fromJson(String json) {
+        EventsFile temp = getGson().fromJson(json, getListType());
+
+    }
+
     public EventsFile(String filename, Reader reader, Writer writer) throws IOException, MirandaException {
         super(filename, reader, writer);
 

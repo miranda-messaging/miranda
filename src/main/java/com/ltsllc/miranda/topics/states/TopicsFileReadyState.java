@@ -37,7 +37,9 @@ public class TopicsFileReadyState extends SingleFileReadyState {
 
     private TopicsFile topicsFile;
 
+    public TopicsFileReadyState () {
 
+    }
     public TopicsFileReadyState(TopicsFile topicsFile) throws MirandaException {
         super(topicsFile);
 

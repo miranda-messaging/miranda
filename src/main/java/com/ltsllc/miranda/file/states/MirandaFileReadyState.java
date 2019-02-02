@@ -34,6 +34,8 @@ public class MirandaFileReadyState extends State {
         super(file);
     }
 
+    public MirandaFileReadyState () {}
+
     public MirandaFile getMirandaFile() {
         return (MirandaFile) getContainer();
     }

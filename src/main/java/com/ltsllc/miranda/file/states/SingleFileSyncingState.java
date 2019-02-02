@@ -22,6 +22,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * Created by Clark on 2/11/2017.
  */
-public class SingleFileSyncingState extends State {
+public class SingleFileSyncingState<E extends MirandaObject> extends State {
     private static Gson ourGson = new Gson();
 
     public SingleFile<?> getFile() {
@@ -45,6 +46,7 @@ public class SingleFileSyncingState extends State {
     public SingleFileSyncingState(Consumer consumer) throws MirandaException {
         super(consumer);
     }
+
 
     @Override
     public State processMessage(Message message) throws MirandaException {
@@ -73,7 +75,10 @@ public class SingleFileSyncingState extends State {
 
 
     public State processGetFileResponse(GetFileResponseMessage getFileResponseMessage) {
-        throw new IllegalStateException("not implemented");
+        String json = getFileResponseMessage.getContents();
+        getFile().fromJson(json);
+        SingleFileReadyState singleFileReadyState = (SingleFileReadyState) getFile().getReadyState();
+        return singleFileReadyState;
     }
 
     private State processGetFileMessage(GetFileMessage getFileMessage) throws MirandaException {

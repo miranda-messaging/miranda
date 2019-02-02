@@ -21,6 +21,8 @@ import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.subsciptions.states.SubscriptionManagerStartState;
+import com.ltsllc.miranda.subsciptions.states.SubscriptionsFileReadyState;
 import com.ltsllc.miranda.subsciptions.states.SubscriptionsFileStartingState;
 import com.ltsllc.miranda.writer.Writer;
 
@@ -56,10 +58,17 @@ public class SubscriptionsFile extends SingleFile<Subscription> {
     public SubscriptionsFile(Reader reader, Writer writer, String filename) throws IOException, MirandaException {
         super(filename, reader, writer);
 
+
         SubscriptionsFileStartingState subscriptionsFileStartingState = new SubscriptionsFileStartingState(this);
         setCurrentState(subscriptionsFileStartingState);
     }
 
+    public void fromJson (String json) {
+        SubscriptionsFile subscriptionsFile = getGson().fromJson(json, SubscriptionsFile.class);
+        setReader(subscriptionsFile.getReader());
+
+
+    }
     public Type getBasicType() {
         return new TypeToken<ArrayList<Subscription>>() {
         }.getType();

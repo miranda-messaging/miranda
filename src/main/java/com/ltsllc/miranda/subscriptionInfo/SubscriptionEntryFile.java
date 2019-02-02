@@ -13,6 +13,11 @@ import java.util.List;
  * of a subscription.
  */
 public class SubscriptionEntryFile extends SingleFile<SubscriptionEntry> {
+    public void fromJson(String json) {
+        SubscriptionEntryFile temp = getGson().fromJson(json, getListType());
+
+    }
+
     @Override
     public List buildEmptyList() {
         return new ArrayList<SubscriptionEntry>();

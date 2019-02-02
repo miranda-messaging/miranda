@@ -85,6 +85,10 @@ abstract public class MirandaFile extends Consumer implements Comparer {
         return writer;
     }
 
+    public void setWriter (Writer writer) {
+        this.writer = writer;
+    }
+
     public List getElements() {
         return elements;
     }

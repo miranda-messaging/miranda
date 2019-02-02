@@ -42,6 +42,12 @@ public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
         setCurrentState(new MirandaFileReadyState(this));
     }
 
+    @Override
+    public void fromJson(String json) {
+        DeliveriesFile temp = getGson().fromJson(json, getListType());
+        setData(temp.getData());
+    }
+
     public Type getListType() {
         return new TypeToken<List<Delivery>>() {
         }.getType();
@@ -50,6 +56,8 @@ public class DeliveriesFile extends SingleFile<Delivery> implements Comparer {
     public List buildEmptyList() {
         return new ArrayList<Delivery>();
     }
+
+
 
     public boolean equals(Object o) {
         if (this == o)

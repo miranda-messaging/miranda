@@ -39,6 +39,7 @@ public class DeliveriesFileReadyState extends SingleFileReadyState {
         return NAME;
     }
 
+    public DeliveriesFileReadyState () {}
     public DeliveriesFileReadyState(DeliveriesFile deliveriesFile) throws MirandaException {
         super(deliveriesFile);
     }

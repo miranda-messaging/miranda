@@ -18,6 +18,7 @@ package com.ltsllc.miranda.cluster;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
@@ -43,6 +44,10 @@ public class ClusterFile extends SingleFile<NodeElement> {
     private static ClusterFile ourInstance;
 
     private BlockingQueue<Message> cluster;
+
+    public void fromJson (String json) {
+        getGson().fromJson(json, NodeElement.class);
+    }
 
     public static ClusterFile getInstance() {
         return ourInstance;

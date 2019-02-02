@@ -72,6 +72,11 @@ public class UsersFile extends SingleFile<User> {
         setInstance(this);
     }
 
+    @Override
+    public void fromJson(String json) {
+        UsersFile temp = getGson().fromJson(json, getListType());
+        setData(temp.getElements());
+    }
 
     public void addUser(User user) {
         getData().add(user);

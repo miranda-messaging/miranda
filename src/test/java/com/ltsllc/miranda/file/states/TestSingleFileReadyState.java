@@ -26,8 +26,10 @@ import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.file.messages.AddObjectsMessage;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.messages.RemoveObjectsMessage;
 import com.ltsllc.miranda.file.messages.UpdateObjectsMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -86,19 +88,23 @@ public class TestSingleFileReadyState extends TestCase {
         List<NodeElement> emptyList = new ArrayList<NodeElement>();
 
         when(getMockClusterFile().getData()).thenReturn(emptyList);
+        when(getMockClusterFile().getReader()).thenReturn(getMockReader());
 
-        getClusterFileReadyState().processMessage(loadMessage);
+        State nextState = getClusterFileReadyState().processMessage(loadMessage);
 
-        verify(getMockClusterFile(), atLeastOnce()).load();
-        assert (contains(Message.Subjects.LoadResponse, queue));
+        assert (nextState instanceof SingleFileReadingState);
     }
 
-    /**
-     * I'm not certain this ever gets used.
-     */
     @Test
     public void testGetFileResponseMessage () {
-
+        try {
+            GetFileResponseMessage message = new GetFileResponseMessage(null, null, "[]");
+            State nextState = getClusterFileReadyState().processMessage(message);
+            assert (nextState instanceof SingleFileReadyState);
+        }
+        catch (MirandaException e) {
+            assert (1 == 0);
+        }
     }
 
     private byte[] FILE_BYTES = {91, 93};

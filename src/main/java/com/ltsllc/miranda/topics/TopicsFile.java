@@ -22,6 +22,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.reader.Reader;
+import com.ltsllc.miranda.topics.states.TopicsFileReadyState;
 import com.ltsllc.miranda.topics.states.TopicsFileStartingState;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
@@ -51,6 +52,14 @@ public class TopicsFile extends SingleFile<Topic> {
             ourInstance.start();
             ourInstance.load();
         }
+    }
+
+
+
+    @Override
+    public void fromJson(String json) {
+        TopicsFile temp = getGson().fromJson(json, getListType());
+        setData(temp.getElements());
     }
 
     public static void setInstance(TopicsFile topicsFile) {
