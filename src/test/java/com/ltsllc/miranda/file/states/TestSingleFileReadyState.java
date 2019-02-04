@@ -98,7 +98,10 @@ public class TestSingleFileReadyState extends TestCase {
     @Test
     public void testGetFileResponseMessage () {
         try {
-            GetFileResponseMessage message = new GetFileResponseMessage(null, null, "[]");
+            GetFileResponseMessage message = new GetFileResponseMessage(null, null, "[]",
+            "010203");
+
+            when(getClusterFileReadyState().getFile().getWriter()).thenReturn(getMockWriter());
             State nextState = getClusterFileReadyState().processMessage(message);
             assert (nextState instanceof SingleFileReadyState);
         }

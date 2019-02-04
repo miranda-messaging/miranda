@@ -53,7 +53,8 @@ public class MirandaPanicPolicy extends PanicPolicyClass {
 
         if (continuePanic) {
             logger.error(fatalMessage, panic);
-            System.exit(-1);
+            ShutdownException shutdownException = new ShutdownException("too many panics");
+            throw shutdownException;
         }
     }
 

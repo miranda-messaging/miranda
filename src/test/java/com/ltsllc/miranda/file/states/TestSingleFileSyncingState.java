@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.file.states;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
@@ -72,9 +73,9 @@ public class TestSingleFileSyncingState extends TestCase {
     @Test
     public void testProcessGetFileResponse () throws MirandaException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "whatever");
-        getUsersFileSyncingState().processMessage(getFileResponseMessage);
+        State state = getUsersFileSyncingState().processMessage(getFileResponseMessage);
 
-        verify(getMockUsesFile(), atLeastOnce()).merge(Matchers.anyList());
+        assert (state instanceof SingleFileReadyState);
     }
 
     private static final byte[] TEST_FILE_CONTENTS = "whatever".getBytes();
