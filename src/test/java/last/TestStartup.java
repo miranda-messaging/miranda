@@ -143,6 +143,16 @@ public class TestStartup extends TestCase {
         this.startup = new Startup(getMiranda(), args);
     }
 
+    public void start() {
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                getStartup().start();
+            }
+        };
+        ;
+    }
     @After
     public void cleanup () {
         if (null != getMiranda()) {
@@ -150,16 +160,20 @@ public class TestStartup extends TestCase {
         }
     }
 
+
     @Test
     public void testStartMethod () {
+        Exception exception = null;
         try {
             setupMiranda();
             setupMockReader();
             setupMockHttpServer();
-            getStartup().start();
+            start();
         } catch (Exception e) {
-            e.printStackTrace();
+            exception = e;
         }
+
+        assert (exception == null);
     }
 
     @Test

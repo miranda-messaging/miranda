@@ -747,7 +747,7 @@ public class TestCase {
     }
 
     public void setupMiranda() throws MirandaException {
-        new Miranda("-p whatever");
+        new Miranda("-p whatever -u whatever");
         Miranda.properties = new MirandaProperties();
     }
 
