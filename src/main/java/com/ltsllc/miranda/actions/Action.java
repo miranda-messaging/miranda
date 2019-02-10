@@ -24,6 +24,13 @@ public class Action extends Consumer {
         }
     }
 
+    public static synchronized  boolean find (Action action) {
+        List<Action> list = ourRegistered.get(action);
+        if (list == null)
+            return false;
+        return list.contains(action);
+    }
+
     private String name;
 
     public String getName() {
