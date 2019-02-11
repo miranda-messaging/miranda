@@ -28,7 +28,7 @@ public class JoinClusterAction extends Action {
         this.cluster = cluster;
     }
 
-    JoinClusterAction(Network network, Cluster cluster) throws MirandaException {
+    public JoinClusterAction(Network network, Cluster cluster) throws MirandaException {
         super("joinCluster");
         setCluster(cluster);
         setNetwork(network);

@@ -46,6 +46,12 @@ public class DeadLetterQueue extends MirandaObject {
 
     @Override
     public void copyFrom(Mergeable mergeable) {
+        if (null != mergeable) {
+            DeadLetterQueue deadLetterQueue = (DeadLetterQueue) mergeable;
+            List events = new ArrayList(deadLetterQueue.events);
+            setEvents(events);
+            setLastChange(deadLetterQueue.getLastChange());
+        }
 
     }
 

@@ -2,6 +2,9 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.commons.util.ImprovedRandom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An Object that can be merged with another object.
  * <p>
