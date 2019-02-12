@@ -23,7 +23,7 @@ import com.google.gson.Gson;
  * </table>
  */
 abstract public class MirandaObject extends Mergeable implements Equivalent {
-    private static Gson gson;
+    private static Gson gson = new Gson();
 
     public static Gson getGson() {
         return gson;

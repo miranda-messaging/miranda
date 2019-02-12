@@ -42,4 +42,12 @@ public class TestMirandaObject {
         assert (!MirandaObject.byteArraysAreEqual(byteArray1, null));
         assert (!MirandaObject.byteArraysAreEqual(null, byteArray1));
     }
+
+    String json = "{\"name\":\"hi there\"}";
+    @Test
+    public void testToJson  () {
+        Topic topic = new Topic("hi there");
+        String topicString = topic.toJson();
+        assert (topicString.equals(json));
+    }
 }
