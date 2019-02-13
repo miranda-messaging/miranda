@@ -230,6 +230,9 @@ public class Event extends MirandaObject implements DirectoryEntry, Evictable {
     }
 
     public void addAwaitingDelivery(Object deliverer) {
+        if (null == this.awaitingDelivery)
+            awaitingDelivery = new ArrayList<User>();
+
         this.awaitingDelivery.add(deliverer);
     }
 

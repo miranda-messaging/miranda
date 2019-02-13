@@ -33,6 +33,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -49,6 +50,12 @@ public class KeyPair {
         PrivateKey privateKey = new PrivateKey(keyPair.getPrivate());
         return new KeyPair(publicKey, privateKey);
     }
+
+    public KeyPair createRandom () throws GeneralSecurityException {
+        KeyPair keyPair = createInstance();
+        return keyPair;
+    }
+
 
     private PublicKey publicKey;
     private PrivateKey privateKey;
@@ -73,11 +80,8 @@ public class KeyPair {
 
     public static KeyPair newKeys () throws EncryptionException {
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM);
-            java.security.KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            PublicKey publicKey = new PublicKey(keyPair.getPublic());
-            PrivateKey privateKey = new PrivateKey(keyPair.getPrivate());
-            return new KeyPair(publicKey, privateKey);
+           KeyPair keyPair = KeyPair.createInstance();
+           return keyPair;
         } catch (GeneralSecurityException e) {
             throw new EncryptionException("Exception trying to generate new keys", e);
         }

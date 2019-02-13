@@ -17,12 +17,15 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.clcl.EncryptionException;
+import com.ltsllc.clcl.KeyPair;
 import com.ltsllc.clcl.PublicKey;
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.MirandaUncheckedException;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * A user of the Miranda system.
@@ -111,7 +114,30 @@ public class User extends MirandaObject {
     private UserTypes category;
     private String description;
     private String publicKeyPem;
+    private KeyPair keyPair;
     private PublicKey publicKey;
+
+    public static User createRandom (ImprovedRandom improvedRandom) throws GeneralSecurityException {
+        User user = new User();
+        user.setName(improvedRandom.randomString(10));
+        user.setCategory(randomCategory(improvedRandom));
+        user.setDescription(improvedRandom.randomString(30));
+        user.setKeyPair(KeyPair.createInstance());
+
+
+        return user;
+    }
+
+    public static UserTypes randomCategory (ImprovedRandom improvedRandom) {
+        int temp = improvedRandom.nextIndex(5);
+        UserTypes userTypes = UserTypes.values()[temp];
+        return userTypes;
+    }
+
+    public PublicKey randomKey (ImprovedRandom improvedRandom) throws GeneralSecurityException {
+        KeyPair keyPair = KeyPair.createInstance();
+        return keyPair.getPublicKey();
+    }
 
     @Override
     public void copyFrom(Mergeable mergeable) {
@@ -120,7 +146,7 @@ public class User extends MirandaObject {
         this.name = other.name;
         this.category = other.category;
         this.description = other.description;
-        this.publicKey = other.publicKey;
+        this.keyPair = other.keyPair;
     }
 
     @Override
@@ -133,10 +159,15 @@ public class User extends MirandaObject {
         return stringsAreEqual(name, other.name);
     }
 
-    public String getPublicKeyPem() throws EncryptionException {
-        if (null == publicKeyPem && null != publicKey)
-            publicKeyPem = publicKey.toPem();
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
 
+    public void setKeyPair(KeyPair keyPair) {
+        this.keyPair = keyPair;
+    }
+
+    public String getPublicKeyPem() throws EncryptionException {
         return publicKeyPem;
     }
 
@@ -144,7 +175,7 @@ public class User extends MirandaObject {
         this.publicKeyPem = publicKeyPem;
 
         if (this.publicKeyPem != null)
-            publicKey = null;
+            keyPair = null;
     }
 
     public UserTypes getCategory() {
@@ -161,17 +192,20 @@ public class User extends MirandaObject {
     }
 
     public PublicKey getPublicKey() throws EncryptionException {
-        if (null == publicKey && null != publicKeyPem)
+        if (null == keyPair && null != publicKeyPem)
             createPublicKey();
 
-        return publicKey;
+        return keyPair.getPublicKey();
     }
 
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
+    public void setPublicKey(PublicKey newPublicKey) {
+        if (keyPair != null)
+            keyPair = null;
 
-        if (this.publicKey != null)
+        if (publicKey != null)
             publicKeyPem = null;
+
+        publicKey = newPublicKey;
     }
 
     public String getName() {

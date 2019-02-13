@@ -17,6 +17,7 @@
 
 package com.ltsllc.clcl;
 
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.commons.util.Utils;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -50,6 +51,15 @@ public class PublicKey extends Key {
         this.securityPublicKey = publicKey;
     }
 
+    public PublicKey randomKey (ImprovedRandom improvedRandom) throws GeneralSecurityException {
+        securityPublicKey = randomSecurityPublicKey(improvedRandom);
+        return new PublicKey(securityPublicKey);
+    }
+
+    public java.security.PublicKey randomSecurityPublicKey (ImprovedRandom improvedRandom) throws GeneralSecurityException{
+        KeyPair keyPair = KeyPair.createInstance();
+        return keyPair.getPublicKey().getSecurityPublicKey();
+    }
 
     @Override
     public String getSessionAlgorithm() {

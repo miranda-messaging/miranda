@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 
 import static com.sun.xml.internal.ws.dump.LoggingDumpTube.Position.Before;
@@ -96,5 +97,17 @@ public class TestEvent extends TestCase {
 
         assert (event.matches(event));
         assert (!event.matches(other));
+    }
+
+    @Test
+    public void testCanBeEvicted () throws GeneralSecurityException {
+        SecureRandom secureRandom = new SecureRandom();
+        ImprovedRandom improvedRandom = new ImprovedRandom(secureRandom);
+        Event event = Event.createRandom(improvedRandom, 1024);
+        Event other = Event.createRandom(improvedRandom, 1024);
+        event.addAwaitingDelivery(User.createRandom(improvedRandom));
+
+        assert (!event.canBeEvicted());
+        assert (other.canBeEvicted());
     }
 }

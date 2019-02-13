@@ -104,5 +104,16 @@ public class TestDelivery extends TestCase {
         assert (delivery.isEquivalentTo(delivery));
         assert (!delivery.isEquivalentTo(other));
     }
+
+    @Test
+    public void testCopyFrom () throws IOException {
+        Delivery original = new Delivery("high there", "low there", 1, "test subscription");
+        Delivery delivery = new Delivery("high there","low there",1,"test subscription");
+        Delivery delivery2 = new Delivery("delivery2", "whatever", 2, "whatever2");
+        assert (original.isEquivalentTo(delivery));
+        delivery.copyFrom(delivery2);
+        assert (delivery.isEquivalentTo(delivery2));
+        assert (!delivery.isEquivalentTo(original));
+    }
 }
 
