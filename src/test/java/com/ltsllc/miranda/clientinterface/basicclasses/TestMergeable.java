@@ -33,6 +33,16 @@ public class TestMergeable extends TestCase {
     }
 
     @Test
+    public void testChaned () {
+        long now = System.currentTimeMillis();
+        getMergeable1().setLastChange(now);
+        getMergeable2().setLastChange(now + 1);
+        assert (getMergeable2().changedAfter(getMergeable1()));
+        getMergeable1().setLastChange(null);
+        assert (!getMergeable1().changedAfter(getMergeable2()));
+        assert (getMergeable2().changedAfter(getMergeable1()));
+    }
+    @Test
     public void testMerge1 () {
         boolean result = getMergeable1().merge(getMergeable2());
         assert (result);

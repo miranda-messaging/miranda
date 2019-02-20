@@ -127,6 +127,18 @@ public class Subscription extends MirandaObject {
         if (!(stringsAreEqual(dataUrl, other.dataUrl)))
             return false;
 
+        if (!stringsAreEqual(owner,other.name))
+            return false;
+
+        if (!stringsAreEqual(topic, other.getTopic()))
+            return false;
+
+        if (errorPolicy != other.errorPolicy)
+            return false;
+
+        if (getLastChange() != other.getLastChange())
+            return false;
+
         return stringsAreEqual(livelinessUrl, other.livelinessUrl);
     }
 
@@ -211,10 +223,13 @@ public class Subscription extends MirandaObject {
     }
 
     public void updateFrom(Subscription other) {
+        setName(other.getName());
         setOwner(other.getOwner());
+        setTopic(other.getTopic());
         setDataUrl(other.getDataUrl());
         setLivelinessUrl(other.getLivelinessUrl());
         setErrorPolicy(other.getErrorPolicy());
+        setLastChange(other.getLastChange());
     }
 
     @Override
