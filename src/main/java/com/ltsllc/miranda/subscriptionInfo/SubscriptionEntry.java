@@ -19,7 +19,7 @@ import com.ltsllc.miranda.file.Updateable;
  * signifies that the Event hasn't been delivered yet.</li>
  * </ul>
  */
-public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, Updateable<SubscriptionEntry>, Equivalent {
+public class SubscriptionEntry extends MirandaObject implements DirectoryEntry,  Equivalent {
     private String event;
     private String delivery;
 
@@ -85,7 +85,7 @@ public class SubscriptionEntry extends MirandaObject implements DirectoryEntry, 
      *
      * @see Updateable#updateFrom(Object)
      */
-    @Override
+
     public void updateFrom(SubscriptionEntry other) {
         setEvent(other.getEvent());
         setDelivery(other.getDelivery());

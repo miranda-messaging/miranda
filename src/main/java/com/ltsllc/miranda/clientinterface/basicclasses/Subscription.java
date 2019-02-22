@@ -16,6 +16,8 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
+import static com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject.stringsAreEqual;
+
 /**
  * A subscription to a topic.
  * <p>
@@ -115,7 +117,7 @@ public class Subscription extends MirandaObject {
     private String livelinessUrl;
     private ErrorPolicies errorPolicy;
 
-    @Override
+
     public boolean isEquivalentTo(Object o) {
         if (o == null || !(o instanceof Subscription))
             return false;
