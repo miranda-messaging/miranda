@@ -447,7 +447,7 @@ public class TestCluster extends TestCase {
     public void testSendNewTopicMessage () {
         getCluster().stop();
 
-        Topic topic = new Topic ("whatever", "joe");
+        Topic topic = new Topic ("whatever", "joe", Topic.RemotePolicies.Immediate);
 
         getCluster().sendNewTopicMessage(null, this, topic);
 

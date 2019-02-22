@@ -177,7 +177,7 @@ public class TestTopicHolder extends TestCase {
     public void testCreateTopicSuccess () {
         when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
 
-        Topic topic = new Topic("whatever", "whatever");
+        Topic topic = new Topic("whatever", "whatever", Topic.RemotePolicies.Immediate);
         TopicRunner topicRunner = new TopicRunner(getTopicHolder(), Methods.CreateTopic, topic);
         topicRunner.start();
 
@@ -196,7 +196,7 @@ public class TestTopicHolder extends TestCase {
     public void testCreateTopicTimeout () {
         when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
 
-        Topic topic = new Topic("whatever", "whatever");
+        Topic topic = new Topic("whatever", "whatever", Topic.RemotePolicies.Written);
         TopicRunner topicRunner = new TopicRunner(getTopicHolder(), Methods.CreateTopic, topic);
         topicRunner.start();
 

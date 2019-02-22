@@ -18,6 +18,8 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.commons.util.ImprovedRandom;
 
+import static com.ltsllc.miranda.Results.Acknowleged;
+
 /**
  * Created by Clark on 1/5/2017.
  */
@@ -25,7 +27,11 @@ public class Topic extends MirandaObject {
     public enum RemotePolicies {
         Immediate,
         Acknowledged,
-        Written
+        Written;
+        private static RemotePolicies[]  allValues = values();
+        public static RemotePolicies fromInt(int i) {
+            return allValues[i];
+        }
     }
 
     private String name;
@@ -38,6 +44,17 @@ public class Topic extends MirandaObject {
             return false;
 
         Topic other = (Topic) o;
+        if (!name.equals(other.name))
+            return false;
+
+        if (!owner.equals(other.owner))
+            return false;
+
+        if (remotePolicy != other.remotePolicy)
+            return false;
+
+        if (getLastChange() != other.getLastChange())
+            return false;
 
         return stringsAreEqual(name, other.name);
     }
@@ -80,9 +97,10 @@ public class Topic extends MirandaObject {
         this.name = name;
     }
 
-    public Topic(String name, String owner) {
+    public Topic(String name, String owner, RemotePolicies remotePolicy) {
         this.name = name;
         this.owner = owner;
+        this.remotePolicy = remotePolicy;
     }
 
     public void updateFrom(Topic other) {
@@ -138,7 +156,14 @@ public class Topic extends MirandaObject {
     public static Topic random(ImprovedRandom improvedRandom) {
         String name = NAMES[improvedRandom.nextIndex(NAMES)];
         String owner = OWNERS[improvedRandom.nextIndex(OWNERS)];
+        RemotePolicies[] temp;
+        temp = new RemotePolicies[] {RemotePolicies.Immediate, RemotePolicies.Acknowledged,
+                        RemotePolicies.Written};
 
-        return new Topic(name, owner);
+        int index = improvedRandom.nextIndex(3);
+
+        RemotePolicies remotePolicy = RemotePolicies.fromInt(index);
+
+        return new Topic(name, owner, remotePolicy);
     }
 }

@@ -144,7 +144,7 @@ public class TestTopicHolder extends TestCase {
         }
 
         public void run () {
-            Topic topic = new Topic ("Whatever", "whatever");
+            Topic topic = new Topic ("Whatever", "whatever", Topic.RemotePolicies.Written);
 
             try {
                 result = testTopicHolder.getTopicHolder().createTopic(topic);
