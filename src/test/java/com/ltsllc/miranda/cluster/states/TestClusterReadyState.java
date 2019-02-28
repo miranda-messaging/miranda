@@ -16,9 +16,11 @@
 
 package com.ltsllc.miranda.cluster.states;
 
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
@@ -29,6 +31,7 @@ import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
+import com.ltsllc.miranda.file.messages.Notification;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
@@ -38,6 +41,9 @@ import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
+import com.ltsllc.miranda.topics.messages.NewTopicMessage;
+import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
 import com.ltsllc.miranda.user.messages.UpdateUserMessage;
@@ -366,6 +372,39 @@ public class TestClusterReadyState extends TestCase {
         assert (containsNode(nodes, node));
     }
 
+    @Test
+    public void testUpdateTopic () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        Topic topic = Topic.random(improvedRandom);
+        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(null, null, null, topic);
+        State nextState = getClusterReadyState().processMessage(updateTopicMessage);
+        verify(getMockCluster(), atLeastOnce()).broadcast(any(WireMessage.class));
+    }
+
+    @Test
+    public void testDeleteTopic () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        Topic topic = Topic.random(improvedRandom);
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(null,null,null, topic.getName());
+        State nextState = getClusterReadyState().processMessage(deleteTopicMessage);
+        verify(getMockCluster(), atLeastOnce()).broadcast(any(WireMessage.class));
+    }
+
+    @Test
+    public void testNewTopic () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        Topic topic = Topic.random(improvedRandom);
+        NewTopicMessage newTopicMessage = new NewTopicMessage(null, null, topic);
+        State nextState = getClusterReadyState().processMessage(newTopicMessage);
+        verify(getMockCluster(), atLeastOnce()).broadcast(any(WireMessage.class));
+    }
+
+    @Test
+    public void testForwardMessage () throws MirandaException {
+        Message message = new Notification(null, null);
+        Node node = mock(Node.class);
+        getClusterReadyState().set;
+    }
     @Test
     public void testProcessShutdownMessage () throws MirandaException {
         ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
