@@ -1,5 +1,6 @@
 package com.ltsllc.miranda.clientinterface;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import org.junit.Before;
 import org.junit.Test;
 

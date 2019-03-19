@@ -16,6 +16,8 @@
 
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
+import com.ltsllc.commons.util.ImprovedRandom;
+
 import static com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject.stringsAreEqual;
 
 /**
@@ -118,6 +120,7 @@ public class Subscription extends MirandaObject {
     private ErrorPolicies errorPolicy;
 
 
+
     public boolean isEquivalentTo(Object o) {
         if (o == null || !(o instanceof Subscription))
             return false;
@@ -182,6 +185,7 @@ public class Subscription extends MirandaObject {
         this.livelinessUrl = livelinessUrl;
         this.errorPolicy = errorPolicy;
     }
+
 
     public ErrorPolicies getErrorPolicy() {
         return errorPolicy;
@@ -263,5 +267,20 @@ public class Subscription extends MirandaObject {
             return false;
 
         return true;
+    }
+
+    public static Subscription createRandom(ImprovedRandom improvedRandom) {
+        Subscription subscription = new Subscription();
+        subscription.setName(improvedRandom.randomString(8));
+        subscription.setLastChange(improvedRandom.nextNonNegativeLong());
+        subscription.setLivelinessUrl(improvedRandom.randomString(16));
+        subscription.setDataUrl(improvedRandom.randomString(16));
+        subscription.setTopic(improvedRandom.randomString(8));
+        subscription.setOwner(improvedRandom.randomString(8));
+
+        int temp = improvedRandom.nextIndex(ErrorPolicies.values().length);
+        subscription.setErrorPolicy(ErrorPolicies.values()[temp]);
+
+        return subscription;
     }
 }

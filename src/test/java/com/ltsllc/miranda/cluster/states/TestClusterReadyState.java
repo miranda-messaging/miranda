@@ -20,6 +20,7 @@ import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
@@ -32,15 +33,22 @@ import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.file.messages.Notification;
+import com.ltsllc.miranda.network.messages.NodeAddedMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.node.messages.StartConversationMessage;
+import com.ltsllc.miranda.node.messages.UserDeletedMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.session.AddSessionMessage;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
+import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
+import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
 import com.ltsllc.miranda.topics.messages.NewTopicMessage;
 import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
@@ -55,6 +63,7 @@ import org.mockito.Mock;
 
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -373,7 +382,7 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testUpdateTopic () throws MirandaException {
+    public void oldtestUpdateTopic () throws MirandaException {
         ImprovedRandom improvedRandom = new ImprovedRandom();
         Topic topic = Topic.random(improvedRandom);
         UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage(null, null, null, topic);
@@ -382,29 +391,26 @@ public class TestClusterReadyState extends TestCase {
     }
 
     @Test
-    public void testDeleteTopic () throws MirandaException {
+    public void oldtestDeleteTopic () throws MirandaException {
         ImprovedRandom improvedRandom = new ImprovedRandom();
         Topic topic = Topic.random(improvedRandom);
         DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(null,null,null, topic.getName());
         State nextState = getClusterReadyState().processMessage(deleteTopicMessage);
         verify(getMockCluster(), atLeastOnce()).broadcast(any(WireMessage.class));
     }
-
+/*
     @Test
     public void testNewTopic () throws MirandaException {
+        setupMiranda();
+        setupMockPanicPolicy();
+        when(getMockCluster().processMessage(any())).thenReturn(getClusterReadyState());
         ImprovedRandom improvedRandom = new ImprovedRandom();
         Topic topic = Topic.random(improvedRandom);
         NewTopicMessage newTopicMessage = new NewTopicMessage(null, null, topic);
-        State nextState = getClusterReadyState().processMessage(newTopicMessage);
+        getClusterReadyState().processMessage(newTopicMessage);
         verify(getMockCluster(), atLeastOnce()).broadcast(any(WireMessage.class));
     }
-
-    @Test
-    public void testForwardMessage () throws MirandaException {
-        Message message = new Notification(null, null);
-        Node node = mock(Node.class);
-        getClusterReadyState().set;
-    }
+*/
     @Test
     public void testProcessShutdownMessage () throws MirandaException {
         ShutdownMessage shutdownMessage = new ShutdownMessage(null, this);
@@ -412,5 +418,257 @@ public class TestClusterReadyState extends TestCase {
         State nextState = getClusterReadyState().processMessage(shutdownMessage);
 
         assert (nextState instanceof ClusterShutdownState);
+    }
+
+    @Test
+    public void testLoad () throws MirandaException {
+        LoadMessage loadMessage = new LoadMessage(null,null);
+
+        State nextState = getClusterReadyState().processMessage(loadMessage);
+
+        verify(getMockCluster(), atLeastOnce()).load();
+    }
+
+
+    @Test
+    public void testConnect () throws MirandaException {
+        ConnectMessage connectMessage = new ConnectMessage(null,null);
+
+        State nextState = getClusterReadyState().processMessage(connectMessage);
+        verify(getMockCluster(), atLeastOnce()).connect();
+    }
+
+
+    @Test
+    public void testGetVersion () throws MirandaException {
+        GetVersionMessage getVersionMessage = new GetVersionMessage(null,null, null);
+        when(getMockCluster().getFile()).thenReturn(getMockClusterFile());
+        when(getMockClusterFile().getQueue()).thenReturn(new LinkedBlockingQueue<>());
+        getClusterReadyState().processMessage(getVersionMessage);
+    }
+
+    @Test
+    public void testClusterFileChanged () throws MirandaException{
+        ClusterFileChangedMessage clusterFileChangedMessage = new ClusterFileChangedMessage(null, null,
+                new ArrayList<NodeElement>(), new Version());
+        when (getMockCluster().getFile()).thenReturn(getMockClusterFile());
+        when (getMockCluster().getCurrentState()).thenReturn(getClusterReadyState());
+        getClusterReadyState().processMessage(clusterFileChangedMessage);
+
+        verify(getMockCluster(),atLeastOnce()).merge(new ArrayList<NodeElement>());
+    }
+
+    @Test
+    public void testHealthCheck () throws MirandaException{
+        HealthCheckMessage healthCheckMessage = new HealthCheckMessage(null, null);
+        getClusterReadyState().processMessage(healthCheckMessage);
+        verify(getMockCluster(),atLeastOnce()).performHealthCheck();
+    }
+
+    @Test
+    public void testDropNode () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        NodeElement nodeElement = new NodeElement(improvedRandom);
+        DropNodeMessage dropNodeMessage = new DropNodeMessage(null,null, nodeElement);
+        ArrayList list = new ArrayList();
+        list.add(getMockNode());
+        when(getMockCluster().getNodes()).thenReturn(list);
+        assert (list.contains(getMockNode()));
+
+        getClusterReadyState().processMessage(dropNodeMessage);
+
+        assert (list.size() == 0);
+
+    }
+
+    @Test
+    public void testNodeAdded () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        NodeElement  nodeElement = new NodeElement(improvedRandom);
+        Node newNode = new Node(nodeElement, getMockNetwork(), getMockCluster());
+        NodeAddedMessage nodeAddedMessage = new NodeAddedMessage(null, null, newNode);
+        List list = new ArrayList();
+        when(getMockCluster().getNodes()).thenReturn(list);
+        assert(list.size() == 0);
+
+        getClusterReadyState().processMessage(nodeAddedMessage);
+        // verify(getMockCluster(), atLeastOnce()).
+        assert(list.size() == 1);
+    }
+
+    @Test
+    public void testStatus ()throws MirandaException {
+        LinkedBlockingQueue queue = new LinkedBlockingQueue();
+        GetStatusMessage getStatusMessage = new GetStatusMessage(queue,null);
+        getClusterReadyState().processMessage(getStatusMessage);
+        assert(queue.size() == 1);
+    }
+
+
+
+
+    @Test
+    public void testAddSession () throws MirandaException{
+        Session session = new Session(null, -1,-1);
+        AddSessionMessage addSessionMessage = new AddSessionMessage(null, null, session);
+
+        getClusterReadyState().processMessage(addSessionMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+
+    }
+
+    @Test
+    public void testSessionsExpired () throws MirandaException{
+        Session session = new Session(null, -1,-1);
+        List l = new ArrayList();
+        l.add(session);
+        SessionsExpiredMessage sessionsExpiredMessage = new SessionsExpiredMessage(null, null, l);
+
+        getClusterReadyState().processMessage(sessionsExpiredMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+
+    }
+
+    @Test
+    public void testAddUser () throws GeneralSecurityException, MirandaException{
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        User user = User.createRandom(improvedRandom);
+        NewUserMessage newUserMessage = new NewUserMessage(null, null,user);
+        getClusterReadyState().processMessage(newUserMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+    @Test
+    public void testUpdateUser () throws GeneralSecurityException, MirandaException{
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        User user = User.createRandom(improvedRandom);
+        UpdateUserMessage updateUserMessage = new UpdateUserMessage(null, null, null, user);
+
+        getClusterReadyState().processMessage(updateUserMessage);
+
+        verify (getMockCluster(),atLeastOnce()).broadcast(any());
+    }
+
+    @Test
+    public void testDeleteUser () throws GeneralSecurityException, MirandaException{
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        User user = User.createRandom(improvedRandom);
+        DeleteUserMessage deleteUserMessage = new DeleteUserMessage(null,null,null, user.getName());
+
+        getClusterReadyState().processMessage(deleteUserMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+
+    @Test
+    public void testShutdown () throws MirandaException{
+        ShutdownMessage shutdownMessage = new ShutdownMessage(null, null);
+
+        State nextState = getClusterReadyState().processMessage(shutdownMessage);
+
+        assert (nextState instanceof ClusterShutdownState);
+    }
+
+    @Test
+    public void testAddSubscription () throws GeneralSecurityException, MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+
+        Subscription subscription = Subscription.createRandom(improvedRandom);
+        Session session = Session.random(improvedRandom);
+        setupMiranda();
+        setupMockCluster();
+
+        CreateSubscriptionMessage createSubscriptionMessage = new CreateSubscriptionMessage(null,null,
+                null, null);
+        getClusterReadyState().processMessage(createSubscriptionMessage);
+
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+    @Test
+    public void testUpdateSubscription () throws MirandaException {
+          ImprovedRandom improvedRandom = new ImprovedRandom();
+
+          Subscription subscription1 = Subscription.createRandom(improvedRandom);
+          Subscription subscription2 = Subscription.createRandom(improvedRandom);
+
+         UpdateSubscriptionMessage updateSubscriptionMessage = new UpdateSubscriptionMessage(null,
+                 null, null, subscription2);
+
+         getClusterReadyState().processMessage(updateSubscriptionMessage);
+
+         verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+
+
+    @Test
+    public void testDeleteSubscription () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        Subscription subscription = Subscription.createRandom(improvedRandom);
+
+        DeleteSubscriptionMessage deleteSubscriptionMessage = new DeleteSubscriptionMessage(null,null,
+                null, improvedRandom.randomString(8));
+
+        getClusterReadyState().processMessage(deleteSubscriptionMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+    @Test
+    public void testAddTopic () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        Topic topic = Topic.random(improvedRandom);
+        CreateTopicMessage createTopicMessage = new CreateTopicMessage(null,null,
+                null, topic);
+
+        getClusterReadyState().processMessage(createTopicMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+    @Test
+    public void testUpdateTopic () throws MirandaException{
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        Topic topic = Topic.random(improvedRandom);
+        UpdateTopicMessage updateTopicMessage = new UpdateTopicMessage (null, null,
+                null, topic);
+
+        getClusterReadyState().processMessage(updateTopicMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+
+    }
+
+    @Test
+    public void testDeleteTopic () throws MirandaException{
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        DeleteTopicMessage deleteTopicMessage = new DeleteTopicMessage(null,null,
+                null, improvedRandom.randomString(8));
+
+        getClusterReadyState().processMessage(deleteTopicMessage);
+
+        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+    }
+
+    public void testStartConversation () throws MirandaException {
+        ImprovedRandom improvedRandom = new ImprovedRandom();
+        StartConversationMessage startConversationMessage = new StartConversationMessage(null, null,
+                null, null);
+
+        verify(getMockCluster(), never()).broadcast(any());
+
+        getClusterReadyState().processMessage(startConversationMessage);
+
+        verify(getMockCluster(), never()).broadcast(any());
+    }
+
+    public void testEndConversation () {
+
     }
 }

@@ -16,7 +16,10 @@
 
 package com.ltsllc.miranda.session;
 
+import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
+
+import java.security.GeneralSecurityException;
 
 /**
  * Created by Clark on 3/30/2017.
@@ -25,6 +28,10 @@ public class Session {
     private User user;
     private long expires;
     private long id;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public User getUser() {
         return user;
@@ -46,6 +53,8 @@ public class Session {
         this.id = id;
     }
 
+    public Session () {
+    }
     public Session(User user, long expires, long id) {
         this.user = user;
         this.expires = expires;
@@ -62,5 +71,17 @@ public class Session {
 
     public void extendExpires(long time) {
         expires += time;
+    }
+
+    public static Session random (ImprovedRandom improvedRandom) throws GeneralSecurityException {
+        Session session = new Session();
+
+        User aUser = User.createRandom(improvedRandom);
+        session.setUser(aUser);
+
+        session.setExpires(improvedRandom.nextNonNegativeLong());
+        session.setId(improvedRandom.nextNonNegativeLong());
+
+        return session;
     }
 }

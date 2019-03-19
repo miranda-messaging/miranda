@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.ltsllc.miranda.clientinterface;
+package com.ltsllc.miranda.clientinterface.basicclasses;
 
 /**
  * Created by Clark on 2/6/2017.
  */
 
 import com.ltsllc.clcl.MessageDigest;
-import com.ltsllc.commons.util.Utils;
 
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * This represents a version of a file.  It is used to determine if something

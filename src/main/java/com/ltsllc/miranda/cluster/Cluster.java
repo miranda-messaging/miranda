@@ -26,6 +26,7 @@ import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.NewTopicWireMessage;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.Manager;
@@ -172,6 +173,7 @@ public class Cluster extends Manager<Node, NodeElement> {
                 update = true;
             }
         }
+        
 
         if (update) {
             for (NodeElement element : reallyNewNodes) {
@@ -395,5 +397,10 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     public State getReadyState() throws MirandaException {
         return new ClusterReadyState(this);
+    }
+
+    public void addTopic (Topic topic) {
+        NewTopicWireMessage newTopicWireMessage = new NewTopicWireMessage(topic);
+        broadcast(newTopicWireMessage);
     }
 }

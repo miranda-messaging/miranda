@@ -20,6 +20,7 @@ import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
 import com.ltsllc.miranda.cluster.Cluster;
@@ -28,6 +29,8 @@ import com.ltsllc.miranda.cluster.networkMessages.*;
 
 import com.ltsllc.miranda.manager.states.ManagerReadyState;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.network.messages.NodeAddedMessage;
+import com.ltsllc.miranda.node.Conversation;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -37,6 +40,7 @@ import com.ltsllc.miranda.node.networkMessages.SessionsExpiredWireMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusResponseMessage;
 import com.ltsllc.miranda.session.AddSessionMessage;
+import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.session.SessionsExpiredMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
@@ -44,6 +48,7 @@ import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
+import com.ltsllc.miranda.topics.messages.NewTopicMessage;
 import com.ltsllc.miranda.topics.messages.UpdateTopicMessage;
 import com.ltsllc.miranda.user.messages.DeleteUserMessage;
 import com.ltsllc.miranda.user.messages.NewUserMessage;
@@ -140,7 +145,7 @@ public class ClusterReadyState extends ManagerReadyState {
 
             case SessionsExpired: {
                 SessionsExpiredMessage sessionsExpiredMessage = (SessionsExpiredMessage) m;
-                nextState = processSessionsExpiredMessage(sessionsExpiredMessage);
+                nextState = processSessionsExiredMessage(sessionsExpiredMessage);
                 break;
             }
 
@@ -198,6 +203,14 @@ public class ClusterReadyState extends ManagerReadyState {
                 break;
             }
 
+
+            /*
+            case NewTopic: {
+                NewTopicMessage newTopicMessage = (NewTopicMessage) m;
+                nextState = processNewTopic (newTopicMessage);
+                break;
+            }
+*/
             case DeleteTopic: {
                 DeleteTopicMessage deleteTopicMessage = (DeleteTopicMessage) m;
                 nextState = processDeleteTopicMessage(deleteTopicMessage);
@@ -213,6 +226,12 @@ public class ClusterReadyState extends ManagerReadyState {
             case EndConversation: {
                 EndConversationMessage endConversationMessage = (EndConversationMessage) m;
                 nextState = processEndConversationMessage(endConversationMessage);
+                break;
+            }
+
+            case NodeAdded: {
+                NodeAddedMessage nodeAddedMessage = (NodeAddedMessage) m;
+                nextState = processNodeAdded(nodeAddedMessage);
                 break;
             }
 
@@ -271,7 +290,7 @@ public class ClusterReadyState extends ManagerReadyState {
         GetVersionMessage getVersionMessage2 = new GetVersionMessage(getCluster().getQueue(), this, getVersionMessage.getRequester());
         send(getCluster().getFile().getQueue(), getVersionMessage2);
 
-        return this;
+        return getCluster().getCurrentState();
     }
 
     /**
@@ -305,8 +324,13 @@ public class ClusterReadyState extends ManagerReadyState {
     }
 
     private State processNewNodeMessage(NewNodeMessage newNodeMessage) {
-        getCluster().getNodes().add(newNodeMessage.getNode());
-
+        if (getCluster().getNodes().contains(newNodeMessage.getNode())) {
+            logger.debug ("the cluster already has that node");
+        }
+        else {
+            logger.debug("adding new node");
+            getCluster().getNodes().add(newNodeMessage.getNode());
+        }
         return this;
     }
 
@@ -323,7 +347,7 @@ public class ClusterReadyState extends ManagerReadyState {
         return getCluster().getCurrentState();
     }
 
-    public State processSessionsExpiredMessage(SessionsExpiredMessage sessionsExpiredMessage) {
+    public State processSessionsExiredMessage(SessionsExpiredMessage sessionsExpiredMessage) {
         SessionsExpiredWireMessage sessionsExpiredWireMessage = new SessionsExpiredWireMessage(sessionsExpiredMessage.getExpiredSessions());
         getCluster().broadcast(sessionsExpiredWireMessage);
 
@@ -395,6 +419,15 @@ public class ClusterReadyState extends ManagerReadyState {
         return getCluster().getCurrentState();
     }
 
+    /*
+    public State processNewTopic (NewTopicMessage newTopicMessage) {
+        Topic topic = newTopicMessage.getTopic();
+        // getCluster().newTopic(newTopicMessage);
+
+        return getCluster().getCurrentState();
+    }
+    */
+
     public State processUpdateTopicMessage(UpdateTopicMessage updateTopicMessage) {
         UpdateTopicWireMessage updateTopicWireMessage = new UpdateTopicWireMessage(updateTopicMessage.getTopic());
         getCluster().broadcast(updateTopicWireMessage);
@@ -409,19 +442,25 @@ public class ClusterReadyState extends ManagerReadyState {
         return getCluster().getCurrentState();
     }
 
-    public void forwardMessage(Message message) {
-        for (Node node : getCluster().getNodes()) {
-            Consumer.staticSend(message, node.getQueue());
-        }
-    }
 
     public State processStartConversationMessage(StartConversationMessage message) {
-        forwardMessage(message);
+        Session session = new Session();
+        Conversation conversation = new Conversation(message.getKey(), message.getRespondTo());
+
         return getCluster().getCurrentState();
     }
 
     public State processEndConversationMessage(EndConversationMessage message) {
-        forwardMessage(message);
         return getCluster().getCurrentState();
+    }
+
+    public State processNodeAdded (NodeAddedMessage nodeAddedMessage) {
+        if (getCluster().getNodes().contains(nodeAddedMessage.getNode())) {
+            logger.debug ("the cluster already has that node");
+        }
+        else {
+            getCluster().getNodes().add(nodeAddedMessage.getNode());
+        }
+        return this;
     }
 }
