@@ -22,9 +22,11 @@ import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.cluster.messages.HealthCheckUpdateMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -36,6 +38,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -145,7 +148,8 @@ public class TestClusterFileReadyState extends TestCase {
         assert(contains(Message.Subjects.Version, queue));
     }
 
-    /**
+
+
     /**
      * The cluster tells the cluster file it has updated the nodes
      */
@@ -163,11 +167,41 @@ public class TestClusterFileReadyState extends TestCase {
         verify(getMockClusterfile(), atLeastOnce()).write();
     }
 
+    @Test
+    public void testProcessHealthCheckUpdateMessage () throws MirandaException {
+        NodeElement nodeElement = new NodeElement("test.com", 6789,"A test node");
+        List list = new ArrayList();
+        list.add(nodeElement);
+        HealthCheckUpdateMessage healthCheckUpdateMessage= new HealthCheckUpdateMessage(null, null,
+                list);
+
+        when(getMockClusterfile().matchingNode(any())).thenReturn(nodeElement);
+
+        getClusterFileReadyState().processMessage(healthCheckUpdateMessage);
+
+        verify(getMockClusterfile(), atLeastOnce()).updateVersion();
+        verify (getMockClusterfile(), atLeastOnce()).write();
+
+        //
+        // verify that drops work
+        //
+        NodeElement timedOut = new NodeElement("timed.out", 6789, "a node that has timed out");
+        List<NodeElement> nodeElementList = new ArrayList<>();
+        nodeElementList.add(timedOut);
+
+        when(getMockClusterfile().getData()).thenReturn(nodeElementList);
+        HealthCheckUpdateMessage healthCheckUpdateMessage2 = new HealthCheckUpdateMessage(null,null,
+                new ArrayList<>());
+
+        when(getMockClusterfile().getData()).thenReturn(nodeElementList);
+
+        assert(!getMockClusterfile().containsElement(timedOut));
+    }
+
     /**
      * This is called when someone else in the cluster wants a copy of our
      * cluster file.
      */
-    @Test
     public void testProcessGetClusterFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         GetClusterFileMessage message = new GetClusterFileMessage(queue, this);

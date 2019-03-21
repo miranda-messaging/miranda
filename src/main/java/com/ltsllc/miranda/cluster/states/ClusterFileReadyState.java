@@ -125,19 +125,23 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         //
         // check to see if we should drop any nodes
         //
+        boolean nodesDropped = false;
         long timeout = Miranda.properties.getLongProperty(MirandaProperties.PROPERTY_CLUSTER_TIMEOUT, MirandaProperties.DEFAULT_CLUSTER_TIMEOUT);
         long now = System.currentTimeMillis();
         List<NodeElement> drops = new ArrayList<NodeElement>();
         for (NodeElement nodeElement : getClusterFile().getData()) {
             long timeSinceLastConnect = now - nodeElement.getLastConnected();
-            if (timeSinceLastConnect >= timeout)
+            if (timeSinceLastConnect >= timeout) {
                 drops.add(nodeElement);
+                nodesDropped = true;
+            }
         }
 
         //
         // drop nodes
         //
-        if (drops.size() > 0) {
+
+        if (nodesDropped) {
             logger.info("dropping nodes that have timed out: " + drops);
             getClusterFile().getData().removeAll(drops);
 
@@ -147,13 +151,14 @@ public class ClusterFileReadyState extends SingleFileReadyState {
             for (NodeElement droppedNode : drops) {
                 DropNodeMessage message = new DropNodeMessage(getClusterFile().getQueue(), this, droppedNode);
                 send(getClusterFile().getCluster(), message);
+                nodesDropped = true;
             }
         }
 
         //
         // if we changed anything, update the version and write out the file
         //
-        if (nodesUpdated || drops.size() > 0) {
+        if (nodesUpdated || nodesDropped) {
             getClusterFile().updateVersion();
             getClusterFile().write();
         }

@@ -60,7 +60,8 @@ public class TestClusterStoppingState extends TestCase {
 
     @Test
     public void testProcessShutdownResponseMessageNodeIntermediate () {
-        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(null, this, "foo.com:6789");
+        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(null, this,
+                "foo.com:6789");
 
         when(getMockCluster().disconnected()).thenReturn(false);
         when(getMockCluster().getClusterFileResponded()).thenReturn(true);
@@ -73,7 +74,8 @@ public class TestClusterStoppingState extends TestCase {
 
     @Test
     public void testProcessShutdownResponseMessageFileIntermediate () {
-        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(null, this, ClusterFile.NAME);
+        ShutdownResponseMessage shutdownResponseMessage = new ShutdownResponseMessage(null, this,
+                ClusterFile.NAME);
 
         when (getMockCluster().disconnected()).thenReturn(false);
         when (getMockCluster().getClusterFileResponded()).thenReturn(false);

@@ -101,11 +101,10 @@ public class TestCluster extends TestCase {
         reset();
 
         super.setup();
-
         setuplog4j();
+        setupMiranda();
         setupMockWriter();
         setupMockProperties();
-        setupMockMiranda();
         setupMockTimer();
 
         deleteFile(CLUSTER_FILENAME);
@@ -127,10 +126,13 @@ public class TestCluster extends TestCase {
     }
 
     @Test
-    public void testConstructor () {
+    public void testConstructor () throws MirandaException {
+        setupMiranda();
         assert (null != getCluster().getClusterFile());
         verify (getMockClusterFile(), atLeastOnce()).addSubscriber(Matchers.any(BlockingQueue.class));
     }
+
+
 
     /**
      * Ensure that we create a load message.
