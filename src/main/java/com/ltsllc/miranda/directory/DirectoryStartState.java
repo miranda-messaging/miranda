@@ -38,6 +38,7 @@ public class DirectoryStartState extends State {
         super(directory);
     }
 
+
     public State processMessage(Message message) throws MirandaException {
         State nextState = getDirectory().getCurrentState();
 
@@ -71,7 +72,7 @@ public class DirectoryStartState extends State {
     }
 
     public State processExceptionDuringScanMessage(ExceptionDuringScanMessage exceptionDuringScanMessage) {
-        StartupPanic startupPanic = new StartupPanic("Exception scanning diresctory", StartupPanic.StartupReasons.ExceptionScanning);
+        StartupPanic startupPanic = new StartupPanic("Exception scanning directory", StartupPanic.StartupReasons.ExceptionScanning);
         Miranda.getInstance().panic(startupPanic);
 
         return getDirectory().getCurrentState();
