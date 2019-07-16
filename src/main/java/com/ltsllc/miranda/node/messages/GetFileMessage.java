@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.node.messages;
 
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -24,15 +25,21 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 2/11/2017.
  */
 public class GetFileMessage extends Message {
-    private String filename;
+    private Files file;
 
-    public GetFileMessage(BlockingQueue<Message> senderQueue, Object sender, String filename) {
+    public Files getFile() {
+        return file;
+    }
+
+    public void setFile(Files file) {
+        this.file = file;
+    }
+
+    public GetFileMessage(BlockingQueue<Message> senderQueue, Object sender, Files file) {
         super(Subjects.GetFile, senderQueue, sender);
 
-        this.filename = filename;
+        setFile(file);
     }
 
-    public String getFilename() {
-        return filename;
-    }
+
 }

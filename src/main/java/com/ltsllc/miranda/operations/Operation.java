@@ -21,6 +21,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.session.Session;
 
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -29,7 +30,15 @@ import java.util.concurrent.BlockingQueue;
 public class Operation extends Consumer {
     protected Session session;
     private BlockingQueue<Message> requester;
+    private UUID uuid;
 
+    public String getUUIDString () {
+        if (null == uuid) {
+            uuid = UUID.randomUUID();
+        }
+
+        return uuid.toString();
+    }
 
     public BlockingQueue<Message> getRequester() {
         return requester;

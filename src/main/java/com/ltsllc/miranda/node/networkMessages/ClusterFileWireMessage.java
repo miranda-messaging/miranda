@@ -18,9 +18,8 @@ package com.ltsllc.miranda.node.networkMessages;
 
 import com.google.gson.Gson;
 import com.ltsllc.commons.util.HexConverter;
-import com.ltsllc.commons.util.Utils;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 
 import java.io.IOException;
 import java.util.List;

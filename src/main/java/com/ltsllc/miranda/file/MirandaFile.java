@@ -17,11 +17,10 @@
 package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
-import com.ltsllc.clcl.EncryptionException;
 import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.FileDoesNotExistMessage;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
@@ -33,8 +32,6 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -181,7 +178,7 @@ abstract public class MirandaFile extends Consumer implements Comparer {
     public void updateVersion() throws Exception {
         String json = asJson();
 
-        Version version = new Version(json);
+        Version version = Version.fromString(json);
         setVersion(version);
     }
 

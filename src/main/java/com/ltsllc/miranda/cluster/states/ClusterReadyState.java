@@ -46,6 +46,7 @@ import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
+import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
 import com.ltsllc.miranda.topics.messages.NewTopicMessage;
@@ -101,7 +102,7 @@ public class ClusterReadyState extends ManagerReadyState {
                 break;
             }
 
-            case GetVersion: {
+            case GetVersions: {
                 GetVersionMessage getVersionMessage = (GetVersionMessage) m;
                 nextState = processGetVersionMessage(getVersionMessage);
                 break;
@@ -203,14 +204,6 @@ public class ClusterReadyState extends ManagerReadyState {
                 break;
             }
 
-
-            /*
-            case NewTopic: {
-                NewTopicMessage newTopicMessage = (NewTopicMessage) m;
-                nextState = processNewTopic (newTopicMessage);
-                break;
-            }
-*/
             case DeleteTopic: {
                 DeleteTopicMessage deleteTopicMessage = (DeleteTopicMessage) m;
                 nextState = processDeleteTopicMessage(deleteTopicMessage);
@@ -413,20 +406,12 @@ public class ClusterReadyState extends ManagerReadyState {
     }
 
     public State processCreateTopicMessage(CreateTopicMessage createTopicMessage) {
-        NewTopicWireMessage newTopicWireMessage = new NewTopicWireMessage(createTopicMessage.getTopic());
-        getCluster().broadcast(newTopicWireMessage);
+        TopicManager topicManager = Miranda.getInstance().getTopicManager();
+        topicManager.sendCreateTopicMessage(getCluster().getQueue(), getCluster(), createTopicMessage.getTopic());
 
         return getCluster().getCurrentState();
     }
 
-    /*
-    public State processNewTopic (NewTopicMessage newTopicMessage) {
-        Topic topic = newTopicMessage.getTopic();
-        // getCluster().newTopic(newTopicMessage);
-
-        return getCluster().getCurrentState();
-    }
-    */
 
     public State processUpdateTopicMessage(UpdateTopicMessage updateTopicMessage) {
         UpdateTopicWireMessage updateTopicWireMessage = new UpdateTopicWireMessage(updateTopicMessage.getTopic());

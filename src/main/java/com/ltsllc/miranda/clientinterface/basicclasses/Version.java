@@ -20,8 +20,14 @@ package com.ltsllc.miranda.clientinterface.basicclasses;
  * Created by Clark on 2/6/2017.
  */
 
-import com.ltsllc.clcl.MessageDigest;
 
+import com.google.gson.Gson;
+import com.ltsllc.clcl.MessageDigest;
+import com.ltsllc.miranda.clientinterface.MirandaException;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 /**
@@ -35,16 +41,38 @@ import java.security.GeneralSecurityException;
  */
 public class Version {
     private String sha256;
+    private long timeOfLastUpdate;
+
+    public static Gson getGson() {
+        return gson;
+    }
+
+    private static Gson gson = new Gson();
 
     public Version() {
     }
 
-    public Version(String content) throws GeneralSecurityException {
-        this.sha256 = MessageDigest.calculate(content.getBytes());
+    public static Version fromString (String json) {
+        Version version = getGson().fromJson(json, Version.class);
+        return version;
     }
 
-    public Version(byte[] data) throws GeneralSecurityException {
+    public long getTimeOfLastUpdate() {
+        return timeOfLastUpdate;
+    }
+
+    public void setTimeOfLastUpdate(long timeOfLastUpdate) {
+        this.timeOfLastUpdate = timeOfLastUpdate;
+    }
+
+    public Version(String content, long timeOfLastUpdate) throws GeneralSecurityException {
+        setSha256(MessageDigest.calculate(content.getBytes()));
+        setTimeOfLastUpdate(timeOfLastUpdate);
+    }
+
+    public Version(byte[] data, long timeOfLastUpdate) throws GeneralSecurityException {
         this.sha256 = MessageDigest.calculate(data);
+        setTimeOfLastUpdate(timeOfLastUpdate);
     }
 
     public static Version createWithSha256(String sha256) {
@@ -54,12 +82,36 @@ public class Version {
         return version;
     }
 
+    public Version(byte[] data) {
+        String string = new String(data);
+        Version version = Version.fromString(string);
+    }
+
+
     public String getSha256() {
         return sha256;
     }
 
     public void setSha256(String sha256) {
         this.sha256 = sha256;
+    }
+
+    public boolean before (Version version) {
+        if (version.getSha256().equals(getSha256())) {
+            return false;
+        }
+
+        return getTimeOfLastUpdate() <  version.getTimeOfLastUpdate();
+    }
+
+    public static char[] buffer = new char[8192];
+
+    public static Version fromFile (File file) throws IOException, MirandaException, GeneralSecurityException {
+        FileReader fileReader = new FileReader(file);
+        fileReader.read(buffer);
+        String s = new String(buffer);
+        long l = System.currentTimeMillis();
+        return new Version(s, l);
     }
 
     public boolean equals(Object o) {
@@ -75,6 +127,14 @@ public class Version {
             return false;
 
         return sha256.equals(other.getSha256());
+    }
+
+    public boolean isAfter(Version version) {
+        return version.getTimeOfLastUpdate() > getTimeOfLastUpdate();
+    }
+
+    public boolean isNewer (Version version) {
+        return version.getTimeOfLastUpdate() > version.getTimeOfLastUpdate();
     }
 
 }

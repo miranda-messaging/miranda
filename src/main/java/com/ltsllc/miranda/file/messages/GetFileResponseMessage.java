@@ -19,6 +19,7 @@ package com.ltsllc.miranda.file.messages;
 import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
@@ -28,27 +29,31 @@ import java.util.concurrent.BlockingQueue;
  */
 public class GetFileResponseMessage extends Message {
     private String contents;
-    private String requester;
+    private Files file;
 
-    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester, byte[] contents) {
+    public Files getFile() {
+        return file;
+    }
+
+    public void setFile(Files file) {
+        this.file = file;
+    }
+
+    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, byte[] contents) {
         super(Subjects.GetFileResponse, senderQueue, sender);
         String hexString = HexConverter.toHexString(contents);
 
-        this.requester = requester;
         this.contents = hexString;
     }
 
-    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester, String contents) {
+    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String contents) {
         super(Subjects.GetFileResponse, senderQueue, sender);
 
-        this.requester = requester;
         this.contents = contents;
     }
 
-    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender, String requester) {
+    public GetFileResponseMessage(BlockingQueue<Message> senderQueue, Object sender) {
         super(Subjects.GetFileResponse, senderQueue, sender);
-
-        this.requester = requester;
     }
 
 
@@ -60,7 +65,4 @@ public class GetFileResponseMessage extends Message {
         return HexConverter.toByteArray(contents);
     }
 
-    public String getRequester() {
-        return requester;
-    }
 }

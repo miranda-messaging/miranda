@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.node;
 
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 
 /**
  * Created by Clark on 2/6/2017.

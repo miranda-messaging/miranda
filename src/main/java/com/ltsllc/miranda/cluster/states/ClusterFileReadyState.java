@@ -17,19 +17,26 @@
 package com.ltsllc.miranda.cluster.states;
 
 import com.google.gson.reflect.TypeToken;
-import com.ltsllc.miranda.LoadResponseMessage;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.*;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.file.states.SingleFileReadyState;
+import com.ltsllc.miranda.manager.StandardManager;
 import com.ltsllc.miranda.miranda.Miranda;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
+import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
+import com.ltsllc.miranda.operations.syncfiles.messages.GetVersionResponseMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
+import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
 
@@ -78,6 +85,12 @@ public class ClusterFileReadyState extends SingleFileReadyState {
                 break;
             }
 
+            case GetVersions: {
+                GetVersionMessage getVersionMessage = (GetVersionMessage) message;
+                nextState = processGetVersionMessage (getVersionMessage);
+                break;
+            }
+
             default: {
                 nextState = super.processMessage(message);
                 break;
@@ -87,14 +100,22 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return nextState;
     }
 
+    public State processGetVersionMessage (GetVersionMessage getVersionMessage)
+            throws MirandaException
+    {
+        GetVersionResponseMessage getVersionResponseMessage = new GetVersionResponseMessage(getClusterFile().getQueue(),null, null, null);
+        getVersionResponseMessage.setVersionFor(Files.Cluster, getClusterFile().getVersion());
+        getVersionMessage.reply(getVersionResponseMessage);
+        return getClusterFile().getCurrentState();
+    }
 
     private State processGetClusterFileMessage(GetClusterFileMessage getClusterFileMessage) throws MirandaException {
         List<NodeElement> newList = new ArrayList<NodeElement>(getClusterFile().getData());
 
-        ClusterFileMessage clusterFileMessage = new ClusterFileMessage(getClusterFile().getQueue(), this,
-                newList, getClusterFile().getVersion());
+        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getClusterFile().getQueue(),
+            getClusterFile(), getClusterFile().asJson());
 
-        getClusterFileMessage.reply(clusterFileMessage);
+
 
         return this;
     }
@@ -183,12 +204,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
     public boolean contains(Object o) {
         NodeElement nodeElement = (NodeElement) o;
         return getClusterFile().contains(nodeElement);
-    }
-
-
-    @Override
-    public Version getVersion() {
-        return getClusterFile().getVersion();
     }
 
 

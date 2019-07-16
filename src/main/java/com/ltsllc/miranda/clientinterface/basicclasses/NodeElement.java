@@ -17,6 +17,7 @@
 package com.ltsllc.miranda.clientinterface.basicclasses;
 
 import com.ltsllc.commons.util.ImprovedRandom;
+import com.ltsllc.miranda.cluster.networkMessages.GetVersionWireMessage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

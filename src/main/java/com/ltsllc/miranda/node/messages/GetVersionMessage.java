@@ -27,7 +27,7 @@ public class GetVersionMessage extends Message {
     private BlockingQueue<Message> requester;
 
     public GetVersionMessage(BlockingQueue<Message> queue, Object sender, BlockingQueue<Message> requester) {
-        super(Subjects.GetVersion, queue, sender);
+        super(Subjects.GetVersions, queue, sender);
 
         this.requester = requester;
     }

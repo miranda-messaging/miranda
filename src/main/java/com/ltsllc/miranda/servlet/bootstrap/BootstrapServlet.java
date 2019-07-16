@@ -1,12 +1,10 @@
 package com.ltsllc.miranda.servlet.bootstrap;
 
 import com.ltsllc.clcl.DistinguishedName;
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Results;
-import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.operations.bootstrap.BootstrapOperation;
+import com.ltsllc.miranda.operations.syncfiles.BootstrapOperation;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.user.messages.BootstrapResponseMessage;
 
@@ -15,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class BootstrapServlet extends MirandaServlet {

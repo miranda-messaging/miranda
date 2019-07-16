@@ -1,8 +1,8 @@
-package com.ltsllc.miranda.operations.bootstrap;
+package com.ltsllc.miranda.operations.syncfiles;
 
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.operations.Operation;
-import com.ltsllc.miranda.operations.bootstrap.states.Start;
+import com.ltsllc.miranda.operations.syncfiles.states.SyncFilesStartState;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -16,7 +16,7 @@ public class BootstrapOperation extends Operation {
 
     public BootstrapOperation () {
         super ("bootstrap operation", null);
-        setCurrentState(new Start(this));
+        setCurrentState(new SyncFilesStartState(this));
     }
 
 

@@ -21,6 +21,7 @@ import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.AddObjectsMessage;
@@ -150,9 +151,9 @@ public class SingleFileReadyState extends MirandaFileReadyState {
         GetFileResponseMessage getFileResponseMessage = null;
 
         if (null == getFile().getData()) {
-            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getFileMessage.getFilename());
+            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this);
         } else {
-            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getFileMessage.getFilename(), getFile().getBytes());
+            getFileResponseMessage = new GetFileResponseMessage(getFile().getQueue(), this, getFile().getBytes());
         }
 
         send(getFileMessage.getSender(), getFileResponseMessage);

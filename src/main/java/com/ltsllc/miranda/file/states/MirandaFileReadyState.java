@@ -57,7 +57,7 @@ public class MirandaFileReadyState extends State {
                 break;
             }
 
-            case GetVersion: {
+            case GetVersions: {
                 GetVersionMessage getVersionMessage = (GetVersionMessage) message;
                 nextState = processGetVersionMessage(getVersionMessage);
                 break;

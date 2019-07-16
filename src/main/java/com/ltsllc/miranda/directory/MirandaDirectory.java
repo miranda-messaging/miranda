@@ -17,10 +17,13 @@
 package com.ltsllc.miranda.directory;
 
 import com.google.gson.Gson;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.DirectoryEntry;
+import com.ltsllc.miranda.file.InMemoryStringFile;
 import com.ltsllc.miranda.file.MirandaFile;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Clark on 5/13/2017.
@@ -188,6 +192,16 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
         for (T item : list) {
             add(item);
         }
+    }
+
+    public void sendRefresh (BlockingQueue<Message> senderQueue, Object sender) {
+        RefreshMessage refreshMessage = new RefreshMessage(senderQueue, sender);
+        sendToMe(refreshMessage);
+    }
+
+    public SingleFile asFile () {
+        List<String> list = new ArrayList<String>(map.keySet());
+        return new InMemoryStringFile(list);
     }
 }
 

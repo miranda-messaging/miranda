@@ -22,15 +22,14 @@ package com.ltsllc.miranda.file;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.file.states.DirectoryReadyState;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +122,7 @@ abstract public class Directory extends MirandaFile {
 
         String json = gson.toJson(list);
 
-        Version version = new Version(json);
+        Version version = new Version(json.getBytes());
         setVersion(version);
     }
 

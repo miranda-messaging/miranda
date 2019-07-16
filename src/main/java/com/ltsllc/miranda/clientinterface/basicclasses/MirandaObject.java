@@ -23,12 +23,20 @@ import com.google.gson.Gson;
  * </table>
  */
 abstract public class MirandaObject extends Mergeable implements Equivalent {
+    private Version version;
     private static Gson gson = new Gson();
 
     public static Gson getGson() {
         return gson;
     }
 
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
 
     /**
      * Are two strings equal?

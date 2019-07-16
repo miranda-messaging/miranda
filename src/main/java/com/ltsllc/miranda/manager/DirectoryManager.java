@@ -16,34 +16,97 @@
 
 package com.ltsllc.miranda.manager;
 
+import com.google.gson.Gson;
 import com.ltsllc.miranda.Consumer;
+import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.directory.MirandaDirectory;
 import com.ltsllc.miranda.event.EventDirectory;
+import com.ltsllc.miranda.file.MirandaFile;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 5/3/2017.
+ * A directory of files that have to manged
  */
-public class DirectoryManager<T> extends Consumer {
+public abstract class DirectoryManager<T extends MirandaFile> extends Consumer {
+
+    private int BUFFER_SIZE = 8192;
+
     private Reader reader;
     private Writer writer;
     private MirandaDirectory directory;
-    private Map<String, T> map;
+    private Map<String, String> map;
+    private Version version;
 
-    public Map<String, T> getMap() {
+    public MirandaFile getFile (String file) throws MirandaException {
+        String contenets = "";
+        String fullName = directory.getFilename() + "/" + file;
+        if (!map.containsKey(file)) {
+            try {
+                FileReader fileReader = new FileReader(fullName);
+                int bytesRead;
+                char[] buffer = new char[BUFFER_SIZE];
+                do {
+                    bytesRead = fileReader.read(buffer);
+                    if (bytesRead != -1) {
+                        contenets = contenets + buffer;
+                    }
+                } while (bytesRead == BUFFER_SIZE);
+                map.put(file, contenets);
+            } catch (IOException e) {
+                throw new MirandaException("error trying to read " + fullName, e);
+            }
+        }
+        String contents = map.get(file);
+        Gson gson = new Gson();
+        List list = gson.fromJson(contenets, List.class);
+        return new MirandaFile() {
+            @Override
+            public byte[] getBytes() {
+                return contents.getBytes();
+            }
+
+            @Override
+            public List getData() {
+                return list;
+            }
+        };
+    }
+    public Map<String, String> getMap() {
         return map;
     }
 
     public MirandaDirectory getDirectory() {
         return directory;
     }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
+    public Version getVersion() throws GeneralSecurityException {
+        if (null == version)
+        {
+            version = getDirectory().getVersion();
+        }
+
+        return version;
+    }
+
 
     public void setDirectory(MirandaDirectory directory) {
         this.directory = directory;
@@ -71,15 +134,20 @@ public class DirectoryManager<T> extends Consumer {
         this.directory = new EventDirectory(directory, objectLimit, reader, writer);
         this.reader = reader;
         this.writer = writer;
-        this.map = new HashMap<String, T>();
+        this.map = new HashMap<String, String>();
     }
 
-    public void add(String key, T value) {
+    public void add(String key, String value) {
         getMap().put(key, value);
     }
 
     public void fileChanged(Map<String, Event> map) {
         map = new HashMap<String, Event>(map);
     }
+
+    public void sendRefresh (BlockingQueue<Message> sederQueue, Object sender) {
+        getDirectory().sendRefresh(getQueue(), sender);
+    }
+
 
 }

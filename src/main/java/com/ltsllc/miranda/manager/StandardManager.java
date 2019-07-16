@@ -19,6 +19,7 @@ package com.ltsllc.miranda.manager;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 
 import java.io.IOException;
 
@@ -26,6 +27,25 @@ import java.io.IOException;
  * Created by Clark on 5/14/2017.
  */
 abstract public class StandardManager<E extends MirandaObject> extends Manager<E, E> {
+    private Version version;
+    private StandardManager manager;
+
+    public StandardManager getManager() {
+        return manager;
+    }
+
+    public void setManager(StandardManager manager) {
+        this.manager = manager;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
     public StandardManager(String name, String filename) throws IOException, MirandaException {
         super(name, filename);
     }
@@ -35,4 +55,5 @@ abstract public class StandardManager<E extends MirandaObject> extends Manager<E
     }
 
     abstract public State getReadyState () throws MirandaException;
+
 }

@@ -16,27 +16,46 @@
 
 package com.ltsllc.miranda.file;
 
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 
 /**
  * Created by Clark on 2/11/2017.
  */
 public class GetFileResponseWireMessage extends WireMessage {
-    private String contents;
-    private String requester;
+    private Files file;
+    private byte[] data;
+    private Version version;
 
-    public GetFileResponseWireMessage(String requester, String contents) {
+    public GetFileResponseWireMessage(Files file, Version version, byte[] data) {
         super(WireSubjects.GetFileResponse);
-
-        this.contents = contents;
-        this.requester = requester;
+        setData(data);
+        setFile(file);
+        setVersion(version);
     }
 
-    public String getContents() {
-        return contents;
+    public Version getVersion() {
+        return version;
     }
 
-    public String getRequester() {
-        return requester;
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
+    public Files getFile() {
+        return file;
+    }
+
+    public void setFile(Files file) {
+        this.file = file;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }

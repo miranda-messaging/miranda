@@ -22,9 +22,13 @@ import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.networkMessages.GetVersionWireMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
+import com.ltsllc.miranda.node.messages.GetFileMessage;
+import com.ltsllc.miranda.operations.syncfiles.messages.GetFileWireMessage;
 import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.ConnectingState;
@@ -38,6 +42,12 @@ import java.util.concurrent.BlockingQueue;
  * Created by Clark on 12/31/2016.
  */
 public class Node extends Consumer {
+    public Node()
+    {
+        super("node");
+        description = "The local system";
+    }
+
     public Node(NodeElement element, Network network, Cluster cluster) throws MirandaException {
         super("node");
         dns = element.getDns();
@@ -193,6 +203,17 @@ public class Node extends Consumer {
         }
     }
 
+    public void downloadFile (Files file) {
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(file);
+        sendOnWire(getFileWireMessage);
+    }
+
+    public void sendGetVersionMessage () {
+        GetVersionWireMessage getVersionWireMessage = new GetVersionWireMessage();
+        sendOnWire(getVersionWireMessage);
+    }
+
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -205,5 +226,13 @@ public class Node extends Consumer {
         stringBuilder.append("}");
 
         return stringBuilder.toString();
+    }
+
+
+    public static Node LOCAL = new LocalNode();
+
+    public void sendGetFile (BlockingQueue senderQueue, Object sender, Files file) {
+        GetFileMessage getFileMessage = new GetFileMessage(senderQueue, sender, file);
+        sendToMe (getFileMessage);
     }
 }

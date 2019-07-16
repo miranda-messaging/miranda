@@ -36,6 +36,7 @@ public class Message {
         Bootstrap,
         BootstrapResponse,
         Broadcast,
+        Cancel,
         CheckSession,
         CheckSessionResponse,
         Close,
@@ -45,6 +46,7 @@ public class Message {
         ClusterHealthCheck,
         ClusterHealthCheckUpdate,
         Connect,
+        ConnectionCreated,
         ConnectFailed,
         ConnectSucceeded,
         ConnectionError,
@@ -107,7 +109,7 @@ public class Message {
         GetUserResponse,
         GetUsersFile,
         GetVersions,
-        GetVersion,
+        GetVersionsResponse,
         HealthCheck,
         HealthCheckUpdate,
         HttpPost,
@@ -130,6 +132,7 @@ public class Message {
         NewTopicResponse,
         NewClusterFile,
         NewConnection,
+        NewVersion,
         NetworkMessage,
         NetworkConversationMessage,
         NewDelivery,
@@ -149,6 +152,7 @@ public class Message {
         OwnerQuery,
         OwnerQueryResponse,
         Panic,
+        Refresh,
         RemoveObjects,
         RemoteVersion,
         Read,
@@ -192,7 +196,7 @@ public class Message {
         WatchFile,
         WatchDirectory,
         Write,
-        ConnectionCreated, Cancel, WriteResponse
+        WriteResponse
     }
 
     private static Gson ourGson = new Gson();

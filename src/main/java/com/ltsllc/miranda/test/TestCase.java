@@ -18,16 +18,13 @@ package com.ltsllc.miranda.test;
 
 import com.google.gson.Gson;
 import com.ltsllc.clcl.*;
-import com.ltsllc.clcl.Certificate;
-import com.ltsllc.clcl.KeyPair;
-import com.ltsllc.clcl.PrivateKey;
-import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.commons.util.ImprovedRandom;
 import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Equivalent;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
@@ -53,10 +50,10 @@ import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.mockito.Mock;
 
 import java.io.*;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +61,7 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static org.mockito.Mockito.mock;
+
 
 /**
  * Created by Clark on 2/20/2017.
@@ -763,7 +760,7 @@ public class TestCase {
 
     public static Version createVersion(Object o) throws Exception {
         String json = toJson(o);
-        return new Version(json);
+        return new Version(json.getBytes());
     }
 
     public boolean contains(Object o, List list) {

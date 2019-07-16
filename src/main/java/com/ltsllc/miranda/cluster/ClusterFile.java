@@ -21,6 +21,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
 import com.ltsllc.miranda.cluster.states.ClusterFileStartingState;
 import com.ltsllc.miranda.file.SingleFile;
@@ -44,6 +45,8 @@ public class ClusterFile extends SingleFile<NodeElement> {
     private static ClusterFile ourInstance;
 
     private BlockingQueue<Message> cluster;
+
+    private Version version;
 
     public void fromJson (String json) {
         getGson().fromJson(json, NodeElement.class);

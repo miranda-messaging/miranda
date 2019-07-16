@@ -18,12 +18,13 @@ package com.ltsllc.miranda.node.states;
 
 import com.ltsllc.miranda.*;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
-import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
-import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
-import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
+import com.ltsllc.miranda.cluster.networkMessages.*;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
@@ -34,15 +35,17 @@ import com.ltsllc.miranda.node.Conversation;
 import com.ltsllc.miranda.node.ConversationMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.messages.*;
+import com.ltsllc.miranda.node.messages.EndConversationMessage;
+import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
+import com.ltsllc.miranda.node.messages.StartConversationMessage;
+import com.ltsllc.miranda.node.messages.VersionMessage;
 import com.ltsllc.miranda.node.networkMessages.*;
+import com.ltsllc.miranda.operations.syncfiles.messages.GetFileWireMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
-import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
-import com.ltsllc.miranda.topics.TopicsFile;
-import com.ltsllc.miranda.user.UsersFile;
-import com.ltsllc.miranda.user.messages.GetUsersFileMessage;
+import com.ltsllc.miranda.topics.TopicManager;
 import org.apache.log4j.Logger;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +127,13 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+            case NewTopic: {
+                NewTopicWireMessage newTopicWireMessage = (NewTopicWireMessage) networkMessage.getWireMessage();
+                nextState = processNewTopicWireMessage(newTopicWireMessage);
+                break;
+            }
+
+
             default: {
                 nextState = super.processNetworkMessage(networkMessage);
                 break;
@@ -158,19 +168,7 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
-            case GetClusterFile: {
-                GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) message;
-                nextState = processGetClusterFileMessage(getClusterFileMessage);
-                break;
-            }
-
-            case GetUsersFile: {
-                GetUsersFileMessage getUsersFileMessage = (GetUsersFileMessage) message;
-                nextState = processGetUsersFileMessage(getUsersFileMessage);
-                break;
-            }
-
-            case Versions: {
+           case Versions: {
                 VersionsMessage versionsMessage = (VersionsMessage) message;
                 nextState = processVersionsMessage(versionsMessage);
                 break;
@@ -237,9 +235,19 @@ public class NodeReadyState extends NodeState {
 
 
     private State processGetVersionsWireMessage(GetVersionsWireMessage getVersionsWireMessage) {
-        GetVersionsMessage getVersionsMessage = new GetVersionsMessage(getNode().getQueue(), this);
-        send(Miranda.getInstance().getQueue(), getVersionsMessage);
+        GetVersionResponseWireMessage getVersionsResponseWireMessage = new GetVersionResponseWireMessage();
+        Miranda miranda = Miranda.getInstance();
 
+        try {
+            getVersionsResponseWireMessage.setVersionFor(Files.Topic, miranda.getTopicManager().getVersion());
+            getVersionsResponseWireMessage.setVersionFor(Files.DeliveriesList, miranda.getDeliveryManager().getVersion());
+            getVersionsResponseWireMessage.setVersionFor(Files.Cluster, miranda.getCluster().getVersion());
+            getVersionsResponseWireMessage.setVersionFor(Files.DeliveriesList, miranda.getDeliveryManager().getVersion());
+            getVersionsResponseWireMessage.setVersionFor(Files.Subscription, miranda.getSubscriptionManager().getVersion());
+            getVersionsResponseWireMessage.setVersionFor(Files.User, miranda.getUserManager().getVersion());
+        } catch (GeneralSecurityException e) {
+            getVersionsResponseWireMessage.setError(true);
+        }
         return this;
     }
 
@@ -262,7 +270,7 @@ public class NodeReadyState extends NodeState {
     }
 
     private State processGetClusterFileMessage(GetClusterFileMessage getClusterFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage("cluster");
+        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Files.Cluster);
         sendOnWire(getFileWireMessage);
 
         return this;
@@ -270,23 +278,67 @@ public class NodeReadyState extends NodeState {
 
 
     private State processGetFileWireMessage(GetFileWireMessage getFileWireMessage) {
-        GetFileMessage getFileMessage = new GetFileMessage(getNode().getQueue(), this, getFileWireMessage.getFile());
+        State nextState = getNode().getCurrentState();
 
-        if (getFileWireMessage.getFile().equalsIgnoreCase(Cluster.NAME)) {
-            send(Miranda.getInstance().getCluster().getQueue(), getFileMessage);
-        } else if (getFileWireMessage.getFile().equalsIgnoreCase(UsersFile.FILE_NAME)) {
-            send(UsersFile.getInstance().getQueue(), getFileMessage);
-        } else if (getFileWireMessage.getFile().equalsIgnoreCase(TopicsFile.FILE_NAME)) {
-            send(TopicsFile.getInstance().getQueue(), getFileMessage);
-        } else if (getFileWireMessage.getFile().equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
-            send(SubscriptionsFile.getInstance().getQueue(), getFileMessage);
-        } else {
-            logger.error("Unknown file " + getFileWireMessage.getFile());
+        SingleFile singleFile = getSingleFile(getFileWireMessage);
+        Files category = getFileWireMessage.getFile();
+        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(category,
+                singleFile.getVersion(), singleFile.getBytes());
+        sendOnNetwork(getFileResponseWireMessage);
+
+        return nextState;
+     }
+
+
+    public SingleFile getSingleFile(GetFileWireMessage getFileWireMessage) {
+        SingleFile singleFile = null;
+
+        Miranda miranda = Miranda.getInstance();
+        switch (getFileWireMessage.getFile())
+        {
+            case EventFile:
+                singleFile = miranda.getEventManager().getEventsFile(getFileWireMessage.getFileName());
+                break;
+
+            case EventList:
+                singleFile = miranda.getEventManager().getDirectory().asFile();
+                break;
+
+            case Subscription:
+                singleFile = miranda.getSubscriptionManager().getSubscriptionsFile();
+                break;
+
+            case Topic:
+                singleFile = miranda.getTopicManager().getTopicsFile();
+                break;
+
+            case User:
+                singleFile = miranda.getUserManager().getUsersFile();
+                break;
+
+            case Cluster:
+                singleFile = miranda.getCluster().getClusterFile();
+                break;
+
+            default:
+                logger.error("Impossible case: GetFile message has unrecognized file");
+                break;
         }
 
-        return this;
+        return singleFile;
     }
 
+     public SingleFile getSingleFile;
+
+     public State processGetFile () {
+        State nextState = getNode().getCurrentState();
+
+        Cluster cluster = Miranda.getInstance().getCluster();
+        SingleFile singleFile = cluster.getFile();
+        byte[] data = singleFile.getBytes();
+
+        return nextState;
+     }
 
     private State processVersionsMessage(VersionsMessage versionsMessage) {
         State nextState = this;
@@ -298,20 +350,13 @@ public class NodeReadyState extends NodeState {
     }
 
 
-    private State processGetUsersFileMessage(GetUsersFileMessage getUsersFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage("users");
-        sendOnWire(getFileWireMessage);
+    public State processNewTopicWireMessage (NewTopicWireMessage newTopicWireMessage) {
+        TopicManager topicManager = Miranda.getInstance().getTopicManager();
+        topicManager.sendCreateTopicMessage(getNode().getQueue(), getNode(), newTopicWireMessage.getTopic());
 
-        return this;
+        return getNode().getCurrentState();
     }
 
-
-    private State processGetFileResponseMessage(GetFileResponseMessage getFileResponseMessage) {
-        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(getFileResponseMessage.getRequester(), getFileResponseMessage.getContents());
-        sendOnWire(getFileResponseWireMessage);
-
-        return this;
-    }
 
     public State processStopMessage(StopMessage stopMessage) throws MirandaException {
         StopWireMessage stopWireMessage = new StopWireMessage();
@@ -379,5 +424,11 @@ public class NodeReadyState extends NodeState {
         getConversations().remove(message.getKey());
 
         return getNode().getCurrentState();
+    }
+
+    public State processGetFileResponseMessage (GetFileResponseMessage getFileResponseWireMessage){
+         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(getNode().getQueue(),
+                 getNode(), getFileResponseWireMessage.getContents());
+         return getNode().getCurrentState();
     }
 }

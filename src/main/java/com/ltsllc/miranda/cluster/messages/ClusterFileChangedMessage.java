@@ -17,8 +17,8 @@
 package com.ltsllc.miranda.cluster.messages;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

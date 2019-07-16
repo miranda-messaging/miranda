@@ -16,11 +16,22 @@
 
 package com.ltsllc.miranda.clientinterface.results;
 
+import com.ltsllc.miranda.clientinterface.requests.Files;
+
 /**
  * Created by Clark on 4/18/2017.
  */
 public class FileResult extends ResultObject {
     private byte[] content;
+    private Files file;
+
+    public Files getFile() {
+        return file;
+    }
+
+    public void setFile(Files file) {
+        this.file = file;
+    }
 
     public byte[] getContent() {
         return content;

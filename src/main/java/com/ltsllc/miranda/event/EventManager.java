@@ -20,10 +20,13 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.StartupPanic;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.event.messages.CreateEventMessage;
 import com.ltsllc.miranda.event.messages.EvictMessage;
 import com.ltsllc.miranda.event.messages.NewEventMessage;
 import com.ltsllc.miranda.event.messages.ReadEventMessage;
+import com.ltsllc.miranda.file.MirandaFile;
+import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.manager.DirectoryManager;
 import com.ltsllc.miranda.manager.ListMessage;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -32,6 +35,7 @@ import com.ltsllc.miranda.reader.Reader;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.writer.Writer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -94,4 +98,10 @@ public class EventManager extends DirectoryManager {
     public void createEvent(Event event) {
         eventMap.put(event.getGuid(), event);
     }
+
+    public SingleFile getEventsFile (String name)
+    {
+        return (SingleFile) getMap().get(name);
+    }
+
 }

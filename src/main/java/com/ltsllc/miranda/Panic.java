@@ -75,8 +75,16 @@ public class Panic extends Exception {
         UnrecognizedPublicKeyClass,
         UnrecognizedNetworkMessage, // the object received an unexpected network message
         UnrecognizedNode, // a node shut down that we don't have a record of
+        UnrecognizedFile,
         UnrecognizedRemotePolicy,
-        UnrecognizedResult, ExceptionCreatingNode, ExceptionTryingToStart, ExceptionSettingData, Exception, FailedWritigFile, Inerrupted, ExceptionInExit;
+        UnrecognizedResult,
+        ExceptionCreatingNode,
+        ExceptionTryingToStart,
+        ExceptionSettingData,
+        Exception,
+        FailedWritigFile,
+        Inerrupted,
+        ExceptionInExit;
     }
 
     private Reasons reason;

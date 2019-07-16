@@ -25,7 +25,7 @@ import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
-import com.ltsllc.miranda.node.networkMessages.GetFileWireMessage;
+import com.ltsllc.miranda.operations.syncfiles.messages.GetFileWireMessage;
 import com.ltsllc.miranda.node.networkMessages.GetVersionsWireMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinResponseWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
@@ -54,14 +54,12 @@ public class JoiningState extends NodeState {
             }
 
             case GetClusterFile: {
-                GetClusterFileMessage getClusterFileMessage = (GetClusterFileMessage) m;
-                nextState = processGetClusterFileMessage(getClusterFileMessage);
+                defer(m);
                 break;
             }
 
             case GetVersions: {
-                GetVersionsMessage getVersionsMessage = (GetVersionsMessage) m;
-                nextState = processGetVersionsMessage(getVersionsMessage);
+                defer(m);
                 break;
             }
 
@@ -86,8 +84,7 @@ public class JoiningState extends NodeState {
             }
 
             case GetVersions: {
-                GetVersionsWireMessage getVersionsWireMessage = (GetVersionsWireMessage) networkMessage.getWireMessage();
-                nextState = processGetVersionsWireMessage(getVersionsWireMessage);
+                nextState = processGetVersionsWireMessage(networkMessage);
                 break;
             }
 
@@ -101,19 +98,13 @@ public class JoiningState extends NodeState {
     }
 
 
-    private State processGetClusterFileMessage(GetClusterFileMessage getClusterFileMessage) {
-        GetFileWireMessage getFileWireMessage = new GetFileWireMessage(Cluster.NAME);
-        sendOnWire(getFileWireMessage);
-
-        return this;
-    }
 
 
-    private State processGetVersionsMessage(GetVersionsMessage getVersionsMessage) {
-        GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
-        sendOnWire(getVersionsWireMessage);
 
-        return this;
+    private State processGetVersionsWireMessage(NetworkMessage networkMessage) {
+        defer(networkMessage);
+
+        return getNode().getCurrentState();
     }
 
 

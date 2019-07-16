@@ -21,13 +21,16 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.file.SingleFile;
 import com.ltsllc.miranda.file.messages.FileLoadedMessage;
 import com.ltsllc.miranda.manager.states.ManagerStartState;
 import com.ltsllc.miranda.miranda.messages.GarbageCollectionMessage;
 import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
+import com.ltsllc.miranda.operations.syncfiles.messages.NewVersionMessage;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -43,6 +46,15 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
     private SingleFile<F> file;
     private List<E> data;
     private boolean testMode;
+    private Version version;
+
+    public Version getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
 
     public boolean getTestMode() {
         return testMode;
@@ -138,4 +150,12 @@ public abstract class Manager<E, F extends MirandaObject> extends Consumer {
         GetVersionsMessage getVersionsMessage = new GetVersionsMessage(consumer.getQueue(), consumer);
         sendToMe(getVersionsMessage);
     }
+
+    public void sendNewVersionMessag (BlockingQueue senderQueue, Object sender, byte[] data)
+    {
+        NewVersionMessage newVersionMessage = new NewVersionMessage(senderQueue, sender, data);
+        sendToMe(newVersionMessage);
+    }
+
+
 }

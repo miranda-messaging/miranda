@@ -668,7 +668,5 @@ public class TestClusterReadyState extends TestCase {
         verify(getMockCluster(), never()).broadcast(any());
     }
 
-    public void testEndConversation () {
 
-    }
 }

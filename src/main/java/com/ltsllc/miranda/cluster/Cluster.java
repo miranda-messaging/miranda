@@ -25,6 +25,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.*;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.messages.*;
+import com.ltsllc.miranda.cluster.networkMessages.GetVersionWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewEventWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewTopicWireMessage;
 import com.ltsllc.miranda.cluster.states.ClusterReadyState;
@@ -34,6 +35,7 @@ import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.EndConversationMessage;
+import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.node.messages.StartConversationMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.servlet.status.GetStatusMessage;
@@ -77,6 +79,11 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     private Network network;
     private boolean clusterFileResponded;
+    private Node localNode;
+
+    public void setLocalNode(Node localNode) {
+        this.localNode = localNode;
+    }
 
     public boolean getClusterFileResponded() {
         return clusterFileResponded;
@@ -114,6 +121,10 @@ public class Cluster extends Manager<Node, NodeElement> {
 
     public SingleFile<NodeElement> createFile(String filename) throws IOException, MirandaException {
         return new ClusterFile(filename, Miranda.getInstance().getReader(), Miranda.getInstance().getWriter(), getQueue());
+    }
+
+    public int getNumberOfConnections() {
+        return getNodes().size();
     }
 
 
@@ -403,4 +414,13 @@ public class Cluster extends Manager<Node, NodeElement> {
         NewTopicWireMessage newTopicWireMessage = new NewTopicWireMessage(topic);
         broadcast(newTopicWireMessage);
     }
+
+    public void broadcastGetVersions () {
+        GetVersionWireMessage getVersionWireMessage = new GetVersionWireMessage();
+
+        for (Node node : getNodes()) {
+            node.sendOnWire(getVersionWireMessage);
+        }
+    }
+
 }

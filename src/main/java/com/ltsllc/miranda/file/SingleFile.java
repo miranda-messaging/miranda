@@ -22,9 +22,9 @@ import com.ltsllc.commons.util.Utils;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Version;
 import com.ltsllc.miranda.clientinterface.basicclasses.MergeException;
 import com.ltsllc.miranda.clientinterface.basicclasses.MirandaObject;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.deliveries.Comparer;
 import com.ltsllc.miranda.file.messages.*;
@@ -48,10 +48,12 @@ import java.util.concurrent.BlockingQueue;
  */
 abstract public class SingleFile<E extends MirandaObject> extends MirandaFile implements Comparer {
     abstract public List buildEmptyList();
-    abstract public Type getListType();
-    abstract public void checkForDuplicates();
-    abstract public void fromJson(String json);
 
+    abstract public Type getListType();
+
+    abstract public void checkForDuplicates();
+
+    abstract public void fromJson(String json);
 
 
     private State readyState;
@@ -141,14 +143,9 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
     }
 
     public void updateVersion() {
-        try {
-            String json = getGson().toJson(getData());
-            Version version = new Version(json);
-            setVersion(version);
-        } catch (GeneralSecurityException e) {
-            Panic panic = new Panic("Exception calculating new version", e, Panic.Reasons.ExceptionTryingToCalculateVersion);
-            Miranda.getInstance().panic(panic);
-        }
+        String json = getGson().toJson(getData());
+        Version version = new Version(json.getBytes());
+        setVersion(version);
     }
 
     public byte[] getBytes() {
@@ -297,7 +294,7 @@ abstract public class SingleFile<E extends MirandaObject> extends MirandaFile im
         sendRemoveObjectsMessage(senderQueue, sender, objects);
     }
 
-    public void sendWriteMessage (BlockingQueue<Message> senderQueue, Object senderOject) {
+    public void sendWriteMessage(BlockingQueue<Message> senderQueue, Object senderOject) {
         WriteMessage writeMessage = new WriteMessage(senderQueue, senderOject);
         sendToMe(writeMessage);
     }

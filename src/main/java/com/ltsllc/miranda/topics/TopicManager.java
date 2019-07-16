@@ -42,6 +42,7 @@ public class TopicManager extends StandardManager<Topic> {
 
     private static Logger logger = Logger.getLogger(TopicManager.class);
 
+
     public TopicsFile getTopicsFile() {
         return (TopicsFile) getFile();
     }
