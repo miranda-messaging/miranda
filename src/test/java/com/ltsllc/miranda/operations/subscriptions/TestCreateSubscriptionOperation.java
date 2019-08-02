@@ -88,9 +88,9 @@ public class TestCreateSubscriptionOperation extends TestCase {
 
         getOperation().start();
 
-        verify(getMockUserManager(), atLeastOnce()).sendGetUser(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.anyString());
-        verify(getMockTopicManager(), atLeastOnce()).sendGetTopicMessage(Matchers.any(BlockingQueue.class),
-                Matchers.any(), Matchers.anyString());
+        verify(getMockUserManager(), atLeastOnce()).sendGetUser(Matchers.any(), Matchers.any(),
+                Matchers.any());
+        verify(getMockTopicManager(), atLeastOnce()).sendGetTopicMessage(Matchers.any(),
+                Matchers.any(), Matchers.any());
     }
 }

@@ -20,22 +20,22 @@ import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.clcl.PublicKey;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.messages.VersionsMessage;
 import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.file.GetFileResponseWireMessage;
+import com.ltsllc.miranda.file.MirandaFile;
 import com.ltsllc.miranda.file.messages.GetFileResponseMessage;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.NameVersion;
-import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
-import com.ltsllc.miranda.node.messages.GetSubscriptionsFileMessage;
-import com.ltsllc.miranda.node.messages.GetTopicsFileMessage;
-import com.ltsllc.miranda.node.messages.VersionMessage;
+import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
 import com.ltsllc.miranda.session.Session;
 import com.ltsllc.miranda.subsciptions.SubscriptionsFile;
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.regex.Matcher;
 
 import static org.mockito.Mockito.*;
 
@@ -90,8 +91,6 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(versionMessage);
 
         VersionsWireMessage versionsWireMessage = new VersionsWireMessage(nameVersions);
-        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.anyInt(), Matchers.eq(versionsWireMessage));
     }
 
 
@@ -99,13 +98,13 @@ public class TestNodeReadyState extends TesterNodeState {
         Message message = null;
 
         if (file.equalsIgnoreCase(UsersFile.FILE_NAME))
-            message = new GetUsersFileMessage(null, this);
+            message = new GetFileMessage(null, this, Files.User);
         else if (file.equalsIgnoreCase(TopicsFile.FILE_NAME))
-            message = new GetTopicsFileMessage(null, this);
+            message = new GetFileMessage(null, this, Files.Topic);
         else if (file.equalsIgnoreCase(SubscriptionsFile.FILE_NAME))
-            message = new GetSubscriptionsFileMessage(null, this);
+            message = new GetFileMessage(null, this, Files.Subscription);
         else if (file.equalsIgnoreCase(Cluster.NAME))
-            message = new GetClusterFileMessage(null, this);
+            message = new GetFileMessage(null, this, Files.Cluster);
         else {
             System.err.println("Unrecognized file: " + file);
             System.exit(1);
@@ -113,21 +112,46 @@ public class TestNodeReadyState extends TesterNodeState {
 
         State nextState = getReadyState().processMessage(message);
 
-        WireMessage wireMessage = new GetFileWireMessage(file);
-
-        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.anyInt(), Matchers.eq(wireMessage));
-
+        WireMessage wireMessage = new GetFileWireMessage(Files.Topic);
+        assert (wireMessage.getWireSubject() == WireMessage.WireSubjects.GetFile);
         assert (nextState instanceof NodeReadyState);
     }
 
+    private byte[] data = {1,2,3};
+
     @Test
     public void testGetClusterFile() throws MirandaException {
+        setupMockCluster();
+        setupMockClutersfile();
+        setupMockSingleFile();
+        setupMockMiranda();
+
+        when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
+        when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getBytes()).thenReturn(data);
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+        when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
+        when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getBytes()).thenReturn(data);
+
+
         testGetFileMessage(Cluster.NAME);
     }
 
     @Test
     public void testGetUsersFile() throws MirandaException {
+        setupMockMiranda();
+        setupMockUserManager();
+        setupMockSingleFile();
+        setupMockVersion();
+
+        when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
+        when(getMockUserManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getBytes()).thenReturn(data);
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+        when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
+        when(getMockUserManager().getFile()).thenReturn(getMockSingleFile());
+
         testGetFileMessage(UsersFile.FILE_NAME);
     }
 
@@ -142,32 +166,55 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(versionsMessage);
 
         VersionsWireMessage versionsWireMessage = new VersionsWireMessage(nameVersionList);
-        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.anyInt(), Matchers.eq(versionsWireMessage));
 
         assert (nextState instanceof NodeReadyState);
     }
 
     @Test
     public void testProcessGetFileResonseMessage() throws MirandaException {
-        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "whatever", "whtever");
-        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage("whatever", "whatever");
+        GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "whatever");
+        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(Files.Topic, new Version(), "hi there".getBytes()) ;
 
         State nextState = getReadyState().processMessage(getFileResponseMessage);
 
         assert (nextState instanceof NodeReadyState);
-        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
-                Matchers.anyInt(), Matchers.eq(getFileResponseWireMessage));
-    }
+
+}
 
     @Test
     public void testGetVersionsWireMessage() throws MirandaException {
         setupMockMiranda();
+        setupMockTopicsManager();
+        setupMockSingleFile();
         GetVersionsWireMessage getVersionsWireMessage = new GetVersionsWireMessage();
         NetworkMessage networkMessage = new NetworkMessage(null, this, getVersionsWireMessage);
-
+        setupMockVersion ();
         BlockingQueue<Message> queue = new LinkedBlockingDeque<Message>();
+
+        when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+        when (getMockTopicManager().getFile()).thenReturn(getMockSingleFile());
         when(getMockMiranda().getQueue()).thenReturn(queue);
+
+        setupMockDeliveryManager();
+       when(getMockMiranda().getDeliveryManager()).thenReturn(getMockDeliveryManager());
+        when (getMockDeliveryManager().getFile()).thenReturn(getMockFile());
+        when (getMockFile().getVersion()).thenReturn(getMockVersion());
+
+        setupMockCluster();
+        when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
+        when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+
+        setupMockSubscriptionManager();
+        when(getMockMiranda().getSubscriptionManager()).thenReturn(getMockSubscriptionManager());
+        when(getMockSubscriptionManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+
+        setupMockUserManager();
+        when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
+        when(getMockUserManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
@@ -199,32 +246,37 @@ public class TestNodeReadyState extends TesterNodeState {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
 
-
+        WireMessage wireMessage = null;
         if (file.equalsIgnoreCase(Cluster.NAME)) {
             setupMockCluster();
             when(getMockMiranda().getCluster()).thenReturn(getMockCluster());
             when(getMockCluster().getQueue()).thenReturn(queue);
+            when(getMockCluster().getClusterFile()).thenReturn(getMockClusterfile());
+            wireMessage = new GetFileWireMessage(Files.Cluster);
         } else if (file.equalsIgnoreCase(UsersFile.FILE_NAME)) {
             setupMockUsersFile();
             when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
             when(getMockUserManager().getFile()).thenReturn(getMockUsersFile());
             when(getMockUsersFile().getQueue()).thenReturn(queue);
+            wireMessage = new GetFileWireMessage(Files.User);
         } else if (file.equalsIgnoreCase(TopicsFile.FILE_NAME)) {
             setupMockTopicsFile();
             when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
             when(getMockTopicManager().getFile()).thenReturn(getMockTopicsFile());
             when(getMockTopicsFile().getQueue()).thenReturn(queue);
+            wireMessage = new GetFileWireMessage(Files.Topic);
         } else if (file.equalsIgnoreCase(SubscriptionsFile.FILE_NAME)) {
             setupMockSubscriptionsFile();
             when(getMockMiranda().getSubscriptionManager()).thenReturn(getMockSubscriptionManager());
             when(getMockSubscriptionManager().getFile()).thenReturn(getMockSubscriptionsFile());
             when(getMockSubscriptionsFile().getQueue()).thenReturn(queue);
+            wireMessage = new GetFileWireMessage(Files.Subscription);
         } else {
             System.err.println("Unrecognized file: " + file);
             System.exit(1);
         }
 
-        WireMessage wireMessage = new GetFileWireMessage(file);
+
 
 
         NetworkMessage networkMessage = new NetworkMessage(null, this, wireMessage);
@@ -240,25 +292,73 @@ public class TestNodeReadyState extends TesterNodeState {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
         setupMockMiranda();
         setupMockCluster();
+        setupMockTopicsManager();
+        setupMockTopicsFile();
+        setupMockSingleFile();
+        setupMockCluster();
+        setupMockClutersfile();
 
-        when (getMockMiranda().getCluster()).thenReturn(getMockCluster());
+        when (getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+        when (getMockTopicManager().getTopicsFile()).thenReturn(getMockTopicsFile());
         when (getMockCluster().getQueue()).thenReturn(queue);
+        when (getMockCluster().getClusterFile()).thenReturn(getMockClusterfile());
 
         testProcessGetFileWireMessage(Cluster.NAME);
     }
 
     @Test
     public void testProcessGetFileWireMessageUsers() throws MirandaException {
+        setupMockMiranda();
+        setupMockTopicsManager();
+        setupMockSingleFile();
+        setupMockTopicsManager();
+        setupMockVersion();
+        setupMockUserManager();
+
+        byte[] data = {1,2,3};
+
+        when(getMockSingleFile().getBytes()).thenReturn(data);
+        when (getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+        when(getMockTopicManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+        when(getMockMiranda().getUserManager()).thenReturn(getMockUserManager());
+        when(getMockUserManager().getUsersFile()).thenReturn(getMockUsersFile());
+
         testProcessGetFileWireMessage(UsersFile.FILE_NAME);
     }
 
     @Test
     public void testProcessGetFileWireMessageTopics() throws MirandaException {
+        setupMockMiranda();
+        setupMockTopicsManager();
+        setupMockSingleFile();
+        setupMockVersion();
+        setupMockVersion();
+
+        when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+        when(getMockTopicManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getBytes()).thenReturn(data);
+        when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+        when(getMockTopicManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockSingleFile().getVersion()).thenReturn(getMockVersion());
+        when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+
         testProcessGetFileWireMessage(TopicsFile.FILE_NAME);
     }
 
     @Test
     public void testProcessGetFileWireMessageSubscriptions() throws MirandaException {
+        setupMockMiranda();
+        setupMockTopicsManager();
+        setupMockTopicsFile();
+        setupMockSubscriptionManager();
+
+        when(getMockTopicManager().getTopicsFile()).thenReturn(getMockTopicsFile());
+        when(getMockMiranda().getTopicManager()).thenReturn(getMockTopicManager());
+        when(getMockTopicManager().getFile()).thenReturn(getMockSingleFile());
+        when(getMockMiranda().getSubscriptionManager()).thenReturn(getMockSubscriptionManager());
+        when(getMockSubscriptionManager().getSubscriptionsFile()).thenReturn(getMockSubscriptionsFile());
+
         testProcessGetFileWireMessage(SubscriptionsFile.FILE_NAME);
     }
 
@@ -278,7 +378,7 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
-        verify(getMockMiranda(), atLeastOnce()).sendAddSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
+        verify(getMockMiranda(), atLeastOnce()).sendAddSessionMessage(Matchers.any(), Matchers.any(), Matchers.eq(session));
     }
 
     @Test
@@ -299,7 +399,7 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState instanceof NodeReadyState);
-        verify(getMockMiranda(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(expiredSessions));
+        verify(getMockMiranda(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(), Matchers.any(), Matchers.eq(expiredSessions));
     }
 
 
@@ -329,7 +429,7 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState == getReadyState());
-        verify(getMockMiranda(), atLeastOnce()).sendUserAddedMessage(Matchers.any(BlockingQueue.class),
+        verify(getMockMiranda(), atLeastOnce()).sendUserAddedMessage(Matchers.any(),
                 Matchers.any(), Matchers.any(User.class));
     }
 
@@ -347,7 +447,7 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState == getReadyState());
-        verify(getMockMiranda(), atLeastOnce()).sendUserUpdatedMessage(Matchers.any(BlockingQueue.class),
+        verify(getMockMiranda(), atLeastOnce()).sendUserUpdatedMessage(Matchers.any(),
                 Matchers.any(), Matchers.any(User.class));
     }
 
@@ -365,7 +465,7 @@ public class TestNodeReadyState extends TesterNodeState {
         State nextState = getReadyState().processMessage(networkMessage);
 
         assert (nextState == getReadyState());
-        verify(getMockMiranda(), atLeastOnce()).sendUserDeletedMessage(Matchers.any(BlockingQueue.class),
+        verify(getMockMiranda(), atLeastOnce()).sendUserDeletedMessage(Matchers.any(),
                 Matchers.any(), Matchers.eq("whatever"));
     }
 }

@@ -22,6 +22,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.states.ClusterFileReadyState;
@@ -98,8 +99,7 @@ public class TestSingleFileReadyState extends TestCase {
     @Test
     public void testGetFileResponseMessage () {
         try {
-            GetFileResponseMessage message = new GetFileResponseMessage(null, null, "[]",
-            "010203");
+            GetFileResponseMessage message = new GetFileResponseMessage(null, null,             "010203");
 
             when(getClusterFileReadyState().getFile().getWriter()).thenReturn(getMockWriter());
             State nextState = getClusterFileReadyState().processMessage(message);
@@ -118,7 +118,7 @@ public class TestSingleFileReadyState extends TestCase {
         Gson gson = new Gson();
         String json = gson.toJson(queue);
         byte[] buffer = json.getBytes();
-        GetFileMessage getFileMessage = new GetFileMessage(queue, this, "whatever");
+        GetFileMessage getFileMessage = new GetFileMessage(queue, this, Files.Topic);
 
         when(getMockClusterFile().getQueue()).thenReturn(queue);
         when(getMockClusterFile().getBytes()).thenReturn(FILE_BYTES);

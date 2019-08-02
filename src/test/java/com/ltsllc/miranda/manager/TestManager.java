@@ -89,6 +89,7 @@ public class TestManager extends TestCase {
 
     @Test
     public void testPerformGarbageCollection () {
+        setupMockSingleFile();
         getManager().setFile(getMockSingleFile());
         getManager().performGarbageCollection();
 

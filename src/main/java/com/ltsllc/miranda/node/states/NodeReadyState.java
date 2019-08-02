@@ -35,16 +35,11 @@ import com.ltsllc.miranda.node.Conversation;
 import com.ltsllc.miranda.node.ConversationMessage;
 import com.ltsllc.miranda.node.NameVersion;
 import com.ltsllc.miranda.node.Node;
-import com.ltsllc.miranda.node.messages.EndConversationMessage;
-import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
-import com.ltsllc.miranda.node.messages.StartConversationMessage;
-import com.ltsllc.miranda.node.messages.VersionMessage;
+import com.ltsllc.miranda.node.messages.*;
 import com.ltsllc.miranda.node.networkMessages.*;
-import com.ltsllc.miranda.operations.syncfiles.messages.GetFileWireMessage;
 import com.ltsllc.miranda.shutdown.ShutdownMessage;
 import com.ltsllc.miranda.topics.TopicManager;
 import org.apache.log4j.Logger;
-
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,6 +152,7 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+
             case Version: {
                 VersionMessage versionMessage = (VersionMessage) message;
                 nextState = processVersionMessage(versionMessage);
@@ -204,6 +200,11 @@ public class NodeReadyState extends NodeState {
                 break;
             }
 
+            case GetFile: {
+                GetFileMessage getFileMessage = (GetFileMessage) message;
+                nextState = processGetFileMessge(getFileMessage);
+            }
+
             default:
                 nextState = super.processMessage(message);
                 break;
@@ -240,7 +241,6 @@ public class NodeReadyState extends NodeState {
 
         try {
             getVersionsResponseWireMessage.setVersionFor(Files.Topic, miranda.getTopicManager().getVersion());
-            getVersionsResponseWireMessage.setVersionFor(Files.DeliveriesList, miranda.getDeliveryManager().getVersion());
             getVersionsResponseWireMessage.setVersionFor(Files.Cluster, miranda.getCluster().getVersion());
             getVersionsResponseWireMessage.setVersionFor(Files.DeliveriesList, miranda.getDeliveryManager().getVersion());
             getVersionsResponseWireMessage.setVersionFor(Files.Subscription, miranda.getSubscriptionManager().getVersion());
@@ -276,6 +276,76 @@ public class NodeReadyState extends NodeState {
         return this;
     }
 
+    public State processGetFileMessge (GetFileMessage getFileMessage) {
+        Miranda miranda = Miranda.getInstance();
+        byte[] data = null;
+        Version version = null;
+        try {
+            switch (getFileMessage.getFile()) {
+                case User: {
+                    data = miranda.getUserManager().getFile().getBytes();
+                    version = miranda.getUserManager().getFile().getVersion();
+                    break;
+                }
+
+                case Cluster: {
+                    data = miranda.getCluster().getFile().getBytes();
+                    version = miranda.getCluster().getFile().getVersion();
+                    break;
+                }
+
+                case Subscription: {
+                    data = miranda.getSubscriptionManager().getFile().getBytes();
+                    version = miranda.getSubscriptionManager().getFile().getVersion();
+                    break;
+                }
+
+                case EventList: {
+                    data = miranda.getEventManager().getFile().getBytes();
+                    version = miranda.getEventManager().getFile().getVersion();
+                    break;
+                }
+
+                case Topic: {
+                    data = miranda.getTopicManager().getFile().getBytes();
+                    version = miranda.getTopicManager().getFile().getVersion();
+                    break;
+                }
+
+                case DeliveriesList: {
+                    data = miranda.getDeliveryManager().getFile().getBytes();
+                    version = miranda.getDeliveryManager().getFile().getVersion();
+                    break;
+                }
+
+                case EventFile: {
+                    data = miranda.getEventManager().getEventsFile(getFileMessage.getName()).getBytes();
+                    version = miranda.getEventManager().getFile().getVersion();
+                    break;
+                }
+
+                case DeliveriesFile: {
+                    data = miranda.getEventManager().getFile(getFileMessage.getName()).getBytes();
+                    version = miranda.getEventManager().getFile(getFileMessage.getName()).getVersion();
+                    break;
+                }
+
+                default: {
+                    Panic panic = new Panic ("Impossible case in swich", Panic.Reasons.ImposibleSwich);
+                    miranda.panic(panic);
+                }
+            }
+        }
+        catch (MirandaException e) {
+            Panic panic = new Panic("Exception getting file", Panic.Reasons.Exception);
+            miranda.panic(panic);
+        }
+
+        GetFileResponseWireMessage getFileResponseWireMessage = new GetFileResponseWireMessage(getFileMessage.getFile(),version,data);
+        sendOnNetwork(getFileResponseWireMessage);
+        return getContainer().getCurrentState();
+    }
+
 
     private State processGetFileWireMessage(GetFileWireMessage getFileWireMessage) {
         State nextState = getNode().getCurrentState();
@@ -297,7 +367,7 @@ public class NodeReadyState extends NodeState {
         switch (getFileWireMessage.getFile())
         {
             case EventFile:
-                singleFile = miranda.getEventManager().getEventsFile(getFileWireMessage.getFileName());
+                singleFile = miranda.getEventManager().getEventsFile(getFileWireMessage.getFile().name());
                 break;
 
             case EventList:
@@ -309,7 +379,7 @@ public class NodeReadyState extends NodeState {
                 break;
 
             case Topic:
-                singleFile = miranda.getTopicManager().getTopicsFile();
+                singleFile = miranda.getTopicManager().getFile();
                 break;
 
             case User:

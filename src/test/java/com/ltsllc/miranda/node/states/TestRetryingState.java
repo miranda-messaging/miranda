@@ -61,7 +61,7 @@ public class TestRetryingState extends TesterNodeState {
         State nextState = getRetryingState().start();
 
         assert (nextState instanceof RetryingState);
-        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.anyLong(), Matchers.any(BlockingQueue.class),
+        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.anyLong(), Matchers.any(),
                 Matchers.any(RetryMessage.class));
     }
 
@@ -77,7 +77,7 @@ public class TestRetryingState extends TesterNodeState {
 
         assert (nextState instanceof RetryingState);
 
-        verify(getMockNetwork(), atLeastOnce()).sendConnect(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify(getMockNetwork(), atLeastOnce()).sendConnect(Matchers.any(), Matchers.any(),
                 Matchers.eq("foo.com"), Matchers.eq(6789));
     }
 
@@ -104,8 +104,8 @@ public class TestRetryingState extends TesterNodeState {
 
         assert (finalCount == 1 + initialCount);
 
-        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.anyLong(), Matchers.any(BlockingQueue.class),
-                Matchers.any(RetryMessage.class));
+        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.anyLong(), Matchers.any(),
+                Matchers.any());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class TestRetryingState extends TesterNodeState {
 
         assert (nextState instanceof RetryingState);
 
-        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.eq(RetryingState.MAX_TIME), Matchers.any(BlockingQueue.class),
+        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.eq(RetryingState.MAX_TIME), Matchers.any(),
                 Matchers.any(RetryMessage.class));
     }
 
@@ -132,7 +132,7 @@ public class TestRetryingState extends TesterNodeState {
 
         assert (nextState instanceof RetryingState);
 
-        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.eq(RetryingState.INITIAL_DELAY), Matchers.any(BlockingQueue.class),
+        verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.eq(RetryingState.INITIAL_DELAY), Matchers.any(),
                 Matchers.any(RetryMessage.class));
 
         nextState = getRetryingState().processMessage(connectFailedMessage);
@@ -140,7 +140,7 @@ public class TestRetryingState extends TesterNodeState {
         assert (nextState instanceof RetryingState);
 
         verify(getMockTimer(), atLeastOnce()).sendScheduleOnce(Matchers.eq(2 * RetryingState.INITIAL_DELAY),
-                Matchers.any(BlockingQueue.class), Matchers.any(RetryMessage.class));
+                Matchers.any(), Matchers.any(RetryMessage.class));
     }
 
 }

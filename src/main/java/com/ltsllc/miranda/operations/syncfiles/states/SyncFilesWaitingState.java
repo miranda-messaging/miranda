@@ -3,8 +3,6 @@ package com.ltsllc.miranda.operations.syncfiles.states;
 import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
-import com.ltsllc.miranda.clientinterface.requests.Files;
-import com.ltsllc.miranda.cluster.networkMessages.GetVersionResponseWireMessage;
 import com.ltsllc.miranda.operations.syncfiles.SyncFiles;
 import com.ltsllc.miranda.operations.syncfiles.messages.GetVersionResponseMessage;
 

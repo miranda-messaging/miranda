@@ -20,6 +20,7 @@ import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
 import com.ltsllc.miranda.test.TestCase;
@@ -86,7 +87,7 @@ public class TestUsersFileReadyState extends TestCase {
     @Test
     public void testProcessGetFileMessage () throws MirandaException {
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        GetFileMessage getFileMessage = new GetFileMessage(queue, this, "whatever");
+        GetFileMessage getFileMessage = new GetFileMessage(queue, this, Files.Topic);
 
         when(getMockUsersFile().getBytes()).thenReturn("whatever".getBytes());
 

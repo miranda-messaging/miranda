@@ -83,6 +83,7 @@ public class Panic extends Exception {
         ExceptionSettingData,
         Exception,
         FailedWritigFile,
+        ImposibleSwich,
         Inerrupted,
         ExceptionInExit;
     }

@@ -28,6 +28,8 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
+import com.ltsllc.miranda.cluster.ClusterFile;
+import com.ltsllc.miranda.deliveries.DeliveryManager;
 import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.miranda.Miranda;
@@ -50,6 +52,7 @@ import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.writer.Writer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.mockito.Mock;
 
 import java.io.*;
 import java.security.KeyStore;
@@ -61,6 +64,7 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static org.mockito.Mockito.mock;
 
 
 /**
@@ -74,6 +78,9 @@ public class TestCase {
     private BlockingQueue<Message> writerQueue = new LinkedBlockingQueue<Message>();
     private JavaKeyStore keyStore;
     private JavaKeyStore trustStore;
+
+    @Mock
+    private Version mockVersion;
 
     @Mock
     private HttpServer mockHttpServer;
@@ -124,9 +131,6 @@ public class TestCase {
     private SessionManager mockSessionManager;
 
     @Mock
-    private SingleFile mockSingleFile;
-
-    @Mock
     private BlockingQueue mockBlockingQueue;
 
     @Mock
@@ -152,6 +156,18 @@ public class TestCase {
 
     @Mock
     private SubscriptionManager mockSubscriptionManager;
+
+    @Mock
+    private MirandaFile mockFile;
+
+    public Version getMockVersion() {
+        return mockVersion;
+    }
+
+    public void setMockVersion (Version version)
+    {
+        mockVersion = version;
+    }
 
     public JavaKeyStore getTrustStore() {
         return trustStore;
@@ -195,10 +211,6 @@ public class TestCase {
 
     public BlockingQueue getMockBlockingQueue() {
         return mockBlockingQueue;
-    }
-
-    public SingleFile getMockSingleFile() {
-        return mockSingleFile;
     }
 
     public SessionManager getMockSessionManager() {
@@ -257,6 +269,22 @@ public class TestCase {
         return mockSession;
     }
 
+    public MirandaFile getMockFile () {
+        return mockFile;
+    }
+
+    @Mock
+    private SingleFile mockSingleFile;
+
+    public void setupMockSingleFile () {
+        if (null == getMockSingleFile())
+            mockSingleFile = mock(SingleFile.class);
+    }
+
+    public SingleFile getMockSingleFile () {
+        return mockSingleFile;
+    }
+
     public static boolean deleteFile(File file) {
         if (file.isDirectory())
             return false;
@@ -265,6 +293,30 @@ public class TestCase {
             return true;
 
         return file.delete();
+    }
+
+    @Mock
+    private DeliveryManager mockDeliveryManager;
+
+    public void setupMockDeliveryManager () {
+        if (mockDeliveryManager == null)
+            mockDeliveryManager = mock(DeliveryManager.class);
+    }
+
+    public DeliveryManager getMockDeliveryManager (){
+        return mockDeliveryManager;
+    }
+
+    @Mock
+    private ClusterFile mockClusterfile;
+
+    public void setupMockClutersfile () {
+        if (mockClusterfile == null)
+            mockClusterfile = mock(ClusterFile.class);
+    }
+
+    public ClusterFile getMockClusterfile () {
+        return mockClusterfile;
     }
 
     public static Logger getLogger() {
@@ -380,7 +432,6 @@ public class TestCase {
         this.mockUserManager = null;
         this.mockTopicManager = null;
         this.mockSessionManager = null;
-        this.mockSingleFile = null;
         this.mockBlockingQueue = null;
         this.mockSession = null;
         this.mockPublicKey = null;
@@ -391,7 +442,16 @@ public class TestCase {
         this.mockServletHolder = null;
         this.mockSubscriptionManager = null;
         this.mockHttpServer = null;
+        this.mockTopicManager = null;
+        this.mockFile = null;
+        this.mockSubscriptionManager = null;
     }
+
+    public void setupMockSubscriptionManager () {
+        if (mockSubscriptionManager == null)
+            mockSubscriptionManager = mock(SubscriptionManager.class);
+    }
+
 
     public void setup() throws Exception {
         StopState.initializeClass();
@@ -414,7 +474,6 @@ public class TestCase {
         this.mockUserManager = mock(UserManager.class);
         this.mockTopicManager = mock(TopicManager.class);
         this.mockSessionManager = mock(SessionManager.class);
-        this.mockSingleFile = mock(SingleFile.class);
         this.mockBlockingQueue = mock(BlockingQueue.class);
         this.mockSession = mock(Session.class);
         this.mockPublicKey = mock(PublicKey.class);
@@ -425,6 +484,8 @@ public class TestCase {
         this.mockServletHolder = mock(ServletHolder.class);
         this.mockSubscriptionManager = mock(SubscriptionManager.class);
         this.mockHttpServer = mock(HttpServer.class);
+        this.mockTopicManager = mock(TopicManager.class);
+        this.mockFile = mock(MirandaFile.class);
 
         setuplog4j();
     }
@@ -590,6 +651,10 @@ public class TestCase {
         deleteFile(TEMP_TRUSTSTORE);
     }
 
+    public void setupMockFile () {
+        if (null == mockFile)
+             mockFile = mock(MirandaFile.class);
+    }
 
 
     public static final String TEMP_KEY_STORE_CONTENTS = "FEEDFEED00000002000000010000000100056D796B657900000162C670C2E90000018F3082018B300E060A2B060104012A02110101050004820177FAEEE38A311B04601727AA486F75C1A6B94810A5301392C826D3DC94162E310A2F04D5B454C335DBB9280B691450292F7213E936E6A0A82A7C9815E9BA98DD76FD9FA2ACC12EF60CC4CCB4041ABB9787A3F65038696E865DB70FCC03210A9019E963BBB5F65AF0B62DA089179AB21F84C2B17AD42B2D1CBA74BC6B413DC3826FAB2A43199641853CA6F2A406038B0B6FAFF9B0D8A6BA6FE0F7BFF991FD27DF2364EF15A55AE19A76E51CEBC99AFFB0F01E26922BF43EDFD784324C947926DB56BA70B6176230CF15096DDDF5526631FD8880034B45A6AB27FBC823103A0A66E00F58D495AAA8188C41CE05AF1B48531A3C54AB6B9A6022185C16FD730BFF03BCA32CBA48CA52F95DF2DA075182191AA4202D3BB30E3D27D5A83E7055BE06C8622CB8F5C70B9CD8DDBD3F1D6D621C10452B703FA22849FBEBADC172D33CC102792AA596C4841D20AE51E58CA3722DFDEE58C0DF6CF00A11559C968693F7FB414BE58D2CE168360E41D6274869AD7B268741793FA9A27882000000010005582E3530390000033930820335308202F2A00302010202047886F8B4300B06072A8648CE3804030500306C3110300E06035504061307556E6B6E6F776E3110300E06035504081307556E6B6E6F776E3110300E06035504071307556E6B6E6F776E3110300E060355040A1307556E6B6E6F776E3110300E060355040B1307556E6B6E6F776E3110300E06035504031307556E6B6E6F776E301E170D3138303431343233313530305A170D3138303731333233313530305A306C3110300E06035504061307556E6B6E6F776E3110300E06035504081307556E6B6E6F776E3110300E06035504071307556E6B6E6F776E3110300E060355040A1307556E6B6E6F776E3110300E060355040B1307556E6B6E6F776E3110300E06035504031307556E6B6E6F776E308201B73082012C06072A8648CE3804013082011F02818100FD7F53811D75122952DF4A9C2EECE4E7F611B7523CEF4400C31E3F80B6512669455D402251FB593D8D58FABFC5F5BA30F6CB9B556CD7813B801D346FF26660B76B9950A5A49F9FE8047B1022C24FBBA9D7FEB7C61BF83B57E7C6A8A6150F04FB83F6D3C51EC3023554135A169132F675F3AE2B61D72AEFF22203199DD14801C70215009760508F15230BCCB292B982A2EB840BF0581CF502818100F7E1A085D69B3DDECBBCAB5C36B857B97994AFBBFA3AEA82F9574C0B3D0782675159578EBAD4594FE67107108180B449167123E84C281613B7CF09328CC8A6E13C167A8B547C8D28E0A3AE1E2BB3A675916EA37F0BFA213562F1FB627A01243BCCA4F1BEA8519089A883DFE15AE59F06928B665E807B552564014C3BFECF492A03818400028180776501B39BC05579C56084C050C0B0A8ED07BEF9961EB8FFA8E151F6D7B370BBFBA55E17BDBA0EABEAADCAEB743BF8680047D3E6EE5AE6A91B2561ABF811800244112499EF36A5E58907B02236D162B13C261AAC4B55EF6841BDD844C015EFA809839EC4A5BCCE564A692D65A2CF2256431F47D098C3C0B2E112903D0A9545E9A321301F301D0603551D0E041604145B83E0C7431B37FF53E943C6FFFD299F55A0C2B2300B06072A8648CE3804030500033000302D0215008B013074CA5E3A83F3CCFEB51094940E7EAAD953021437EAB563500945B1AF686174FB17C8750EAB90E0576959E69B1487A3378C92FE13A5933AADE29A3F";
@@ -650,6 +715,11 @@ public class TestCase {
         deleteFile(TEMP_KEYSTORE);
     }
 
+    public void createTextFile (String filename, String contents) throws IOException
+    {
+        FileWriter fileWriter = new FileWriter(filename);
+        fileWriter.write(contents);
+    }
 
     public static String readContents(String filename) {
         FileInputStream fileInputStream = null;
@@ -867,11 +937,14 @@ public class TestCase {
         }
     }
 
+    public void setupMockVersion () {
+        if (null == getMockVersion())
+            setMockVersion(mock(Version.class));
+    }
+
     public void setupMockCluster() {
         if (null == getMockCluster())
             this.mockCluster = mock(Cluster.class);
-
-        Miranda.getInstance().setCluster(mockCluster);
     }
 
     public void setupMirandaFactory(String keystorePassword, String truststorePassword) {
@@ -885,19 +958,27 @@ public class TestCase {
     }
 
     public void setupMockPanicPolicy() {
+
         Miranda.getInstance().setPanicPolicy(mockPanicPolicy);
+
     }
 
     public void setupMockUsersFile() {
         UsersFile.setInstance(getMockUsersFile());
     }
 
+
     public void setupMockTopicsFile() {
-        TopicsFile.setInstance(getMockTopicsFile());
+        Miranda.getInstance().setTopicManager(getMockTopicManager());
     }
 
     public void setupMockSubscriptionsFile() {
         SubscriptionsFile.setInstance(getMockSubscriptionsFile());
+    }
+
+    public void setupMockTopicsManager() {
+        mockTopicManager = mock(TopicManager.class);
+        Miranda.getInstance().setTopicManager(mockTopicManager);
     }
 
     public void setupMockTimer() {

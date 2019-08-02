@@ -4,7 +4,7 @@ import com.ltsllc.clcl.DistinguishedName;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.Results;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.operations.syncfiles.BootstrapOperation;
+import com.ltsllc.miranda.operations.syncfiles.SyncFiles;
 import com.ltsllc.miranda.servlet.miranda.MirandaServlet;
 import com.ltsllc.miranda.user.messages.BootstrapResponseMessage;
 
@@ -40,8 +40,9 @@ public class BootstrapServlet extends MirandaServlet {
 
     public Reply basicPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, InterruptedException {
         Reply reply = new Reply();
-        BootstrapOperation bootstrapOperation = new BootstrapOperation();
-        bootstrapOperation.start();
+
+        SyncFiles syncFiles = new SyncFiles();
+        syncFiles.start();
 
         String caCountry = req.getParameter("ca.country");
         String caState = req.getParameter("ca.state");
@@ -85,7 +86,7 @@ public class BootstrapServlet extends MirandaServlet {
                 + adminCity + ", o=" + adminCompany + ", ou=" + adminDivision + ", cn=" + adminName);
         BootstrapMessage bootstrapMessage = new BootstrapMessage(getQueue(), this, caDistinguisdhedName,
                 caPassword, nodeDistinguishedName, nodePassword, adminDistinguishedName, adminPassword);
-        send(bootstrapOperation.getQueue(), bootstrapMessage);
+
 
 
         BootstrapResponseMessage bootstrapResponseMessage =

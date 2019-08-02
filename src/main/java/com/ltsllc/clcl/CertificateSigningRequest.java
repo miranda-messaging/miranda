@@ -21,6 +21,7 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.util.io.pem.PemObject;
+
 import sun.security.pkcs10.PKCS10;
 import sun.security.x509.X500Name;
 
@@ -29,6 +30,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.Signature;
+
 
 public class CertificateSigningRequest {
     public static final String SIGNATURE_ALGORITHM = "SHA1WithRSA";

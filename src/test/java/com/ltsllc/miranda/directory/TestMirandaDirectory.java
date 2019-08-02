@@ -37,12 +37,11 @@ public class TestMirandaDirectory extends TestCase {
 
     @Test
     public void testLoad () {
-        File temp = new File("C:/Users/miranda/IdeaProjects/miranda/data");
-        getEventDirectory().setDirectoryName("data");
+        File temp = new File("C:/");
         getEventDirectory().setDirectory(temp);
         getEventDirectory().load();
 
-        verify(getMockReader(), atLeastOnce()).sendReadMessage(any(), any(), anyString());
-
+        assert(getEventDirectory().contains("Program Files"));
+        assert (getEventDirectory().contains("Program Files (x86)"));
     }
 }

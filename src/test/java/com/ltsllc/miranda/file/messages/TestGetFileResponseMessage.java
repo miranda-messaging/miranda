@@ -71,13 +71,12 @@ public class TestGetFileResponseMessage extends TestCase {
     @Test
     public void testConstructors () throws IOException {
         GetFileResponseMessage getFileResponseMessage = new GetFileResponseMessage(null, this, "me");
-        assert (getFileResponseMessage.getRequester().equals("me"));
 
-        getFileResponseMessage = new GetFileResponseMessage(null, this, "me", "01020304");
+        getFileResponseMessage = new GetFileResponseMessage(null, this, "01020304");
         assert (getFileResponseMessage.getContents().equals("01020304"));
 
         byte[] buffer = {01, 02, 03, 04};
-        getFileResponseMessage = new GetFileResponseMessage(null, this, "me", buffer);
+        getFileResponseMessage = new GetFileResponseMessage(null, this, buffer);
         assert (bytesAreEqual(getFileResponseMessage.getContentAsBytes(), buffer));
     }
 }

@@ -1,12 +1,13 @@
 package com.ltsllc.miranda.clientinterface;
 
 import com.ltsllc.miranda.clientinterface.basicclasses.Version;
+import com.ltsllc.miranda.clientinterface.test.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.security.GeneralSecurityException;
 
-public class TestVersion {
+public class TestVersion extends TestCase {
     private Version version1;
     private Version version2;
 
@@ -27,9 +28,10 @@ public class TestVersion {
     }
 
     @Before
-    public void setup () throws GeneralSecurityException {
-        version1 = new Version("hi there");
-        version2 = new Version( "low there");
+    public void setup ()  {
+        version1 = getGson().fromJson("{ sha256: 1234567890 }", Version.class);
+        version2 = getGson().fromJson("{ sha256: 0987654321 }", Version.class);
+        assert(version1 != version2);
     }
 
     @Test

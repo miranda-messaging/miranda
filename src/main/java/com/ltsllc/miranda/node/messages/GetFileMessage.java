@@ -27,6 +27,16 @@ import java.util.concurrent.BlockingQueue;
 public class GetFileMessage extends Message {
     private Files file;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+
     public Files getFile() {
         return file;
     }

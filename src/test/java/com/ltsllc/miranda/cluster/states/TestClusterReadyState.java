@@ -23,6 +23,7 @@ import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.basicclasses.Subscription;
 import com.ltsllc.miranda.clientinterface.basicclasses.Topic;
 import com.ltsllc.miranda.clientinterface.basicclasses.User;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.objects.ClusterStatusObject;
 import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.clientinterface.objects.UserObject;
@@ -33,6 +34,7 @@ import com.ltsllc.miranda.cluster.networkMessages.DeleteUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.NewUserWireMessage;
 import com.ltsllc.miranda.cluster.networkMessages.UpdateUserWireMessage;
 import com.ltsllc.miranda.file.messages.Notification;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.network.messages.NodeAddedMessage;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -48,6 +50,7 @@ import com.ltsllc.miranda.subsciptions.messages.CreateSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.DeleteSubscriptionMessage;
 import com.ltsllc.miranda.subsciptions.messages.UpdateSubscriptionMessage;
 import com.ltsllc.miranda.test.TestCase;
+import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.topics.messages.CreateTopicMessage;
 import com.ltsllc.miranda.topics.messages.DeleteTopicMessage;
 import com.ltsllc.miranda.topics.messages.NewTopicMessage;
@@ -116,6 +119,10 @@ public class TestClusterReadyState extends TestCase {
             setupMirandaProperties();
             setupKeyStore();
             setupTrustStore();
+            setupMiranda();
+            setupMockReader();
+            setupTopicsManager();
+
 
             this.mockClusterFile = mock(ClusterFile.class);
             this.mockNode = mock(Node.class);
@@ -123,6 +130,22 @@ public class TestClusterReadyState extends TestCase {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String TOPICS_JSON = "[ {" +
+            "name: whatever," +
+            "owner: whatever," +
+            "remotePolicy: acknowleged " +
+    "} ]";
+
+    public static String TOPICS_FILE_NAME_JSON = "topics.json";
+    public static String TOPICS_FILE = "topics.hex";
+    public static String TOPICS_FILE_CONTENTS = "";
+    public void setupTopicsManager () throws Exception{
+        createTextFile(TOPICS_FILE_NAME_JSON,TOPICS_JSON);
+        mock(TopicManager.class);
+        Miranda miranda = Miranda.getInstance();
+
     }
 
     @After
@@ -165,12 +188,13 @@ public class TestClusterReadyState extends TestCase {
         GetVersionMessage message = new GetVersionMessage(null, this, null);
         BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
 
+        setupMockSingleFile();
         when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
         when(getMockSingleFile().getQueue()).thenReturn(queue);
 
         getClusterReadyState().processMessage(message);
 
-        assert (contains(Message.Subjects.GetVersion, queue));
+        assert (contains(Message.Subjects.GetFile, queue));
     }
 
 
@@ -206,6 +230,7 @@ public class TestClusterReadyState extends TestCase {
 
         GetVersionMessage getVersionMessage = new GetVersionMessage(queue, this, queue);
 
+        setupMockSingleFile();
         when(getMockCluster().getFile()).thenReturn(getMockSingleFile());
         when(getMockSingleFile().getQueue()).thenReturn(queue);
         when(getMockCluster().getQueue()).thenReturn(queue);
@@ -624,12 +649,14 @@ public class TestClusterReadyState extends TestCase {
     public void testAddTopic () throws MirandaException {
         ImprovedRandom improvedRandom = new ImprovedRandom();
         Topic topic = Topic.random(improvedRandom);
-        CreateTopicMessage createTopicMessage = new CreateTopicMessage(null,null,
+        setupMockTopicsManager();
+
+        CreateTopicMessage createTopicMessage = new CreateTopicMessage(null, null,
                 null, topic);
 
         getClusterReadyState().processMessage(createTopicMessage);
 
-        verify(getMockCluster(), atLeastOnce()).broadcast(any());
+        verify(getMockTopicManager(), atLeastOnce()).sendCreateTopicMessage(any(), any(), any());
     }
 
     @Test

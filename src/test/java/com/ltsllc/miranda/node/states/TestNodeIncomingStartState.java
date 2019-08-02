@@ -71,7 +71,7 @@ public class TestNodeIncomingStartState extends TesterNodeState {
         assert (nextState instanceof NodeReadyState);
         JoinResponseWireMessage joinResponseWireMessage = new JoinResponseWireMessage(JoinResponseWireMessage.Responses.Success);
 
-        verify (getMockNetwork(), atLeastOnce()).sendMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify (getMockNetwork(), atLeastOnce()).sendMessage(Matchers.any(), Matchers.any(),
                 Matchers.anyInt(), Matchers.eq(joinResponseWireMessage));
 
         verify(getMockCluster(), atLeastOnce()).newNode(Matchers.eq(getMockNode()));

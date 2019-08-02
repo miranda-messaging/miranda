@@ -67,7 +67,7 @@ public class TestNodeStoppingState extends TesterNodeState {
 
         assert (nextState instanceof StopState);
 
-        verify(getMockCluster(), atLeastOnce()).sendShutdownResponse(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify(getMockCluster(), atLeastOnce()).sendShutdownResponse(Matchers.any(), Matchers.any(),
                 Matchers.anyString());
     }
 }

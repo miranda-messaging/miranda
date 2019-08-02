@@ -16,7 +16,7 @@
 
 package com.ltsllc.miranda.file;
 
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.Event;
 import com.ltsllc.miranda.event.EventsFile;

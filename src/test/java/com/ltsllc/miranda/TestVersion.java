@@ -16,7 +16,10 @@
 
 package com.ltsllc.miranda;
 
+import com.google.gson.Gson;
+import com.ltsllc.clcl.JavaKeyStore;
 import com.ltsllc.miranda.clientinterface.MirandaException;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.test.TestCase;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -60,12 +63,27 @@ public class TestVersion extends TestCase {
     public static final String TEST_STRING = "whatever";
     public static final String TEST_SHA1 = "85738F8F9A7F1B04B5329C590EBCB9E425925C6D0984089C43A022DE4F19C281";
 
+    public static final String Test_JSON =
+             "{ "
+                + "sha256: " +  TEST_SHA1
+            +  "}";
+
+
+    public Gson getGson()
+    {
+        return new Gson();
+    }
+
+    @Override
+    public JavaKeyStore getTrustStore() {
+        return super.getTrustStore();
+    }
+
     @Test
     public void testConsrutctor() throws GeneralSecurityException {
         logger.info("constructor");
 
-        deleteFile(TEST_FILENAME);
-        version = new Version(TEST_STRING);
+        version = getGson().fromJson(Test_JSON, Version.class);
         assert (version.getSha256().equals(TEST_SHA1));
     }
 

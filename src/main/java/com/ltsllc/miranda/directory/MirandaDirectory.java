@@ -51,9 +51,21 @@ abstract public class MirandaDirectory<T extends DirectoryEntry> extends Miranda
     private int objectLimit;
     private static Gson gson = new Gson();
 
+
     public static Gson getGson() {
         return gson;
     }
+
+    public boolean contains (String name) {
+        for (File file : files)
+        {
+            if (file.getName().equals(name))
+                return true;
+        }
+
+        return false;
+    }
+
 
     public int getObjectLimit() {
         return objectLimit;

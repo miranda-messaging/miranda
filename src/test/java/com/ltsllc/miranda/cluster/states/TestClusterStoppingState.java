@@ -97,7 +97,7 @@ public class TestClusterStoppingState extends TestCase {
         State nextState = getClusterStoppingState().processMessage(shutdownResponseMessage);
 
         assert (nextState == StopState.getInstance());
-        verify(getMockMiranda(), atLeastOnce()).sendShutdownResponse(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify(getMockMiranda(), atLeastOnce()).sendShutdownResponse(Matchers.any(), Matchers.any(),
                 Matchers.eq(Cluster.NAME));
     }
 
@@ -112,7 +112,7 @@ public class TestClusterStoppingState extends TestCase {
         State nextState = getClusterStoppingState().processMessage(shutdownResponseMessage);
 
         assert (nextState == StopState.getInstance());
-        verify(getMockMiranda(), atLeastOnce()).sendShutdownResponse(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify(getMockMiranda(), atLeastOnce()).sendShutdownResponse(Matchers.any(), Matchers.any(),
                 Matchers.eq(Cluster.NAME));
     }
 

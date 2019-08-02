@@ -39,6 +39,7 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.regex.Matcher;
 
 import static org.mockito.Mockito.*;
 
@@ -54,6 +55,7 @@ public class TestReadyState extends TestCase {
     public ReadyState getReadyState() {
         return readyState;
     }
+
 
     public SessionManager getMockSessionManager() {
         return mockSessionManager;
@@ -98,11 +100,10 @@ public class TestReadyState extends TestCase {
 
         when(getMockMiranda().getCurrentState()).thenReturn(getReadyState());
         when(getMockMiranda().getSessionManager()).thenReturn(getMockSessionManager());
-
         State nextState = getReadyState().processMessage(addSessionMessage);
 
         assert (nextState instanceof ReadyState);
-        verify(getMockSessionManager(), atLeastOnce()).sendAddSessionMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(session));
+        verify (getMockSessionManager(), atLeastOnce()).sendAddSessionMessage(Matchers.any(),Matchers.any(), Matchers.any());
     }
 
     @Test
@@ -122,7 +123,7 @@ public class TestReadyState extends TestCase {
         State nextState = getReadyState().processMessage(sessionsExpiredMessage);
 
         assert (nextState instanceof ReadyState);
-        verify (getMockSessionManager(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(expiredSessions));
+        verify (getMockSessionManager(), atLeastOnce()).sendSessionsExpiredMessage(Matchers.any(), Matchers.any(), Matchers.eq(expiredSessions));
     }
 
     public Message getMessage (Message.Subjects subject, BlockingQueue<Message> queue) {

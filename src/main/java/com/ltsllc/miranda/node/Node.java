@@ -28,7 +28,7 @@ import com.ltsllc.miranda.cluster.networkMessages.GetVersionWireMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.network.messages.SendNetworkMessage;
 import com.ltsllc.miranda.node.messages.GetFileMessage;
-import com.ltsllc.miranda.operations.syncfiles.messages.GetFileWireMessage;
+import com.ltsllc.miranda.node.networkMessages.GetFileWireMessage;
 import com.ltsllc.miranda.node.networkMessages.StopWireMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.node.states.ConnectingState;
@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Created by Clark on 12/31/2016.
+ * a node on the network
  */
 public class Node extends Consumer {
     public Node()
@@ -63,7 +63,7 @@ public class Node extends Consumer {
     /**
      * This constructor is used when a new cluster node connects to us.
      *
-     * @param handle
+     * @param handle the handel
      */
     public Node(int handle, Network network, Cluster cluster) throws MirandaException {
         super("node");

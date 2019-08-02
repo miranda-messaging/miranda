@@ -112,7 +112,8 @@ public class NewNodeState extends NodeState {
 
 
             case GetFile: {
-                defer(message);
+                GetFileMessage getFileMessage = (GetFileMessage) message;
+                nextState = prcessGetFileMessage(getFileMessage);
                 break;
             }
 
@@ -124,7 +125,10 @@ public class NewNodeState extends NodeState {
         return nextState;
     }
 
-
+    public State prcessGetFileMessage(GetFileMessage getFileMessage){
+        defer(getFileMessage);
+        return getNode().getCurrentState();
+    }
 
     private State processJoinWireMessage(JoinWireMessage joinWireMessage) {
         getNode().setDns(joinWireMessage.getDns());

@@ -1,26 +1,17 @@
 package com.ltsllc.miranda.operations.syncfiles.states;
 
-import com.ltsllc.miranda.Message;
 import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
-import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.requests.Files;
-import com.ltsllc.miranda.mina.SslException;
 import com.ltsllc.miranda.miranda.Miranda;
-import com.ltsllc.miranda.operations.syncfiles.BootstrapOperation;
 import com.ltsllc.miranda.operations.syncfiles.SyncFiles;
-import com.ltsllc.miranda.servlet.bootstrap.BootstrapMessage;
-import com.ltsllc.miranda.topics.TopicManager;
 
 import java.security.GeneralSecurityException;
 
+/**
+ * A start state for SyncFiles
+ */
 public class SyncFilesStartState extends SyncFilesState {
-    private BootstrapOperation operation;
-
-    public BootstrapOperation getOperation() {
-        return operation;
-    }
-
     public SyncFilesStartState(SyncFiles syncFiles) {
         super (syncFiles);
     }

@@ -63,7 +63,7 @@ public class TestNodeDisconnectingState extends TesterNodeState {
 
         State nextState = getDisconnecting().processMessage(networkMessage);
 
-        verify(getMockNetwork(), atLeastOnce()).sendCloseMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.anyInt());
+        verify(getMockNetwork(), atLeastOnce()).sendCloseMessage(Matchers.any(), Matchers.any(), Matchers.anyInt());
         assert (nextState instanceof NodeStoppingState);
     }
 
@@ -79,7 +79,7 @@ public class TestNodeDisconnectingState extends TesterNodeState {
 
         assert (nextState instanceof NodeDisconnectingState);
         StopResponseWireMessage stopResponseWireMessage = new StopResponseWireMessage();
-        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(), Matchers.any(),
                 Matchers.eq(13), Matchers.eq(stopResponseWireMessage));
     }
 }

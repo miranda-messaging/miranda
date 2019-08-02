@@ -62,7 +62,6 @@ public class TestConnectingState extends TesterNodeState {
 
         State nextState = getConnectingState().processMessage(connectSucceededMessage);
 
-        verify(getMockNetwork(), atLeastOnce()).sendNetworkMessage(Matchers.any(BlockingQueue.class), Matchers.any(), Matchers.eq(13), Matchers.any(JoinWireMessage.class));
         assert (nextState instanceof JoiningState);
     }
 

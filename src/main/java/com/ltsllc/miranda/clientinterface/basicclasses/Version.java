@@ -84,9 +84,11 @@ public class Version {
 
     public Version(byte[] data) {
         String string = new String(data);
-        Version version = Version.fromString(string);
     }
 
+    public static Version fromJson (String jason) {
+        return getGson().fromJson(jason, Version.class);
+    }
 
     public String getSha256() {
         return sha256;

@@ -25,7 +25,6 @@ import com.ltsllc.miranda.miranda.messages.GetVersionsMessage;
 import com.ltsllc.miranda.network.Network;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
-import com.ltsllc.miranda.operations.syncfiles.messages.GetFileWireMessage;
 import com.ltsllc.miranda.node.networkMessages.GetVersionsWireMessage;
 import com.ltsllc.miranda.node.networkMessages.JoinResponseWireMessage;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;

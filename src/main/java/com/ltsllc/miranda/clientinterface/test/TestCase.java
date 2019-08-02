@@ -1,16 +1,20 @@
 package com.ltsllc.miranda.clientinterface.test;
 
+import com.google.gson.Gson;
 import com.ltsllc.commons.util.HexConverter;
 import com.ltsllc.commons.util.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
  * Created by ltsllc on 7/3/2017.
  */
 public class TestCase extends com.ltsllc.miranda.test.TestCase {
+    private static Gson gson = null;
+
     public boolean byteArraysAreEqual(byte[] a1, byte[] a2) {
         if (a1 == a2)
             return true;
@@ -34,6 +38,19 @@ public class TestCase extends com.ltsllc.miranda.test.TestCase {
     }
 
     public void setup() {
+    }
+
+    public Gson getGson () {
+        if (null == gson) {
+            gson = new Gson();
+        }
+        return gson;
+    }
+
+    public void createFileFromJson (String filename, String json) throws IOException{
+        FileWriter fileWriter = new FileWriter(filename);
+        fileWriter.write(json);
+        fileWriter.close();
     }
 
     public String fileToHexString(String filename) throws IOException {

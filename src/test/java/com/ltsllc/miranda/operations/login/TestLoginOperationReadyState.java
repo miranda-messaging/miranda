@@ -82,7 +82,7 @@ public class TestLoginOperationReadyState extends TestCase {
         State nextState = getReadyState().processMessage(getSessionResponseMessage);
 
         assert (nextState == StopState.getInstance());
-        verify(getMockCluster(), atLeastOnce()).sendNewSession(Matchers.any(BlockingQueue.class), Matchers.any(),
+        verify(getMockCluster(), atLeastOnce()).sendNewSession(Matchers.any(), Matchers.any(),
                 Matchers.any(Session.class));
         assert (contains(Message.Subjects.LoginResponse, temp));
     }

@@ -52,6 +52,9 @@ public abstract class DirectoryManager<T extends MirandaFile> extends Consumer {
     private Map<String, String> map;
     private Version version;
 
+    public MirandaFile getFile () {
+        return directory;
+    }
     public MirandaFile getFile (String file) throws MirandaException {
         String contenets = "";
         String fullName = directory.getFilename() + "/" + file;

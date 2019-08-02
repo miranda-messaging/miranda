@@ -17,7 +17,7 @@
 package com.ltsllc.miranda.network;
 
 import com.ltsllc.miranda.Message;
-import com.ltsllc.miranda.Version;
+import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.mina.MinaHandle;
 import com.ltsllc.miranda.mina.MinaHandler;
