@@ -1,7 +1,6 @@
 package com.ltsllc.miranda.operations.syncfiles.states;
 
 
-import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.operations.syncfiles.SyncFiles;
 import com.ltsllc.miranda.test.TestCase;
 import org.junit.Before;

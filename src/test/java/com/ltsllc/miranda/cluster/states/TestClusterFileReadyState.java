@@ -22,11 +22,13 @@ import com.ltsllc.miranda.clientinterface.basicclasses.Version;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
 import com.ltsllc.miranda.clientinterface.basicclasses.Version;
+import com.ltsllc.miranda.clientinterface.requests.Files;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.cluster.messages.HealthCheckUpdateMessage;
 import com.ltsllc.miranda.cluster.messages.LoadMessage;
 import com.ltsllc.miranda.cluster.messages.NodesUpdatedMessage;
 import com.ltsllc.miranda.file.SingleFile;
+import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.messages.GetClusterFileMessage;
 import com.ltsllc.miranda.node.messages.GetVersionMessage;
@@ -38,9 +40,8 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.security.GeneralSecurityException;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -75,6 +76,10 @@ public class TestClusterFileReadyState extends TestCase {
 
     @Mock
     private Logger mockLogger = mock(Logger.class);
+
+    public TestClusterFileReadyState () {
+    }
+
 
     public ClusterFileReadyState getClusterFileReadyState() {
         return clusterFileReadyState;
@@ -137,16 +142,53 @@ public class TestClusterFileReadyState extends TestCase {
 
     @Test
     public void testProcessGetVersionMessage () throws MirandaException {
-        Version version = new Version();
-        version.setSha256("foo");
-        BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-        GetVersionMessage message = new GetVersionMessage(queue, null, queue);
+        try {
+            setupMockCluster();
+            setupMockMiranda();
+            Miranda miranda = Miranda.getInstance();
+            Map<Files, Version> fileToVersion = new HashMap<>();
+            setupMockCluster();
+            setupMockTopicsManager();
+            setupMockUserManager();
+            setupMockDeliveryManager();
+            setupMockEventManager();
 
-        when(getMockClusterfile().getVersion()).thenReturn(version);
 
-        getClusterFileReadyState().processMessage(message);
+            when(miranda.getTopicManager()).thenReturn(getMockTopicManager());
+            when(miranda.getUserManager()).thenReturn(getMockUserManager());
+            when (miranda.getCluster()).thenReturn(getMockCluster());
 
-        assert(contains(Message.Subjects.Version, queue));
+            when (miranda.getSubscriptionManager()).thenReturn(getMockSubscriptionManager());
+            when (miranda.getDeliveryManager()).thenReturn(getMockDeliveryManager());
+            when (miranda.getEventManager()).thenReturn(getMockEventManager());
+            when (miranda.getDeliveryManager()).thenReturn(getMockDeliveryManager());
+            when (getMockCluster().getLocalNode()).thenReturn(getMockNode());
+            setupMockNode();
+
+            fileToVersion.put(Files.Topic, miranda.getTopicManager().getVersion());
+            fileToVersion.put(Files.Subscription, miranda.getSubscriptionManager().getVersion());
+            fileToVersion.put(Files.User, miranda.getUserManager().getVersion());
+            fileToVersion.put(Files.Cluster, miranda.getCluster().getVersion());
+            fileToVersion.put(Files.DeliveriesList, miranda.getDeliveryManager().getVersion());
+            fileToVersion.put (Files.EventList,  miranda.getEventManager().getVersion());
+
+            setupMockNode();
+            Version version = new Version();
+            version.setSha256("foo");
+            BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+            GetVersionMessage message = new GetVersionMessage(queue, null, queue);
+
+            when(getMockClusterfile().getVersion()).thenReturn(version);
+            when(getMockCluster().getQueue()).thenReturn(new LinkedBlockingQueue<>());
+            when(getMockClusterfile().getQueue()).thenReturn(new LinkedBlockingQueue<>());
+
+            getClusterFileReadyState().processMessage(message);
+
+            assert (contains(Message.Subjects.Version, queue));
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
 

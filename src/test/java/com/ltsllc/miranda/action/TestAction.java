@@ -2,7 +2,7 @@ package com.ltsllc.miranda.action;
 
 
 import com.ltsllc.miranda.test.TestCase;
-import com.ltsllc.miranda.actions.Action;
+import com.ltsllc.miranda.actions.cluster.Action;
 import org.junit.Before;
 import org.junit.Test;
 

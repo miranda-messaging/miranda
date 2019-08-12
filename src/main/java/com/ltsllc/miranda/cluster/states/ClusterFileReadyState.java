@@ -18,6 +18,7 @@ package com.ltsllc.miranda.cluster.states;
 
 import com.google.gson.reflect.TypeToken;
 import com.ltsllc.miranda.Message;
+import com.ltsllc.miranda.Panic;
 import com.ltsllc.miranda.State;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.clientinterface.basicclasses.NodeElement;
@@ -39,10 +40,14 @@ import com.ltsllc.miranda.property.MirandaProperties;
 import com.ltsllc.miranda.topics.TopicManager;
 import com.ltsllc.miranda.writer.WriteMessage;
 import org.apache.log4j.Logger;
+import org.junit.Test;
 
 import java.lang.reflect.Type;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Clark on 2/6/2017.
@@ -100,14 +105,6 @@ public class ClusterFileReadyState extends SingleFileReadyState {
         return nextState;
     }
 
-    public State processGetVersionMessage (GetVersionMessage getVersionMessage)
-            throws MirandaException
-    {
-        GetVersionResponseMessage getVersionResponseMessage = new GetVersionResponseMessage(getClusterFile().getQueue(),null, null, null);
-        getVersionResponseMessage.setVersionFor(Files.Cluster, getClusterFile().getVersion());
-        getVersionMessage.reply(getVersionResponseMessage);
-        return getClusterFile().getCurrentState();
-    }
 
     private State processGetClusterFileMessage(GetClusterFileMessage getClusterFileMessage) throws MirandaException {
         List<NodeElement> newList = new ArrayList<NodeElement>(getClusterFile().getData());
@@ -118,6 +115,32 @@ public class ClusterFileReadyState extends SingleFileReadyState {
 
 
         return this;
+    }
+
+    public State processGetVersionMessage (GetVersionMessage getVersionMessag) {
+        try {
+            Miranda miranda = Miranda.getInstance();
+            Node node = miranda.getCluster().getOurNode();
+            Map<Files, Version> fileToVersion = new HashMap<>();
+            fileToVersion.put(Files.Topic, miranda.getTopicManager().getVersion());
+            fileToVersion.put(Files.Cluster, miranda.getCluster().getVersion());
+            fileToVersion.put(Files.Subscription, miranda.getSubscriptionManager().getVersion());
+            fileToVersion.put(Files.User, miranda.getUserManager().getVersion());
+            fileToVersion.put(Files.Cluster, miranda.getCluster().getVersion());
+            fileToVersion.put(Files.User, miranda.getUserManager().getVersion());
+            fileToVersion.put(Files.DeliveriesList, miranda.getDeliveryManager().getVersion());
+            fileToVersion.put(Files.EventList, miranda.getEventManager().getVersion());
+
+            GetVersionResponseMessage getVersionResponseMessage = new GetVersionResponseMessage(getContainer().getQueue(), this,
+                    fileToVersion, node);
+            send(getContainer().getQueue(), getVersionResponseMessage);
+
+            return getContainer().getCurrentState();
+        } catch (GeneralSecurityException e) {
+            Panic panic = new Panic("Exception", e);
+            Miranda.getInstance().panic(panic);
+            return null;
+        }
     }
 
     /**

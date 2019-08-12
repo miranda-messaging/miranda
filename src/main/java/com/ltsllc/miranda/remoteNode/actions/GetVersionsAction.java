@@ -1,6 +1,6 @@
 package com.ltsllc.miranda.remoteNode.actions;
 
-import com.ltsllc.miranda.actions.Action;
+import com.ltsllc.miranda.actions.cluster.Action;
 
 public class GetVersionsAction extends Action {
     public GetVersionsAction () {

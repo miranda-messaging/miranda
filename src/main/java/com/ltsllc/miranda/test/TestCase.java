@@ -30,11 +30,13 @@ import com.ltsllc.miranda.clientinterface.objects.NodeStatus;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.cluster.ClusterFile;
 import com.ltsllc.miranda.deliveries.DeliveryManager;
+import com.ltsllc.miranda.event.EventManager;
 import com.ltsllc.miranda.file.*;
 import com.ltsllc.miranda.http.HttpServer;
 import com.ltsllc.miranda.miranda.Miranda;
 import com.ltsllc.miranda.miranda.MirandaPanicPolicy;
 import com.ltsllc.miranda.network.Network;
+import com.ltsllc.miranda.node.Node;
 import com.ltsllc.miranda.node.networkMessages.NetworkMessage;
 import com.ltsllc.miranda.node.networkMessages.WireMessage;
 import com.ltsllc.miranda.property.MirandaProperties;
@@ -50,8 +52,10 @@ import com.ltsllc.miranda.topics.TopicsFile;
 import com.ltsllc.miranda.user.UserManager;
 import com.ltsllc.miranda.user.UsersFile;
 import com.ltsllc.miranda.writer.Writer;
+import com.sun.javafx.scene.NodeHelper;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.junit.Test;
 import org.mockito.Mock;
 
 import java.io.*;
@@ -160,12 +164,31 @@ public class TestCase {
     @Mock
     private MirandaFile mockFile;
 
+    @Mock
+    private Node mockNode;
+
+    @Mock
+    private EventManager mockEventManager;
+
+    public EventManager getMockEventManager() {
+        return mockEventManager;
+    }
+
+    public void setupMockEventManager() {
+        if (null == mockEventManager) {
+            Miranda miranda = Miranda.getInstance();
+            EventManager mock = mock(EventManager.class);
+            miranda.setEventManager(mockEventManager);
+            mockEventManager = mock;
+        }
+    }
+
+
     public Version getMockVersion() {
         return mockVersion;
     }
 
-    public void setMockVersion (Version version)
-    {
+    public void setMockVersion(Version version) {
         mockVersion = version;
     }
 
@@ -269,19 +292,19 @@ public class TestCase {
         return mockSession;
     }
 
-    public MirandaFile getMockFile () {
+    public MirandaFile getMockFile() {
         return mockFile;
     }
 
     @Mock
     private SingleFile mockSingleFile;
 
-    public void setupMockSingleFile () {
+    public void setupMockSingleFile() {
         if (null == getMockSingleFile())
             mockSingleFile = mock(SingleFile.class);
     }
 
-    public SingleFile getMockSingleFile () {
+    public SingleFile getMockSingleFile() {
         return mockSingleFile;
     }
 
@@ -298,24 +321,24 @@ public class TestCase {
     @Mock
     private DeliveryManager mockDeliveryManager;
 
-    public void setupMockDeliveryManager () {
+    public void setupMockDeliveryManager() {
         if (mockDeliveryManager == null)
             mockDeliveryManager = mock(DeliveryManager.class);
     }
 
-    public DeliveryManager getMockDeliveryManager (){
+    public DeliveryManager getMockDeliveryManager() {
         return mockDeliveryManager;
     }
 
     @Mock
     private ClusterFile mockClusterfile;
 
-    public void setupMockClutersfile () {
+    public void setupMockClutersfile() {
         if (mockClusterfile == null)
             mockClusterfile = mock(ClusterFile.class);
     }
 
-    public ClusterFile getMockClusterfile () {
+    public ClusterFile getMockClusterfile() {
         return mockClusterfile;
     }
 
@@ -445,13 +468,33 @@ public class TestCase {
         this.mockTopicManager = null;
         this.mockFile = null;
         this.mockSubscriptionManager = null;
+        this.mockNode = null;
     }
 
-    public void setupMockSubscriptionManager () {
+    public void setupMockSubscriptionManager() {
         if (mockSubscriptionManager == null)
             mockSubscriptionManager = mock(SubscriptionManager.class);
     }
 
+    public void setupMockNode() {
+        if (mockNode == null) {
+            mockNode = mock(Node.class);
+
+            Miranda miranda = Miranda.getInstance();
+            if (miranda == null) {
+                throw new RuntimeException("you need to setup Miranda");
+            }
+
+            if (miranda.getCluster() == null) {
+                throw new RuntimeException("you need to setup your Cluster.");
+            }
+
+        }
+    }
+
+    public Node getMockNode () {
+        return mockNode;
+    }
 
     public void setup() throws Exception {
         StopState.initializeClass();
@@ -651,9 +694,9 @@ public class TestCase {
         deleteFile(TEMP_TRUSTSTORE);
     }
 
-    public void setupMockFile () {
+    public void setupMockFile() {
         if (null == mockFile)
-             mockFile = mock(MirandaFile.class);
+            mockFile = mock(MirandaFile.class);
     }
 
 
@@ -686,7 +729,7 @@ public class TestCase {
         trustStore = new JavaKeyStore(TEMP_TRUSTSTORE, TEMP_TRUSTSTORE_PASSWORD);
     }
 
-    public void createKeyStore (String filename, String passwordString, String alias) throws Exception {
+    public void createKeyStore(String filename, String passwordString, String alias) throws Exception {
         KeyPair keyPair = KeyPair.createInstance();
         DistinguishedName distinguishedName = new DistinguishedName();
         distinguishedName.setCity("Denver");
@@ -711,12 +754,12 @@ public class TestCase {
         javaKeyStore.add(alias + "Certificate", certificate);
         javaKeyStore.store();
     }
+
     public void cleanupKeyStore() {
         deleteFile(TEMP_KEYSTORE);
     }
 
-    public void createTextFile (String filename, String contents) throws IOException
-    {
+    public void createTextFile(String filename, String contents) throws IOException {
         FileWriter fileWriter = new FileWriter(filename);
         fileWriter.write(contents);
     }
@@ -937,7 +980,7 @@ public class TestCase {
         }
     }
 
-    public void setupMockVersion () {
+    public void setupMockVersion() {
         if (null == getMockVersion())
             setMockVersion(mock(Version.class));
     }
@@ -1090,8 +1133,7 @@ public class TestCase {
         try {
             fileInputStream = new FileInputStream(file);
             int bytesRead = fileInputStream.read(buffer);
-            while (-1 != bytesRead)
-            {
+            while (-1 != bytesRead) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
                 bytesRead = fileInputStream.read(buffer);
             }

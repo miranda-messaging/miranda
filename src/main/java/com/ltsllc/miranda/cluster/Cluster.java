@@ -58,7 +58,7 @@ import java.util.concurrent.BlockingQueue;
 
 
 /**
- * A logical grouping of {@Link Node}.
+ * A logical grouping of {@Link Node}s.
  * <p>
  * This class allows the rest of the system to treat a cluster like a single unit.
  * For example the system can "tell" the cluster about a new message and
@@ -184,7 +184,7 @@ public class Cluster extends Manager<Node, NodeElement> {
                 update = true;
             }
         }
-        
+
 
         if (update) {
             for (NodeElement element : reallyNewNodes) {
@@ -199,6 +199,17 @@ public class Cluster extends Manager<Node, NodeElement> {
             send(nodesUpdatedMessage, getClusterFile().getQueue());
         }
     }
+
+    public Node getOurNode () {
+        return localNode;
+    }
+
+    public Node getLocalNode () {
+      return localNode;
+    }
+
+
+
 
     /**
      * This gets called when a node connects "out of the blue."

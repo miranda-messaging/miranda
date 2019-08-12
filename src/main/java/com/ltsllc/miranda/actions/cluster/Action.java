@@ -1,4 +1,4 @@
-package com.ltsllc.miranda.actions;
+package com.ltsllc.miranda.actions.cluster;
 
 import com.ltsllc.miranda.Consumer;
 

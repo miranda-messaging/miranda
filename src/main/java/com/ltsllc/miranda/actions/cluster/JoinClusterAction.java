@@ -1,6 +1,5 @@
-package com.ltsllc.miranda.actions;
+package com.ltsllc.miranda.actions.cluster;
 
-import com.ltsllc.miranda.Consumer;
 import com.ltsllc.miranda.clientinterface.MirandaException;
 import com.ltsllc.miranda.cluster.Cluster;
 import com.ltsllc.miranda.network.Network;
